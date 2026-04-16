@@ -2,8 +2,8 @@ import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = 'django-insecure-tntg-trade-corp-2026-secure-key-change-in-production'
-DEBUG = True
+SECRET_KEY =  os.environ.get('SECRET_KEY', 'fallback-secret-key')
+DEBUG =  os.environ.get('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
