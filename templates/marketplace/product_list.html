@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}Products — T&TG Trade Corp{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li><li class="breadcrumb-item"><a href="{% url 'marketplace' %}">Marketplace</a></li><li class="breadcrumb-item active">Products</li></ol></nav>
+    <h1>{% if market == 'local' %}🏠 Local{% elif market == 'international' %}✈️ International{% else %}🌍 All{% endif %} Products</h1>
+  </div>
+</div>
+<section class="section" style="padding-top:2rem">
+  <div class="container">
+    <!-- Filters -->
+    <form method="get" class="glass-card p-3 mb-4">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-4">
+          <label class="form-label">Search</label>
+          <input type="text" name="q" class="form-control" placeholder="Search products..." value="{{ query }}">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Category</label>
+          <select name="category" class="form-select">
+            <option value="">All Categories</option>
+            {% for val, label in categories %}<option value="{{ val }}" {% if category == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Market</label>
+          <select name="market" class="form-select">
+            <option value="">All Markets</option>
+            <option value="local" {% if market == 'local' %}selected{% endif %}>Local Market</option>
+            <option value="international" {% if market == 'international' %}selected{% endif %}>International Market</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-gold w-100"><i class="fas fa-search me-1"></i>Filter</button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Category quick links -->
+    <div class="d-flex gap-2 flex-wrap mb-4">
+      <a href="{% url 'product_list' %}" class="btn btn-sm {% if not category %}btn-gold{% else %}btn-outline-gold{% endif %}">All</a>
+      <a href="?category=electronics{% if market %}&market={{ market }}{% endif %}" class="btn btn-sm {% if category == 'electronics' %}btn-gold{% else %}btn-outline-gold{% endif %}">💻 Electronics</a>
+      <a href="?category=coffee{% if market %}&market={{ market }}{% endif %}" class="btn btn-sm {% if category == 'coffee' %}btn-gold{% else %}btn-outline-gold{% endif %}">☕ Coffee</a>
+      <a href="?category=pharmaceuticals{% if market %}&market={{ market }}{% endif %}" class="btn btn-sm {% if category == 'pharmaceuticals' %}btn-gold{% else %}btn-outline-gold{% endif %}">💊 Pharma</a>
+      <a href="?category=agriculture{% if market %}&market={{ market }}{% endif %}" class="btn btn-sm {% if category == 'agriculture' %}btn-gold{% else %}btn-outline-gold{% endif %}">🌾 Agriculture</a>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="text-muted" style="font-size:.875rem">{{ products|length }} product{% if products|length != 1 %}s{% endif %} found</div>
+    </div>
+
+    <div class="row g-4">
+      {% for product in products %}
+      <div class="col-sm-6 col-lg-3 animate-on-scroll">
+        <div class="product-card">
+          <div class="product-img-wrap">
+            {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}<div class="product-placeholder">{% if product.category == 'electronics' %}💻{% elif product.category == 'coffee' %}☕{% elif product.category == 'pharmaceuticals' %}💊{% elif product.category == 'agriculture' %}🌾{% else %}📦{% endif %}</div>{% endif %}
+            {% if product.is_featured %}<div class="p-badge">Featured</div>{% endif %}
+            <div class="m-badge {{ product.market_type }}">{{ product.get_market_type_display }}</div>
+          </div>
+          <div class="product-body">
+            <div class="product-cat">{{ product.get_category_display }}</div>
+            <div class="product-name">{{ product.name }}</div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <div class="product-price">{{ product.currency }} {{ product.price }}</div>
+              <div class="text-muted" style="font-size:.75rem">/ {{ product.unit }}</div>
+            </div>
+            <div class="product-pts"><i class="fas fa-coins me-1"></i>Earn up to {{ product.avon_points_referral }} pts</div>
+            <div class="text-muted mt-1" style="font-size:.72rem"><i class="fas fa-cubes me-1"></i>{{ product.quantity_available }} {{ product.unit }}s available</div>
+          </div>
+          <div class="product-foot">
+            <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-gold btn-sm flex-fill">View</a>
+            <a href="{% url 'place_order' product.pk %}" class="btn btn-gold btn-sm flex-fill">Order</a>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <div class="text-center py-5">
+          <div style="font-size:4rem;opacity:.3;margin-bottom:1rem">📦</div>
+          <h4 class="text-muted">No products found</h4>
+          <p class="text-muted">Try adjusting your filters or <a href="{% url 'product_list' %}" class="text-gold">clear all filters</a></p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

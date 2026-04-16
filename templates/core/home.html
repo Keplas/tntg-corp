@@ -1,0 +1,405 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}T&TG Trade Corp — Global Financial Services & Investments{% endblock %}
+{% block content %}
+
+<!-- ═══════════ HERO ═══════════ -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="container hero-content">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <div class="hero-badge animate-fadeup">
+          <i class="fas fa-globe-americas"></i> Global Operations Across 6 Countries
+        </div>
+        <h1 class="hero-title animate-fadeup d1">
+          <span class="highlight">Financial Services</span><br>& Global Trade
+        </h1>
+        <div class="animate-fadeup d1" style="display:flex;align-items:center;gap:14px;margin-bottom:1rem">
+          <img src="{% static 'images/tg_logo.jpeg' %}" alt="T&TG Logo"
+               style="width:60px;height:60px;object-fit:contain;border-radius:12px;background:#fff;padding:3px;box-shadow:0 4px 20px rgba(201,168,76,.3)">
+          <div style="font-size:.85rem;color:var(--gold);font-weight:700;letter-spacing:2px;text-transform:uppercase">Connect · Trade · Grow · Earn</div>
+        </div>
+        <p class="hero-subtitle animate-fadeup d2">
+          T&TG Trade Corporation connects buyers and sellers across Canada, Uganda, Netherlands, USA, Kenya and Japan — with e-commerce, insurance, brokerage and investment solutions.
+        </p>
+        <div class="hero-btns animate-fadeup d3">
+          <a href="{% url 'marketplace' %}" class="btn btn-gold btn-lg">
+            <i class="fas fa-store me-2"></i>Enter Marketplace
+          </a>
+          <a href="{% url 'register' %}" class="btn btn-outline-gold btn-lg">
+            <i class="fas fa-user-plus me-2"></i>Join Free
+          </a>
+        </div>
+        <div class="hero-stats animate-fadeup d4">
+          <div class="hero-stat">
+            <div class="number" data-count="{{ stats.products }}" data-suffix="+">{{ stats.products }}</div>
+            <div class="label">Products</div>
+          </div>
+          <div class="hero-stat">
+            <div class="number" data-count="{{ stats.countries }}">{{ stats.countries }}</div>
+            <div class="label">Countries</div>
+          </div>
+          <div class="hero-stat">
+            <div class="number" data-count="{{ stats.partners }}" data-suffix="+">{{ stats.partners }}</div>
+            <div class="label">Partners</div>
+          </div>
+          <div class="hero-stat">
+            <div class="number" data-count="{{ stats.transactions }}" data-suffix="+">{{ stats.transactions }}</div>
+            <div class="label">Transactions</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 animate-fadeup d2">
+        <div class="hero-visual">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <span class="text-gold fw-bold" style="font-size:.8rem;letter-spacing:1px;text-transform:uppercase">Live Exchange Rates</span>
+            <span class="badge badge-green pulse" style="font-size:.65rem"><i class="fas fa-circle me-1" style="font-size:.5rem"></i>LIVE</span>
+          </div>
+          <div class="market-ticker-card">
+            <div><span class="tc-pair">USD/CAD</span></div>
+            <div class="tc-rate">1.3812</div>
+            <div class="tc-chg up"><i class="fas fa-caret-up me-1"></i>+0.12%</div>
+          </div>
+          <div class="market-ticker-card">
+            <div><span class="tc-pair">USD/UGX</span></div>
+            <div class="tc-rate">3,720.00</div>
+            <div class="tc-chg up"><i class="fas fa-caret-up me-1"></i>+0.08%</div>
+          </div>
+          <div class="market-ticker-card">
+            <div><span class="tc-pair">EUR/USD</span></div>
+            <div class="tc-rate">1.0934</div>
+            <div class="tc-chg dn"><i class="fas fa-caret-down me-1"></i>-0.05%</div>
+          </div>
+          <div class="market-ticker-card">
+            <div><span class="tc-pair">USD/KES</span></div>
+            <div class="tc-rate">129.45</div>
+            <div class="tc-chg dn"><i class="fas fa-caret-down me-1"></i>-0.03%</div>
+          </div>
+          <div id="globe-canvas" style="position:relative;height:160px;margin:1rem 0;display:flex;align-items:center;justify-content:center">
+            <div class="globe-orb" style="position:relative;z-index:2">🌍</div>
+            <!-- Orbit rings -->
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none">
+              <div style="width:140px;height:140px;border-radius:50%;border:1px solid rgba(201,168,76,.15);animation:orbit1 8s linear infinite"></div>
+            </div>
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none">
+              <div style="width:110px;height:110px;border-radius:50%;border:1px solid rgba(0,168,232,.12);animation:orbit2 6s linear infinite reverse"></div>
+            </div>
+          </div>
+          <div class="text-center">
+            <a href="{% url 'forex' %}" class="btn btn-outline-gold btn-sm">View All Rates <i class="fas fa-arrow-right ms-1"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ COUNTRIES ═══════════ -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Global Presence</div>
+      <h2>We Operate In <span class="text-gold">6 Countries</span></h2>
+      <div class="divider-gold"></div>
+      <p class="section-sub">From our headquarters in Toronto, Canada, we coordinate international operations across multiple continents.</p>
+    </div>
+    <div class="row g-3 justify-content-center">
+      <div class="col-6 col-md-4 col-lg-2 animate-on-scroll"><div class="country-card"><span class="country-flag">🇨🇦</span><div class="fw-bold">Canada</div><div class="country-name">Toronto HQ</div></div></div>
+      <div class="col-6 col-md-4 col-lg-2 animate-on-scroll"><div class="country-card"><span class="country-flag">🇺🇬</span><div class="fw-bold">Uganda</div><div class="country-name">Kampala</div></div></div>
+      <div class="col-6 col-md-4 col-lg-2 animate-on-scroll"><div class="country-card"><span class="country-flag">🇳🇱</span><div class="fw-bold">Netherlands</div><div class="country-name">Amsterdam</div></div></div>
+      <div class="col-6 col-md-4 col-lg-2 animate-on-scroll"><div class="country-card"><span class="country-flag">🇺🇸</span><div class="fw-bold">United States</div><div class="country-name">New York</div></div></div>
+      <div class="col-6 col-md-4 col-lg-2 animate-on-scroll"><div class="country-card"><span class="country-flag">🇰🇪</span><div class="fw-bold">Kenya</div><div class="country-name">Nairobi</div></div></div>
+      <div class="col-6 col-md-4 col-lg-2 animate-on-scroll"><div class="country-card"><span class="country-flag">🇯🇵</span><div class="fw-bold">Japan</div><div class="country-name">Tokyo</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SERVICES ═══════════ -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">What We Offer</div>
+      <h2>Our Core <span class="text-gold">Services</span></h2>
+      <div class="divider-gold"></div>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4 animate-on-scroll">
+        <div class="service-card">
+          <div class="service-icon">🛒</div>
+          <h4 class="text-gold mb-2">Online Shopping Platform</h4>
+          <p class="text-muted-custom" style="font-size:.875rem">Buy and sell on local & international markets. List goods, place orders, and earn Avon Points on every purchase.</p>
+          <a href="{% url 'marketplace' %}" class="btn btn-outline-gold btn-sm mt-3">Explore Market <i class="fas fa-arrow-right ms-1"></i></a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 animate-on-scroll d1">
+        <div class="service-card">
+          <div class="service-icon">🛡️</div>
+          <h4 class="text-gold mb-2">Insurance</h4>
+          <p class="text-muted-custom" style="font-size:.875rem">Comprehensive insurance solutions including health, trade, cargo, business and life insurance for individuals and companies.</p>
+          <a href="{% url 'insurance' %}" class="btn btn-outline-gold btn-sm mt-3">View Plans <i class="fas fa-arrow-right ms-1"></i></a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 animate-on-scroll d2">
+        <div class="service-card">
+          <div class="service-icon">📈</div>
+          <h4 class="text-gold mb-2">T&TG Brokerage</h4>
+          <p class="text-muted-custom" style="font-size:.875rem">Access forex, stocks, commodities and crypto markets through our licensed brokerage platform with professional support.</p>
+          <a href="{% url 'brokerage' %}" class="btn btn-outline-gold btn-sm mt-3">Start Trading <i class="fas fa-arrow-right ms-1"></i></a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 animate-on-scroll d1">
+        <div class="service-card">
+          <div class="service-icon">☕</div>
+          <h4 class="text-gold mb-2">Coffee Roasting</h4>
+          <p class="text-muted-custom" style="font-size:.875rem">Premium organic Arabica coffee roasted to perfection. Direct to consumers and intermediaries from our roasting company.</p>
+          <a href="{% url 'coffee' %}" class="btn btn-outline-gold btn-sm mt-3">Our Coffee <i class="fas fa-arrow-right ms-1"></i></a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 animate-on-scroll d2">
+        <div class="service-card">
+          <div class="service-icon">🎓</div>
+          <h4 class="text-gold mb-2">Training Programs</h4>
+          <p class="text-muted-custom" style="font-size:.875rem">Online training in Modern & Tech Farming, Corporate Enterprise and Financial Services. Earn certificates and unlock career opportunities.</p>
+          <a href="{% url 'training_home' %}" class="btn btn-outline-gold btn-sm mt-3">Start Learning <i class="fas fa-arrow-right ms-1"></i></a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4 animate-on-scroll d3">
+        <div class="service-card">
+          <div class="service-icon">💰</div>
+          <h4 class="text-gold mb-2">Avon Points</h4>
+          <p class="text-muted-custom" style="font-size:.875rem">Earn points on every purchase (5.5%) or referral (8.5%). Convert to funds, pay bills, invest in real estate or withdraw.</p>
+          <a href="{% url 'avon_points_info' %}" class="btn btn-outline-gold btn-sm mt-3">Learn More <i class="fas fa-arrow-right ms-1"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ HOW IT WORKS ═══════════ -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Simple Process</div>
+      <h2>How It <span class="text-gold">Works</span></h2>
+      <div class="divider-gold"></div>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3 animate-on-scroll">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <h5 class="text-gold">Choose Your Market</h5>
+          <p class="text-muted-custom" style="font-size:.875rem">Select Local Market or International Market. Choose your country of residence and identity.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3 animate-on-scroll d1">
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <h5 class="text-gold">Register & Verify</h5>
+          <p class="text-muted-custom" style="font-size:.875rem">Create your profile, upload your National ID and selfie, and complete your KYC verification.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3 animate-on-scroll d2">
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <h5 class="text-gold">Browse & Order</h5>
+          <p class="text-muted-custom" style="font-size:.875rem">Browse products, set delivery preferences (Express or Ordinary), enter destination and place your order.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3 animate-on-scroll d3">
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <h5 class="text-gold">Earn Avon Points</h5>
+          <p class="text-muted-custom" style="font-size:.875rem">Earn 5.5% as consumer or 8.5% via referrals. Convert points to funds, pay bills, or invest.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FEATURED PRODUCTS ═══════════ -->
+{% if featured_products or latest_products %}
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Marketplace</div>
+      <h2>Featured <span class="text-gold">Products</span></h2>
+      <div class="divider-gold"></div>
+    </div>
+    <div class="row g-4">
+      {% if featured_products %}
+        {% for product in featured_products %}
+        <div class="col-sm-6 col-lg-4 animate-on-scroll">
+          <div class="product-card">
+            <div class="product-img-wrap">
+              {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}">{% else %}
+              <div class="product-placeholder">{% if product.category == 'electronics' %}💻{% elif product.category == 'coffee' %}☕{% else %}📦{% endif %}</div>
+              {% endif %}
+              <div class="p-badge">Featured</div>
+              <div class="m-badge {{ product.market_type }}">{{ product.get_market_type_display }}</div>
+            </div>
+            <div class="product-body">
+              <div class="product-cat">{{ product.get_category_display }}</div>
+              <div class="product-name">{{ product.name }}</div>
+              <div class="product-price">{{ product.currency }} {{ product.price }}</div>
+              <div class="product-pts"><i class="fas fa-coins me-1"></i>Earn up to {{ product.avon_points_referral }} Avon Pts</div>
+            </div>
+            <div class="product-foot">
+              <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-gold btn-sm flex-fill">Details</a>
+              <a href="{% url 'place_order' product.pk %}" class="btn btn-gold btn-sm flex-fill">Buy Now</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        {% for product in latest_products %}
+        <div class="col-sm-6 col-lg-3 animate-on-scroll">
+          <div class="product-card">
+            <div class="product-img-wrap">
+              {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}">{% else %}
+              <div class="product-placeholder">{% if product.category == 'electronics' %}💻{% elif product.category == 'coffee' %}☕{% else %}📦{% endif %}</div>
+              {% endif %}
+              <div class="m-badge {{ product.market_type }}">{{ product.get_market_type_display }}</div>
+            </div>
+            <div class="product-body">
+              <div class="product-cat">{{ product.get_category_display }}</div>
+              <div class="product-name">{{ product.name }}</div>
+              <div class="product-price">{{ product.currency }} {{ product.price }}</div>
+              <div class="product-pts"><i class="fas fa-coins me-1"></i>Earn {{ product.avon_points_consumer }} pts</div>
+            </div>
+            <div class="product-foot">
+              <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-gold btn-sm flex-fill">Details</a>
+              <a href="{% url 'place_order' product.pk %}" class="btn btn-gold btn-sm flex-fill">Order</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+    <div class="text-center mt-5">
+      <a href="{% url 'product_list' %}" class="btn btn-gold btn-lg">View All Products <i class="fas fa-arrow-right ms-2"></i></a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ═══════════ AVON POINTS HIGHLIGHT ═══════════ -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6 animate-on-scroll">
+        <div class="section-label">Loyalty Program</div>
+        <h2>Earn <span class="text-gold">Avon Points</span><br>On Every Transaction</h2>
+        <div class="divider-gold" style="margin:1rem 0"></div>
+        <p class="text-muted-custom mb-4">Our innovative loyalty program rewards every purchase and referral. Use your points to pay bills, buy insurance, invest in real estate, or convert to other currencies.</p>
+        <div class="row g-3 mb-4">
+          <div class="col-6">
+            <div class="stat-card" style="padding:1.5rem">
+              <div class="stat-number" style="font-size:2rem">5.5%</div>
+              <div class="stat-label">As Consumer</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="stat-card" style="padding:1.5rem">
+              <div class="stat-number" style="font-size:2rem">8.5%</div>
+              <div class="stat-label">Via Referral</div>
+            </div>
+          </div>
+        </div>
+        <a href="{% url 'avon_points_info' %}" class="btn btn-gold">Learn About Avon Points <i class="fas fa-arrow-right ms-2"></i></a>
+      </div>
+      <div class="col-lg-6 animate-on-scroll d2">
+        <div class="avon-card">
+          <div class="avon-label">Your Points Balance</div>
+          <div class="avon-balance">{% if user.is_authenticated %}{{ user.avon_points|floatformat:2 }}{% else %}0.00{% endif %}</div>
+          <div class="text-muted" style="font-size:.8rem;margin-top:.5rem">Avon Points</div>
+          <hr style="border-color:rgba(201,168,76,.2)">
+          <div class="row g-3">
+            <div class="col-6">
+              <div style="background:rgba(0,0,0,.2);border-radius:10px;padding:1rem">
+                <div class="text-muted-custom" style="font-size:.7rem;text-transform:uppercase;letter-spacing:1px">Redeem For</div>
+                <ul class="mt-2 mb-0 ps-3" style="font-size:.8rem;color:var(--text-light)">
+                  <li>Insurance payments</li>
+                  <li>Bill payments</li>
+                  <li>Real estate</li>
+                  <li>Currency conversion</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-6">
+              <div style="background:rgba(0,0,0,.2);border-radius:10px;padding:1rem">
+                <div class="text-muted-custom" style="font-size:.7rem;text-transform:uppercase;letter-spacing:1px">Sell Orders</div>
+                <div class="mt-2" style="font-size:.8rem;color:var(--text-light)">
+                  <div>📅 Min. 3 months</div>
+                  <div>📊 Q1 · Q2 · Q3 · Q4</div>
+                  <div class="mt-2 text-gold fw-bold">Convert to funds anytime after lock period</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% if not user.is_authenticated %}
+          <a href="{% url 'register' %}" class="btn btn-gold w-100 mt-3">Start Earning Points <i class="fas fa-arrow-right ms-2"></i></a>
+          {% else %}
+          <a href="{% url 'avon_dashboard' %}" class="btn btn-gold w-100 mt-3">Manage My Points <i class="fas fa-arrow-right ms-2"></i></a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TRAINING ═══════════ -->
+{% if training_programs %}
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Knowledge Hub</div>
+      <h2>Training <span class="text-gold">Programs</span></h2>
+      <div class="divider-gold"></div>
+      <p class="section-sub">Build skills and unlock exclusive corporate opportunities through our certified online programs.</p>
+    </div>
+    <div class="row g-4">
+      {% for prog in training_programs %}
+      <div class="col-md-4 animate-on-scroll">
+        <div class="card h-100">
+          <div style="height:180px;background:linear-gradient(135deg,var(--bg-card),#1a3a5c);position:relative;display:flex;align-items:center;justify-content:center;font-size:4rem;opacity:.6">
+            {% if prog.category == 'farming' %}🌾{% elif prog.category == 'enterprise' %}🏢{% else %}📊{% endif %}
+          </div>
+          <div class="card-body">
+            <span class="badge badge-gold mb-2" style="font-size:.65rem">{{ prog.get_category_display }}</span>
+            <h5 class="text-gold">{{ prog.title }}</h5>
+            <p class="text-muted-custom" style="font-size:.85rem">{{ prog.description|truncatechars:100 }}</p>
+          </div>
+          <div class="card-footer p-3 d-flex gap-2">
+            <span class="small text-muted"><i class="fas fa-clock me-1"></i>{{ prog.duration_hours }}h</span>
+            <span class="ms-auto">
+              <a href="{% url 'program_detail' prog.pk %}" class="btn btn-outline-gold btn-sm">Learn More</a>
+            </span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-4">
+      <a href="{% url 'training_home' %}" class="btn btn-gold">All Programs <i class="fas fa-arrow-right ms-2"></i></a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ═══════════ CTA ═══════════ -->
+<section class="section" style="background:linear-gradient(135deg,#0a2540,#060f1e)">
+  <div class="container text-center">
+    <div class="animate-on-scroll">
+      <div class="section-label">Get Started Today</div>
+      <h2 class="text-white mb-3">Ready to Join the <span class="text-gold">Global Trade Network</span>?</h2>
+      <p class="text-muted-custom mb-4 mx-auto" style="max-width:520px">Register now to access our marketplace, earn Avon Points, and connect with partners across 6 countries.</p>
+      <div class="d-flex gap-3 justify-content-center flex-wrap">
+        <a href="{% url 'register' %}" class="btn btn-gold btn-lg"><i class="fas fa-rocket me-2"></i>Create Free Account</a>
+        <a href="{% url 'contact' %}" class="btn btn-outline-gold btn-lg"><i class="fas fa-envelope me-2"></i>Contact Us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

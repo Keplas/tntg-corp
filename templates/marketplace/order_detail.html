@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Order #{{ order.pk }} — T&TG Trade Corp{% endblock %}
+{% block content %}
+<div class="page-header"><div class="container"><nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{% url 'my_orders' %}">My Orders</a></li><li class="breadcrumb-item active">Order #{{ order.pk }}</li></ol></nav><h1>Order #{{ order.pk }}</h1></div></div>
+<section class="section" style="padding-top:2rem"><div class="container">
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="glass-card p-4">
+      <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <h5 class="text-gold mb-0">{{ order.product.name }}</h5>
+        <span class="badge {% if order.status == 'accepted' or order.status == 'delivered' %}badge-green{% elif order.status == 'not_accepted' %}badge-danger{% elif order.status == 'processing' %}badge-accent{% else %}badge-gold{% endif %}" style="font-size:.8rem;padding:.5rem 1rem">{{ order.get_status_display }}</span>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-6"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Quantity</div><div class="fw-bold">{{ order.quantity }} {{ order.product.unit }}</div></div>
+        <div class="col-md-6"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Total Price</div><div class="text-gold fw-bold" style="font-size:1.3rem">${{ order.total_price }}</div></div>
+        <div class="col-md-6"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Delivery Type</div><div>{% if order.delivery_type == 'express' %}⚡{% else %}🚢{% endif %} {{ order.get_delivery_type_display }}</div></div>
+        <div class="col-md-6"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Avon Points Earned</div><div class="text-accent2 fw-bold">+{{ order.avon_points_earned }}</div></div>
+        <div class="col-md-6"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Destination</div><div>{{ order.destination_country }}</div></div>
+        <div class="col-md-6"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Desired Arrival</div><div>{{ order.desired_arrival_date|date:"M d, Y" }}{% if order.desired_arrival_time %} at {{ order.desired_arrival_time }}{% endif %}</div></div>
+        <div class="col-12"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Delivery Address</div><div>{{ order.destination_address }}</div></div>
+        {% if order.referred_by %}<div class="col-12"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Referred By</div><div>{{ order.referred_by }} ({{ order.referrer_unique_id }})</div></div>{% endif %}
+        <div class="col-12"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Order Date</div><div>{{ order.created_at|date:"F d, Y — H:i" }}</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="glass-card p-3 mb-3">
+      <div class="text-gold fw-bold mb-3" style="font-size:.8rem;text-transform:uppercase;letter-spacing:1px">Order Status</div>
+      {% for status, label in order.STATUS_CHOICES %}
+      <div class="d-flex align-items-center gap-2 mb-2" style="font-size:.85rem">
+        <div style="width:20px;height:20px;border-radius:50%;background:{% if order.status == status %}var(--gold){% else %}rgba(255,255,255,.1){% endif %};display:flex;align-items:center;justify-content:center;font-size:.6rem;flex-shrink:0">{% if order.status == status %}✓{% endif %}</div>
+        <span class="{% if order.status == status %}text-gold fw-bold{% else %}text-muted{% endif %}">{{ label }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    <a href="{% url 'my_orders' %}" class="btn btn-outline-gold w-100"><i class="fas fa-arrow-left me-2"></i>Back to Orders</a>
+  </div>
+</div>
+</div></section>
+{% endblock %}

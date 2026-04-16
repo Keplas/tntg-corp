@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% block title %}Insurance — T&TG Trade Corp{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li><li class="breadcrumb-item"><a href="{% url 'financial_services' %}">Financial Services</a></li><li class="breadcrumb-item active">Insurance</li></ol></nav>
+    <h1><i class="fas fa-shield-alt me-3"></i>Insurance Solutions</h1>
+    <p class="text-muted">Comprehensive coverage for individuals, traders and businesses</p>
+  </div>
+</div>
+
+<section class="section" style="padding-top:2rem">
+  <div class="container">
+
+    <!-- Plans Grid -->
+    <div class="section-header">
+      <div class="section-label">Coverage Plans</div>
+      <h2>Choose Your <span class="text-gold">Insurance Plan</span></h2>
+      <div class="divider-gold"></div>
+    </div>
+
+    <div class="row g-4">
+
+      <div class="col-md-6 col-lg-4">
+        <div class="service-card h-100">
+          <div class="service-icon">🏥</div>
+          <h5 class="text-gold">Health Insurance</h5>
+          <p class="text-muted" style="font-size:.875rem">Personal and family health coverage including hospitalization, outpatient care and medical expenses.</p>
+          <ul class="small text-muted mt-3 ps-3">
+            <li>Individual & family plans</li>
+            <li>Hospitalization coverage</li>
+            <li>Outpatient & specialist care</li>
+            <li>Pay premiums with Avon Points</li>
+          </ul>
+          <a href="{% url 'contact' %}" class="btn btn-outline-gold btn-sm mt-auto mt-3">Get a Quote</a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="service-card h-100">
+          <div class="service-icon">🤝</div>
+          <h5 class="text-gold">Trade Insurance</h5>
+          <p class="text-muted" style="font-size:.875rem">Protect your import/export transactions against commercial and political risks across our operating countries.</p>
+          <ul class="small text-muted mt-3 ps-3">
+            <li>Export credit insurance</li>
+            <li>Political risk coverage</li>
+            <li>Multi-country protection</li>
+            <li>Integrated with marketplace orders</li>
+          </ul>
+          <a href="{% url 'contact' %}" class="btn btn-outline-gold btn-sm mt-auto mt-3">Get a Quote</a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="service-card h-100">
+          <div class="service-icon">🚢</div>
+          <h5 class="text-gold">Cargo Insurance</h5>
+          <p class="text-muted" style="font-size:.875rem">Coverage for goods in transit locally and internationally against loss, damage and theft.</p>
+          <ul class="small text-muted mt-3 ps-3">
+            <li>Local & international shipping</li>
+            <li>Express & ordinary delivery cover</li>
+            <li>Electronics, coffee & pharmaceuticals</li>
+            <li>Automatic order coverage option</li>
+          </ul>
+          <a href="{% url 'contact' %}" class="btn btn-outline-gold btn-sm mt-auto mt-3">Get a Quote</a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="service-card h-100">
+          <div class="service-icon">🏢</div>
+          <h5 class="text-gold">Business Insurance</h5>
+          <p class="text-muted" style="font-size:.875rem">Comprehensive protection for your business assets, liability and operations in any of our 6 markets.</p>
+          <ul class="small text-muted mt-3 ps-3">
+            <li>Property & asset protection</li>
+            <li>Public liability cover</li>
+            <li>Business interruption</li>
+            <li>Partner company packages</li>
+          </ul>
+          <a href="{% url 'contact' %}" class="btn btn-outline-gold btn-sm mt-auto mt-3">Get a Quote</a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="service-card h-100">
+          <div class="service-icon">❤️</div>
+          <h5 class="text-gold">Life Insurance</h5>
+          <p class="text-muted" style="font-size:.875rem">Term and whole life coverage to secure your family's financial future and provide long-term stability.</p>
+          <ul class="small text-muted mt-3 ps-3">
+            <li>Term & whole life options</li>
+            <li>Family protection plans</li>
+            <li>Beneficiary management</li>
+            <li>Redeem with Avon Points</li>
+          </ul>
+          <a href="{% url 'contact' %}" class="btn btn-outline-gold btn-sm mt-auto mt-3">Get a Quote</a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="service-card h-100" style="border:2px solid rgba(201,168,76,.4);background:linear-gradient(135deg,rgba(201,168,76,.05),transparent)">
+          <div class="service-icon" style="background:linear-gradient(135deg,var(--gold),var(--gold-light));border:none">💰</div>
+          <h5 class="text-gold">Pay With Avon Points</h5>
+          <p class="text-muted" style="font-size:.875rem">Use your accumulated Avon Points to pay insurance premiums directly — no cash required.</p>
+          <div class="mt-3 glass-card p-3">
+            <div class="small text-muted mb-1">Conversion Rate</div>
+            <div class="text-gold fw-bold">1 Avon Point = $1 USD premium</div>
+          </div>
+          <a href="{% url 'avon_dashboard' %}" class="btn btn-gold btn-sm mt-3">Manage Avon Points</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="glass-card p-4 mt-5 text-center">
+      <h4 class="text-gold">Need a Custom Insurance Plan?</h4>
+      <p class="text-muted mt-2">Our team works with partner insurance companies to create tailored solutions for businesses and individuals across all 6 operating countries.</p>
+      <a href="{% url 'contact' %}" class="btn btn-gold btn-lg mt-3"><i class="fas fa-envelope me-2"></i>Contact Us for a Quote</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

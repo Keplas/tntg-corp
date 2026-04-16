@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}Financial Services & Investments — T&TG Trade Corp{% endblock %}
+{% block content %}
+<section style="padding:5rem 0;background:linear-gradient(135deg,var(--bg-dark),#0a2540)">
+  <div class="container text-center">
+    <div class="section-label">T&TG Financial Division</div>
+    <h1>Financial Services <span class="text-gold">&amp; Investments</span></h1>
+    <div class="divider-gold"></div>
+    <p class="section-sub mt-3">A General Investment Dealer providing Forex Bureau, Brokerage, Insurance and Investment solutions across Canada, Uganda, Netherlands, USA, Kenya and Japan.</p>
+  </div>
+</section>
+<section class="section">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <a href="{% url 'insurance' %}" style="text-decoration:none">
+          <div class="service-card h-100 text-center">
+            <div class="service-icon mx-auto">🛡️</div>
+            <h4 class="text-gold">[A] Insurance</h4>
+            <p class="text-muted">Health, Trade, Cargo, Business and Life insurance plans. Pay premiums with Avon Points.</p>
+            <div class="btn btn-gold btn-sm mt-3">Explore Insurance</div>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-4">
+        <a href="{% url 'marketplace' %}" style="text-decoration:none">
+          <div class="service-card h-100 text-center">
+            <div class="service-icon mx-auto">🛒</div>
+            <h4 class="text-gold">[B] Online Shopping Platform</h4>
+            <p class="text-muted">Our marketplace connecting buyers and sellers on local and international markets with Avon Points rewards.</p>
+            <div class="btn btn-gold btn-sm mt-3">Enter Marketplace</div>
+          </div>
+        </a>
+      </div>
+      <div class="col-md-4">
+        <a href="{% url 'brokerage' %}" style="text-decoration:none">
+          <div class="service-card h-100 text-center">
+            <div class="service-icon mx-auto">📈</div>
+            <h4 class="text-gold">[C] T&TG Brokerage</h4>
+            <p class="text-muted">Professional Forex Bureau and brokerage services. Trade stocks, commodities, forex and crypto markets.</p>
+            <div class="btn btn-gold btn-sm mt-3">Start Trading</div>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class="glass-card p-4 mt-5 text-center">
+      <h4 class="text-gold mb-2">General Investment Dealer</h4>
+      <p class="text-muted">T&TG Trade Corporation operates as a General Investment Dealer with Forex Bureau and full Brokerage capabilities across all 6 operating countries.</p>
+      <div class="d-flex justify-content-center gap-2 mt-3 flex-wrap">
+        <span class="badge badge-muted">🇨🇦 Canada</span><span class="badge badge-muted">🇺🇬 Uganda</span><span class="badge badge-muted">🇳🇱 Netherlands</span><span class="badge badge-muted">🇺🇸 USA</span><span class="badge badge-muted">🇰🇪 Kenya</span><span class="badge badge-muted">🇯🇵 Japan</span>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

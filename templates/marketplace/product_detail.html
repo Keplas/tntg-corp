@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} — T&TG Trade Corp{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li><li class="breadcrumb-item"><a href="{% url 'product_list' %}">Products</a></li><li class="breadcrumb-item active">{{ product.name|truncatechars:30 }}</li></ol></nav>
+  </div>
+</div>
+<section class="section" style="padding-top:2rem">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-6">
+        <div style="border-radius:var(--radius);overflow:hidden;background:linear-gradient(135deg,var(--bg-card),#1a3a5c);aspect-ratio:4/3;display:flex;align-items:center;justify-content:center">
+          {% if product.image %}<img src="{{ product.image.url }}" style="width:100%;height:100%;object-fit:cover">
+          {% else %}<div style="font-size:8rem;opacity:.3">{% if product.category == 'electronics' %}💻{% elif product.category == 'coffee' %}☕{% else %}📦{% endif %}</div>{% endif %}
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="badge badge-gold mb-3" style="font-size:.7rem">{{ product.get_category_display }}</div>
+        <span class="badge badge-{% if product.market_type == 'local' %}green{% elif product.market_type == 'international' %}accent{% else %}gold{% endif %} ms-2 mb-3" style="font-size:.7rem">{{ product.get_market_type_display }}</span>
+        <h2 class="text-light">{{ product.name }}</h2>
+        <div class="d-flex align-items-baseline gap-3 my-3">
+          <div style="font-size:2.5rem;font-weight:900;color:var(--gold)">{{ product.currency }} {{ product.price }}</div>
+          <div class="text-muted">/ {{ product.unit }}</div>
+        </div>
+        <div class="glass-card p-3 mb-3">
+          <div class="row g-2 text-center">
+            <div class="col-4"><div class="text-muted" style="font-size:.7rem;text-transform:uppercase">Available</div><div class="text-gold fw-bold">{{ product.quantity_available }}</div></div>
+            <div class="col-4"><div class="text-muted" style="font-size:.7rem;text-transform:uppercase">Consumer Pts</div><div class="text-accent2 fw-bold">{{ product.avon_points_consumer }}</div></div>
+            <div class="col-4"><div class="text-muted" style="font-size:.7rem;text-transform:uppercase">Referral Pts</div><div class="text-accent2 fw-bold">{{ product.avon_points_referral }}</div></div>
+          </div>
+        </div>
+        <p class="text-muted" style="font-size:.9rem;line-height:1.7">{{ product.description }}</p>
+        {% if product.video_url %}
+        <a href="{{ product.video_url }}" target="_blank" class="btn btn-outline-gold btn-sm mb-3"><i class="fas fa-play me-2"></i>Watch Product Video</a>
+        {% endif %}
+        <div class="d-flex gap-3 mt-4">
+          <a href="{% url 'place_order' product.pk %}" class="btn btn-gold btn-lg flex-fill"><i class="fas fa-shopping-cart me-2"></i>Place Order</a>
+          <a href="{% url 'product_list' %}" class="btn btn-outline-gold btn-lg"><i class="fas fa-arrow-left"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reviews -->
+    {% if reviews %}
+    <div class="mt-5">
+      <h4 class="text-gold mb-4"><i class="fas fa-star me-2"></i>Customer Reviews</h4>
+      <div class="row g-3">
+        {% for review in reviews %}
+        <div class="col-md-6">
+          <div class="glass-card p-3">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <div style="font-size:.875rem;font-weight:700;color:var(--text-light)">{{ review.user.get_full_name|default:review.user.username }}</div>
+              <div class="ms-auto text-gold">{% for i in "12345"|make_list %}{% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}{% endfor %}</div>
+            </div>
+            <p class="text-muted mb-0" style="font-size:.875rem">{{ review.comment }}</p>
+            <div class="text-muted mt-1" style="font-size:.72rem">{{ review.created_at|date:"M d, Y" }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Related -->
+    {% if related %}
+    <div class="mt-5">
+      <h4 class="text-gold mb-4">Related Products</h4>
+      <div class="row g-3">
+        {% for p in related %}
+        <div class="col-sm-6 col-lg-3">
+          <div class="product-card">
+            <div class="product-img-wrap" style="height:150px">
+              {% if p.image %}<img src="{{ p.image.url }}" alt="{{ p.name }}">
+              {% else %}<div class="product-placeholder" style="font-size:3rem">{% if p.category == 'electronics' %}💻{% elif p.category == 'coffee' %}☕{% else %}📦{% endif %}</div>{% endif %}
+            </div>
+            <div class="product-body" style="padding:1rem">
+              <div class="product-name" style="font-size:.875rem">{{ p.name }}</div>
+              <div class="product-price" style="font-size:1.1rem">{{ p.currency }} {{ p.price }}</div>
+            </div>
+            <div class="product-foot">
+              <a href="{% url 'product_detail' p.pk %}" class="btn btn-outline-gold btn-sm flex-fill">View</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

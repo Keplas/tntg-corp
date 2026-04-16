@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}Avon Points — T&TG Trade Corp{% endblock %}
+{% block content %}
+<div class="page-header"><div class="container"><h1><i class="fas fa-coins me-3"></i>Avon Points</h1></div></div>
+<section class="section" style="padding-top:2rem"><div class="container">
+  <div class="row g-4 mb-4">
+    <div class="col-lg-4">
+      <div class="avon-card">
+        <div class="avon-label">Total Balance</div>
+        <div class="avon-balance">{{ request.user.avon_points|floatformat:2 }}</div>
+        <div class="text-muted" style="font-size:.8rem;margin-top:.5rem">Avon Points</div>
+        <hr style="border-color:rgba(201,168,76,.2)">
+        <div class="small text-muted">
+          <div class="mb-1">💳 Equivalent approx. <span class="text-gold">${{ request.user.avon_points|floatformat:2 }} USD</span></div>
+          <div>📅 Sell orders execute after 3-month lock</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-8">
+      <div class="glass-card p-4">
+        <h5 class="text-gold mb-3"><i class="fas fa-arrow-up me-2"></i>Place Sell Order</h5>
+        <form method="post" class="row g-3">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="sell_order">
+          <div class="col-md-4">
+            <label class="form-label">Points to Sell</label>
+            <input type="number" name="points" class="form-control" placeholder="e.g. 100" step="0.01" min="1" max="{{ request.user.avon_points }}">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Quarter</label>
+            <select name="quarter" class="form-select">
+              {% for q in quarters %}<option value="{{ q }}">{{ q }}</option>{% endfor %}
+            </select>
+          </div>
+          <div class="col-md-4 d-flex align-items-end">
+            <button type="submit" class="btn btn-gold w-100"><i class="fas fa-check me-2"></i>Place Order</button>
+          </div>
+        </form>
+        <div class="alert alert-info mt-3 mb-0"><i class="fas fa-info-circle me-2"></i>Minimum execution period is <strong>3 months</strong> from the date of placing the sell order.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Redeem Options -->
+  <div class="glass-card p-4 mb-4">
+    <h5 class="text-gold mb-3"><i class="fas fa-exchange-alt me-2"></i>Redeem Points</h5>
+    <div class="row g-3">
+      <div class="col-md-3"><div class="stat-card" style="padding:1.25rem;cursor:pointer"><div class="stat-icon" style="font-size:1.5rem;margin-bottom:.75rem">🛡️</div><div class="fw-bold" style="font-size:.9rem">Pay Insurance</div><div class="small text-muted mt-1">Use points for premiums</div></div></div>
+      <div class="col-md-3"><div class="stat-card" style="padding:1.25rem;cursor:pointer"><div class="stat-icon" style="font-size:1.5rem;margin-bottom:.75rem">💡</div><div class="fw-bold" style="font-size:.9rem">Pay Bills</div><div class="small text-muted mt-1">Utilities & services</div></div></div>
+      <div class="col-md-3"><div class="stat-card" style="padding:1.25rem;cursor:pointer"><div class="stat-icon" style="font-size:1.5rem;margin-bottom:.75rem">🏠</div><div class="fw-bold" style="font-size:.9rem">Real Estate</div><div class="small text-muted mt-1">Convert to investment</div></div></div>
+      <div class="col-md-3"><div class="stat-card" style="padding:1.25rem;cursor:pointer"><div class="stat-icon" style="font-size:1.5rem;margin-bottom:.75rem">💱</div><div class="fw-bold" style="font-size:.9rem">Withdraw Funds</div><div class="small text-muted mt-1">Convert to currency</div></div></div>
+    </div>
+  </div>
+
+  <!-- Transaction History -->
+  <div class="glass-card p-0">
+    <div class="p-3" style="border-bottom:1px solid var(--border)">
+      <h5 class="text-gold mb-0"><i class="fas fa-history me-2"></i>Transaction History</h5>
+    </div>
+    {% if transactions %}
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead><tr><th>Type</th><th>Points</th><th>Quarter</th><th>Status</th><th>Min Execute Date</th><th>Description</th><th>Date</th></tr></thead>
+        <tbody>
+        {% for tx in transactions %}
+        <tr>
+          <td style="font-size:.85rem">{{ tx.get_transaction_type_display }}</td>
+          <td class="fw-bold {% if 'earn' in tx.transaction_type %}text-accent2{% else %}text-danger{% endif %}">{% if 'earn' in tx.transaction_type %}+{% else %}-{% endif %}{{ tx.points }}</td>
+          <td>{% if tx.quarter %}<span class="badge badge-gold" style="font-size:.65rem">{{ tx.quarter }}</span>{% else %}—{% endif %}</td>
+          <td><span class="badge {% if tx.status == 'completed' %}badge-green{% elif tx.status == 'pending' %}badge-gold{% elif tx.status == 'processing' %}badge-accent{% else %}badge-danger{% endif %}" style="font-size:.65rem">{{ tx.get_status_display }}</span></td>
+          <td class="text-muted" style="font-size:.8rem">{% if tx.min_execution_date %}{{ tx.min_execution_date|date:"M d, Y" }}{% else %}—{% endif %}</td>
+          <td class="text-muted" style="font-size:.8rem">{{ tx.description|truncatechars:40 }}</td>
+          <td class="text-muted" style="font-size:.8rem">{{ tx.created_at|date:"M d, Y" }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="p-5 text-center text-muted"><div style="font-size:4rem;opacity:.2;margin-bottom:1rem">💰</div><div>No transactions yet. Start shopping to earn Avon Points!</div><a href="{% url 'marketplace' %}" class="btn btn-gold mt-3">Browse Products</a></div>
+    {% endif %}
+  </div>
+</div></section>
+{% endblock %}

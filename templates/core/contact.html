@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Contact — T&TG Trade Corp{% endblock %}
+{% block content %}
+<div class="page-header"><div class="container"><h1><i class="fas fa-envelope me-3"></i>Contact Us</h1><p class="text-muted">Get in touch with our global team</p></div></div>
+<section class="section" style="padding-top:2rem"><div class="container">
+<div class="row g-5">
+  <div class="col-lg-5">
+    <div class="glass-card p-4 mb-4">
+      <h5 class="text-gold mb-4"><i class="fas fa-building me-2"></i>Headquarters</h5>
+      <div class="mb-3"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Address</div><div class="mt-1">9 Summerbridge Road, Scarborough, M1G 1L8 Toronto, ON</div></div>
+      <div class="mb-3"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Phone</div><div class="mt-1 text-gold">416 832 3512</div></div>
+      <div class="mb-3"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Email</div><div class="mt-1 text-gold">ssembiitotom@gmail.com</div></div>
+      <div><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Operations</div><div class="mt-2 d-flex flex-wrap gap-2">
+        <span class="badge badge-muted">🇨🇦 Canada</span>
+        <span class="badge badge-muted">🇺🇬 Uganda</span>
+        <span class="badge badge-muted">🇳🇱 Netherlands</span>
+        <span class="badge badge-muted">🇺🇸 USA</span>
+        <span class="badge badge-muted">🇰🇪 Kenya</span>
+        <span class="badge badge-muted">🇯🇵 Japan</span>
+      </div></div>
+    </div>
+    <div class="glass-card p-4">
+      <h5 class="text-gold mb-3"><i class="fas fa-handshake me-2"></i>Partner With Us</h5>
+      <p class="text-muted small">Interested in becoming a partner company? We collaborate with businesses globally for import/export, marketing, and investment.</p>
+      <a href="?inquiry_type=partnership" class="btn btn-gold btn-sm mt-2">Partnership Inquiry <i class="fas fa-arrow-right ms-1"></i></a>
+    </div>
+  </div>
+  <div class="col-lg-7">
+    <div class="glass-card p-4">
+      <h5 class="text-gold mb-4">Send a Message</h5>
+      <form method="post">
+        {% csrf_token %}
+        <div class="row g-3">
+          <div class="col-md-6"><label class="form-label">Full Name *</label><input type="text" name="name" class="form-control" placeholder="Your full name" required></div>
+          <div class="col-md-6"><label class="form-label">Email *</label><input type="email" name="email" class="form-control" placeholder="you@email.com" required></div>
+          <div class="col-md-6"><label class="form-label">Phone</label><input type="tel" name="phone" class="form-control" placeholder="+1 000 000 0000"></div>
+          <div class="col-md-6"><label class="form-label">Country</label><select name="country" class="form-select"><option>Canada</option><option>Uganda</option><option>Netherlands</option><option>USA</option><option>Kenya</option><option>Japan</option><option>Other</option></select></div>
+          <div class="col-md-6"><label class="form-label">Inquiry Type</label><select name="inquiry_type" class="form-select"><option value="general">General Inquiry</option><option value="partnership">Partnership</option><option value="support">Support</option><option value="investment">Investment</option></select></div>
+          <div class="col-md-6"><label class="form-label">Subject *</label><input type="text" name="subject" class="form-control" placeholder="Subject" required></div>
+          <div class="col-12"><label class="form-label">Message *</label><textarea name="message" class="form-control" rows="5" placeholder="Your message..." required></textarea></div>
+        </div>
+        <button type="submit" class="btn btn-gold w-100 mt-3 btn-lg"><i class="fas fa-paper-plane me-2"></i>Send Message</button>
+      </form>
+    </div>
+  </div>
+</div>
+</div></section>
+{% endblock %}

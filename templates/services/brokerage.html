@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}T&TG Brokerage — Financial Services{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1><i class="fas fa-chart-bar me-3"></i>T&TG Brokerage</h1>
+    <p class="text-muted">Professional trading across Forex, Stocks, Commodities & Crypto</p>
+  </div>
+</div>
+
+<section class="section" style="padding-top:2rem">
+  <div class="container">
+
+    <!-- Live Rates Table -->
+    <div class="row g-4 mb-5">
+      <div class="col-lg-8">
+        <div class="glass-card p-0">
+          <div class="p-3 d-flex align-items-center justify-content-between" style="border-bottom:1px solid var(--border)">
+            <h5 class="text-gold mb-0"><i class="fas fa-chart-line me-2"></i>Live Market Rates</h5>
+            <span class="badge badge-green pulse" style="font-size:.65rem"><i class="fas fa-circle me-1" style="font-size:.5rem"></i>LIVE</span>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead><tr><th>Pair / Asset</th><th>Rate</th><th>Change</th><th>24h High</th><th>24h Low</th></tr></thead>
+              <tbody>
+                <tr><td class="fw-bold text-gold">USD/CAD</td><td>1.3812</td><td class="text-accent2"><i class="fas fa-caret-up me-1"></i>+0.12%</td><td>1.3840</td><td>1.3790</td></tr>
+                <tr><td class="fw-bold text-gold">USD/UGX</td><td>3,720.00</td><td class="text-accent2"><i class="fas fa-caret-up me-1"></i>+0.08%</td><td>3,740</td><td>3,700</td></tr>
+                <tr><td class="fw-bold text-gold">EUR/USD</td><td>1.0934</td><td class="text-danger"><i class="fas fa-caret-down me-1"></i>-0.05%</td><td>1.0960</td><td>1.0910</td></tr>
+                <tr><td class="fw-bold text-gold">GBP/USD</td><td>1.2711</td><td class="text-accent2"><i class="fas fa-caret-up me-1"></i>+0.21%</td><td>1.2740</td><td>1.2680</td></tr>
+                <tr><td class="fw-bold text-gold">USD/KES</td><td>129.45</td><td class="text-danger"><i class="fas fa-caret-down me-1"></i>-0.03%</td><td>130.10</td><td>129.20</td></tr>
+                <tr><td class="fw-bold text-gold">USD/JPY</td><td>153.82</td><td class="text-accent2"><i class="fas fa-caret-up me-1"></i>+0.31%</td><td>154.10</td><td>153.40</td></tr>
+                <tr><td class="fw-bold text-gold">BTC/USD</td><td>67,430</td><td class="text-accent2"><i class="fas fa-caret-up me-1"></i>+1.24%</td><td>68,200</td><td>66,800</td></tr>
+                <tr><td class="fw-bold text-gold">ETH/USD</td><td>3,280</td><td class="text-danger"><i class="fas fa-caret-down me-1"></i>-0.43%</td><td>3,350</td><td>3,240</td></tr>
+                <tr><td class="fw-bold text-gold">XAU/USD (Gold)</td><td>2,345.80</td><td class="text-accent2"><i class="fas fa-caret-up me-1"></i>+0.56%</td><td>2,360</td><td>2,320</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="glass-card p-4 mb-3">
+          <h6 class="text-gold mb-3"><i class="fas fa-user-tie me-2"></i>Open Brokerage Account</h6>
+          <p class="text-muted small">Access professional trading tools, real-time data and expert support.</p>
+          <div class="d-grid gap-2 mt-3">
+            <a href="{% url 'register' %}" class="btn btn-gold btn-sm"><i class="fas fa-plus me-2"></i>Open Account</a>
+            <a href="{% url 'contact' %}" class="btn btn-outline-gold btn-sm">Request Demo</a>
+          </div>
+        </div>
+        <div class="glass-card p-4">
+          <h6 class="text-gold mb-3">Account Types</h6>
+          <div class="d-flex align-items-center gap-2 mb-2 p-2" style="background:rgba(0,0,0,.2);border-radius:8px"><span>💱</span><span class="fw-bold" style="font-size:.875rem">Forex Trading</span></div>
+          <div class="d-flex align-items-center gap-2 mb-2 p-2" style="background:rgba(0,0,0,.2);border-radius:8px"><span>📊</span><span class="fw-bold" style="font-size:.875rem">Stocks</span></div>
+          <div class="d-flex align-items-center gap-2 mb-2 p-2" style="background:rgba(0,0,0,.2);border-radius:8px"><span>🏭</span><span class="fw-bold" style="font-size:.875rem">Commodities</span></div>
+          <div class="d-flex align-items-center gap-2 p-2" style="background:rgba(0,0,0,.2);border-radius:8px"><span>₿</span><span class="fw-bold" style="font-size:.875rem">Cryptocurrency</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="row g-4">
+      <div class="col-md-3"><div class="stat-card"><div class="stat-icon">🔒</div><div class="stat-number" style="font-size:1.5rem">Secure</div><div class="stat-label">Regulated Platform</div></div></div>
+      <div class="col-md-3"><div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-number" style="font-size:1.5rem">Real-Time</div><div class="stat-label">Live Market Data</div></div></div>
+      <div class="col-md-3"><div class="stat-card"><div class="stat-icon">💰</div><div class="stat-number" style="font-size:1.5rem">Avon Pts</div><div class="stat-label">Fund with Points</div></div></div>
+      <div class="col-md-3"><div class="stat-card"><div class="stat-icon">🌍</div><div class="stat-number" style="font-size:1.5rem">6 Markets</div><div class="stat-label">Multi-Currency</div></div></div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

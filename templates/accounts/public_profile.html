@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}{{ profile_user.get_full_name|default:profile_user.username }} — T&TG Trade Corp{% endblock %}
+{% block content %}
+<section style="padding:4rem 0;background:linear-gradient(135deg,var(--bg-dark),var(--bg-card))">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-4">
+        <div class="glass-card p-4 text-center">
+          {% if profile_user.profile_photo %}
+          <img src="{{ profile_user.profile_photo.url }}" style="width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin-bottom:1rem">
+          {% else %}
+          <div style="width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:2.5rem;color:var(--primary);margin:0 auto 1rem">{{ profile_user.first_name.0|default:profile_user.username.0|upper }}</div>
+          {% endif %}
+          <h4 class="text-light">{{ profile_user.get_full_name|default:profile_user.username }}</h4>
+          <div class="text-gold mb-2">{{ profile_user.unique_id }}</div>
+          {% if profile_user.is_verified %}<div class="badge badge-green mb-2"><i class="fas fa-check-circle me-1"></i>Verified Trader</div>{% endif %}
+          <div class="small text-muted mt-2">{{ profile_user.get_market_type_display }} · {{ profile_user.get_country_display }}</div>
+          {% if profile_user.is_partner %}<div class="badge badge-gold mt-2">Partner Company</div>{% endif %}
+          {% if profile_user.website %}<a href="{{ profile_user.website }}" target="_blank" class="btn btn-outline-gold btn-sm mt-3 w-100"><i class="fas fa-globe me-2"></i>Website</a>{% endif %}
+        </div>
+      </div>
+      <div class="col-lg-8">
+        {% if profile_user.bio %}
+        <div class="glass-card p-4 mb-4">
+          <h5 class="text-gold mb-3">About</h5>
+          <p class="text-muted" style="line-height:1.8">{{ profile_user.bio }}</p>
+        </div>
+        {% endif %}
+        {% if products %}
+        <div class="glass-card p-4">
+          <h5 class="text-gold mb-3">Listed Products</h5>
+          <div class="row g-3">
+            {% for product in products %}
+            <div class="col-md-6">
+              <div class="product-card">
+                <div class="product-img-wrap" style="height:150px">{% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}">{% else %}<div class="product-placeholder" style="font-size:3rem">📦</div>{% endif %}</div>
+                <div class="product-body" style="padding:1rem">
+                  <div class="product-name" style="font-size:.9rem">{{ product.name }}</div>
+                  <div class="product-price" style="font-size:1.1rem">{{ product.currency }} {{ product.price }}</div>
+                </div>
+                <div class="product-foot"><a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-gold btn-sm flex-fill">View</a></div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

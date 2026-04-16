@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Avon Points — T&TG Trade Corp{% endblock %}
+{% block content %}
+<div class="page-header"><div class="container"><h1><i class="fas fa-coins me-3"></i>Avon Points Program</h1><p class="text-muted">Earn rewards on every purchase and referral</p></div></div>
+<section class="section" style="padding-top:2rem"><div class="container">
+<div class="row g-5 align-items-center mb-5">
+  <div class="col-lg-6">
+    <h2>How <span class="text-gold">Avon Points</span> Work</h2>
+    <div class="divider-gold" style="margin:1rem 0"></div>
+    <p class="text-muted" style="line-height:1.8">Every purchase on the T&TG platform rewards you with Avon Points. The amount depends on how you shop — as a direct consumer or through a referral.</p>
+    <div class="glass-card p-4 mt-4">
+      <div class="row g-4 text-center">
+        <div class="col-6"><div style="font-size:2.5rem;font-weight:900;color:var(--gold)">5.5%</div><div class="text-muted small">Consumer Rate</div><div class="small mt-1 text-light">Buy directly as end user</div></div>
+        <div class="col-6"><div style="font-size:2.5rem;font-weight:900;color:var(--accent2)">8.5%</div><div class="text-muted small">Referral Rate</div><div class="small mt-1 text-light">Refer a buyer to the platform</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="glass-card p-4">
+      <h5 class="text-gold mb-3">Calculate Your Points</h5>
+      <div class="mb-3"><label class="form-label">Product Price (USD)</label><input type="number" class="form-control avon-calc-input" placeholder="100" id="calc-price"></div>
+      <div class="mb-3"><label class="form-label">Quantity</label><input type="number" class="form-control" id="calc-qty" placeholder="1"></div>
+      <div class="glass-card p-3 mt-3">
+        <div class="d-flex justify-content-between mb-2"><span class="text-muted">Consumer Points (5.5%):</span><span class="text-gold fw-bold" id="pts-consumer">0.00</span></div>
+        <div class="d-flex justify-content-between"><span class="text-muted">Referral Points (8.5%):</span><span class="text-accent2 fw-bold" id="pts-referral">0.00</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="section-header mt-3"><div class="section-label">Redeem Options</div><h2>Use Your <span class="text-gold">Points</span></h2><div class="divider-gold"></div></div>
+<div class="row g-4">
+  <div class="col-md-4"><div class="service-card"><div class="service-icon">🛡️</div><h5 class="text-gold">Pay Insurance</h5><p class="text-muted small">Use Avon Points directly to pay your insurance premiums on the platform.</p></div></div>
+  <div class="col-md-4"><div class="service-card"><div class="service-icon">💡</div><h5 class="text-gold">Pay Bills</h5><p class="text-muted small">Settle utility bills and services using your accumulated Avon Points balance.</p></div></div>
+  <div class="col-md-4"><div class="service-card"><div class="service-icon">💱</div><h5 class="text-gold">Currency Conversion</h5><p class="text-muted small">Convert your points to other currencies through the T&TG Forex platform.</p></div></div>
+  <div class="col-md-4"><div class="service-card"><div class="service-icon">📈</div><h5 class="text-gold">Trading Platform</h5><p class="text-muted small">Transfer your points to the brokerage platform and invest in markets.</p></div></div>
+  <div class="col-md-4"><div class="service-card"><div class="service-icon">🏠</div><h5 class="text-gold">Real Estate</h5><p class="text-muted small">Convert Avon Points and invest in curated real estate opportunities.</p></div></div>
+  <div class="col-md-4"><div class="service-card"><div class="service-icon">🏦</div><h5 class="text-gold">Withdraw Funds</h5><p class="text-muted small">Place a sell order (Q1–Q4) and withdraw funds after the 3-month lock period.</p></div></div>
+</div>
+{% if user.is_authenticated %}
+<div class="text-center mt-5"><a href="{% url 'avon_dashboard' %}" class="btn btn-gold btn-lg"><i class="fas fa-coins me-2"></i>Manage My Points</a></div>
+{% else %}
+<div class="text-center mt-5"><a href="{% url 'register' %}" class="btn btn-gold btn-lg"><i class="fas fa-user-plus me-2"></i>Create Account & Start Earning</a></div>
+{% endif %}
+</div></section>
+{% endblock %}

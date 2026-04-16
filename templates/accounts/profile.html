@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}My Profile — T&TG Trade Corp{% endblock %}
+{% block content %}
+<div class="page-header"><div class="container"><h1><i class="fas fa-user me-3"></i>My Profile</h1></div></div>
+<section class="section" style="padding-top:2rem">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-4">
+        <div class="glass-card p-4 text-center mb-3">
+          {% if user.profile_photo %}
+          <img src="{{ user.profile_photo.url }}" style="width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin-bottom:1rem">
+          {% else %}
+          <div style="width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:2.5rem;color:var(--primary);margin:0 auto 1rem">{{ user.first_name.0|default:user.username.0|upper }}</div>
+          {% endif %}
+          <h5 class="text-light">{{ user.get_full_name|default:user.username }}</h5>
+          <div class="text-gold mb-2" style="font-size:.85rem">{{ user.unique_id }}</div>
+          {% if user.is_verified %}<div class="badge badge-green mb-3"><i class="fas fa-check-circle me-1"></i>Verified</div>{% else %}<div class="badge badge-gold mb-3"><i class="fas fa-clock me-1"></i>Pending Verification</div>{% endif %}
+          <div class="small text-muted">{{ user.get_market_type_display }} · {{ user.get_user_role_display }}</div>
+          <div class="small text-muted mt-1">Member since {{ user.joined_date|date:"M Y" }}</div>
+          {% if user.username %}
+          <button id="copy-profile-link" data-link="{{ request.scheme }}://{{ request.get_host }}{% url 'public_profile' user.username %}" class="btn btn-outline-gold btn-sm mt-3 w-100"><i class="fas fa-link me-2"></i>Copy Profile Link</button>
+          {% endif %}
+        </div>
+        <div class="glass-card p-3">
+          <div class="avon-label mb-1">Avon Points</div>
+          <div class="avon-balance" style="font-size:2rem">{{ user.avon_points|floatformat:2 }}</div>
+          <a href="{% url 'avon_dashboard' %}" class="btn btn-gold btn-sm w-100 mt-2">Manage Points</a>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="glass-card p-4">
+          <h5 class="text-gold mb-4"><i class="fas fa-edit me-2"></i>Edit Profile</h5>
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row g-3">
+              <div class="col-md-6"><label class="form-label">First Name</label><input type="text" name="first_name" class="form-control" value="{{ user.first_name }}"></div>
+              <div class="col-md-6"><label class="form-label">Last Name</label><input type="text" name="last_name" class="form-control" value="{{ user.last_name }}"></div>
+              <div class="col-md-6"><label class="form-label">Phone</label><input type="tel" name="phone" class="form-control" value="{{ user.phone }}"></div>
+              <div class="col-md-6"><label class="form-label">City</label><input type="text" name="city" class="form-control" value="{{ user.city }}"></div>
+              <div class="col-12"><label class="form-label">Address</label><input type="text" name="address" class="form-control" value="{{ user.address }}"></div>
+              <div class="col-md-6"><label class="form-label">Website</label><input type="url" name="website" class="form-control" value="{{ user.website }}" placeholder="https://"></div>
+              <div class="col-12"><label class="form-label">Bio</label><textarea name="bio" class="form-control" rows="3">{{ user.bio }}</textarea></div>
+              <div class="col-12"><label class="form-label">Profile Photo</label><input type="file" name="profile_photo" class="form-control" accept="image/*"></div>
+            </div>
+            <button type="submit" class="btn btn-gold mt-4 px-4"><i class="fas fa-save me-2"></i>Save Changes</button>
+          </form>
+        </div>
+        <div class="glass-card p-4 mt-4">
+          <h5 class="text-gold mb-3"><i class="fas fa-id-card me-2"></i>Account Information</h5>
+          <div class="row g-3 small">
+            <div class="col-md-6"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Unique ID</div><div class="text-gold fw-bold mt-1">{{ user.unique_id }}</div></div>
+            <div class="col-md-6"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Country</div><div class="mt-1">{{ user.get_country_display|default:'Not set' }}</div></div>
+            <div class="col-md-6"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Market Type</div><div class="mt-1">{{ user.get_market_type_display }}</div></div>
+            <div class="col-md-6"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Role</div><div class="mt-1">{{ user.get_user_role_display }}</div></div>
+            <div class="col-md-6"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Partner Status</div><div class="mt-1">{% if user.is_partner %}<span class="badge badge-green">Partner</span>{% else %}<span class="badge badge-muted">Individual</span>{% endif %}</div></div>
+            <div class="col-md-6"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Certificate</div><div class="mt-1">{% if user.has_certificate %}<span class="badge badge-gold">Certified</span>{% else %}<span class="badge badge-muted">Not yet</span>{% endif %}</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

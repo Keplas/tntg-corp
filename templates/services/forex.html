@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}Forex Exchange — T&TG Trade Corp{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1><i class="fas fa-exchange-alt me-3"></i>Foreign Exchange</h1>
+    <p class="text-muted">Fast, secure currency exchange across all 6 operating countries</p>
+  </div>
+</div>
+<section class="section" style="padding-top:2rem">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-5">
+        <div class="glass-card p-4">
+          <h5 class="text-gold mb-4"><i class="fas fa-calculator me-2"></i>Currency Converter</h5>
+          <div class="mb-3">
+            <label class="form-label">Amount</label>
+            <input type="number" class="form-control" id="fx-amount" placeholder="1000" value="1000">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">From Currency</label>
+            <select class="form-select" id="fx-from">
+              <option value="1">USD — US Dollar</option>
+              <option value="1.38">CAD — Canadian Dollar</option>
+              <option value="0.92">EUR — Euro</option>
+              <option value="0.79">GBP — British Pound</option>
+              <option value="3720">UGX — Ugandan Shilling</option>
+              <option value="129.45">KES — Kenyan Shilling</option>
+              <option value="153.82">JPY — Japanese Yen</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">To Currency</label>
+            <select class="form-select" id="fx-to">
+              <option value="1.38">CAD — Canadian Dollar</option>
+              <option value="1">USD — US Dollar</option>
+              <option value="3720">UGX — Ugandan Shilling</option>
+              <option value="129.45">KES — Kenyan Shilling</option>
+              <option value="0.92">EUR — Euro</option>
+            </select>
+          </div>
+          <div class="glass-card p-3 text-center">
+            <div class="text-muted small mb-1">Converted Amount</div>
+            <div class="text-gold" style="font-size:2rem;font-weight:900" id="fx-result">1,380.00</div>
+          </div>
+          <a href="{% url 'contact' %}" class="btn btn-gold w-100 mt-3">Execute Exchange <i class="fas fa-arrow-right ms-1"></i></a>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <h4 class="text-gold mb-4">Exchange Rates vs USD</h4>
+        <div class="glass-card p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead><tr><th>Currency</th><th>Code</th><th>Rate to USD</th><th>Flag</th></tr></thead>
+              <tbody>
+                <tr><td class="fw-bold">Canadian Dollar</td><td class="text-gold">CAD</td><td>1.3812</td><td>🇨🇦</td></tr>
+                <tr><td class="fw-bold">Ugandan Shilling</td><td class="text-gold">UGX</td><td>3,720.00</td><td>🇺🇬</td></tr>
+                <tr><td class="fw-bold">Euro</td><td class="text-gold">EUR</td><td>0.9148</td><td>🇪🇺</td></tr>
+                <tr><td class="fw-bold">British Pound</td><td class="text-gold">GBP</td><td>0.7870</td><td>🇬🇧</td></tr>
+                <tr><td class="fw-bold">Kenyan Shilling</td><td class="text-gold">KES</td><td>129.45</td><td>🇰🇪</td></tr>
+                <tr><td class="fw-bold">Japanese Yen</td><td class="text-gold">JPY</td><td>153.82</td><td>🇯🇵</td></tr>
+                <tr><td class="fw-bold">Netherlands (EUR)</td><td class="text-gold">EUR</td><td>0.9148</td><td>🇳🇱</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="alert alert-warning mt-3"><i class="fas fa-info-circle me-2"></i>Rates are indicative. Contact us for live transaction rates and volume discounts.</div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  function calc(){
+    const amt = parseFloat(document.getElementById('fx-amount').value)||0;
+    const fromRate = parseFloat(document.getElementById('fx-from').value)||1;
+    const toRate = parseFloat(document.getElementById('fx-to').value)||1;
+    const usd = amt / fromRate;
+    const result = usd * toRate;
+    document.getElementById('fx-result').textContent = result.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  }
+  document.getElementById('fx-amount').addEventListener('input', calc);
+  document.getElementById('fx-from').addEventListener('change', calc);
+  document.getElementById('fx-to').addEventListener('change', calc);
+  calc();
+});
+</script>
+{% endblock %}

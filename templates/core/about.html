@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}About Us — T&TG Trade Corp{% endblock %}
+{% block content %}
+<section style="padding:5rem 0;background:linear-gradient(135deg,var(--bg-dark),var(--bg-card))">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <div class="text-center mb-4">
+          <img src="{% static 'images/tg_logo.jpeg' %}" alt="T&TG Trade Corp Logo"
+               style="width:140px;height:140px;object-fit:contain;background:#fff;border-radius:20px;padding:8px;box-shadow:0 8px 32px rgba(201,168,76,.25)">
+        </div>
+        <div class="section-label">About T&TG</div>
+        <h2>Tom & The Group <span class="text-gold">Trade Corporation</span></h2>
+        <div class="divider-gold" style="margin:1rem 0"></div>
+        <p class="text-muted" style="line-height:1.8">Founded on <strong class="text-gold">October 14, 2026</strong>, T&TG Trade Corporation operates a global e-commerce trading portal designed to facilitate seamless domestic and international commerce.</p>
+        <p class="text-muted mt-3" style="line-height:1.8">Our Toronto-based corporation operates globally, providing professional services across Uganda, the Netherlands, the United States, Kenya, and Japan. From our headquarters in Toronto, Ontario, Canada, we coordinate international operations that support cross-border collaboration, market development, and service delivery.</p>
+        <div class="row g-3 mt-3">
+          <div class="col-6"><div class="glass-card p-3 text-center"><div style="font-size:1.5rem;margin-bottom:.5rem">🇨🇦</div><div class="text-gold fw-bold" style="font-size:.85rem">Headquarters</div><div class="text-muted small">Toronto, Canada</div></div></div>
+          <div class="col-6"><div class="glass-card p-3 text-center"><div style="font-size:1.5rem;margin-bottom:.5rem">🌍</div><div class="text-gold fw-bold" style="font-size:.85rem">Operations</div><div class="text-muted small">6 Countries</div></div></div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="glass-card p-4">
+          <h5 class="text-gold mb-4">Our Leadership</h5>
+          <div class="d-flex align-items-center gap-3 mb-3 p-3" style="background:rgba(0,0,0,.2);border-radius:var(--radius-sm)">
+            <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--primary);flex-shrink:0">TS</div>
+            <div><div class="fw-bold">Tom Ssembiito</div><div class="text-gold" style="font-size:.75rem">Founder & Operations Manager</div></div>
+          </div>
+          <div class="d-flex align-items-center gap-3 mb-3 p-3" style="background:rgba(0,0,0,.2);border-radius:var(--radius-sm)">
+            <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#0077cc);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;flex-shrink:0">EK</div>
+            <div><div class="fw-bold">Edgar Kitayimbwa</div><div class="text-gold" style="font-size:.75rem">Shareholder & Software Engineer</div></div>
+          </div>
+          <div class="d-flex align-items-center gap-3 p-3" style="background:rgba(0,0,0,.2);border-radius:var(--radius-sm)">
+            <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--accent2),#009966);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;flex-shrink:0">MF</div>
+            <div><div class="fw-bold">Musana Francis</div><div class="text-gold" style="font-size:.75rem">Shareholder</div></div>
+          </div>
+          <div class="mt-4 small text-muted">
+            <i class="fas fa-phone me-2 text-gold"></i>416 832 3512<br>
+            <i class="fas fa-envelope me-2 text-gold"></i>ssembiitotom@gmail.com<br>
+            <i class="fas fa-map-marker-alt me-2 text-gold"></i>9 Summerbridge Road, Scarborough, M1G 1L8 Toronto, ON
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section">
+  <div class="container">
+    <div class="section-header"><div class="section-label">Architecture</div><h2>Platform <span class="text-gold">Structure</span></h2><div class="divider-gold"></div></div>
+    <div class="row g-4">
+      <div class="col-md-4"><div class="service-card"><div class="service-icon">🛒</div><h5 class="text-gold">Marketplace</h5><p class="text-muted small">Products, categories, suppliers, buyer & seller dashboards with RFQ system and secure payments.</p></div></div>
+      <div class="col-md-4"><div class="service-card"><div class="service-icon">🚚</div><h5 class="text-gold">Logistics</h5><p class="text-muted small">Full logistics management with Express and Ordinary delivery options. Real-time order status tracking.</p></div></div>
+      <div class="col-md-4"><div class="service-card"><div class="service-icon">📊</div><h5 class="text-gold">Trade Intelligence</h5><p class="text-muted small">Analytics, affiliate marketing, Google Ads integration, and revenue through referrals and advertising.</p></div></div>
+    </div>
+  </div>
+</section>
+{% endblock %}

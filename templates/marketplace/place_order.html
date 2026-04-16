@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %}Place Order — {{ product.name }}{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1><i class="fas fa-shopping-cart me-3"></i>Place Order</h1>
+    <p class="text-muted">{{ product.name }}</p>
+  </div>
+</div>
+<section class="section" style="padding-top:2rem">
+  <div class="container">
+    <div class="row g-5">
+      <div class="col-lg-7">
+        <div class="glass-card p-4">
+          <h5 class="text-gold mb-4"><i class="fas fa-clipboard-list me-2"></i>Order Details</h5>
+          <form method="post">
+            {% csrf_token %}
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Quantity *</label>
+                <input type="number" id="id_quantity" name="quantity" class="form-control" value="1" min="1" max="{{ product.quantity_available }}" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Delivery Type *</label>
+                <select id="id_delivery_type" name="delivery_type" class="form-select">
+                  <option value="ordinary">🚢 Ordinary — Standard delivery</option>
+                  <option value="express">⚡ Express — Fast delivery</option>
+                </select>
+                <div id="delivery-note" class="small text-info mt-1">🚢 Ordinary delivery — standard shipping costs.</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Destination Country *</label>
+                <select name="destination_country" class="form-select" required>
+                  <option value="">Select Country</option>
+                  <option value="Canada">🇨🇦 Canada</option>
+                  <option value="Uganda">🇺🇬 Uganda</option>
+                  <option value="Netherlands">🇳🇱 Netherlands</option>
+                  <option value="USA">🇺🇸 United States</option>
+                  <option value="Kenya">🇰🇪 Kenya</option>
+                  <option value="Japan">🇯🇵 Japan</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Desired Arrival Date *</label>
+                <input type="date" name="desired_arrival_date" class="form-control" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Destination Address *</label>
+                <textarea name="destination_address" class="form-control" rows="2" placeholder="Full delivery address..." required></textarea>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Desired Arrival Time</label>
+                <input type="time" name="desired_arrival_time" class="form-control">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Referred By (Company Name)</label>
+                <input type="text" name="referred_by" class="form-control" placeholder="Partner company name">
+              </div>
+              <div class="col-12">
+                <label class="form-label">Referrer Unique ID</label>
+                <input type="text" name="referrer_unique_id" class="form-control" placeholder="e.g. TG00123">
+              </div>
+            </div>
+            <div class="glass-card p-3 mt-4" id="order-summary-box">
+              <div class="text-gold fw-bold mb-2" style="font-size:.8rem;text-transform:uppercase;letter-spacing:1px">Order Summary</div>
+              <div class="d-flex justify-content-between mb-1"><span class="text-muted">Unit Price:</span><span>{{ product.currency }} {{ product.price }}</span></div>
+              <div class="d-flex justify-content-between mb-1"><span class="text-muted">Total:</span><span class="text-gold fw-bold" id="order-total">{{ product.currency }} {{ product.price }}</span></div>
+              <div class="d-flex justify-content-between mb-1"><span class="text-muted">Points (Consumer 5.5%):</span><span class="text-accent2" id="pts-5">{{ product.avon_points_consumer }}</span></div>
+              <div class="d-flex justify-content-between"><span class="text-muted">Points (Referral 8.5%):</span><span class="text-accent2" id="pts-8">{{ product.avon_points_referral }}</span></div>
+            </div>
+            <input type="hidden" id="product-price-data" data-price="{{ product.price }}">
+            <button type="submit" class="btn btn-gold btn-lg w-100 mt-4"><i class="fas fa-check me-2"></i>Confirm Order</button>
+          </form>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="product-card">
+          <div class="product-img-wrap">
+            {% if product.image %}<img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}<div class="product-placeholder">{% if product.category == 'electronics' %}💻{% elif product.category == 'coffee' %}☕{% else %}📦{% endif %}</div>{% endif %}
+          </div>
+          <div class="product-body">
+            <div class="product-cat">{{ product.get_category_display }}</div>
+            <div class="product-name">{{ product.name }}</div>
+            <div class="product-price">{{ product.currency }} {{ product.price }}</div>
+            <div class="product-pts mt-1"><i class="fas fa-cubes me-1"></i>{{ product.quantity_available }} available</div>
+          </div>
+        </div>
+        <div class="glass-card p-3 mt-3">
+          <div class="text-gold fw-bold mb-2" style="font-size:.8rem">💡 How Avon Points Work</div>
+          <ul class="small text-muted mb-0 ps-3">
+            <li>Buy as consumer → earn 5.5% of purchase</li>
+            <li>Refer a buyer → earn 8.5% of their purchase</li>
+            <li>Minimum sell order period: 3 months</li>
+            <li>Available sell order quarters: Q1–Q4</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

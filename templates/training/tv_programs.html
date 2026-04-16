@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}TV Programs — T&TG Trade Corp{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1><i class="fas fa-tv me-3"></i>T&TG TV Programs</h1>
+    <p class="text-muted">Watch, advertise, and subscribe to our curated broadcast programs</p>
+  </div>
+</div>
+<section class="section" style="padding-top:2rem">
+  <div class="container">
+    <div class="glass-card p-4 mb-5" style="background:linear-gradient(135deg,#0a0020,#1a0a40)">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-8">
+          <div class="badge badge-gold mb-2">📡 BROADCAST</div>
+          <h3 class="text-gold">Advertise on T&TG TV</h3>
+          <p class="text-muted mt-2">Reach audiences across 6 countries. Our TV program provides advertising slots for partner businesses and subscription-based educational content.</p>
+        </div>
+        <div class="col-lg-4 text-center">
+          <a href="{% url 'contact' %}" class="btn btn-gold btn-lg"><i class="fas fa-bullhorn me-2"></i>Advertise With Us</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      {% for program in tv_programs %}
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100">
+          <div style="height:200px;background:linear-gradient(135deg,#0a0020,#2a1040);display:flex;align-items:center;justify-content:center;font-size:5rem;opacity:.6;position:relative">
+            📺
+            {% if program.is_live %}<div style="position:absolute;top:12px;right:12px" class="badge badge-danger pulse" style="font-size:.65rem"><i class="fas fa-circle me-1" style="font-size:.5rem"></i>LIVE</div>{% endif %}
+          </div>
+          <div class="card-body d-flex flex-column">
+            {% if program.category %}<span class="badge badge-muted mb-2" style="font-size:.65rem;align-self:flex-start">{{ program.category }}</span>{% endif %}
+            <h5 class="text-gold">{{ program.title }}</h5>
+            <p class="text-muted flex-fill" style="font-size:.875rem">{{ program.description|truncatechars:120 }}</p>
+            {% if program.broadcast_schedule %}<div class="small text-muted mt-2"><i class="fas fa-calendar me-1"></i>{{ program.broadcast_schedule }}</div>{% endif %}
+          </div>
+          <div class="card-footer p-3">
+            {% if program.video_url %}
+            <a href="{{ program.video_url }}" target="_blank" class="btn btn-outline-gold btn-sm w-100"><i class="fas fa-play me-2"></i>Watch Now</a>
+            {% else %}
+            <a href="{% url 'contact' %}" class="btn btn-outline-gold btn-sm w-100"><i class="fas fa-envelope me-2"></i>Subscribe</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <div class="glass-card p-5 text-center">
+          <div style="font-size:5rem;opacity:.2;margin-bottom:1.5rem">📺</div>
+          <h4 class="text-gold">TV Programs Coming Soon</h4>
+          <p class="text-muted">Our broadcast platform is being set up. Subscribe to be notified.</p>
+          <a href="{% url 'contact' %}" class="btn btn-gold mt-3">Get Notified</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Training Subscription CTA -->
+    <div class="glass-card p-4 mt-5">
+      <div class="section-label">Subscribe & Learn</div>
+      <h4 class="text-gold mt-2">Online Training Subscription Programs</h4>
+      <div class="row g-4 mt-2">
+        <div class="col-md-4"><div class="step-card"><div class="step-num" style="font-size:.9rem">🌾</div><h6 class="text-gold">Modern & Tech Farming</h6><p class="text-muted small">Learn advanced agricultural techniques and technology-driven farming methods.</p></div></div>
+        <div class="col-md-4"><div class="step-card"><div class="step-num" style="font-size:.9rem">🏢</div><h6 class="text-gold">Corporate Mid-Market Enterprise</h6><p class="text-muted small">Business development, management and corporate strategy programs.</p></div></div>
+        <div class="col-md-4"><div class="step-card"><div class="step-num" style="font-size:.9rem">📊</div><h6 class="text-gold">Financial Services & Investments</h6><p class="text-muted small">Forex, investing, insurance and financial management skills.</p></div></div>
+      </div>
+      <div class="text-center mt-4">
+        <a href="{% url 'training_home' %}" class="btn btn-gold"><i class="fas fa-graduation-cap me-2"></i>View All Training Programs</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
