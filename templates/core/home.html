@@ -2,223 +2,232 @@
 {% load static %}
 {% block title %}T&TG Trade Corp — Trade & e-Commerce Platform | Canada · Uganda · Kenya{% endblock %}
 
+{% block content %}
+
+<!-- ═══ HERO ═══ -->
 {% block extra_css %}
 <style>
-/* ══ HERO ═══════════════════════════════════════════════════ */
-:root {
-  --tg-gold:   #c9a84c;
-  --tg-goldlt: #e8c96a;
-  --tg-navy:   #060f1e;
-  --tg-muted:  #c4cdd6;
-}
+/* ── HERO ───────────────────────────────────────────────────── */
 .tg-hero {
-  position: relative; min-height: calc(100vh - 70px);
-  background: var(--tg-navy); overflow: hidden;
+  position: relative;
+  min-height: calc(100vh - 72px);
   display: flex; align-items: center;
+  background: #060f1e;
+  overflow: hidden;
+  padding: 80px 0 60px;
 }
-.tg-hero-glow {
-  position: absolute; inset: 0; pointer-events: none;
-  background:
-    radial-gradient(ellipse 55% 50% at 70% 40%, rgba(10,40,100,.22) 0%, transparent 70%),
-    radial-gradient(ellipse 35% 40% at 15% 65%, rgba(201,168,76,.05) 0%, transparent 70%);
+#heroCanvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
 }
-.tg-hero-row { min-height: calc(100vh - 70px); }
-
-/* ── LEFT COPY ── */
-.tg-hero-copy {
-  padding: 80px 48px 80px 0;
-  display: flex; flex-direction: column; justify-content: center;
-}
+.tg-hero-content { position: relative; z-index: 2; }
 
 .tg-hero-eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 6px 16px; border-radius: 100px;
-  background: rgba(201,168,76,.1); border: 1px solid rgba(201,168,76,.28);
-  font-size: .7rem; font-weight: 700; letter-spacing: 2px;
-  color: var(--tg-gold); text-transform: uppercase;
-  margin-bottom: 26px; width: fit-content;
+  background: rgba(201,168,76,.1);
+  border: 1px solid rgba(201,168,76,.28);
+  font-size: .7rem; font-weight: 700; letter-spacing: 1.8px;
+  color: #c9a84c; text-transform: uppercase;
+  margin-bottom: 28px;
 }
-.pulse-dot {
-  width: 7px; height: 7px; border-radius: 50%; background: var(--tg-gold);
+.tg-hero-eyebrow .pulse-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #c9a84c;
   box-shadow: 0 0 0 0 rgba(201,168,76,.6);
-  animation: pdot 2s ease infinite;
+  animation: pulseRing 2s ease infinite;
 }
-@keyframes pdot {
+@keyframes pulseRing {
   0%   { box-shadow: 0 0 0 0 rgba(201,168,76,.6); }
   70%  { box-shadow: 0 0 0 8px rgba(201,168,76,0); }
   100% { box-shadow: 0 0 0 0 rgba(201,168,76,0); }
 }
 
 .tg-hero-title {
-  font-family: 'Manrope', 'Inter', sans-serif;
-  font-size: clamp(2.4rem, 4vw, 3.8rem); font-weight: 900;
-  line-height: 1.06; color: #fff; letter-spacing: -1.5px;
+  font-size: clamp(2.6rem, 5.5vw, 4.2rem);
+  font-weight: 900; line-height: 1.06;
+  color: #fff; letter-spacing: -2px;
   margin-bottom: 22px;
 }
-.tg-hero-title .gold-line {
-  display: block;
-  background: linear-gradient(135deg, #a8853a 0%, #c9a84c 40%, #e8c96a 75%, #f5dd94 100%);
-  -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent; color: var(--tg-gold);
-}
+.tg-hero-title .gold-line { color: #c9a84c; }
 .tg-hero-title .outline-line {
-  color: transparent; -webkit-text-stroke: 1.5px rgba(201,168,76,.55);
-  display: block; font-size: .82em;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(201,168,76,.55);
 }
+
 .tg-hero-sub {
-  font-size: .95rem; line-height: 1.8; color: #c4cdd6;
-  max-width: 460px; margin-bottom: 36px;
+  font-size: 1rem; line-height: 1.8;
+  color: #8ea8c3; max-width: 520px;
+  margin-bottom: 38px;
 }
-.tg-hero-sub strong { color: var(--tg-gold); font-weight: 600; }
-.tg-hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 44px; }
+.tg-hero-sub strong { color: #c9a84c; font-weight: 600; }
+
+.tg-hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 50px; }
 
 .tg-cta-primary {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 13px 28px; border-radius: 10px;
-  background: linear-gradient(135deg, #a8853a 0%, #c9a84c 35%, #e8c96a 70%, #f5dd94 100%);
-  background-size: 220%; background-position: 100%;
-  color: #060f1e; font-family: 'Manrope','Inter',sans-serif; font-size: .92rem; font-weight: 800;
-  text-decoration: none; letter-spacing: -.01em;
-  box-shadow: 0 6px 28px rgba(201,168,76,.4);
-  transition: background-position .4s, transform .2s, box-shadow .2s;
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 15px 30px; border-radius: 10px;
+  background: linear-gradient(135deg, #c9a84c 0%, #e8c96a 60%, #c9a84c 100%);
+  background-size: 200% 100%; background-position: 100% 0;
+  color: #060f1e; font-size: .95rem; font-weight: 800;
+  text-decoration: none; letter-spacing: .2px;
+  box-shadow: 0 8px 32px rgba(201,168,76,.4), 0 2px 8px rgba(201,168,76,.2);
+  transition: background-position .4s ease, transform .2s, box-shadow .2s;
+  border: none;
 }
 .tg-cta-primary:hover {
-  background-position: 0; transform: translateY(-2px);
-  box-shadow: 0 10px 36px rgba(201,168,76,.55); color: #060f1e;
+  background-position: 0 0;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 44px rgba(201,168,76,.55);
+  color: #060f1e;
 }
+
 .tg-cta-secondary {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 12px 24px; border-radius: 10px;
-  border: 1.5px solid rgba(255,255,255,.16); color: #e8f0fe;
-  font-size: .92rem; font-weight: 600; text-decoration: none;
-  background: rgba(255,255,255,.04); backdrop-filter: blur(6px);
-  transition: border-color .22s, background .22s, transform .2s;
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 14px 28px; border-radius: 10px;
+  border: 1.5px solid rgba(255,255,255,.18);
+  color: #e8f0fe; font-size: .95rem; font-weight: 600;
+  text-decoration: none;
+  background: rgba(255,255,255,.04);
+  backdrop-filter: blur(6px);
+  transition: border-color .25s, background .25s, transform .2s;
 }
 .tg-cta-secondary:hover {
-  border-color: rgba(201,168,76,.5); background: rgba(201,168,76,.07);
+  border-color: rgba(201,168,76,.5);
+  background: rgba(201,168,76,.07);
   color: #fff; transform: translateY(-2px);
 }
+
+/* Stats bar */
 .tg-stats-bar {
   display: inline-flex;
-  border: 1px solid rgba(201,168,76,.16); border-radius: 13px;
-  overflow: hidden; background: rgba(255,255,255,.025);
+  border: 1px solid rgba(201,168,76,.18);
+  border-radius: 14px; overflow: hidden;
+  background: rgba(255,255,255,.03);
   backdrop-filter: blur(10px);
 }
 .tg-stat-item {
-  padding: 12px 20px; text-align: center;
-  border-right: 1px solid rgba(201,168,76,.1);
+  padding: 14px 22px; text-align: center;
+  border-right: 1px solid rgba(201,168,76,.12);
 }
 .tg-stat-item:last-child { border-right: none; }
-.tg-stat-val { font-size: 1.4rem; font-weight: 900; color: var(--tg-gold); display: block; line-height: 1; margin-bottom: 3px; }
-.tg-stat-lbl { font-size: .62rem; color: #aab4be; text-transform: uppercase; letter-spacing: 1.2px; }
+.tg-stat-val {
+  font-size: 1.55rem; font-weight: 900; color: #c9a84c;
+  line-height: 1; display: block; margin-bottom: 3px;
+}
+.tg-stat-lbl {
+  font-size: .65rem; color: #6a88a8;
+  text-transform: uppercase; letter-spacing: 1.2px;
+}
 
-/* ── RIGHT MAP ── */
-.tg-map-col {
+/* Right: logo panel */
+.tg-hero-right {
   display: flex; align-items: center; justify-content: center;
-  padding: 48px 0 48px 32px;
+  position: relative;
 }
-.tg-map-box {
-  position: relative; width: 100%; max-width: 580px;
-  border-radius: 20px; overflow: hidden;
-  border: 1px solid rgba(201,168,76,.22);
-  box-shadow: 0 24px 72px rgba(0,0,0,.55), 0 0 0 1px rgba(201,168,76,.07);
-  background: #040d1c;
+.tg-logo-wrap {
+  position: relative; z-index: 2;
 }
-.tg-map-hdr {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 18px;
-  background: linear-gradient(to bottom, rgba(4,13,28,.98), rgba(4,13,28,.6));
-  position: absolute; top: 0; left: 0; right: 0; z-index: 4;
+.tg-logo-card {
+  width: 320px; height: 320px; border-radius: 28px;
+  background: linear-gradient(145deg, #ffffff, #f5f1eb);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow:
+    0 0 0 1px rgba(201,168,76,.3),
+    0 0 0 12px rgba(201,168,76,.06),
+    0 32px 80px rgba(0,0,0,.65);
+  animation: heroFloat 6s ease-in-out infinite;
+  overflow: visible;
 }
-.tg-map-title { font-size: .72rem; font-weight: 700; color: var(--tg-gold); letter-spacing: 1.5px; text-transform: uppercase; }
-.tg-live-ind  { display: flex; align-items: center; gap: 6px; font-size: .65rem; color: #00e090; font-weight: 600; }
-.tg-live-dot  { width: 7px; height: 7px; border-radius: 50%; background: #00e090; animation: pdot 1.5s ease infinite; }
+@keyframes heroFloat {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  33%      { transform: translateY(-14px) rotate(.4deg); }
+  66%      { transform: translateY(-6px) rotate(-.3deg); }
+}
+.tg-logo-card img { width: 240px; height: 240px; object-fit: contain; }
 
-#worldMap { display: block; width: 100%; height: auto; }
+/* Orbital rings */
+.tg-ring {
+  position: absolute; border-radius: 50%;
+  border: 1px solid rgba(201,168,76,.12);
+  top: 50%; left: 50%;
+  animation: ringRotate 20s linear infinite;
+  pointer-events: none;
+}
+.tg-ring-1 { width: 420px; height: 420px; margin: -210px 0 0 -210px; animation-duration: 18s; }
+.tg-ring-2 { width: 520px; height: 520px; margin: -260px 0 0 -260px; animation-duration: 30s; animation-direction: reverse; border-style: dashed; opacity: .5; }
+@keyframes ringRotate { to { transform: rotate(360deg); } }
 
-.tg-cbadge {
-  position: absolute; z-index: 5;
-  display: flex; align-items: center; gap: 10px;
-  background: rgba(8,20,45,.92);
-  border: 1px solid rgba(201,168,76,.35); border-radius: 12px;
-  padding: 8px 14px;
+/* Country badges floating on the card */
+.tg-country-badge {
+  position: absolute;
+  background: rgba(10,30,55,.92);
+  border: 1px solid rgba(201,168,76,.35);
+  border-radius: 12px; padding: 8px 14px;
   backdrop-filter: blur(12px);
-  box-shadow: 0 6px 22px rgba(0,0,0,.45);
+  box-shadow: 0 8px 28px rgba(0,0,0,.45);
+  z-index: 5;
 }
-.tg-cb-flag { font-size: 1.3rem; }
-.tg-cb-name { font-size: .76rem; font-weight: 700; color: #e8f0fe; line-height: 1.2; }
-.tg-cb-role { font-size: .62rem; color: var(--tg-gold); margin-top: 1px; }
+.tg-country-badge .cb-flag { font-size: 1.2rem; }
+.tg-country-badge .cb-name { font-size: .72rem; font-weight: 700; color: #e8f0fe; }
+.tg-country-badge .cb-role { font-size: .6rem; color: #c9a84c; margin-top: 1px; }
+.tg-badge-ca { top: -18px; right: -30px; animation: badgeFloat1 4s ease infinite; }
+.tg-badge-ug { bottom: 40px; right: -44px; animation: badgeFloat2 4s ease infinite; }
+.tg-badge-ke { bottom: -16px; left: -24px; animation: badgeFloat3 4s ease infinite; }
+@keyframes badgeFloat1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+@keyframes badgeFloat2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+@keyframes badgeFloat3 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
 
-.tg-cb-ca { top: 16%; left: 4%; animation: cf1 4.5s ease infinite; }
-.tg-cb-ug { bottom: 20%; right: 4%; animation: cf2 5s ease infinite; }
-.tg-cb-ke { bottom: 8%; right: 28%; animation: cf3 4s ease infinite; }
-@keyframes cf1 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-@keyframes cf2 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-@keyframes cf3 { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+/* Loyalty badge */
+.tg-loyalty-badge {
+  position: absolute; top: 40px; left: -44px;
+  background: rgba(10,30,55,.92);
+  border: 1px solid rgba(201,168,76,.35);
+  border-radius: 12px; padding: 10px 16px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 28px rgba(0,0,0,.45);
+  z-index: 5;
+  animation: badgeFloat2 5s ease infinite;
+}
+.tg-loyalty-badge .lb-val { font-size: 1.2rem; font-weight: 900; color: #c9a84c; line-height: 1; }
+.tg-loyalty-badge .lb-lbl { font-size: .62rem; color: #8ea8c3; margin-top: 2px; }
 
-.tg-map-ftr {
-  display: flex; align-items: center; justify-content: center; gap: 24px;
-  padding: 10px 18px;
-  background: rgba(4,13,28,.9);
-  position: absolute; bottom: 0; left: 0; right: 0; z-index: 4;
-  font-size: .7rem; font-weight: 600; color: rgba(201,168,76,.7);
-  letter-spacing: .5px;
-  border-top: 1px solid rgba(201,168,76,.12);
+/* Glow orbs */
+.hero-orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(90px); pointer-events: none; z-index: 1;
 }
-
-/* map loading state */
-.tg-map-loading {
-  position: absolute; inset: 0; z-index: 3;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  background: #040d1c; gap: 12px;
-}
-.tg-map-spinner {
-  width: 36px; height: 36px; border-radius: 50%;
-  border: 2px solid rgba(201,168,76,.15);
-  border-top-color: var(--tg-gold);
-  animation: spin .8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-@media (max-width: 991px) {
-  .tg-hero { min-height: auto; }
-  .tg-hero-row { min-height: auto; }
-  .tg-hero-copy { padding: 60px 0 40px; }
-  .tg-map-col { padding: 0 0 48px; }
-  .tg-map-box { max-width: 100%; }
-  .tg-cb-ca { top: 10%; left: 2%; }
-  .tg-cb-ug { bottom: 22%; right: 2%; }
-  .tg-cb-ke { bottom: 10%; right: 20%; }
-}
+.hero-orb-1 { width: 500px; height: 500px; background: rgba(201,168,76,.06); top: -100px; right: -80px; }
+.hero-orb-2 { width: 350px; height: 350px; background: rgba(0,60,160,.07); bottom: -50px; left: 10%; }
 </style>
 {% endblock %}
-{% block content %}
 
-<!-- ═══ HERO — World Map Edition ═══ -->
 <section class="tg-hero" id="heroTop">
-  <!-- subtle glow overlay -->
-  <div class="tg-hero-glow"></div>
+  <canvas id="heroCanvas"></canvas>
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
 
-  <div class="container-xl h-100">
-    <div class="row align-items-center tg-hero-row g-0">
+  <div class="container tg-hero-content">
+    <div class="row align-items-center gy-5 gx-5">
 
-      <!-- ── LEFT: Copy ── -->
-      <div class="col-lg-6 tg-hero-copy">
+      <!-- LEFT: Copy -->
+      <div class="col-lg-6">
         <div class="tg-hero-eyebrow">
           <span class="pulse-dot"></span>
           Import &amp; Export (RM) Registered
         </div>
 
         <h1 class="tg-hero-title">
-          <span>Trade &amp;</span>
-          <span class="gold-line">e-Commerce</span>
-          <span class="outline-line">Platform</span>
+          <span class="d-block">Trade &amp;</span>
+          <span class="d-block gold-line">e-Commerce</span>
+          <span class="d-block outline-line">Platform</span>
         </h1>
 
         <p class="tg-hero-sub">
-          T&TG Trade Corporation connects Canada, Uganda and Kenya through
-          seamless commerce. Shop textiles, shoes, watches and coffee.
-          Earn <strong>T&TG Loyalty Points</strong> on every purchase.
+          T&TG Trade Corporation connects Canada, Uganda and Kenya through seamless commerce.
+          Shop textiles, shoes, watches and coffee.
+          Earn <strong>T&TG Loyalty Points</strong> on every purchase — and withdraw on Day 45.
         </p>
 
         <div class="tg-hero-ctas">
@@ -250,127 +259,42 @@
         </div>
       </div>
 
-      <!-- ── RIGHT: Live World Map ── -->
-      <div class="col-lg-6 tg-map-col">
-        <div class="tg-map-box" id="tgMapBox">
+      <!-- RIGHT: Logo card -->
+      <div class="col-lg-6 tg-hero-right">
+        <div class="tg-logo-wrap">
+          <!-- Orbital rings -->
+          <div class="tg-ring tg-ring-1"></div>
+          <div class="tg-ring tg-ring-2"></div>
 
-          <!-- header bar -->
-          <div class="tg-map-hdr">
-            <span class="tg-map-title">
-              <i class="fas fa-route" style="color:#c9a84c;margin-right:7px"></i>T&TG Trade Routes
-            </span>
-            <span class="tg-live-ind"><span class="tg-live-dot"></span>Live</span>
+          <!-- Main card -->
+          <div class="tg-logo-card">
+            <img src="{% static 'images/tg_logo.jpeg' %}" alt="T&TG Trade Corp">
           </div>
 
-          <!-- map canvas -->
-          <canvas id="worldMap"></canvas>
-
-          <!-- country badges overlaid on map -->
-          <div class="tg-cbadge tg-cb-ca">
-            <div class="tg-cb-flag">🇨🇦</div>
-            <div><div class="tg-cb-name">Canada</div><div class="tg-cb-role">Headquarters · Toronto</div></div>
+          <!-- Country badges -->
+          <div class="tg-country-badge tg-badge-ca">
+            <div class="d-flex align-items-center gap-2">
+              <span class="cb-flag">🇨🇦</span>
+              <div><div class="cb-name">Canada</div><div class="cb-role">Headquarters</div></div>
+            </div>
           </div>
-          <div class="tg-cbadge tg-cb-ug">
-            <div class="tg-cb-flag">🇺🇬</div>
-            <div><div class="tg-cb-name">Uganda</div><div class="tg-cb-role">East Africa Hub · Kampala</div></div>
+          <div class="tg-country-badge tg-badge-ug">
+            <div class="d-flex align-items-center gap-2">
+              <span class="cb-flag">🇺🇬</span>
+              <div><div class="cb-name">Uganda</div><div class="cb-role">East Africa Hub</div></div>
+            </div>
           </div>
-          <div class="tg-cbadge tg-cb-ke">
-            <div class="tg-cb-flag">🇰🇪</div>
-            <div><div class="tg-cb-name">Kenya</div><div class="tg-cb-role">Trade Gateway · Nairobi</div></div>
-          </div>
-
-          <!-- footer bar -->
-          <div class="tg-map-ftr">
-            <span>🇨🇦 CAD/UGX</span>
-            <span>🇺🇬 CAD/KES</span>
-            <span>🇰🇪 UGX/KES</span>
+          <div class="tg-country-badge tg-badge-ke">
+            <div class="d-flex align-items-center gap-2">
+              <span class="cb-flag">🇰🇪</span>
+              <div><div class="cb-name">Kenya</div><div class="cb-role">Trade Gateway</div></div>
+            </div>
           </div>
 
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ═══ WHAT WE OFFER ═══ -->
-<section class="tg-offer-section">
-  <!-- animated section canvas background -->
-  <canvas id="offerBg" class="tg-offer-bg-canvas"></canvas>
-
-  <div class="container" style="position:relative;z-index:2">
-    <div class="text-center mb-5">
-      <div class="tg-offer-label">What We Offer</div>
-      <h2 class="tg-offer-heading">Trade & e-Commerce <span>Services</span></h2>
-      <div class="tg-offer-divider"></div>
-    </div>
-
-    <div class="row g-4">
-
-      <!-- ── Card 1: Online Shopping ── -->
-      <div class="col-md-6 col-lg-3">
-        <div class="tg-card" id="card-shop">
-          <div class="tg-card-canvas-wrap">
-            <canvas id="cvShop" class="tg-card-cv"></canvas>
-            <div class="tg-card-icon-overlay">🛒</div>
-          </div>
-          <div class="tg-card-body">
-            <h5 class="tg-card-title">Online Shopping</h5>
-            <p class="tg-card-text">Clothing, shoes, watches and coffee for men, women and children across Local &amp; International markets.</p>
-            <a href="{% url 'marketplace' %}" class="tg-card-btn">
-              Explore Market <i class="fas fa-arrow-right"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── Card 2: Loyalty Platform ── -->
-      <div class="col-md-6 col-lg-3">
-        <div class="tg-card tg-card-loyalty" id="card-loyalty">
-          <div class="tg-card-canvas-wrap">
-            <canvas id="cvLoyalty" class="tg-card-cv"></canvas>
-            <div class="tg-card-icon-overlay">💰</div>
-          </div>
-          <div class="tg-card-body">
-            <h5 class="tg-card-title">T&TG Loyalty Platform</h5>
-            <p class="tg-card-text">Earn 1% on every purchase. Refer friends and earn 2.5%. Withdraw your funds on Day 45. Points · Promotions · Referral · Reward.</p>
-            <a href="{% url 'loyalty_info' %}" class="tg-card-btn">
-              Learn More <i class="fas fa-arrow-right"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── Card 3: Live Exchange Rates ── -->
-      <div class="col-md-6 col-lg-3">
-        <div class="tg-card tg-card-forex" id="card-forex">
-          <div class="tg-card-canvas-wrap">
-            <canvas id="cvForex" class="tg-card-cv"></canvas>
-            <div class="tg-card-icon-overlay">💱</div>
-          </div>
-          <div class="tg-card-body">
-            <h5 class="tg-card-title">Live Exchange Rates</h5>
-            <p class="tg-card-text">Real-time CAD/UGX · CAD/KES · UGX/KES rates for our trade routes connecting Canada, Uganda and Kenya.</p>
-            <a href="{% url 'forex' %}" class="tg-card-btn">
-              View Rates <i class="fas fa-arrow-right"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── Card 4: Training ── -->
-      <div class="col-md-6 col-lg-3">
-        <div class="tg-card tg-card-train" id="card-train">
-          <div class="tg-card-canvas-wrap">
-            <canvas id="cvTrain" class="tg-card-cv"></canvas>
-            <div class="tg-card-icon-overlay">🎓</div>
-          </div>
-          <div class="tg-card-body">
-            <h5 class="tg-card-title">Training Programs</h5>
-            <p class="tg-card-text">Modern Farming, Trade &amp; e-Commerce, Import/Export Operations. Free enrollment — certificates from $500.</p>
-            <a href="{% url 'training_home' %}" class="tg-card-btn">
-              Start Learning <i class="fas fa-arrow-right"></i>
-            </a>
+          <!-- Loyalty badge -->
+          <div class="tg-loyalty-badge">
+            <div class="lb-val">1% · 2.5%</div>
+            <div class="lb-lbl">Loyalty Earn Rate</div>
           </div>
         </div>
       </div>
@@ -378,361 +302,126 @@
     </div>
   </div>
 </section>
-
-<style>
-/* ═══ OFFER SECTION ══════════════════════════════════════════ */
-.tg-offer-section {
-  position: relative; overflow: hidden;
-  padding: 100px 0;
-  background: linear-gradient(180deg, #060f1e 0%, #08172e 60%, #060f1e 100%);
-}
-.tg-offer-bg-canvas {
-  position: absolute; inset: 0; width: 100%; height: 100%;
-  pointer-events: none; opacity: .55;
-}
-.tg-offer-label {
-  display: inline-block;
-  font-size: .68rem; font-weight: 700; letter-spacing: 3px;
-  text-transform: uppercase; color: #c9a84c;
-  padding: 5px 16px; border-radius: 100px;
-  background: rgba(201,168,76,.1); border: 1px solid rgba(201,168,76,.25);
-  margin-bottom: 16px;
-}
-.tg-offer-heading {
-  font-family: 'Manrope', 'Inter', sans-serif;
-  font-size: clamp(1.8rem,3vw,2.6rem); font-weight: 900;
-  color: #fff; letter-spacing: -1px; margin-bottom: 12px;
-}
-.tg-offer-heading span {
-  background: linear-gradient(135deg, #a8853a 0%, #c9a84c 40%, #e8c96a 75%, #f5dd94 100%);
-  -webkit-background-clip: text; background-clip: text;
-  -webkit-text-fill-color: transparent; color: #c9a84c;
-}
-.tg-offer-divider {
-  width: 56px; height: 3px; border-radius: 3px;
-  background: linear-gradient(90deg, #c9a84c, #e8c96a);
-  margin: 0 auto;
-}
-
-/* ── Cards ─────────────────────────────────────────────────── */
-.tg-card {
-  border-radius: 20px; overflow: hidden;
-  background: linear-gradient(165deg, #0d1e38 0%, #091729 100%);
-  border: 1px solid rgba(201,168,76,.18);
-  box-shadow: 0 8px 32px rgba(0,0,0,.35);
-  transition: transform .28s cubic-bezier(.4,0,.2,1),
-              box-shadow .28s, border-color .28s;
-  height: 100%; display: flex; flex-direction: column;
-}
-.tg-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 56px rgba(0,0,0,.5), 0 0 0 1px rgba(201,168,76,.35);
-  border-color: rgba(201,168,76,.4);
-}
-
-/* canvas header area */
-.tg-card-canvas-wrap {
-  position: relative; height: 140px; overflow: hidden;
-  background: linear-gradient(135deg, #060f1e, #0d2040);
-  border-bottom: 1px solid rgba(201,168,76,.12);
-}
-.tg-card-cv { display: block; width: 100%; height: 100%; }
-.tg-card-icon-overlay {
-  position: absolute; bottom: 14px; left: 50%;
-  transform: translateX(-50%);
-  font-size: 2.2rem; line-height: 1;
-  filter: drop-shadow(0 4px 16px rgba(201,168,76,.5));
-  z-index: 3;
-}
-
-/* color accents per card type */
-.tg-card-loyalty   .tg-card-canvas-wrap { background: linear-gradient(135deg, #080d1a, #0f1e10); }
-.tg-card-forex     .tg-card-canvas-wrap { background: linear-gradient(135deg, #060f1e, #081828); }
-.tg-card-train     .tg-card-canvas-wrap { background: linear-gradient(135deg, #0a0e1e, #0e1228); }
-
-/* body */
-.tg-card-body {
-  padding: 24px 22px 28px;
-  display: flex; flex-direction: column; flex: 1;
-}
-.tg-card-title {
-  font-family: 'Manrope', 'Inter', sans-serif;
-  font-size: 1.08rem; font-weight: 800;
-  color: #e8c96a; margin-bottom: 10px; line-height: 1.2;
-  letter-spacing: -.01em;
-}
-.tg-card-text {
-  font-size: .88rem; line-height: 1.75;
-  color: #dde4ec;          /* ← bright enough to read clearly */
-  flex: 1; margin-bottom: 20px;
-}
-.tg-card-btn {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 9px 18px; border-radius: 9px;
-  border: 1.5px solid rgba(201,168,76,.4);
-  color: #c9a84c; font-size: .82rem; font-weight: 700;
-  text-decoration: none; background: rgba(201,168,76,.06);
-  transition: background .2s, border-color .2s, color .2s, transform .2s;
-  width: fit-content;
-}
-.tg-card-btn:hover {
-  background: linear-gradient(135deg, #c9a84c, #e8c96a);
-  border-color: #e8c96a; color: #060f1e;
-  transform: translateX(3px);
-}
-</style>
 
 <script>
-/* ═══ SECTION BACKGROUND CANVAS ════════════════════════════ */
+/* ── HERO CANVAS: Trade-Route Network ── */
 (function(){
-  var cv  = document.getElementById('offerBg');
-  if(!cv) return;
-  var ctx = cv.getContext('2d');
-  var W, H, pts = [], RAF;
-  var N = 70;
+  var canvas = document.getElementById('heroCanvas');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W, H, nodes, raf;
+  var N = 60, DIST = 155, GOLD = '201,168,76';
 
   function resize(){
-    W = cv.width  = cv.offsetWidth;
-    H = cv.height = cv.offsetHeight;
+    W = canvas.width  = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
   }
-  function mkPt(){
-    return { x:Math.random()*W, y:Math.random()*H,
-             vx:(Math.random()-.5)*.3, vy:(Math.random()-.5)*.3,
-             r:Math.random()*1.5+.4, a:Math.random()*.3+.1 };
+
+  function mkNode(){
+    return {
+      x: Math.random()*W, y: Math.random()*H,
+      vx: (Math.random()-.5)*.5, vy: (Math.random()-.5)*.5,
+      r:  Math.random()*2+.5,
+      a:  Math.random()*.45+.15
+    };
   }
+
+  function init(){ nodes=[]; for(var i=0;i<N;i++) nodes.push(mkNode()); }
+
   function frame(){
     ctx.clearRect(0,0,W,H);
-    for(var i=0;i<pts.length;i++){
-      var p=pts[i];
-      p.x+=p.vx; p.y+=p.vy;
-      if(p.x<0||p.x>W) p.vx*=-1;
-      if(p.y<0||p.y>H) p.vy*=-1;
-      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle='rgba(201,168,76,'+p.a+')'; ctx.fill();
-      for(var j=i+1;j<pts.length;j++){
-        var q=pts[j];
-        var dx=p.x-q.x, dy=p.y-q.y, d=Math.sqrt(dx*dx+dy*dy);
-        if(d<120){
-          ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y);
-          ctx.strokeStyle='rgba(201,168,76,'+((.12)*(1-d/120))+')';
-          ctx.lineWidth=.5; ctx.stroke();
-        }
-      }
-    }
-    RAF=requestAnimationFrame(frame);
-  }
-  function start(){ resize(); pts=[]; for(var i=0;i<N;i++) pts.push(mkPt()); frame(); }
-  window.addEventListener('resize',function(){ cancelAnimationFrame(RAF); start(); },{passive:true});
-  start();
-})();
-
-/* ═══ CARD CANVAS ANIMATIONS ═══════════════════════════════ */
-
-/* ── Card 1: Shopping — floating product icons ── */
-(function(){
-  var cv=document.getElementById('cvShop'); if(!cv) return;
-  var ctx=cv.getContext('2d');
-  var items=['👔','👟','⌚','☕','👗','🧣'];
-  var particles=[];
-  function resize(){ cv.width=cv.offsetWidth; cv.height=cv.offsetHeight; }
-  function mk(){
-    return { x:Math.random()*cv.width, y:cv.height+20,
-             icon:items[Math.floor(Math.random()*items.length)],
-             size:Math.random()*14+12, speed:Math.random()*.8+.3,
-             alpha:Math.random()*.7+.4, wobble:Math.random()*Math.PI*2,
-             wobbleSpeed:Math.random()*.03+.01 };
-  }
-  for(var i=0;i<8;i++){ var p=mk(); p.y=Math.random()*cv.height; particles.push(p); }
-  function frame(){
-    ctx.clearRect(0,0,cv.width,cv.height);
-    ctx.fillStyle='rgba(13,30,60,.0)'; ctx.fillRect(0,0,cv.width,cv.height);
-    particles.forEach(function(p){
-      p.y-=p.speed; p.wobble+=p.wobbleSpeed;
-      p.x+=Math.sin(p.wobble)*0.7;
-      ctx.globalAlpha=p.alpha*(p.y/cv.height);
-      ctx.font=p.size+'px serif';
-      ctx.textAlign='center';
-      ctx.fillText(p.icon, p.x, p.y);
-      if(p.y<-20){ var n=mk(); Object.assign(p,n); }
-    });
-    ctx.globalAlpha=1;
-    requestAnimationFrame(frame);
-  }
-  resize(); frame();
-})();
-
-/* ── Card 2: Loyalty — gold coin burst & sparkles ── */
-(function(){
-  var cv=document.getElementById('cvLoyalty'); if(!cv) return;
-  var ctx=cv.getContext('2d');
-  var sparks=[];
-  function resize(){ cv.width=cv.offsetWidth; cv.height=cv.offsetHeight; }
-
-  function addBurst(){
-    var cx=cv.width/2, cy=cv.height*.4;
-    for(var i=0;i<16;i++){
-      var ang=Math.random()*Math.PI*2;
-      var spd=Math.random()*3+1;
-      sparks.push({ x:cx, y:cy,
-        vx:Math.cos(ang)*spd, vy:Math.sin(ang)*spd,
-        life:1, decay:Math.random()*.025+.015,
-        r:Math.random()*4+2,
-        color:Math.random()>.5?'#c9a84c':'#e8c96a' });
-    }
-  }
-  function frame(){
-    ctx.clearRect(0,0,cv.width,cv.height);
-    /* grid shimmer */
-    ctx.strokeStyle='rgba(201,168,76,.07)'; ctx.lineWidth=.5;
-    for(var gx=0;gx<cv.width;gx+=20){
-      ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,cv.height); ctx.stroke();
-    }
-    for(var gy=0;gy<cv.height;gy+=20){
-      ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(cv.width,gy); ctx.stroke();
-    }
-    /* central glow */
-    var g=ctx.createRadialGradient(cv.width/2,cv.height*.35,0,cv.width/2,cv.height*.35,40);
-    g.addColorStop(0,'rgba(201,168,76,.2)'); g.addColorStop(1,'rgba(201,168,76,0)');
-    ctx.fillStyle=g; ctx.fillRect(0,0,cv.width,cv.height);
-
-    sparks.forEach(function(s,i){
-      s.x+=s.vx; s.y+=s.vy; s.vy+=.06; s.life-=s.decay;
-      if(s.life<=0){ sparks.splice(i,1); return; }
-      ctx.globalAlpha=s.life;
-      ctx.beginPath(); ctx.arc(s.x,s.y,s.r*s.life,0,Math.PI*2);
-      ctx.fillStyle=s.color; ctx.fill();
-    });
-    ctx.globalAlpha=1;
-    if(sparks.length<60 && Math.random()<.04) addBurst();
-    requestAnimationFrame(frame);
-  }
-  resize(); addBurst(); frame();
-})();
-
-/* ── Card 3: Forex — animated trading chart line ── */
-(function(){
-  var cv=document.getElementById('cvForex'); if(!cv) return;
-  var ctx=cv.getContext('2d');
-  var t=0, pts=[], history=[];
-  function resize(){
-    cv.width=cv.offsetWidth; cv.height=cv.offsetHeight;
-    pts=[];
-    var steps=cv.width/4;
-    for(var i=0;i<=steps;i++) pts.push(cv.height*.5+Math.sin(i*.18)*18+Math.random()*10-5);
-  }
-  function frame(){
-    ctx.clearRect(0,0,cv.width,cv.height);
-    t+=.025;
-
-    /* grid */
-    ctx.strokeStyle='rgba(201,168,76,.06)'; ctx.lineWidth=.5;
-    for(var gy=cv.height*.2;gy<cv.height*.9;gy+=cv.height*.17){
-      ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(cv.width,gy); ctx.stroke();
-    }
-    for(var gx=0;gx<cv.width;gx+=cv.width/6){
-      ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,cv.height); ctx.stroke();
-    }
-
-    /* animated price line */
-    var padding=12;
-    ctx.beginPath();
-    for(var i=0;i<=cv.width;i+=4){
-      var x=i;
-      var y=cv.height*.42+Math.sin((i*.04)+t)*20+Math.sin((i*.08)+t*1.3)*10+Math.sin(t*.5)*8;
-      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-    }
-    ctx.strokeStyle='rgba(201,168,76,.9)'; ctx.lineWidth=2;
-    ctx.shadowColor='#c9a84c'; ctx.shadowBlur=8;
-    ctx.stroke(); ctx.shadowBlur=0;
-
-    /* fill under line */
-    ctx.lineTo(cv.width,cv.height); ctx.lineTo(0,cv.height); ctx.closePath();
-    var grad=ctx.createLinearGradient(0,0,0,cv.height);
-    grad.addColorStop(0,'rgba(201,168,76,.18)');
-    grad.addColorStop(1,'rgba(201,168,76,0)');
-    ctx.fillStyle=grad; ctx.fill();
-
-    /* moving dot on line */
-    var dotX=cv.width*.75;
-    var dotY=cv.height*.42+Math.sin((dotX*.04)+t)*20+Math.sin((dotX*.08)+t*1.3)*10+Math.sin(t*.5)*8;
-    var dg=ctx.createRadialGradient(dotX,dotY,0,dotX,dotY,12);
-    dg.addColorStop(0,'rgba(201,168,76,.5)'); dg.addColorStop(1,'rgba(201,168,76,0)');
-    ctx.fillStyle=dg; ctx.beginPath(); ctx.arc(dotX,dotY,12,0,Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(dotX,dotY,4,0,Math.PI*2);
-    ctx.fillStyle='#e8c96a'; ctx.fill();
-
-    requestAnimationFrame(frame);
-  }
-  resize(); frame();
-})();
-
-/* ── Card 4: Training — constellation / orbital ── */
-(function(){
-  var cv=document.getElementById('cvTrain'); if(!cv) return;
-  var ctx=cv.getContext('2d');
-  var angle=0;
-  var nodes=[
-    {ox:0,  oy:-42, r:4},
-    {ox:42, oy:0,   r:3},
-    {ox:0,  oy:42,  r:4},
-    {ox:-42,oy:0,   r:3},
-    {ox:28, oy:-28, r:2.5},
-    {ox:-28,oy:28,  r:2.5},
-    {ox:28, oy:28,  r:2.5},
-    {ox:-28,oy:-28, r:2.5},
-  ];
-  function resize(){ cv.width=cv.offsetWidth; cv.height=cv.offsetHeight; }
-  function frame(){
-    ctx.clearRect(0,0,cv.width,cv.height);
-    angle+=.008;
-    var cx=cv.width/2, cy=cv.height*.44;
-
-    /* outer ring */
-    ctx.beginPath(); ctx.arc(cx,cy,56,0,Math.PI*2);
-    ctx.strokeStyle='rgba(201,168,76,.12)'; ctx.lineWidth=1; ctx.stroke();
-    ctx.beginPath(); ctx.arc(cx,cy,34,0,Math.PI*2);
-    ctx.strokeStyle='rgba(201,168,76,.08)'; ctx.stroke();
-
-    /* rotating constellation */
-    var worldPts=nodes.map(function(n){
-      var cos=Math.cos(angle), sin=Math.sin(angle);
-      return { x:cx+n.ox*cos-n.oy*sin, y:cy+n.ox*sin+n.oy*cos, r:n.r };
-    });
-
-    /* lines between all nodes */
-    for(var i=0;i<worldPts.length;i++){
-      for(var j=i+1;j<worldPts.length;j++){
-        var a=worldPts[i], b=worldPts[j];
-        var dx=a.x-b.x, dy=a.y-b.y, d=Math.sqrt(dx*dx+dy*dy);
-        if(d<80){
+    for(var i=0;i<nodes.length;i++){
+      var a=nodes[i];
+      a.x+=a.vx; a.y+=a.vy;
+      if(a.x<0||a.x>W) a.vx*=-1;
+      if(a.y<0||a.y>H) a.vy*=-1;
+      ctx.beginPath();
+      ctx.arc(a.x,a.y,a.r,0,Math.PI*2);
+      ctx.fillStyle='rgba('+GOLD+','+a.a+')';
+      ctx.fill();
+      for(var j=i+1;j<nodes.length;j++){
+        var b=nodes[j];
+        var dx=a.x-b.x, dy=a.y-b.y;
+        var d=Math.sqrt(dx*dx+dy*dy);
+        if(d<DIST){
+          var la=(1-d/DIST)*.16;
           ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
-          ctx.strokeStyle='rgba(201,168,76,'+(0.25*(1-d/80))+')';
-          ctx.lineWidth=.8; ctx.stroke();
+          ctx.strokeStyle='rgba('+GOLD+','+la+')';
+          ctx.lineWidth=.7; ctx.stroke();
         }
       }
     }
-
-    /* nodes */
-    worldPts.forEach(function(p){
-      var g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*3);
-      g.addColorStop(0,'rgba(201,168,76,.5)'); g.addColorStop(1,'rgba(201,168,76,0)');
-      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.x,p.y,p.r*3,0,Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle='#e8c96a'; ctx.fill();
-    });
-
-    /* center core */
-    var cg=ctx.createRadialGradient(cx,cy,0,cx,cy,14);
-    cg.addColorStop(0,'rgba(201,168,76,.55)'); cg.addColorStop(1,'rgba(201,168,76,0)');
-    ctx.fillStyle=cg; ctx.beginPath(); ctx.arc(cx,cy,14,0,Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(cx,cy,5,0,Math.PI*2);
-    ctx.fillStyle='#fff'; ctx.fill();
-
-    requestAnimationFrame(frame);
+    raf=requestAnimationFrame(frame);
   }
-  resize(); frame();
+
+  function start(){ resize(); init(); if(raf) cancelAnimationFrame(raf); frame(); }
+  window.addEventListener('resize', function(){ cancelAnimationFrame(raf); start(); }, {passive:true});
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',start); }
+  else { start(); }
 })();
 </script>
+
+
+<!-- ═══ WHAT WE OFFER ═══ -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">What We Offer</div>
+      <h2>Trade & e-Commerce <span class="text-gold">Services</span></h2>
+      <div class="divider-gold"></div>
+    </div>
+    <div class="row g-4">
+
+      <!-- Online Shopping -->
+      <div class="col-md-6 col-lg-3">
+        <div class="service-card text-center h-100">
+          <div class="service-icon">🛒</div>
+          <h5 class="text-gold">Online Shopping</h5>
+          <p class="text-muted small">Textiles, clothing, shoes, watches and coffee for men, women and children. Local & International markets.</p>
+          <a href="{% url 'marketplace' %}" class="btn btn-outline-gold btn-sm mt-3">
+            Explore Market <i class="fas fa-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Loyalty Platform -->
+      <div class="col-md-6 col-lg-3">
+        <div class="service-card text-center h-100">
+          <div class="service-icon">💰</div>
+          <h5 class="text-gold">T&TG Loyalty Platform</h5>
+          <p class="text-muted small">Earn points on every purchase (1%), refer friends (2.5%), and withdraw your funds on Day 45. Four pillars: Points · Promotions · Referral · Reward.</p>
+          <a href="{% url 'loyalty_info' %}" class="btn btn-outline-gold btn-sm mt-3">
+            Learn More <i class="fas fa-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Live Exchange Rates -->
+      <div class="col-md-6 col-lg-3">
+        <div class="service-card text-center h-100">
+          <div class="service-icon">💱</div>
+          <h5 class="text-gold">Live Exchange Rates</h5>
+          <p class="text-muted small">Real-time CAD/UGX · CAD/KES · UGX/KES rates for our trade routes connecting Canada, Uganda and Kenya.</p>
+          <a href="{% url 'forex' %}" class="btn btn-outline-gold btn-sm mt-3">
+            View Rates <i class="fas fa-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Training -->
+      <div class="col-md-6 col-lg-3">
+        <div class="service-card text-center h-100">
+          <div class="service-icon">🎓</div>
+          <h5 class="text-gold">Training Programs</h5>
+          <p class="text-muted small">Modern Farming, Trade & e-Commerce, Import/Export Operations. Free enrollment — paid certificates from $500.</p>
+          <a href="{% url 'training_home' %}" class="btn btn-outline-gold btn-sm mt-3">
+            Start Learning <i class="fas fa-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- ═══ FEATURED PRODUCTS ═══ -->
 {% if featured_products %}
@@ -993,183 +682,4 @@
   </div>
 </section>
 
-{% block extra_js %}
-<script src="https://d3js.org/d3.v7.min.js"></script>
-<script src="https://d3js.org/topojson.v3.min.js"></script>
-<script>
-/* ═══ LIVE WORLD MAP — D3 + TopoJSON ═══════════════════════ */
-(function(){
-
-  var GOLD        = '#c9a84c';
-  var GOLD_BRIGHT = '#e8c96a';
-  var HIGHLIGHTED = { '124': true, '800': true, '404': true }; // Canada, Uganda, Kenya
-  var CITIES = {
-    toronto: [-79.38, 43.65],
-    kampala: [ 32.58,  0.35],
-    nairobi: [ 36.82, -1.29]
-  };
-  var ROUTES = [
-    [CITIES.toronto, CITIES.kampala],
-    [CITIES.toronto, CITIES.nairobi],
-    [CITIES.kampala, CITIES.nairobi]
-  ];
-
-  var canvas, ctx, projection, pathGen, W, H;
-  var countries, borders, sphere;
-  var dashOffset = 0, animRaf;
-
-  function setup() {
-    var box = document.getElementById('tgMapBox');
-    canvas  = document.getElementById('worldMap');
-    if (!canvas || !box) return;
-
-    W = box.clientWidth;
-    H = Math.round(W * 0.58);          // 58% aspect ratio
-    canvas.width  = W;
-    canvas.height = H;
-    canvas.style.height = H + 'px';
-    ctx = canvas.getContext('2d');
-
-    projection = d3.geoNaturalEarth1()
-      .scale(W / 6.0)
-      .translate([W / 2, H / 2 + H * 0.04]);
-
-    pathGen = d3.geoPath().projection(projection).context(ctx);
-  }
-
-  function drawBase() {
-    /* background */
-    ctx.fillStyle = '#040d1c';
-    ctx.fillRect(0, 0, W, H);
-
-    /* graticule */
-    var grat = d3.geoGraticule()();
-    ctx.beginPath(); pathGen(grat);
-    ctx.strokeStyle = 'rgba(255,255,255,.035)';
-    ctx.lineWidth = .5; ctx.stroke();
-
-    /* sphere outline */
-    ctx.beginPath(); pathGen(sphere);
-    ctx.strokeStyle = 'rgba(201,168,76,.18)';
-    ctx.lineWidth = 1; ctx.stroke();
-
-    /* countries */
-    countries.features.forEach(function(f) {
-      var id  = String(f.id);
-      var hi  = !!HIGHLIGHTED[id];
-      ctx.beginPath(); pathGen(f);
-      ctx.fillStyle   = hi ? GOLD : '#0c1e38';
-      ctx.fill();
-      ctx.strokeStyle = hi ? GOLD_BRIGHT : '#102040';
-      ctx.lineWidth   = hi ? 1.2 : 0.35;
-      ctx.stroke();
-    });
-
-    /* borders */
-    ctx.beginPath(); pathGen(borders);
-    ctx.strokeStyle = 'rgba(201,168,76,.12)';
-    ctx.lineWidth = .3; ctx.stroke();
-  }
-
-  function drawAnimated() {
-    drawBase();
-    dashOffset = (dashOffset + 0.55) % 20;
-
-    /* trade routes */
-    ROUTES.forEach(function(pair) {
-      var line = { type: 'Feature', geometry: { type: 'LineString', coordinates: pair } };
-      ctx.save();
-      ctx.beginPath(); pathGen(line);
-      ctx.setLineDash([7, 5]);
-      ctx.lineDashOffset = -dashOffset;
-      ctx.strokeStyle = 'rgba(201,168,76,.65)';
-      ctx.lineWidth = 1.8;
-      ctx.shadowColor = GOLD;
-      ctx.shadowBlur  = 6;
-      ctx.stroke();
-      ctx.restore();
-    });
-
-    /* city dots + glow */
-    Object.values(CITIES).forEach(function(city) {
-      var p = projection(city);
-      if (!p) return;
-      var x = p[0], y = p[1];
-
-      /* outer glow */
-      var g = ctx.createRadialGradient(x, y, 0, x, y, 16);
-      g.addColorStop(0, 'rgba(201,168,76,.45)');
-      g.addColorStop(1, 'rgba(201,168,76,0)');
-      ctx.beginPath(); ctx.arc(x, y, 16, 0, Math.PI*2);
-      ctx.fillStyle = g; ctx.fill();
-
-      /* inner dot */
-      ctx.beginPath(); ctx.arc(x, y, 4.5, 0, Math.PI*2);
-      ctx.fillStyle   = GOLD_BRIGHT; ctx.fill();
-      ctx.strokeStyle = '#040d1c'; ctx.lineWidth = 1.5; ctx.stroke();
-    });
-
-    animRaf = requestAnimationFrame(drawAnimated);
-  }
-
-  function removeLoading() {
-    var el = document.getElementById('mapLoading');
-    if (el) el.remove();
-  }
-
-  function loadMap() {
-    /* show spinner */
-    var box = document.getElementById('tgMapBox');
-    if (!box) return;
-    var loader = document.createElement('div');
-    loader.id        = 'mapLoading';
-    loader.className = 'tg-map-loading';
-    loader.innerHTML = '<div class="tg-map-spinner"></div><div style="color:rgba(201,168,76,.6);font-size:.72rem;letter-spacing:1px">LOADING MAP…</div>';
-    box.appendChild(loader);
-
-    setup();
-
-    d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
-      .then(function(world) {
-        countries = topojson.feature(world, world.objects.countries);
-        borders   = topojson.mesh(world, world.objects.countries, function(a,b){ return a!==b; });
-        sphere    = { type: 'Sphere' };
-        removeLoading();
-        if (animRaf) cancelAnimationFrame(animRaf);
-        drawAnimated();
-      })
-      .catch(function() {
-        removeLoading();
-        /* fallback */
-        ctx.fillStyle = '#040d1c'; ctx.fillRect(0,0,W,H);
-        ctx.fillStyle = 'rgba(201,168,76,.4)';
-        ctx.font = 'bold 15px Inter,sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('T&TG Trade Routes', W/2, H/2 - 14);
-        ctx.fillStyle = 'rgba(201,168,76,.2)';
-        ctx.font = '12px Inter,sans-serif';
-        ctx.fillText('Canada · Uganda · Kenya', W/2, H/2 + 14);
-      });
-
-    /* resize */
-    var resTO;
-    window.addEventListener('resize', function(){
-      clearTimeout(resTO);
-      cancelAnimationFrame(animRaf);
-      resTO = setTimeout(function(){
-        if(countries){ setup(); drawAnimated(); }
-      }, 220);
-    }, {passive:true});
-  }
-
-  /* start after page load so D3 scripts are ready */
-  if (document.readyState === 'complete') {
-    loadMap();
-  } else {
-    window.addEventListener('load', loadMap);
-  }
-
-})();
-</script>
-{% endblock %}
 {% endblock %}
