@@ -6,29 +6,40 @@
   --primary-light: #1a3a5c;
   --gold: #c9a84c;
   --gold-light: #e8c96a;
+  --gold-deep: #a8853a;
+  --gold-gradient: linear-gradient(135deg, #a8853a 0%, #c9a84c 45%, #e8c96a 75%, #f5dd94 100%);
   --accent: #00a8e8;
   --accent2: #00c896;
   --danger: #e63946;
   --bg-dark: #060f1e;
   --bg-card: #0d1f35;
   --bg-glass: rgba(13,31,53,0.85);
-  --text-light: #e8f0fe;
-  --text-muted: #8ea8c3;
+  --text-light: #f0f4f8;
+  --text-muted: #c4cdd6;
   --border: rgba(201,168,76,0.2);
   --shadow: 0 8px 32px rgba(0,0,0,0.4);
   --shadow-gold: 0 4px 24px rgba(201,168,76,0.25);
   --radius: 16px;
   --radius-sm: 8px;
   --transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+  --font-display: 'Manrope', 'Inter', sans-serif;
+  --font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:var(--bg-dark);color:var(--text-light);line-height:1.6;overflow-x:hidden}
-h1,h2,h3,h4,h5,h6{font-weight:700;line-height:1.2}
+h1,h2,h3,h4,h5,h6{font-family:'Manrope','Inter',sans-serif;font-weight:800;line-height:1.18;letter-spacing:-.02em}
 h1{font-size:clamp(2rem,5vw,3.5rem)}
 h2{font-size:clamp(1.5rem,3vw,2.5rem)}
 h3{font-size:clamp(1.2rem,2vw,1.75rem)}
 .text-gold{color:var(--gold)!important}
+.text-gold-gradient{
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--gold);
+}
 .text-accent{color:var(--accent)!important}
 .text-accent2{color:var(--accent2)!important}
 .text-muted-custom{color:var(--text-muted)!important}
@@ -301,7 +312,7 @@ img{max-width:100%}
 body, p, li, span, div { color: inherit; }
 
 /* Muted text — ensure it is visible on dark backgrounds */
-.text-muted { color: #8ea8c3 !important; }
+.text-muted { color: #c4cdd6 !important; }
 
 /* Fix Bootstrap's default text classes on dark background */
 .card, .glass-card, .service-card, .product-card, .step-card, .stat-card,
@@ -358,8 +369,8 @@ body, p, li, span, div { color: inherit; }
 .card a:not(.btn):hover, .glass-card a:not(.btn):hover { color: var(--gold-light); }
 
 /* Fix small text visibility */
-small, .small { color: var(--text-muted); }
-.card small, .glass-card small { color: var(--text-muted); }
+small, .small { color: #c4cdd6; }
+.card small, .glass-card small { color: #c4cdd6; }
 
 /* Fix select options */
 select option { background: #0d1f35; color: var(--text-light); }
@@ -437,3 +448,87 @@ select option { background: #0d1f35; color: var(--text-light); }
 
 /* Notification active filter */
 .notif-filter.active { background: var(--gold) !important; color: var(--primary) !important; border-color: var(--gold) !important; }
+
+/* ── Image Placeholder Fallback Fix ── */
+.product-placeholder {
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4.5rem;
+  opacity: .3;
+  background: linear-gradient(135deg, var(--bg-card), #1a3a5c);
+}
+.product-img-wrap .product-placeholder {
+  position: absolute;
+  inset: 0;
+}
+/* Hide broken <img> icon entirely before onerror fires */
+img[src=""] { display: none; }
+
+
+/* ═══ GLOBAL TEXT COLOUR OVERRIDES ════════════════════════════════
+   Replace all dim light-blue text with neutral readable shades.
+   Primary body/paragraph: #dde4ec
+   Secondary/captions:     #aab4be
+   NOT black, NOT light-blue.
+═══════════════════════════════════════════════════════════════════ */
+
+/* Bootstrap override — the default #6c757d is unreadable on dark */
+.text-muted,
+.text-muted * { color: #c4cdd6 !important; }
+
+/* paragraph and description text globally */
+p, li, td, th, label, span.text-body, .card-text,
+.tg-card-text, .footer-desc, .hero-subtitle,
+.tg-hero-sub, .section-sub, .glass-card p {
+  color: #dde4ec;
+}
+
+/* small / caption text — keep readable, not blue */
+small, .small, .text-sm,
+.form-text, .text-secondary {
+  color: #c4cdd6 !important;
+}
+
+/* table text */
+.table td, .table th { color: #dde4ec; }
+.table thead th { color: #f0f4f8; font-weight: 700; }
+
+/* form labels, placeholders */
+.form-label  { color: #dde4ec !important; }
+input::placeholder, textarea::placeholder, select::placeholder {
+  color: #8898a8 !important;
+}
+
+/* nav & sidebar secondary text */
+.sidebar-item      { color: #c4cdd6 !important; }
+.sidebar-section   { color: #96a6b4 !important; }
+.footer-link       { color: #c4cdd6 !important; }
+
+/* dashboard metric labels */
+.dash-metric-label { color: #c4cdd6 !important; }
+
+/* breadcrumbs */
+.breadcrumb-item,
+.breadcrumb-item a { color: #c4cdd6 !important; }
+
+/* product card secondary text */
+.product-cat { color: #aab4be !important; }
+.product-pts { color: #c4cdd6 !important; }
+
+/* alert / badge secondary text */
+.alert-info { color: #dde4ec !important; }
+
+/* Dropdown menu items inherit readable color */
+.tg-dd-item, .dropdown-item { color: #dde4ec !important; }
+
+/* Tab nav links when not active */
+.nav-tabs .nav-link:not(.active) { color: #c4cdd6 !important; }
+
+/* Glass card paragraph override */
+.glass-card p, .glass-card li,
+.glass-card .text-muted { color: #c4cdd6 !important; }
+
+/* Stat labels */
+.tg-stat-lbl { color: #aab4be !important; }

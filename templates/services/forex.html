@@ -1,70 +1,118 @@
 {% extends 'base.html' %}
-{% block title %}Forex Exchange — T&TG Trade Corp{% endblock %}
+{% block title %}Live Exchange Rates — CAD/UGX · CAD/KES · UGX/KES — T&TG Trade Corp{% endblock %}
 {% block content %}
-<div class="page-header">
-  <div class="container">
-    <h1><i class="fas fa-exchange-alt me-3"></i>Foreign Exchange</h1>
-    <p class="text-muted">Fast, secure currency exchange across all 6 operating countries</p>
+
+<div style="background:linear-gradient(135deg,#0a2540,#1a3a5c);padding:60px 0 50px">
+  <div class="container text-center">
+    <div class="d-inline-flex align-items-center gap-2 mb-3 px-3 py-1 rounded-pill" style="background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.25)">
+      <i class="fas fa-chart-line text-gold"></i>
+      <span style="color:#c9a84c;font-size:.8rem;font-weight:600;letter-spacing:1px">LIVE EXCHANGE RATES</span>
+    </div>
+    <h1 class="display-5 fw-800 text-white mb-2">Trade Route Currencies</h1>
+    <p class="text-muted">Real-time rates for T&TG's three operating countries</p>
+    <div class="d-flex gap-3 justify-content-center mt-3 flex-wrap">
+      <span class="badge px-3 py-2" style="background:rgba(201,168,76,.15);color:#c9a84c;font-size:.85rem">🇨🇦 CAD</span>
+      <span class="text-muted">—</span>
+      <span class="badge px-3 py-2" style="background:rgba(201,168,76,.15);color:#c9a84c;font-size:.85rem">🇺🇬 UGX</span>
+      <span class="text-muted">—</span>
+      <span class="badge px-3 py-2" style="background:rgba(201,168,76,.15);color:#c9a84c;font-size:.85rem">🇰🇪 KES</span>
+    </div>
   </div>
 </div>
-<section class="section" style="padding-top:2rem">
+
+<section class="py-5">
   <div class="container">
     <div class="row g-5">
+
+      <!-- Converter -->
       <div class="col-lg-5">
-        <div class="glass-card p-4">
+        <div class="card border-0 shadow p-4" style="border-radius:20px;background:linear-gradient(135deg,#0a2540,#1a3a5c)">
           <h5 class="text-gold mb-4"><i class="fas fa-calculator me-2"></i>Currency Converter</h5>
           <div class="mb-3">
-            <label class="form-label">Amount</label>
-            <input type="number" class="form-control" id="fx-amount" placeholder="1000" value="1000">
+            <label class="form-label text-white-50 small">Amount</label>
+            <input type="number" class="form-control" id="fx-amount" placeholder="1000" value="1000"
+                   style="background:rgba(255,255,255,.07);border:1px solid rgba(201,168,76,.2);color:#fff;border-radius:10px">
           </div>
           <div class="mb-3">
-            <label class="form-label">From Currency</label>
-            <select class="form-select" id="fx-from">
-              <option value="1">USD — US Dollar</option>
-              <option value="1.38">CAD — Canadian Dollar</option>
-              <option value="0.92">EUR — Euro</option>
-              <option value="0.79">GBP — British Pound</option>
-              <option value="3720">UGX — Ugandan Shilling</option>
-              <option value="129.45">KES — Kenyan Shilling</option>
-              <option value="153.82">JPY — Japanese Yen</option>
+            <label class="form-label text-white-50 small">From</label>
+            <select class="form-select" id="fx-from"
+                    style="background:rgba(255,255,255,.07);border:1px solid rgba(201,168,76,.2);color:#fff;border-radius:10px">
+              <option value="CAD" data-rate="1">🇨🇦 CAD — Canadian Dollar</option>
+              <option value="UGX" data-rate="{% for r in rates %}{% if r.from_currency == 'CAD' and r.to_currency == 'UGX' %}{{ r.rate }}{% endif %}{% endfor %}">🇺🇬 UGX — Ugandan Shilling</option>
+              <option value="KES" data-rate="{% for r in rates %}{% if r.from_currency == 'CAD' and r.to_currency == 'KES' %}{{ r.rate }}{% endif %}{% endfor %}">🇰🇪 KES — Kenyan Shilling</option>
             </select>
           </div>
-          <div class="mb-3">
-            <label class="form-label">To Currency</label>
-            <select class="form-select" id="fx-to">
-              <option value="1.38">CAD — Canadian Dollar</option>
-              <option value="1">USD — US Dollar</option>
-              <option value="3720">UGX — Ugandan Shilling</option>
-              <option value="129.45">KES — Kenyan Shilling</option>
-              <option value="0.92">EUR — Euro</option>
+          <div class="mb-4">
+            <label class="form-label text-white-50 small">To</label>
+            <select class="form-select" id="fx-to"
+                    style="background:rgba(255,255,255,.07);border:1px solid rgba(201,168,76,.2);color:#fff;border-radius:10px">
+              <option value="UGX">🇺🇬 UGX — Ugandan Shilling</option>
+              <option value="KES">🇰🇪 KES — Kenyan Shilling</option>
+              <option value="CAD">🇨🇦 CAD — Canadian Dollar</option>
             </select>
           </div>
-          <div class="glass-card p-3 text-center">
-            <div class="text-muted small mb-1">Converted Amount</div>
-            <div class="text-gold" style="font-size:2rem;font-weight:900" id="fx-result">1,380.00</div>
+          <div class="p-3 rounded-3 text-center mb-4" style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2)">
+            <div class="text-white-50 small mb-1">Converted Amount</div>
+            <div class="text-gold fw-900" style="font-size:2rem" id="fx-result">—</div>
+            <div class="text-white-50 small" id="fx-label"></div>
           </div>
-          <a href="{% url 'contact' %}" class="btn btn-gold w-100 mt-3">Execute Exchange <i class="fas fa-arrow-right ms-1"></i></a>
+          <a href="{% url 'contact' %}" class="btn btn-gold w-100">
+            <i class="fas fa-envelope me-2"></i>Enquire About Exchange
+          </a>
         </div>
       </div>
+
+      <!-- Rates table -->
       <div class="col-lg-7">
-        <h4 class="text-gold mb-4">Exchange Rates vs USD</h4>
-        <div class="glass-card p-0">
+        <h4 class="fw-700 mb-4" style="color:#0a2540">
+          <i class="fas fa-route text-gold me-2"></i>T&TG Trade Route Rates
+        </h4>
+
+        <!-- 3 big rate cards -->
+        <div class="row g-3 mb-4">
+          {% for rate in rates %}
+          <div class="col-sm-4">
+            <div class="card border-0 shadow-sm p-3 text-center" style="border-radius:14px">
+              <div class="text-gold fw-800" style="font-size:1rem">{{ rate.from_currency }}/{{ rate.to_currency }}</div>
+              <div class="fw-900 mt-1" style="font-size:1.4rem;color:#0a2540">{{ rate.rate|floatformat:2 }}</div>
+              <div class="text-muted" style="font-size:.7rem">Updated {{ rate.updated_at|date:"d M Y" }}</div>
+            </div>
+          </div>
+          {% empty %}
+          <!-- Default placeholder rates if none set in DB yet -->
+          <div class="col-sm-4"><div class="card border-0 shadow-sm p-3 text-center" style="border-radius:14px"><div class="text-gold fw-800">CAD/UGX</div><div class="fw-900 mt-1" style="font-size:1.4rem;color:#0a2540">2,693.00</div><div class="text-muted" style="font-size:.7rem">Set in admin</div></div></div>
+          <div class="col-sm-4"><div class="card border-0 shadow-sm p-3 text-center" style="border-radius:14px"><div class="text-gold fw-800">CAD/KES</div><div class="fw-900 mt-1" style="font-size:1.4rem;color:#0a2540">93.70</div><div class="text-muted" style="font-size:.7rem">Set in admin</div></div></div>
+          <div class="col-sm-4"><div class="card border-0 shadow-sm p-3 text-center" style="border-radius:14px"><div class="text-gold fw-800">UGX/KES</div><div class="fw-900 mt-1" style="font-size:1.4rem;color:#0a2540">0.035</div><div class="text-muted" style="font-size:.7rem">Set in admin</div></div></div>
+          {% endfor %}
+        </div>
+
+        <div class="card border-0 shadow-sm p-4" style="border-radius:16px">
           <div class="table-responsive">
-            <table class="table table-hover mb-0">
-              <thead><tr><th>Currency</th><th>Code</th><th>Rate to USD</th><th>Flag</th></tr></thead>
+            <table class="table align-middle mb-0">
+              <thead style="background:#f8f9fa">
+                <tr>
+                  <th>From</th><th>To</th><th class="text-end">Rate</th><th>Updated</th>
+                </tr>
+              </thead>
               <tbody>
-                <tr><td class="fw-bold">Canadian Dollar</td><td class="text-gold">CAD</td><td>1.3812</td><td>🇨🇦</td></tr>
-                <tr><td class="fw-bold">Ugandan Shilling</td><td class="text-gold">UGX</td><td>3,720.00</td><td>🇺🇬</td></tr>
-                <tr><td class="fw-bold">Euro</td><td class="text-gold">EUR</td><td>0.9148</td><td>🇪🇺</td></tr>
-                <tr><td class="fw-bold">British Pound</td><td class="text-gold">GBP</td><td>0.7870</td><td>🇬🇧</td></tr>
-                <tr><td class="fw-bold">Kenyan Shilling</td><td class="text-gold">KES</td><td>129.45</td><td>🇰🇪</td></tr>
-                <tr><td class="fw-bold">Japanese Yen</td><td class="text-gold">JPY</td><td>153.82</td><td>🇯🇵</td></tr>
-                <tr><td class="fw-bold">Netherlands (EUR)</td><td class="text-gold">EUR</td><td>0.9148</td><td>🇳🇱</td></tr>
+                {% for rate in rates %}
+                <tr>
+                  <td><span class="fw-700 text-gold">{{ rate.from_currency }}</span></td>
+                  <td><span class="fw-700" style="color:#0a2540">{{ rate.to_currency }}</span></td>
+                  <td class="text-end fw-600">{{ rate.rate|floatformat:6 }}</td>
+                  <td class="text-muted small">{{ rate.updated_at|date:"d M Y, H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" class="text-center text-muted py-4">Rates are updated by admin. Check back soon.</td></tr>
+                {% endfor %}
               </tbody>
             </table>
           </div>
+          <div class="alert mb-0 mt-3 p-2" style="background:rgba(201,168,76,.08);border-left:3px solid #c9a84c;border-radius:8px;font-size:.8rem">
+            <i class="fas fa-info-circle text-gold me-2"></i>
+            Rates are indicative. Contact T&TG Trade Corp for live transaction rates on bulk exchanges.
+          </div>
         </div>
-        <div class="alert alert-warning mt-3"><i class="fas fa-info-circle me-2"></i>Rates are indicative. Contact us for live transaction rates and volume discounts.</div>
       </div>
     </div>
   </div>
@@ -73,17 +121,39 @@
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-  function calc(){
-    const amt = parseFloat(document.getElementById('fx-amount').value)||0;
-    const fromRate = parseFloat(document.getElementById('fx-from').value)||1;
-    const toRate = parseFloat(document.getElementById('fx-to').value)||1;
-    const usd = amt / fromRate;
-    const result = usd * toRate;
-    document.getElementById('fx-result').textContent = result.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  // Build a rate map from what's rendered in the cards
+  const rateData = {};
+  {% for rate in rates %}
+  rateData['{{ rate.from_currency }}/{{ rate.to_currency }}'] = {{ rate.rate }};
+  {% empty %}
+  rateData['CAD/UGX'] = 2693; rateData['CAD/KES'] = 93.7; rateData['UGX/KES'] = 0.035;
+  {% endfor %}
+
+  function getRate(from, to){
+    if(from === to) return 1;
+    if(rateData[from+'/'+to]) return rateData[from+'/'+to];
+    if(rateData[to+'/'+from]) return 1/rateData[to+'/'+from];
+    return null;
   }
+
+  function calc(){
+    const amt  = parseFloat(document.getElementById('fx-amount').value)||0;
+    const from = document.getElementById('fx-from').value;
+    const to   = document.getElementById('fx-to').value;
+    const rate = getRate(from, to);
+    const resultEl = document.getElementById('fx-result');
+    const labelEl  = document.getElementById('fx-label');
+    if(rate){
+      const res = amt * rate;
+      resultEl.textContent = res.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+      labelEl.textContent  = from + ' → ' + to + ' @ ' + rate.toFixed(4);
+    } else {
+      resultEl.textContent = '—';
+      labelEl.textContent  = 'Rate not available';
+    }
+  }
+  ['fx-amount','fx-from','fx-to'].forEach(id => document.getElementById(id).addEventListener('change', calc));
   document.getElementById('fx-amount').addEventListener('input', calc);
-  document.getElementById('fx-from').addEventListener('change', calc);
-  document.getElementById('fx-to').addEventListener('change', calc);
   calc();
 });
 </script>

@@ -2,16 +2,24 @@ from django.shortcuts import render
 from .models import ForexRate, InsurancePolicy, BrokerageAccount
 from django.contrib.auth.decorators import login_required
 
+
+def trade_ecommerce(request):
+    """Landing page for Trade & E-Commerce section."""
+    forex_rates = ForexRate.objects.all()[:3]
+    return render(request, 'services/trade_ecommerce.html', {'forex_rates': forex_rates})
+
+
+def forex(request):
+    """Live exchange rates — CAD/UGX, CAD/KES, UGX/KES."""
+    rates = ForexRate.objects.all()
+    return render(request, 'services/forex.html', {'rates': rates})
+
+
+# Legacy views kept for admin / back-office use — not shown in public nav
 def insurance(request):
     return render(request, 'services/insurance.html')
+
 
 def brokerage(request):
     rates = ForexRate.objects.all()
     return render(request, 'services/brokerage.html', {'rates': rates})
-
-def forex(request):
-    rates = ForexRate.objects.all()
-    return render(request, 'services/forex.html', {'rates': rates})
-
-def financial_services(request):
-    return render(request, 'services/financial_services.html')

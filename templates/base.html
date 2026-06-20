@@ -4,138 +4,459 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}T&TG Trade Corp — Global Financial Services & Investments{% endblock %}</title>
-  <meta name="description" content="T&TG Trade Corporation — Global e-commerce, financial services, investments, insurance and brokerage across Canada, Uganda, Netherlands, USA, Kenya and Japan.">
+  <title>{% block title %}T&TG Trade Corp — Trade & e-Commerce Platform{% endblock %}</title>
+  <meta name="description" content="T&TG Trade Corporation — Trade & e-Commerce platform serving Canada, Uganda and Kenya. Shop textiles, clothing, shoes, watches and coffee. Earn T&TG Loyalty Points on every purchase.">
+
+  <!-- PWA / App Install -->
+  <link rel="manifest" href="{% static 'manifest.json' %}">
+  <meta name="theme-color" content="#0a2540">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="T&TG Shop">
+  <link rel="apple-touch-icon" href="{% static 'images/tg_logo.jpeg' %}">
+
+  <!-- Open Graph (for social sharing) -->
+  <meta property="og:type"        content="website">
+  <meta property="og:title"       content="T&TG Trade Corp — Trade & e-Commerce">
+  <meta property="og:description" content="Shop textiles, shoes, watches and coffee. Earn loyalty points. Canada · Uganda · Kenya.">
+  <meta property="og:url"         content="https://tntgcorp.com">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Manrope:wght@600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <link href="{% static 'css/style.css' %}" rel="stylesheet">
-  {% block extra_css %}{% endblock %}
-</head>
-<body>
 
-<!-- Live Forex Ticker -->
-<div class="ticker-wrap d-none d-md-block">
-  <div class="ticker-content" id="tickerContent">
-    <span class="ticker-item"><span class="sym">USD/CAD</span><span class="prc">1.3812</span><span class="up">+0.12%</span></span>
-    <span class="ticker-item"><span class="sym">Loading rates...</span></span>
-  </div>
-</div>
+<style>
+/* ═══ T&TG NAVBAR — clean horizontal tabs on right ═══════════ */
+:root {
+  --tg-gold:   #c9a84c;
+  --tg-goldlt: #e8c96a;
+  --tg-navy:   #060f1e;
+  --tg-card:   #0d1f35;
+  --tg-border: rgba(201,168,76,.18);
+  --tg-muted:  #c4cdd6;
+  --tg-text:   #c8d8e8;
+  --tg-nav-h:  70px;
+}
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg">
-  <div class="container">
-    <a class="navbar-brand" href="{% url 'home' %}">
-      <img src="{% static 'images/logo.jpg' %}" alt="T&TG Trade Corp Logo"
-           style="height:48px;width:48px;object-fit:contain;border-radius:8px;background:#fff;padding:2px">
-      <div>
-        <div class="brand-name">T&TG Trade Corp</div>
-      </div>
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navMain">
-      <ul class="navbar-nav ms-auto align-items-lg-center gap-1">
-        <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
-        </li>
+/* bar */
+.tg-navbar {
+  position: sticky; top: 0; z-index: 1040;
+  height: var(--tg-nav-h);
+  background: rgba(6,15,30,.9);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border-bottom: 1px solid var(--tg-border);
+  box-shadow: 0 2px 40px rgba(0,0,0,.35);
+  transition: background .3s, box-shadow .3s;
+}
+.tg-navbar.scrolled {
+  background: rgba(6,15,30,.98);
+  box-shadow: 0 4px 48px rgba(0,0,0,.5);
+}
 
-        <!-- Marketplace Dropdown -->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-            <i class="fas fa-store me-1"></i>Marketplace
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{% url 'marketplace' %}"><i class="fas fa-globe me-2 text-gold"></i>Market Select</a></li>
-            <li><a class="dropdown-item" href="{% url 'product_list' %}?market=local"><i class="fas fa-map-marker-alt me-2 text-gold"></i>Local Market</a></li>
-            <li><a class="dropdown-item" href="{% url 'product_list' %}?market=international"><i class="fas fa-plane me-2 text-gold"></i>International Market</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="{% url 'product_list' %}?category=electronics"><i class="fas fa-laptop me-2 text-gold"></i>Electronics</a></li>
-            <li><a class="dropdown-item" href="{% url 'product_list' %}?category=coffee"><i class="fas fa-coffee me-2 text-gold"></i>Coffee</a></li>
-            <li><a class="dropdown-item" href="{% url 'product_list' %}?category=pharmaceuticals"><i class="fas fa-pills me-2 text-gold"></i>Pharmaceuticals</a></li>
-          </ul>
-        </li>
+/* inner flex row */
+.tg-nav-inner {
+  display: flex; align-items: center;
+  height: 100%; gap: 0;
+}
 
-        <!-- Financial Services Dropdown -->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-            <i class="fas fa-chart-line me-1"></i>Financial Services
-          </a>
-          <ul class="dropdown-menu">
-            <li><h6 class="dropdown-header text-gold" style="font-size:.7rem;letter-spacing:1px">FINANCIAL SERVICES & INVESTMENTS</h6></li>
-            <li><a class="dropdown-item" href="{% url 'insurance' %}"><i class="fas fa-shield-alt me-2 text-gold"></i>Insurance</a></li>
-            <li><a class="dropdown-item" href="{% url 'brokerage' %}"><i class="fas fa-chart-bar me-2 text-gold"></i>T&TG Brokerage</a></li>
-            <li><a class="dropdown-item" href="{% url 'forex' %}"><i class="fas fa-exchange-alt me-2 text-gold"></i>Forex Exchange</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="{% url 'avon_points_info' %}"><i class="fas fa-coins me-2 text-gold"></i>Avon Points</a></li>
-          </ul>
-        </li>
+/* ── brand (left) ── */
+.tg-brand {
+  display: flex; align-items: center; gap: 12px;
+  text-decoration: none; flex-shrink: 0;
+  padding: 0 20px 0 0;
+  border-right: 1px solid rgba(201,168,76,.15);
+  margin-right: 12px;
+}
+.tg-brand-logo img {
+  width: 42px; height: 42px; border-radius: 9px;
+  object-fit: contain; background: #fff; padding: 3px;
+  box-shadow: 0 4px 14px rgba(201,168,76,.25);
+}
+.tg-brand-name {
+  font-family: 'Manrope', 'Inter', sans-serif;
+  font-size: .92rem; font-weight: 800;
+  color: #fff; letter-spacing: -.3px; line-height: 1.1;
+}
+.tg-brand-sub {
+  font-size: .58rem; font-weight: 600;
+  color: var(--tg-gold); letter-spacing: 1.8px; text-transform: uppercase;
+}
 
-        <!-- Coffee -->
-        <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'coffee' %}active{% endif %}" href="{% url 'coffee' %}">
-            <i class="fas fa-coffee me-1"></i>Coffee
-          </a>
-        </li>
+/* ── nav menu (right side, always visible on desktop) ── */
+.tg-nav-menu {
+  display: flex; align-items: center;
+  margin-left: auto; gap: 2px;
+}
 
-        <!-- Training Dropdown -->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-            <i class="fas fa-graduation-cap me-1"></i>Training & TV
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{% url 'training_home' %}"><i class="fas fa-book me-2 text-gold"></i>Training Programs</a></li>
-            <li><a class="dropdown-item" href="{% url 'tv_programs' %}"><i class="fas fa-tv me-2 text-gold"></i>TV Programs</a></li>
-          </ul>
-        </li>
+.tg-nav-list {
+  display: flex; align-items: center;
+  list-style: none; margin: 0; padding: 0; gap: 1px;
+}
+.tg-nav-list > li { position: relative; }
 
-        <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'about' %}">About</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'contact' %}">Contact</a>
-        </li>
+/* every nav link/button */
+.tg-nl {
+  display: flex; align-items: center; gap: 4px;
+  padding: 7px 11px; border-radius: 8px;
+  font-size: .82rem; font-weight: 500;
+  color: var(--tg-text); text-decoration: none;
+  background: none; border: none; cursor: pointer;
+  white-space: nowrap; transition: color .18s, background .18s;
+  position: relative;
+}
+.tg-nl::after {
+  content: ''; position: absolute;
+  bottom: 3px; left: 11px; right: 11px;
+  height: 2px; border-radius: 2px;
+  background: var(--tg-gold);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .22s cubic-bezier(.4,0,.2,1);
+}
+.tg-nl:hover        { color: #fff; background: rgba(255,255,255,.05); }
+.tg-nl:hover::after { transform: scaleX(1); }
+.tg-nl.tg-active    { color: var(--tg-gold); }
+.tg-nl.tg-active::after { transform: scaleX(1); }
 
-        {% if user.is_authenticated %}
-        {% if user.is_staff %}
-        <li class="nav-item">
-          <a href="{% url 'notifications' %}" class="nav-link notif-bell-wrap" id="notif-bell" title="Notifications">
+/* caret icon */
+.tg-caret { font-size: .62rem; opacity: .55; transition: transform .22s; }
+li:hover > .tg-nl > .tg-caret,
+li:focus-within > .tg-nl > .tg-caret { transform: rotate(180deg); opacity: 1; }
+
+/* loyalty pill */
+.tg-loyalty-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 100px;
+  background: rgba(201,168,76,.1); border: 1px solid rgba(201,168,76,.28);
+  color: var(--tg-gold); font-size: .77rem; font-weight: 700;
+  transition: background .18s;
+}
+.tg-nl:hover .tg-loyalty-tag { background: rgba(201,168,76,.2); }
+
+/* ── dropdowns ── */
+.tg-dd {
+  position: absolute; top: calc(100% + 10px); left: 50%;
+  transform: translateX(-50%);
+  background: #0b1a2e;
+  border: 1px solid rgba(201,168,76,.18);
+  border-radius: 14px; padding: 8px;
+  min-width: 200px;
+  box-shadow: 0 20px 56px rgba(0,0,0,.6);
+  opacity: 0; pointer-events: none;
+  transition: opacity .18s, transform .18s;
+  transform: translateX(-50%) translateY(-6px);
+  z-index: 999;
+}
+.tg-dd.tg-mega {
+  display: flex; gap: 0; min-width: 500px; left: 0;
+  transform: translateY(-6px);
+}
+.tg-dd.tg-end { left: auto; right: 0; transform: translateY(-6px); }
+
+li:hover > .tg-dd,
+li:focus-within > .tg-dd {
+  opacity: 1; pointer-events: all;
+  transform: translateX(-50%) translateY(0);
+}
+li:hover > .tg-dd.tg-mega,
+li:hover > .tg-dd.tg-end,
+li:focus-within > .tg-dd.tg-mega,
+li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
+
+.tg-dd-col { flex: 1; padding: 4px; }
+.tg-dd-sep { width: 1px; background: rgba(201,168,76,.1); margin: 6px 0; }
+
+.tg-dd-label {
+  font-size: .6rem; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: rgba(201,168,76,.65);
+  padding: 6px 10px 4px;
+}
+.tg-dd-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 10px; border-radius: 8px;
+  font-size: .82rem; font-weight: 500; color: var(--tg-text);
+  text-decoration: none; transition: background .15s, color .15s;
+}
+.tg-dd-item:hover { background: rgba(201,168,76,.1); color: #fff; }
+.tg-dd-ico { font-size: .95rem; width: 20px; text-align: center; }
+.tg-dd-danger { color: #ff6b6b !important; }
+.tg-dd-danger:hover { background: rgba(255,107,107,.1) !important; }
+.tg-dd-uhead { padding: 10px 10px 4px; border-bottom: 1px solid rgba(201,168,76,.1); margin-bottom: 4px; }
+
+/* ── auth buttons ── */
+.tg-nav-auth {
+  display: flex; align-items: center; gap: 8px;
+  margin-left: 10px;
+  padding-left: 12px;
+  border-left: 1px solid rgba(201,168,76,.15);
+}
+.tg-btn-ghost {
+  padding: 7px 16px; border-radius: 8px;
+  border: 1px solid rgba(255,255,255,.14);
+  color: #e8f0fe; font-size: .82rem; font-weight: 500;
+  text-decoration: none; white-space: nowrap;
+  transition: border-color .2s, color .2s, background .2s;
+}
+.tg-btn-ghost:hover { border-color: var(--tg-gold); color: var(--tg-gold); background: rgba(201,168,76,.06); }
+.tg-btn-primary {
+  padding: 7px 18px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--tg-gold), var(--tg-goldlt));
+  color: #060f1e; font-size: .82rem; font-weight: 800;
+  text-decoration: none; white-space: nowrap; border: none;
+  box-shadow: 0 4px 14px rgba(201,168,76,.3);
+  transition: transform .2s, box-shadow .2s;
+}
+.tg-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(201,168,76,.45); color: #060f1e; }
+
+/* user pill */
+.tg-user-pill {
+  display: flex; align-items: center; gap: 7px;
+  padding: 4px 12px 4px 4px; border-radius: 100px;
+  border: 1px solid rgba(201,168,76,.2); background: rgba(255,255,255,.04);
+  cursor: pointer; transition: border-color .2s; white-space: nowrap;
+  font-size: .82rem; color: var(--tg-text); font-weight: 500;
+}
+.tg-user-pill:hover { border-color: rgba(201,168,76,.45); }
+.tg-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--tg-gold), var(--tg-goldlt));
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: .72rem; color: #060f1e; flex-shrink: 0;
+}
+.tg-avatar img { width:28px;height:28px;border-radius:50%;object-fit:cover; }
+
+/* points badge */
+.tg-pts-badge {
+  background: rgba(201,168,76,.15); color: var(--tg-gold);
+  border: 1px solid rgba(201,168,76,.25); border-radius: 100px;
+  font-size: .6rem; font-weight: 700; padding: 2px 7px; margin-left: auto;
+}
+
+/* notif bell */
+.tg-bell {
+  position: relative; width: 36px; height: 36px; border-radius: 8px;
+  border: 1px solid rgba(201,168,76,.18); background: rgba(255,255,255,.04);
+  color: var(--tg-text); display: flex; align-items: center; justify-content: center;
+  text-decoration: none; font-size: .9rem; transition: border-color .2s, color .2s;
+}
+.tg-bell:hover { border-color: var(--tg-gold); color: var(--tg-gold); }
+.tg-bell-dot {
+  position: absolute; top: 4px; right: 4px;
+  width: 15px; height: 15px; border-radius: 50%;
+  background: #e63946; border: 2px solid #060f1e;
+  font-size: .5rem; font-weight: 700; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* install btn */
+.tg-install-btn {
+  width: 36px; height: 36px; border-radius: 8px;
+  border: 1px solid rgba(201,168,76,.25); background: rgba(201,168,76,.07);
+  color: var(--tg-gold); cursor: pointer; font-size: .88rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .2s;
+}
+.tg-install-btn:hover { background: rgba(201,168,76,.18); }
+
+/* ── hamburger ── */
+.tg-hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  padding: 8px; border: 1px solid rgba(201,168,76,.2);
+  border-radius: 8px; background: none; cursor: pointer;
+  margin-left: 12px; flex-shrink: 0;
+}
+.tg-hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--tg-text); border-radius: 2px; transition: .3s;
+}
+.tg-hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+.tg-hamburger.open span:nth-child(2) { opacity: 0; }
+.tg-hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+/* ── MOBILE (≤ 991px) ── */
+@media (max-width: 991px) {
+  .tg-hamburger { display: flex; }
+  .tg-nav-menu {
+    display: none;
+    position: fixed; top: var(--tg-nav-h); left: 0; right: 0;
+    flex-direction: column; align-items: stretch;
+    background: rgba(6,15,30,.98);
+    border-bottom: 1px solid rgba(201,168,76,.2);
+    padding: 12px 16px 20px;
+    box-shadow: 0 12px 48px rgba(0,0,0,.6);
+    z-index: 1039; max-height: calc(100vh - var(--tg-nav-h));
+    overflow-y: auto;
+  }
+  .tg-nav-menu.open { display: flex; }
+  .tg-nav-list { flex-direction: column; align-items: stretch; }
+  .tg-nl { padding: 10px 12px; border-radius: 10px; }
+  .tg-nl::after { display: none; }
+  .tg-dd {
+    position: static; transform: none !important; opacity: 1;
+    pointer-events: all; box-shadow: none; border: none;
+    background: rgba(255,255,255,.03); border-radius: 8px;
+    margin: 4px 0 4px 16px; min-width: auto;
+    display: none;
+  }
+  .tg-dd.tg-mega { flex-direction: column; }
+  li.mob-open > .tg-dd { display: block !important; }
+  .tg-nav-auth {
+    flex-direction: row; margin-left: 0; padding-left: 0;
+    border-left: none; border-top: 1px solid rgba(201,168,76,.15);
+    margin-top: 10px; padding-top: 12px;
+  }
+}
+</style>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav class="tg-navbar" id="tgNavbar">
+  <div class="container-xl">
+    <div class="tg-nav-inner">
+
+      <!-- BRAND (left) -->
+      <a class="tg-brand" href="{% url 'home' %}">
+        <div class="tg-brand-logo">
+          <img src="{% static 'images/logo.jpg' %}" alt="T&TG">
+        </div>
+        <div>
+          <div class="tg-brand-name">T&TG Trade Corp</div>
+          <div class="tg-brand-sub">Connect · Trade · Grow · Earn</div>
+        </div>
+      </a>
+
+      <!-- NAV MENU (right — always visible on desktop) -->
+      <div class="tg-nav-menu" id="tgNavMenu">
+
+        <!-- Nav tabs -->
+        <ul class="tg-nav-list">
+
+          <li>
+            <a class="tg-nl {% if request.resolver_match.url_name == 'home' %}tg-active{% endif %}" href="{% url 'home' %}">Home</a>
+          </li>
+
+          <!-- Shop -->
+          <li>
+            <button class="tg-nl">Shop <i class="fas fa-chevron-down tg-caret"></i></button>
+            <div class="tg-dd tg-mega">
+              <div class="tg-dd-col">
+                <div class="tg-dd-label">Markets</div>
+                <a href="{% url 'marketplace' %}"                      class="tg-dd-item"><span class="tg-dd-ico">🌍</span>All Markets</a>
+                <a href="{% url 'product_list' %}?market=local"         class="tg-dd-item"><span class="tg-dd-ico">🏠</span>Local Market</a>
+                <a href="{% url 'product_list' %}?market=international" class="tg-dd-item"><span class="tg-dd-ico">✈️</span>International</a>
+              </div>
+              <div class="tg-dd-sep"></div>
+              <div class="tg-dd-col">
+                <div class="tg-dd-label">Categories</div>
+                <a href="{% url 'product_list' %}?category=clothing" class="tg-dd-item"><span class="tg-dd-ico">👔</span>Clothing</a>
+                <a href="{% url 'product_list' %}?category=shoes"    class="tg-dd-item"><span class="tg-dd-ico">👟</span>Shoes</a>
+                <a href="{% url 'product_list' %}?category=watches"  class="tg-dd-item"><span class="tg-dd-ico">⌚</span>Watches</a>
+                <a href="{% url 'product_list' %}?category=coffee"   class="tg-dd-item"><span class="tg-dd-ico">☕</span>Coffee</a>
+              </div>
+              <div class="tg-dd-sep"></div>
+              <div class="tg-dd-col">
+                <div class="tg-dd-label">Shop By</div>
+                <a href="{% url 'product_list' %}?gender=men"      class="tg-dd-item"><span class="tg-dd-ico">👨</span>Men</a>
+                <a href="{% url 'product_list' %}?gender=women"    class="tg-dd-item"><span class="tg-dd-ico">👩</span>Women</a>
+                <a href="{% url 'product_list' %}?gender=children" class="tg-dd-item"><span class="tg-dd-ico">👦</span>Children</a>
+              </div>
+            </div>
+          </li>
+
+          <!-- Trade & e-Commerce -->
+          <li>
+            <button class="tg-nl">Trade & e-Commerce <i class="fas fa-chevron-down tg-caret"></i></button>
+            <div class="tg-dd">
+              <a href="{% url 'trade_ecommerce' %}" class="tg-dd-item"><span class="tg-dd-ico">🌐</span>Trade & e-Commerce</a>
+              <a href="{% url 'forex' %}"            class="tg-dd-item"><span class="tg-dd-ico">💱</span>Live Exchange Rates</a>
+            </div>
+          </li>
+
+          <!-- Loyalty -->
+          <li>
+            <a class="tg-nl {% if request.resolver_match.url_name == 'loyalty_info' %}tg-active{% endif %}"
+               href="{% url 'loyalty_info' %}">
+              <span class="tg-loyalty-tag"><i class="fas fa-coins"></i> Loyalty</span>
+            </a>
+          </li>
+
+          <!-- Training & TV -->
+          <li>
+            <button class="tg-nl">Training & TV <i class="fas fa-chevron-down tg-caret"></i></button>
+            <div class="tg-dd">
+              <a href="{% url 'training_home' %}" class="tg-dd-item"><span class="tg-dd-ico">🎓</span>Training Programs</a>
+              <a href="{% url 'tv_programs' %}"   class="tg-dd-item"><span class="tg-dd-ico">📺</span>TV Programs</a>
+            </div>
+          </li>
+
+          <li>
+            <a class="tg-nl {% if request.resolver_match.url_name == 'about' %}tg-active{% endif %}"
+               href="{% url 'about' %}">About</a>
+          </li>
+          <li>
+            <a class="tg-nl {% if request.resolver_match.url_name == 'contact' %}tg-active{% endif %}"
+               href="{% url 'contact' %}">Contact</a>
+          </li>
+        </ul>
+
+        <!-- Auth / user actions -->
+        <div class="tg-nav-auth">
+          <!-- Install App -->
+          <button id="install-btn" class="tg-install-btn d-none" title="Install T&TG Shopping App">
+            <i class="fas fa-download"></i>
+          </button>
+
+          {% if user.is_authenticated %}
+          {% if user.is_staff %}
+          <a href="{% url 'notifications' %}" class="tg-bell" id="notif-bell" title="Notifications">
             <i class="fas fa-bell"></i>
-            <span class="notif-badge" id="notif-count-badge" style="display:none">0</span>
+            <span id="notif-count-badge" class="tg-bell-dot" style="display:none">0</span>
           </a>
-        </li>
-        {% endif %}
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" data-bs-toggle="dropdown">
-            {% if user.profile_photo %}
-            <img src="{{ user.profile_photo.url }}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)">
-            {% else %}
-            <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem;color:var(--primary)">{{ user.first_name.0|default:user.username.0|upper }}</div>
-            {% endif %}
-            {{ user.get_short_name|default:user.username }}
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li><div class="px-3 py-2"><div class="text-gold fw-bold" style="font-size:.85rem">{{ user.get_full_name|default:user.username }}</div><div class="text-muted" style="font-size:.72rem">{{ user.unique_id }}</div></div></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="{% url 'dashboard' %}"><i class="fas fa-th-large me-2"></i>Dashboard</a></li>
-            <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="fas fa-user me-2"></i>My Profile</a></li>
-            <li><a class="dropdown-item" href="{% url 'avon_dashboard' %}"><i class="fas fa-coins me-2"></i>Avon Points <span class="badge badge-gold ms-1" style="font-size:.65rem">{{ user.avon_points|floatformat:0 }}</span></a></li>
-            <li><a class="dropdown-item" href="{% url 'my_orders' %}"><i class="fas fa-box me-2"></i>My Orders</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-danger" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Sign Out</a></li>
+          {% endif %}
+
+          <!-- User dropdown -->
+          <ul class="tg-nav-list">
+            <li>
+              <div class="tg-user-pill tg-nl" style="padding:4px 10px 4px 4px">
+                {% if user.safe_profile_photo_url %}
+                <div class="tg-avatar"><img src="{{ user.safe_profile_photo_url }}" onerror="this.style.display='none'"></div>
+                {% else %}
+                <div class="tg-avatar">{{ user.first_name.0|default:user.username.0|upper }}</div>
+                {% endif %}
+                <span class="d-none d-xl-inline">{{ user.get_short_name|default:user.username }}</span>
+                <i class="fas fa-chevron-down tg-caret ms-1"></i>
+              </div>
+              <div class="tg-dd tg-end" style="min-width:220px">
+                <div class="tg-dd-uhead">
+                  <div style="color:#e8f0fe;font-weight:700;font-size:.86rem">{{ user.get_full_name|default:user.username }}</div>
+                  <div style="color:#c9a84c;font-size:.7rem">{{ user.unique_id }}</div>
+                </div>
+                <a href="{% url 'dashboard' %}"        class="tg-dd-item"><span class="tg-dd-ico">⚡</span>Dashboard</a>
+                <a href="{% url 'profile' %}"           class="tg-dd-item"><span class="tg-dd-ico">👤</span>My Profile</a>
+                <a href="{% url 'loyalty_dashboard' %}" class="tg-dd-item">
+                  <span class="tg-dd-ico">💰</span>Loyalty Points
+                  <span class="tg-pts-badge">{{ user.avon_points|floatformat:0 }}</span>
+                </a>
+                <a href="{% url 'my_orders' %}" class="tg-dd-item"><span class="tg-dd-ico">📦</span>My Orders</a>
+                <div style="height:1px;background:rgba(201,168,76,.12);margin:6px 8px"></div>
+                <a href="{% url 'logout' %}" class="tg-dd-item tg-dd-danger"><span class="tg-dd-ico">🚪</span>Sign Out</a>
+              </div>
+            </li>
           </ul>
-        </li>
-        {% else %}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'login' %}">Sign In</a>
-        </li>
-        <li class="nav-item">
-          <a class="btn btn-gold btn-sm px-3" href="{% url 'register' %}">Get Started</a>
-        </li>
-        {% endif %}
-      </ul>
+
+          {% else %}
+          <a href="{% url 'login' %}"    class="tg-btn-ghost">Sign In</a>
+          <a href="{% url 'register' %}" class="tg-btn-primary">Get Started</a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Mobile hamburger -->
+      <button class="tg-hamburger" id="tgHamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+
     </div>
   </div>
 </nav>
@@ -167,53 +488,71 @@
         </div>
         <div class="footer-logo">T&TG Trade Corp</div>
         <div class="text-gold mb-2" style="font-size:.72rem;letter-spacing:2px;text-transform:uppercase">Connect · Trade · Grow · Earn</div>
-        <p class="footer-desc">Connect · Trade · Grow · Earn — Global financial services, e-commerce, insurance and investment solutions across 6 countries.</p>
-        <div class="mt-3 d-flex gap-2">
-          <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-          <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-          <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-          <a href="#" class="social-link"><i class="fab fa-whatsapp"></i></a>
+        <p class="footer-desc">Trade & e-Commerce platform facilitating seamless domestic and international commerce across Canada, Uganda and Kenya. Import & Export (RM) registered corporation.</p>
+        <div class="mt-3 d-flex gap-2 flex-wrap">
+          <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" class="social-link" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="social-link" title="TikTok"><i class="fab fa-tiktok"></i></a>
+          <a href="#" class="social-link" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        </div>
+        <!-- Download / Install App -->
+        <div class="mt-3">
+          <button id="footer-install-btn" class="btn btn-sm d-none"
+                  style="background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);color:#c9a84c;border-radius:20px;padding:6px 16px;font-size:.78rem;font-weight:600">
+            <i class="fas fa-download me-2"></i>Install Shopping App
+          </button>
+          <div class="mt-2 small text-muted" style="font-size:.72rem">
+            <i class="fas fa-mobile-alt me-1 text-gold"></i>Add to Home Screen on iOS/Android for the full app experience
+          </div>
         </div>
         <div class="mt-3 small text-muted">
-          <i class="fas fa-phone me-2 text-gold"></i>416 832 3512<br>
+          <i class="fas fa-phone me-2 text-gold"></i>+1 (416) 832 3512<br>
           <i class="fas fa-envelope me-2 text-gold"></i>ssembiitotom@gmail.com<br>
-          <i class="fas fa-map-marker-alt me-2 text-gold"></i>9 Summerbridge Road, Scarborough, M1G 1L8 Toronto, ON
+          <i class="fas fa-map-marker-alt me-2 text-gold"></i>9 Summerbridge Road, Scarborough, M1G 1L8, Toronto, ON
         </div>
       </div>
+
       <div class="col-6 col-lg-2">
-        <div class="footer-title">Marketplace</div>
-        <a href="{% url 'product_list' %}?market=local" class="footer-link">Local Market</a>
-        <a href="{% url 'product_list' %}?market=international" class="footer-link">International Market</a>
-        <a href="{% url 'product_list' %}?category=electronics" class="footer-link">Electronics</a>
-        <a href="{% url 'product_list' %}?category=coffee" class="footer-link">Coffee Products</a>
-        <a href="{% url 'my_orders' %}" class="footer-link">My Orders</a>
+        <div class="footer-title">Online Shop</div>
+        <a href="{% url 'product_list' %}?market=local"          class="footer-link">Local Market</a>
+        <a href="{% url 'product_list' %}?market=international"  class="footer-link">International Market</a>
+        <a href="{% url 'product_list' %}?category=clothing"     class="footer-link">Clothing</a>
+        <a href="{% url 'product_list' %}?category=shoes"        class="footer-link">Shoes</a>
+        <a href="{% url 'product_list' %}?category=watches"      class="footer-link">Watches</a>
+        <a href="{% url 'product_list' %}?category=coffee"       class="footer-link">Coffee</a>
+        <a href="{% url 'my_orders' %}"                          class="footer-link">My Orders</a>
       </div>
+
       <div class="col-6 col-lg-2">
-        <div class="footer-title">Financial Services</div>
-        <a href="{% url 'insurance' %}" class="footer-link">Insurance</a>
-        <a href="{% url 'brokerage' %}" class="footer-link">Brokerage</a>
-        <a href="{% url 'forex' %}" class="footer-link">Forex Exchange</a>
-        <a href="{% url 'avon_points_info' %}" class="footer-link">Avon Points</a>
+        <div class="footer-title">T&TG Loyalty Platform</div>
+        <a href="{% url 'loyalty_info' %}"        class="footer-link"><i class="fas fa-coins me-1 text-gold"></i>Earn Points</a>
+        <a href="{% url 'loyalty_info' %}#referral" class="footer-link"><i class="fas fa-users me-1 text-gold"></i>Referral Programme</a>
+        <a href="{% url 'loyalty_info' %}#reward"   class="footer-link"><i class="fas fa-wallet me-1 text-gold"></i>Withdraw Funds</a>
+        <a href="{% url 'forex' %}"               class="footer-link"><i class="fas fa-chart-line me-1 text-gold"></i>Live Exchange Rates</a>
       </div>
+
       <div class="col-6 col-lg-2">
         <div class="footer-title">Company</div>
-        <a href="{% url 'about' %}" class="footer-link">About Us</a>
-        <a href="{% url 'coffee' %}" class="footer-link">Coffee Company</a>
+        <a href="{% url 'about' %}"        class="footer-link">About Us</a>
+        <a href="{% url 'trade_ecommerce' %}" class="footer-link">Trade & e-Commerce</a>
         <a href="{% url 'training_home' %}" class="footer-link">Training</a>
-        <a href="{% url 'tv_programs' %}" class="footer-link">TV Programs</a>
-        <a href="{% url 'contact' %}" class="footer-link">Contact</a>
+        <a href="{% url 'tv_programs' %}"  class="footer-link">TV Programs</a>
+        <a href="{% url 'contact' %}"      class="footer-link">Contact</a>
       </div>
+
       <div class="col-6 col-lg-2">
         <div class="footer-title">Operations</div>
         <div class="footer-link">🇨🇦 Canada</div>
         <div class="footer-link">🇺🇬 Uganda</div>
-        <div class="footer-link">🇳🇱 Netherlands</div>
-        <div class="footer-link">🇺🇸 United States</div>
         <div class="footer-link">🇰🇪 Kenya</div>
-        <div class="footer-link">🇯🇵 Japan</div>
+        <div class="mt-3 footer-title">Exchange Routes</div>
+        <div class="footer-link" style="font-size:.75rem">CAD/UGX</div>
+        <div class="footer-link" style="font-size:.75rem">CAD/KES</div>
+        <div class="footer-link" style="font-size:.75rem">UGX/KES</div>
       </div>
     </div>
+
     <div class="footer-bottom d-flex flex-wrap justify-content-between align-items-center gap-3">
       <div class="small text-muted">© 2026 T&TG Trade Corporation. All rights reserved. Connect · Trade · Grow · Earn</div>
       <div class="small text-muted">Founder: <span class="text-gold">Tom Ssembiito</span> · Software: <span class="text-gold">Edgar Kitayimbwa</span></div>
@@ -223,6 +562,8 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{% static 'js/main.js' %}"></script>
+
+<!-- Notification polling (staff only) -->
 {% if user.is_authenticated and user.is_staff %}
 <script>
 (function pollNotifCount(){
@@ -231,35 +572,61 @@
       .then(r=>r.json())
       .then(d=>{
         const badge = document.getElementById('notif-count-badge');
-        if(badge){
-          if(d.count > 0){
-            badge.textContent = d.count > 99 ? '99+' : d.count;
-            badge.style.display='flex';
-          } else {
-            badge.style.display='none';
-          }
-        }
+        if(badge){ badge.textContent = d.count > 99 ? '99+' : d.count; badge.style.display = d.count > 0 ? 'flex' : 'none'; }
       }).catch(()=>{});
   }
-  update();
-  setInterval(update, 30000); // Poll every 30s
+  update(); setInterval(update, 30000);
 })();
 </script>
 {% endif %}
+
+<!-- PWA Install Prompt -->
+<script>
+(function(){
+  let deferredPrompt = null;
+  const installBtns = [document.getElementById('install-btn'), document.getElementById('footer-install-btn')];
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtns.forEach(b => { if(b){ b.classList.remove('d-none'); b.closest('li')?.classList.remove('d-none'); } });
+    const li = document.getElementById('install-app-li');
+    if(li) li.classList.remove('d-none');
+  });
+
+  installBtns.forEach(btn => {
+    if(!btn) return;
+    btn.addEventListener('click', async () => {
+      if(!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if(outcome === 'accepted') installBtns.forEach(b => b && b.classList.add('d-none'));
+      deferredPrompt = null;
+    });
+  });
+
+  window.addEventListener('appinstalled', () => {
+    installBtns.forEach(b => b && b.classList.add('d-none'));
+    deferredPrompt = null;
+  });
+
+  // Register service worker
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('/static/sw.js').catch(()=>{});
+  }
+})();
+</script>
+
 {% block extra_js %}{% endblock %}
 
-<!-- ═══════════ TARA CHATBOT WIDGET ═══════════ -->
+<!-- ═══ TARA CHATBOT WIDGET ═══ -->
 <div id="chat-widget">
-  <!-- Toggle Button -->
   <button id="chat-toggle" title="Chat with TARA — T&TG AI Assistant">
     <span id="chat-icon-open"><i class="fas fa-comments"></i></span>
     <span id="chat-icon-close" style="display:none"><i class="fas fa-times"></i></span>
     <span id="chat-notif-dot"></span>
   </button>
-
-  <!-- Chat Window -->
   <div id="chat-window" style="display:none">
-    <!-- Header -->
     <div id="chat-header">
       <div style="display:flex;align-items:center;gap:10px">
         <div id="chat-avatar">T</div>
@@ -271,29 +638,19 @@
         </div>
       </div>
       <div style="display:flex;gap:8px">
-        <button id="chat-clear" title="Clear chat" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:6px;padding:4px 8px;font-size:.75rem;cursor:pointer">
-          <i class="fas fa-trash-alt"></i>
-        </button>
-        <button id="chat-minimize" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:6px;padding:4px 8px;font-size:.75rem;cursor:pointer">
-          <i class="fas fa-minus"></i>
-        </button>
+        <button id="chat-clear" title="Clear chat" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:6px;padding:4px 8px;font-size:.75rem;cursor:pointer"><i class="fas fa-trash-alt"></i></button>
+        <button id="chat-minimize" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:6px;padding:4px 8px;font-size:.75rem;cursor:pointer"><i class="fas fa-minus"></i></button>
       </div>
     </div>
-
-    <!-- Messages -->
     <div id="chat-messages"></div>
-
-    <!-- Quick Replies -->
     <div id="chat-quick">
-      <button class="quick-btn" data-msg="How do Avon Points work?">💰 Avon Points</button>
-      <button class="quick-btn" data-msg="How do I register?">👤 Register</button>
+      <button class="quick-btn" data-msg="How do T&TG Loyalty Points work?">💰 Loyalty Points</button>
+      <button class="quick-btn" data-msg="How do I refer someone and earn?">🤝 Referral</button>
+      <button class="quick-btn" data-msg="How do I withdraw my loyalty points?">💸 Withdraw Funds</button>
       <button class="quick-btn" data-msg="Tell me about the marketplace">🛒 Marketplace</button>
-      <button class="quick-btn" data-msg="What training programs are available?">🎓 Training</button>
-      <button class="quick-btn" data-msg="What insurance plans do you offer?">🛡️ Insurance</button>
-      <button class="quick-btn" data-msg="What are the forex exchange rates?">💱 Forex Rates</button>
+      <button class="quick-btn" data-msg="What are the live exchange rates?">💱 Exchange Rates</button>
+      <button class="quick-btn" data-msg="How do I register?">👤 Register</button>
     </div>
-
-    <!-- Input -->
     <div id="chat-input-wrap">
       <input id="chat-input" type="text" placeholder="Ask TARA anything about T&TG…" maxlength="500" autocomplete="off">
       <button id="chat-send"><i class="fas fa-paper-plane"></i></button>
@@ -302,348 +659,207 @@
 </div>
 
 <style>
-/* ── Widget Container ── */
-#chat-widget {
-  position: fixed;
-  bottom: 28px;
-  right: 28px;
-  z-index: 99999;
-  font-family: 'Inter', 'Segoe UI', sans-serif;
-}
-
-/* ── Toggle Button ── */
-#chat-toggle {
-  width: 60px; height: 60px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #c9a84c, #e8c96a);
-  border: none; cursor: pointer;
-  font-size: 1.4rem; color: #0a2540;
-  box-shadow: 0 6px 24px rgba(201,168,76,.5);
-  transition: all .3s cubic-bezier(.4,0,.2,1);
-  position: relative;
-  display: flex; align-items: center; justify-content: center;
-}
-#chat-toggle:hover { transform: scale(1.08); box-shadow: 0 8px 30px rgba(201,168,76,.65); }
-#chat-notif-dot {
-  position: absolute; top: 3px; right: 3px;
-  width: 14px; height: 14px;
-  background: #e63946; border-radius: 50%;
-  border: 2px solid #060f1e;
-  display: none;
-  animation: pulse 2s ease infinite;
-}
-
-/* ── Chat Window ── */
-#chat-window {
-  position: absolute;
-  bottom: 74px; right: 0;
-  width: 370px;
-  background: #0d1f35;
-  border: 1px solid rgba(201,168,76,.25);
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0,0,0,.6);
-  display: flex; flex-direction: column;
-  animation: chatSlideUp .3s cubic-bezier(.4,0,.2,1);
-}
-@keyframes chatSlideUp {
-  from { opacity:0; transform: translateY(20px) scale(.95); }
-  to   { opacity:1; transform: translateY(0) scale(1); }
-}
-
-/* ── Header ── */
-#chat-header {
-  background: linear-gradient(135deg, #0a2540, #1a3a5c);
-  padding: 14px 16px;
-  display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 1px solid rgba(201,168,76,.2);
-}
-#chat-avatar {
-  width: 38px; height: 38px; border-radius: 50%;
-  background: linear-gradient(135deg, #c9a84c, #e8c96a);
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 900; font-size: 1rem; color: #0a2540;
-  flex-shrink: 0;
-}
-#chat-status-dot {
-  width: 7px; height: 7px; background: #00c896;
-  border-radius: 50%; display: inline-block;
-  animation: pulse 2s ease infinite;
-}
-
-/* ── Messages ── */
-#chat-messages {
-  flex: 1;
-  height: 340px;
-  overflow-y: auto;
-  padding: 16px;
-  display: flex; flex-direction: column; gap: 10px;
-  scroll-behavior: smooth;
-}
-#chat-messages::-webkit-scrollbar { width: 4px; }
-#chat-messages::-webkit-scrollbar-track { background: transparent; }
-#chat-messages::-webkit-scrollbar-thumb { background: rgba(201,168,76,.3); border-radius: 2px; }
-
-/* Bubbles */
-.chat-msg {
-  max-width: 85%;
-  padding: 10px 14px;
-  border-radius: 16px;
-  font-size: .84rem;
-  line-height: 1.55;
-  animation: msgPop .25s ease;
-}
-@keyframes msgPop { from{opacity:0;transform:scale(.92)} to{opacity:1;transform:scale(1)} }
-
-.chat-msg.user {
-  align-self: flex-end;
-  background: linear-gradient(135deg, #c9a84c, #e8c96a);
-  color: #0a2540;
-  border-bottom-right-radius: 4px;
-  font-weight: 500;
-}
-.chat-msg.bot {
-  align-self: flex-start;
-  background: rgba(255,255,255,.07);
-  color: #e8f0fe;
-  border: 1px solid rgba(201,168,76,.12);
-  border-bottom-left-radius: 4px;
-}
-.chat-msg.bot strong { color: #c9a84c; }
-.chat-msg.bot a { color: #00a8e8; }
-
-/* Typing indicator */
-.typing-indicator {
-  align-self: flex-start;
-  background: rgba(255,255,255,.07);
-  border: 1px solid rgba(201,168,76,.12);
-  border-radius: 16px;
-  border-bottom-left-radius: 4px;
-  padding: 12px 16px;
-  display: flex; gap: 5px; align-items: center;
-}
-.typing-dot {
-  width: 7px; height: 7px; background: #8ea8c3;
-  border-radius: 50%; animation: typingBounce 1.2s ease infinite;
-}
-.typing-dot:nth-child(2) { animation-delay: .2s; }
-.typing-dot:nth-child(3) { animation-delay: .4s; }
-@keyframes typingBounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
-
-/* Time stamps */
-.chat-time {
-  font-size: .65rem;
-  color: rgba(142,168,195,.6);
-  align-self: center;
-  text-align: center;
-}
-
-/* ── Quick Replies ── */
-#chat-quick {
-  padding: 8px 12px;
-  display: flex; flex-wrap: wrap; gap: 6px;
-  border-top: 1px solid rgba(201,168,76,.1);
-  background: rgba(0,0,0,.15);
-}
-.quick-btn {
-  background: rgba(201,168,76,.1);
-  border: 1px solid rgba(201,168,76,.2);
-  color: #c9a84c;
-  border-radius: 100px;
-  padding: 4px 10px;
-  font-size: .72rem; font-weight: 600;
-  cursor: pointer; transition: all .2s;
-  white-space: nowrap;
-}
-.quick-btn:hover { background: rgba(201,168,76,.2); border-color: rgba(201,168,76,.4); }
-
-/* ── Input ── */
-#chat-input-wrap {
-  display: flex; align-items: center; gap: 8px;
-  padding: 12px 14px;
-  border-top: 1px solid rgba(201,168,76,.15);
-  background: rgba(0,0,0,.2);
-}
-#chat-input {
-  flex: 1;
-  background: rgba(255,255,255,.07);
-  border: 1px solid rgba(201,168,76,.2);
-  border-radius: 100px;
-  padding: 9px 16px;
-  color: #e8f0fe; font-size: .85rem;
-  outline: none; transition: border .2s;
-}
-#chat-input:focus { border-color: #c9a84c; background: rgba(255,255,255,.1); }
-#chat-input::placeholder { color: #8ea8c3; }
-#chat-send {
-  width: 38px; height: 38px; border-radius: 50%;
-  background: linear-gradient(135deg, #c9a84c, #e8c96a);
-  border: none; cursor: pointer; color: #0a2540;
-  font-size: .9rem; display: flex; align-items: center; justify-content: center;
-  transition: all .2s; flex-shrink: 0;
-}
-#chat-send:hover { transform: scale(1.1); }
-#chat-send:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-
-@media (max-width: 420px) {
-  #chat-window { width: calc(100vw - 32px); right: -14px; }
-}
+#chat-widget{position:fixed;bottom:28px;right:28px;z-index:99999;font-family:'Inter','Segoe UI',sans-serif}
+#chat-toggle{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c96a);border:none;cursor:pointer;font-size:1.4rem;color:#0a2540;box-shadow:0 6px 24px rgba(201,168,76,.5);transition:all .3s cubic-bezier(.4,0,.2,1);position:relative;display:flex;align-items:center;justify-content:center}
+#chat-toggle:hover{transform:scale(1.08);box-shadow:0 8px 30px rgba(201,168,76,.65)}
+#chat-notif-dot{position:absolute;top:3px;right:3px;width:14px;height:14px;background:#e63946;border-radius:50%;border:2px solid #060f1e;display:none;animation:pulse 2s ease infinite}
+#chat-window{position:absolute;bottom:74px;right:0;width:370px;background:#0d1f35;border:1px solid rgba(201,168,76,.25);border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.6);display:flex;flex-direction:column;animation:chatSlideUp .3s cubic-bezier(.4,0,.2,1)}
+@keyframes chatSlideUp{from{opacity:0;transform:translateY(20px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+#chat-header{background:linear-gradient(135deg,#0a2540,#1a3a5c);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(201,168,76,.2)}
+#chat-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c96a);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1rem;color:#0a2540;flex-shrink:0}
+#chat-status-dot{width:7px;height:7px;background:#00c896;border-radius:50%;display:inline-block;animation:pulse 2s ease infinite}
+#chat-messages{flex:1;height:340px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
+#chat-messages::-webkit-scrollbar{width:4px}
+#chat-messages::-webkit-scrollbar-thumb{background:rgba(201,168,76,.3);border-radius:2px}
+.chat-msg{max-width:85%;padding:10px 14px;border-radius:16px;font-size:.84rem;line-height:1.55;animation:msgPop .25s ease}
+@keyframes msgPop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+.chat-msg.user{align-self:flex-end;background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#0a2540;border-bottom-right-radius:4px;font-weight:500}
+.chat-msg.bot{align-self:flex-start;background:rgba(255,255,255,.07);color:#e8f0fe;border:1px solid rgba(201,168,76,.12);border-bottom-left-radius:4px}
+.chat-msg.bot strong{color:#c9a84c}
+.chat-msg.bot a{color:#00a8e8}
+.typing-indicator{align-self:flex-start;background:rgba(255,255,255,.07);border:1px solid rgba(201,168,76,.12);border-radius:16px;border-bottom-left-radius:4px;padding:12px 16px;display:flex;gap:5px;align-items:center}
+.typing-dot{width:7px;height:7px;background:#c4cdd6;border-radius:50%;animation:typingBounce 1.2s ease infinite}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+.chat-time{font-size:.65rem;color:rgba(196,205,214,.6);align-self:center;text-align:center}
+#chat-quick{padding:8px 12px;display:flex;flex-wrap:wrap;gap:6px;border-top:1px solid rgba(201,168,76,.1);background:rgba(0,0,0,.15)}
+.quick-btn{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);color:#c9a84c;border-radius:100px;padding:4px 10px;font-size:.72rem;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap}
+.quick-btn:hover{background:rgba(201,168,76,.2);border-color:rgba(201,168,76,.4)}
+#chat-input-wrap{display:flex;align-items:center;gap:8px;padding:12px 14px;border-top:1px solid rgba(201,168,76,.15);background:rgba(0,0,0,.2)}
+#chat-input{flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(201,168,76,.2);border-radius:100px;padding:9px 16px;color:#e8f0fe;font-size:.85rem;outline:none;transition:border .2s}
+#chat-input:focus{border-color:#c9a84c;background:rgba(255,255,255,.1)}
+#chat-input::placeholder{color:#c4cdd6}
+#chat-send{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c96a);border:none;cursor:pointer;color:#0a2540;font-size:.9rem;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+#chat-send:hover{transform:scale(1.1)}
+#chat-send:disabled{opacity:.5;cursor:not-allowed;transform:none}
+@media(max-width:420px){#chat-window{width:calc(100vw - 32px);right:-14px}}
 </style>
 
 <script>
-(function() {
-  const CSRF = document.cookie.match(/csrftoken=([^;]+)/)?.[1] || '';
-  let history = [];
-  let isOpen = false;
-  let hasGreeted = false;
+(function(){
+  const CSRF=document.cookie.match(/csrftoken=([^;]+)/)?.[1]||'';
+  let history=[],isOpen=false,hasGreeted=false;
+  const toggle=document.getElementById('chat-toggle'),
+        win=document.getElementById('chat-window'),
+        iconOpen=document.getElementById('chat-icon-open'),
+        iconClose=document.getElementById('chat-icon-close'),
+        msgs=document.getElementById('chat-messages'),
+        input=document.getElementById('chat-input'),
+        sendBtn=document.getElementById('chat-send'),
+        clearBtn=document.getElementById('chat-clear'),
+        minBtn=document.getElementById('chat-minimize'),
+        notifDot=document.getElementById('chat-notif-dot'),
+        quickBar=document.getElementById('chat-quick');
 
-  const toggle   = document.getElementById('chat-toggle');
-  const window_  = document.getElementById('chat-window');
-  const iconOpen = document.getElementById('chat-icon-open');
-  const iconClose= document.getElementById('chat-icon-close');
-  const messages = document.getElementById('chat-messages');
-  const input    = document.getElementById('chat-input');
-  const sendBtn  = document.getElementById('chat-send');
-  const clearBtn = document.getElementById('chat-clear');
-  const minBtn   = document.getElementById('chat-minimize');
-  const notifDot = document.getElementById('chat-notif-dot');
-  const quickBar = document.getElementById('chat-quick');
+  setTimeout(()=>{ if(!isOpen) notifDot.style.display='block'; },3000);
 
-  // Show notification dot after 3s to draw attention
-  setTimeout(() => { if (!isOpen) notifDot.style.display = 'block'; }, 3000);
+  function now(){ return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); }
 
-  function now() {
-    return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-  }
-
-  function addMessage(text, role) {
-    // Remove quick replies once user sends first message
-    if (role === 'user' && quickBar) quickBar.style.display = 'none';
-
-    const div = document.createElement('div');
-    div.className = 'chat-msg ' + role;
-
-    // Simple markdown: **bold**, *italic*, bullet points, links
-    let html = text
+  function addMessage(text,role){
+    if(role==='user'&&quickBar) quickBar.style.display='none';
+    const div=document.createElement('div');
+    div.className='chat-msg '+role;
+    let html=text
       .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
       .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
       .replace(/\*(.+?)\*/g,'<em>$1</em>')
       .replace(/`(.+?)`/g,'<code style="background:rgba(0,0,0,.3);padding:1px 5px;border-radius:4px">$1</code>')
-      .replace(/\/([a-z\-\/]+)\//g, '<a href="/$1/" style="color:#00a8e8">/$1/</a>')
-      .replace(
-s/g,'<br>• ')
-      .replace(
-s/g,'<br>• ')
-      .replace(
-g,'<br>');
-    div.innerHTML = html;
-    messages.appendChild(div);
-    messages.scrollTop = messages.scrollHeight;
+      .replace(/\/([a-z\-\/]+)\//g,'<a href="/$1/" style="color:#00a8e8">/$1/</a>')
+      .replace(/\n•\s/g,'<br>• ').replace(/\n-\s/g,'<br>• ').replace(/\n/g,'<br>');
+    div.innerHTML=html;
+    msgs.appendChild(div);
+    msgs.scrollTop=msgs.scrollHeight;
   }
 
-  function addTime(label) {
-    const t = document.createElement('div');
-    t.className = 'chat-time';
-    t.textContent = label;
-    messages.appendChild(t);
-  }
+  function addTime(label){ const t=document.createElement('div'); t.className='chat-time'; t.textContent=label; msgs.appendChild(t); }
+  function showTyping(){ const d=document.createElement('div'); d.className='typing-indicator'; d.id='typing'; d.innerHTML='<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>'; msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight; }
+  function removeTyping(){ const t=document.getElementById('typing'); if(t) t.remove(); }
 
-  function showTyping() {
-    const div = document.createElement('div');
-    div.className = 'typing-indicator';
-    div.id = 'typing';
-    div.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
-    messages.appendChild(div);
-    messages.scrollTop = messages.scrollHeight;
-  }
-
-  function removeTyping() {
-    const t = document.getElementById('typing');
-    if (t) t.remove();
-  }
-
-  async function sendMessage(text) {
-    if (!text.trim()) return;
-    input.value = '';
-    sendBtn.disabled = true;
-
-    addMessage(text, 'user');
-    history.push({ role: 'user', content: text });
-
+  async function sendMessage(text){
+    if(!text.trim()) return;
+    input.value=''; sendBtn.disabled=true;
+    addMessage(text,'user');
+    history.push({role:'user',content:text});
     showTyping();
-
-    try {
-      const res = await fetch('/chat/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF },
-        body: JSON.stringify({ messages: history }),
-      });
-      const data = await res.json();
+    try{
+      const res=await fetch('/chat/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':CSRF},body:JSON.stringify({messages:history})});
+      const data=await res.json();
       removeTyping();
-      const reply = data.reply || 'Sorry, I could not get a response. Please try again.';
-      addMessage(reply, 'bot');
-      history.push({ role: 'assistant', content: reply });
+      const reply=data.reply||'Sorry, I could not get a response. Please try again.';
+      addMessage(reply,'bot');
+      history.push({role:'assistant',content:reply});
       addTime(now());
-    } catch(e) {
+    }catch(e){
       removeTyping();
-      addMessage('I'm having trouble connecting right now. Please try again or call us at 416 832 3512.', 'bot');
+      addMessage("I'm having trouble connecting. Please call us at +1 (416) 832 3512.",'bot');
     }
-
-    sendBtn.disabled = false;
-    input.focus();
+    sendBtn.disabled=false; input.focus();
   }
 
-  // Open/close
-  toggle.addEventListener('click', () => {
-    isOpen = !isOpen;
-    window_.style.display = isOpen ? 'flex' : 'none';
-    iconOpen.style.display = isOpen ? 'none' : 'flex';
-    iconClose.style.display = isOpen ? 'flex' : 'none';
-    notifDot.style.display = 'none';
-
-    if (isOpen && !hasGreeted) {
-      hasGreeted = true;
-      addTime('Today ' + now());
-      setTimeout(() => {
-        addMessage('👋 Hello! I'm **TARA**, T&TG Trade Corporation's AI assistant.
-
-I can help you with our marketplace, Avon Points, insurance, forex, training programs, coffee company and more.
-
-What would you like to know?', 'bot');
-      }, 400);
+  toggle.addEventListener('click',()=>{
+    isOpen=!isOpen;
+    win.style.display=isOpen?'flex':'none';
+    iconOpen.style.display=isOpen?'none':'flex';
+    iconClose.style.display=isOpen?'flex':'none';
+    notifDot.style.display='none';
+    if(isOpen&&!hasGreeted){
+      hasGreeted=true; addTime('Today '+now());
+      setTimeout(()=>{ addMessage(`👋 Hello! I'm **TARA**, T&TG Trade Corporation's AI assistant.\n\nI can help you with our online shopping platform, T&TG Loyalty Points, live exchange rates (CAD/UGX · CAD/KES · UGX/KES), training programs and more.\n\nWhat would you like to know?`,'bot'); },400);
     }
-    if (isOpen) input.focus();
+    if(isOpen) input.focus();
   });
 
-  // Send
-  sendBtn.addEventListener('click', () => sendMessage(input.value));
-  input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) sendMessage(input.value); });
+  sendBtn.addEventListener('click',()=>sendMessage(input.value));
+  input.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey) sendMessage(input.value); });
+  document.querySelectorAll('.quick-btn').forEach(btn=>btn.addEventListener('click',()=>sendMessage(btn.dataset.msg)));
+  clearBtn.addEventListener('click',()=>{ msgs.innerHTML=''; history=[]; hasGreeted=false; if(quickBar) quickBar.style.display='flex'; addTime('Chat cleared · '+now()); addMessage("👋 Hello again! How can I help you?",'bot'); });
+  minBtn.addEventListener('click',()=>{ isOpen=false; win.style.display='none'; iconOpen.style.display='flex'; iconClose.style.display='none'; });
 
-  // Quick replies
-  document.querySelectorAll('.quick-btn').forEach(btn => {
-    btn.addEventListener('click', () => sendMessage(btn.dataset.msg));
-  });
-
-  // Clear
-  clearBtn.addEventListener('click', () => {
-    messages.innerHTML = '';
-    history = [];
-    hasGreeted = false;
-    if (quickBar) quickBar.style.display = 'flex';
-    addTime('Chat cleared · ' + now());
-    addMessage('👋 Hello again! How can I help you?', 'bot');
-  });
-
-  // Minimize
-  minBtn.addEventListener('click', () => {
-    isOpen = false;
-    window_.style.display = 'none';
-    iconOpen.style.display = 'flex';
-    iconClose.style.display = 'none';
-  });
-
+  // Load forex ticker
+  (function loadTicker(){
+    fetch('/services/forex/')
+      .then(r => r.text())
+      .then(html => {
+        // Rates are in the page; try to grab from DB via a data endpoint if available
+        // For now just show placeholder — real rates come from ForexRate model
+      }).catch(()=>{});
+  })();
 })();
 </script>
 
+<script>
+// Navbar scroll effect
+(function(){
+  const nav = document.getElementById('tgNavbar');
+  window.addEventListener('scroll', function(){
+    nav && (nav.classList.toggle('scrolled', window.scrollY > 40));
+  }, {passive: true});
+
+  // Mobile dropdown toggles
+  document.querySelectorAll('.tg-has-drop').forEach(function(el){
+    el.addEventListener('click', function(e){
+      if(window.innerWidth < 992){
+        e.preventDefault();
+        var wrap = el.closest('.tg-dropdown-wrap');
+        wrap && wrap.classList.toggle('open');
+      }
+    });
+  });
+})();
+</script>
+
+<script>
+/* ── Navbar: scroll, hamburger, mobile dropdowns ── */
+(function(){
+  var nav  = document.getElementById('tgNavbar');
+  var menu = document.getElementById('tgNavMenu');
+  var ham  = document.getElementById('tgHamburger');
+
+  /* scroll tint */
+  window.addEventListener('scroll', function(){
+    nav && nav.classList.toggle('scrolled', window.scrollY > 40);
+  }, {passive:true});
+
+  /* hamburger toggle */
+  ham && ham.addEventListener('click', function(){
+    menu.classList.toggle('open');
+    ham.classList.toggle('open');
+  });
+
+  /* mobile dropdown toggles */
+  document.querySelectorAll('.tg-nl').forEach(function(el){
+    if(el.tagName !== 'BUTTON') return;
+    el.addEventListener('click', function(){
+      if(window.innerWidth >= 992) return;
+      var li = el.closest('li');
+      li && li.classList.toggle('mob-open');
+    });
+  });
+
+  /* PWA install */
+  var deferredPrompt = null;
+  var installBtn = document.getElementById('install-btn');
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault(); deferredPrompt = e;
+    installBtn && installBtn.classList.remove('d-none');
+  });
+  installBtn && installBtn.addEventListener('click', async function(){
+    if(!deferredPrompt) return;
+    deferredPrompt.prompt();
+    var r = await deferredPrompt.userChoice;
+    if(r.outcome==='accepted') installBtn.classList.add('d-none');
+    deferredPrompt = null;
+  });
+  window.addEventListener('appinstalled', function(){
+    installBtn && installBtn.classList.add('d-none');
+  });
+
+  /* service worker */
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('/static/sw.js').catch(function(){});
+  }
+})();
+</script>
 </body>
 </html>

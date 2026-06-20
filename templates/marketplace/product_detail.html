@@ -1,42 +1,137 @@
 {% extends 'base.html' %}
-{% block title %}{{ product.name }} — T&TG Trade Corp{% endblock %}
+{% block title %}{{ product.name }} — T&TG Online Shopping Platform{% endblock %}
+
 {% block content %}
 <div class="page-header">
   <div class="container">
-    <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li><li class="breadcrumb-item"><a href="{% url 'product_list' %}">Products</a></li><li class="breadcrumb-item active">{{ product.name|truncatechars:30 }}</li></ol></nav>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'product_list' %}">Products</a></li>
+        <li class="breadcrumb-item active">{{ product.name|truncatechars:30 }}</li>
+      </ol>
+    </nav>
   </div>
 </div>
+
 <section class="section" style="padding-top:2rem">
   <div class="container">
     <div class="row g-5">
+
+      <!-- Image -->
       <div class="col-lg-6">
-        <div style="border-radius:var(--radius);overflow:hidden;background:linear-gradient(135deg,var(--bg-card),#1a3a5c);aspect-ratio:4/3;display:flex;align-items:center;justify-content:center">
-          {% if product.image %}<img src="{{ product.image.url }}" style="width:100%;height:100%;object-fit:cover">
-          {% else %}<div style="font-size:8rem;opacity:.3">{% if product.category == 'electronics' %}💻{% elif product.category == 'coffee' %}☕{% else %}📦{% endif %}</div>{% endif %}
+        <div style="border-radius:var(--radius);overflow:hidden;background:linear-gradient(135deg,#0d1f35,#1a3a5c);aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;position:relative">
+          {% if product.safe_image_url %}
+          <img src="{{ product.safe_image_url }}" alt="{{ product.name }}"
+               style="width:100%;height:100%;object-fit:cover"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:8rem;opacity:.3;position:absolute;inset:0">
+            {% if product.category == 'clothing' %}👔{% elif product.category == 'shoes' %}👟{% elif product.category == 'watches' %}⌚{% elif product.category == 'coffee' %}☕{% else %}📦{% endif %}
+          </div>
+          {% else %}
+          <div style="font-size:8rem;opacity:.3">
+            {% if product.category == 'clothing' %}👔{% elif product.category == 'shoes' %}👟{% elif product.category == 'watches' %}⌚{% elif product.category == 'coffee' %}☕{% else %}📦{% endif %}
+          </div>
+          {% endif %}
         </div>
-      </div>
-      <div class="col-lg-6">
-        <div class="badge badge-gold mb-3" style="font-size:.7rem">{{ product.get_category_display }}</div>
-        <span class="badge badge-{% if product.market_type == 'local' %}green{% elif product.market_type == 'international' %}accent{% else %}gold{% endif %} ms-2 mb-3" style="font-size:.7rem">{{ product.get_market_type_display }}</span>
-        <h2 class="text-light">{{ product.name }}</h2>
-        <div class="d-flex align-items-baseline gap-3 my-3">
-          <div style="font-size:2.5rem;font-weight:900;color:var(--gold)">{{ product.currency }} {{ product.price }}</div>
-          <div class="text-muted">/ {{ product.unit }}</div>
-        </div>
-        <div class="glass-card p-3 mb-3">
-          <div class="row g-2 text-center">
-            <div class="col-4"><div class="text-muted" style="font-size:.7rem;text-transform:uppercase">Available</div><div class="text-gold fw-bold">{{ product.quantity_available }}</div></div>
-            <div class="col-4"><div class="text-muted" style="font-size:.7rem;text-transform:uppercase">Consumer Pts</div><div class="text-accent2 fw-bold">{{ product.avon_points_consumer }}</div></div>
-            <div class="col-4"><div class="text-muted" style="font-size:.7rem;text-transform:uppercase">Referral Pts</div><div class="text-accent2 fw-bold">{{ product.avon_points_referral }}</div></div>
+
+        <!-- Social Share Buttons -->
+        <div class="mt-3">
+          <div class="text-muted small mb-2"><i class="fas fa-share-alt me-1 text-gold"></i>Share this product</div>
+          <div class="d-flex gap-2 flex-wrap">
+            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}"
+               target="_blank" rel="noopener"
+               class="btn btn-sm" style="background:#1877f2;color:#fff;border-radius:20px;font-size:.78rem">
+              <i class="fab fa-facebook-f me-1"></i>Facebook
+            </a>
+            <a href="https://www.instagram.com/" target="_blank" rel="noopener"
+               class="btn btn-sm" style="background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;border-radius:20px;font-size:.78rem">
+              <i class="fab fa-instagram me-1"></i>Instagram
+            </a>
+            <a href="https://www.tiktok.com" target="_blank" rel="noopener"
+               class="btn btn-sm" style="background:#000;color:#fff;border-radius:20px;font-size:.78rem">
+              <i class="fab fa-tiktok me-1"></i>TikTok
+            </a>
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}"
+               target="_blank" rel="noopener"
+               class="btn btn-sm" style="background:#0a66c2;color:#fff;border-radius:20px;font-size:.78rem">
+              <i class="fab fa-linkedin-in me-1"></i>LinkedIn
+            </a>
+            <a href="https://wa.me/?text={{ product.name }}%20%E2%80%94%20{{ request.build_absolute_uri }}"
+               target="_blank" rel="noopener"
+               class="btn btn-sm" style="background:#25d366;color:#fff;border-radius:20px;font-size:.78rem">
+              <i class="fab fa-whatsapp me-1"></i>WhatsApp
+            </a>
+            <button onclick="navigator.clipboard.writeText('{{ request.build_absolute_uri }}');this.innerHTML='<i class=\'fas fa-check\'></i> Copied!'"
+                    class="btn btn-sm btn-outline-secondary" style="border-radius:20px;font-size:.78rem">
+              <i class="fas fa-link me-1"></i>Copy Link
+            </button>
           </div>
         </div>
+      </div>
+
+      <!-- Details -->
+      <div class="col-lg-6">
+        <div class="d-flex flex-wrap gap-2 mb-3">
+          <span class="badge badge-gold" style="font-size:.7rem">{{ product.get_category_display }}</span>
+          {% if product.gender_target != 'all' %}
+          <span class="badge" style="background:rgba(201,168,76,.15);color:#c9a84c;font-size:.7rem">{{ product.get_gender_target_display }}</span>
+          {% endif %}
+          <span class="badge badge-{% if product.market_type == 'local' %}green{% elif product.market_type == 'international' %}accent{% else %}gold{% endif %} ms-1" style="font-size:.7rem">{{ product.get_market_type_display }}</span>
+        </div>
+
+        <h2 class="text-light">{{ product.name }}</h2>
+
+        <div class="d-flex align-items-baseline gap-3 my-3">
+          <div style="font-size:2.5rem;font-weight:900;color:#c9a84c">{{ product.currency }} {{ product.price }}</div>
+          <div class="text-muted">/ {{ product.unit }}</div>
+        </div>
+
+        <!-- Loyalty Points info box -->
+        <div class="glass-card p-3 mb-3">
+          <div class="text-gold fw-700 small mb-2"><i class="fas fa-coins me-1"></i>T&TG Loyalty Points</div>
+          <div class="row g-2 text-center">
+            <div class="col-4">
+              <div class="text-muted" style="font-size:.68rem;text-transform:uppercase">Available Stock</div>
+              <div class="text-gold fw-bold">{{ product.quantity_available }}</div>
+            </div>
+            <div class="col-4">
+              <div class="text-muted" style="font-size:.68rem;text-transform:uppercase">You Earn</div>
+              <div style="color:#00c896;font-weight:700">{{ product.loyalty_points_consumer }} pts</div>
+              <div class="text-muted" style="font-size:.62rem">1% · consumer</div>
+            </div>
+            <div class="col-4">
+              <div class="text-muted" style="font-size:.68rem;text-transform:uppercase">Referrer Earns</div>
+              <div style="color:#00c896;font-weight:700">{{ product.loyalty_points_referral }} pts</div>
+              <div class="text-muted" style="font-size:.62rem">2.5% · referral</div>
+            </div>
+          </div>
+          <div class="text-muted mt-2 text-center" style="font-size:.7rem">
+            <i class="fas fa-calendar-check me-1 text-gold"></i>Reward paid on Day 45 after purchase
+          </div>
+        </div>
+
         <p class="text-muted" style="font-size:.9rem;line-height:1.7">{{ product.description }}</p>
-        {% if product.video_url %}
-        <a href="{{ product.video_url }}" target="_blank" class="btn btn-outline-gold btn-sm mb-3"><i class="fas fa-play me-2"></i>Watch Product Video</a>
+
+        {% if product.origin_country %}
+        <div class="small text-muted mb-3">
+          <i class="fas fa-globe me-1 text-gold"></i>Origin: <strong>{{ product.origin_country }}</strong>
+        </div>
         {% endif %}
+
+        {% if product.video_url %}
+        <a href="{{ product.video_url }}" target="_blank" class="btn btn-outline-gold btn-sm mb-3">
+          <i class="fas fa-play me-2"></i>Watch Product Video
+        </a>
+        {% endif %}
+
         <div class="d-flex gap-3 mt-4">
-          <a href="{% url 'place_order' product.pk %}" class="btn btn-gold btn-lg flex-fill"><i class="fas fa-shopping-cart me-2"></i>Place Order</a>
-          <a href="{% url 'product_list' %}" class="btn btn-outline-gold btn-lg"><i class="fas fa-arrow-left"></i></a>
+          <a href="{% url 'place_order' product.pk %}" class="btn btn-gold btn-lg flex-fill">
+            <i class="fas fa-shopping-cart me-2"></i>Place Order
+          </a>
+          <a href="{% url 'product_list' %}" class="btn btn-outline-gold btn-lg">
+            <i class="fas fa-arrow-left"></i>
+          </a>
         </div>
       </div>
     </div>
@@ -62,7 +157,7 @@
     </div>
     {% endif %}
 
-    <!-- Related -->
+    <!-- Related Products -->
     {% if related %}
     <div class="mt-5">
       <h4 class="text-gold mb-4">Related Products</h4>
@@ -71,8 +166,11 @@
         <div class="col-sm-6 col-lg-3">
           <div class="product-card">
             <div class="product-img-wrap" style="height:150px">
-              {% if p.image %}<img src="{{ p.image.url }}" alt="{{ p.name }}">
-              {% else %}<div class="product-placeholder" style="font-size:3rem">{% if p.category == 'electronics' %}💻{% elif p.category == 'coffee' %}☕{% else %}📦{% endif %}</div>{% endif %}
+              {% if p.safe_image_url %}
+              <img src="{{ p.safe_image_url }}" alt="{{ p.name }}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">
+              {% else %}
+              <div class="product-placeholder" style="font-size:3rem">{% if p.category == 'clothing' %}👔{% elif p.category == 'shoes' %}👟{% elif p.category == 'watches' %}⌚{% elif p.category == 'coffee' %}☕{% else %}📦{% endif %}</div>
+              {% endif %}
             </div>
             <div class="product-body" style="padding:1rem">
               <div class="product-name" style="font-size:.875rem">{{ p.name }}</div>
@@ -80,6 +178,7 @@
             </div>
             <div class="product-foot">
               <a href="{% url 'product_detail' p.pk %}" class="btn btn-outline-gold btn-sm flex-fill">View</a>
+              <a href="{% url 'place_order' p.pk %}"    class="btn btn-gold btn-sm flex-fill">Order</a>
             </div>
           </div>
         </div>

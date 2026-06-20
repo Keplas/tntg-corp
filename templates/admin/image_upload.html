@@ -1,0 +1,388 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bulk Image Upload — T&TG Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #c9a84c; --primary: #0a2540;
+      --bg: #060f1e; --card: #0d1f35;
+      --border: rgba(201,168,76,.2); --muted: #8ea8c3;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: #e8f0fe; font-family: 'Inter', sans-serif; min-height: 100vh; }
+    .topbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; align-items: center; gap: 1rem; }
+    .topbar h1 { font-size: 1.2rem; color: var(--gold); font-weight: 800; }
+    .topbar .back-link { color: var(--muted); text-decoration: none; font-size: .85rem; }
+    .topbar .back-link:hover { color: var(--gold); }
+    .container-main { max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem; }
+
+    /* Status bar */
+    .status-bar { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; background: {% if use_cloudinary %}#00c896{% else %}#e63946{% endif %}; flex-shrink: 0; }
+    .status-text { font-size: .85rem; }
+    .status-text strong { color: {% if use_cloudinary %}#00c896{% else %}#e63946{% endif %}; }
+
+    /* Drop zone */
+    #drop-zone {
+      border: 2px dashed var(--border); border-radius: 16px;
+      padding: 3rem 2rem; text-align: center; cursor: pointer;
+      transition: all .3s; background: var(--card); margin-bottom: 1.5rem;
+    }
+    #drop-zone:hover, #drop-zone.dragover {
+      border-color: var(--gold); background: rgba(201,168,76,.05);
+    }
+    #drop-zone .icon { font-size: 3rem; margin-bottom: 1rem; opacity: .6; }
+    #drop-zone p { color: var(--muted); font-size: .9rem; margin: .25rem 0; }
+    #drop-zone strong { color: var(--gold); }
+
+    /* Upload queue */
+    #upload-queue { display: flex; flex-direction: column; gap: .75rem; margin-bottom: 1.5rem; }
+    .queue-item {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+    }
+    .queue-item .preview { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; background: rgba(255,255,255,.05); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+    .queue-item .preview img { width: 100%; height: 100%; border-radius: 8px; object-fit: cover; }
+    .queue-item .info { flex: 1; min-width: 0; }
+    .queue-item .filename { font-weight: 700; font-size: .9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .queue-item .matched { font-size: .78rem; margin-top: .25rem; }
+    .queue-item .matched.ok { color: #00c896; }
+    .queue-item .matched.none { color: var(--muted); }
+    .queue-item select { background: rgba(255,255,255,.05); border: 1px solid var(--border); color: #e8f0fe; border-radius: 8px; padding: .4rem .75rem; font-size: .82rem; min-width: 200px; max-width: 280px; }
+    .queue-item select option { background: var(--card); }
+    .queue-item .status { font-size: .78rem; min-width: 90px; text-align: right; }
+    .queue-item .status.pending { color: var(--muted); }
+    .queue-item .status.uploading { color: #00a8e8; }
+    .queue-item .status.done { color: #00c896; }
+    .queue-item .status.error { color: #e63946; }
+    .queue-item.done-item { opacity: .7; border-color: rgba(0,200,150,.3); }
+    .remove-btn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; padding: .2rem .4rem; border-radius: 6px; flex-shrink: 0; }
+    .remove-btn:hover { color: #e63946; background: rgba(230,57,70,.1); }
+
+    /* Buttons */
+    .btn-gold { background: linear-gradient(135deg, var(--gold), #e8c96a); color: var(--primary); border: none; border-radius: 8px; padding: .65rem 1.75rem; font-weight: 700; font-size: .9rem; cursor: pointer; transition: all .2s; }
+    .btn-gold:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px); }
+    .btn-gold:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--muted); border-radius: 8px; padding: .65rem 1.5rem; font-size: .85rem; cursor: pointer; }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* Product table */
+    .product-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+    .product-table th { color: var(--gold); padding: .75rem 1rem; text-align: left; background: rgba(201,168,76,.05); border-bottom: 1px solid var(--border); font-size: .72rem; text-transform: uppercase; letter-spacing: 1px; }
+    .product-table td { padding: .7rem 1rem; border-bottom: 1px solid rgba(255,255,255,.04); vertical-align: middle; }
+    .product-table tr:hover td { background: rgba(201,168,76,.03); }
+    .thumb { width: 44px; height: 44px; border-radius: 6px; object-fit: cover; background: rgba(255,255,255,.05); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+    .thumb img { width: 44px; height: 44px; border-radius: 6px; object-fit: cover; }
+    .badge-cat { background: rgba(201,168,76,.12); color: var(--gold); border-radius: 100px; padding: .2rem .65rem; font-size: .68rem; font-weight: 700; }
+    .has-image { color: #00c896; } .no-image { color: var(--muted); }
+
+    /* Progress */
+    .progress-wrap { margin-bottom: 1.5rem; display: none; }
+    .progress-bar-bg { background: rgba(255,255,255,.08); border-radius: 100px; height: 8px; overflow: hidden; }
+    .progress-bar-fill { background: linear-gradient(90deg, var(--gold), #e8c96a); height: 100%; border-radius: 100px; transition: width .3s; width: 0; }
+    .progress-label { font-size: .8rem; color: var(--muted); margin-top: .5rem; text-align: center; }
+
+    /* Toast */
+    #toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.5rem; font-size: .875rem; display: none; box-shadow: 0 8px 32px rgba(0,0,0,.5); z-index: 9999; }
+    #toast.success { border-color: rgba(0,200,150,.4); color: #00c896; }
+    #toast.error { border-color: rgba(230,57,70,.4); color: #e63946; }
+
+    .section-title { font-size: 1rem; font-weight: 700; color: var(--gold); margin-bottom: 1rem; display: flex; align-items: center; gap: .5rem; }
+    .card-section { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .empty-msg { color: var(--muted); text-align: center; padding: 2rem; }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <img src="{% static 'images/tg_logo.jpeg' %}" style="width:36px;height:36px;object-fit:contain;background:#fff;border-radius:6px;padding:2px">
+  <h1>Bulk Image Upload</h1>
+  <a href="/admin/" class="back-link ms-auto"><i class="fas fa-arrow-left me-1"></i>Back to Admin</a>
+</div>
+
+<div class="container-main">
+
+  <!-- Cloudinary Status -->
+  <div class="status-bar">
+    <div class="status-dot"></div>
+    <div class="status-text">
+      Storage: <strong>{% if use_cloudinary %}Cloudinary (Permanent ✓){% else %}Local Filesystem — images will be lost on Render deploy!{% endif %}</strong>
+      {% if not use_cloudinary %}
+      — Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET on Render.
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Upload Zone -->
+  <div class="card-section">
+    <div class="section-title"><i class="fas fa-cloud-upload-alt"></i>Upload Images</div>
+
+    <div id="drop-zone" onclick="document.getElementById('file-input').click()">
+      <div class="icon">🖼️</div>
+      <p><strong>Click to browse</strong> or drag & drop images here</p>
+      <p>Supports: JPG, PNG, WebP, GIF · Multiple files at once</p>
+      <p style="margin-top:.75rem;font-size:.78rem;color:var(--gold)">
+        💡 Name files as <strong>product_1.jpg</strong> (ID) or <strong>samsung_tv.jpg</strong> (name) for auto-matching
+      </p>
+    </div>
+    <input type="file" id="file-input" multiple accept="image/*" style="display:none">
+
+    <div id="upload-queue"></div>
+
+    <div class="progress-wrap" id="progress-wrap">
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill"></div></div>
+      <div class="progress-label" id="progress-label">Uploading…</div>
+    </div>
+
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+      <button class="btn-gold" id="upload-all-btn" disabled onclick="uploadAll()">
+        <i class="fas fa-upload me-2"></i>Upload All to {% if use_cloudinary %}Cloudinary{% else %}Server{% endif %}
+      </button>
+      <button class="btn-outline" onclick="clearQueue()">Clear Queue</button>
+    </div>
+  </div>
+
+  <!-- Product List -->
+  <div class="card-section">
+    <div class="section-title"><i class="fas fa-boxes"></i>Products — Current Images</div>
+    <div style="overflow-x:auto">
+      <table class="product-table" id="product-table">
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in products %}
+          <tr id="product-row-{{ p.id }}">
+            <td>
+              <div class="thumb" id="thumb-{{ p.id }}">
+                {% if p.safe_image_url %}
+                <img src="" data-product-id="{{ p.id }}" class="product-thumb-img" alt="{{ p.name }}">
+                {% else %}
+                <span>📦</span>
+                {% endif %}
+              </div>
+            </td>
+            <td style="color:var(--gold);font-weight:700">{{ p.id }}</td>
+            <td style="font-weight:600">{{ p.name }}</td>
+            <td><span class="badge-cat">{{ p.category }}</span></td>
+            <td>
+              {% if p.safe_image_url %}
+              <span class="has-image" id="img-status-{{ p.id }}"><i class="fas fa-check-circle me-1"></i>Has image</span>
+              {% else %}
+              <span class="no-image" id="img-status-{{ p.id }}"><i class="fas fa-times-circle me-1"></i>No image</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+const CSRF = document.cookie.match(/csrftoken=([^;]+)/)?.[1] || '';
+const products = {{ products|safe }};
+let queue = [];
+
+// Build product options for selects
+const productOptions = products.map(p =>
+  `<option value="${p.id}">[${p.id}] ${p.name} (${p.category})</option>`
+).join('');
+
+// ── Drop zone ──────────────────────────────────────────────────────────────
+const dropZone  = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+
+dropZone.addEventListener('dragover',  e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('dragover');
+  addFiles([...e.dataTransfer.files]);
+});
+fileInput.addEventListener('change', e => addFiles([...e.target.files]));
+
+function addFiles(files) {
+  files.forEach(file => {
+    if (!file.type.startsWith('image/')) return;
+    const id = Date.now() + Math.random();
+    queue.push({ id, file, productId: null, status: 'pending' });
+    renderQueueItem(id, file);
+    autoMatch(id, file.name);
+  });
+  document.getElementById('upload-all-btn').disabled = queue.length === 0;
+}
+
+function renderQueueItem(id, file) {
+  const queueEl = document.getElementById('upload-queue');
+  const div = document.createElement('div');
+  div.className = 'queue-item';
+  div.id = `qi-${id}`;
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = div.querySelector('.preview');
+    img.innerHTML = `<img src="${e.target.result}" alt="">`;
+  };
+  reader.readAsDataURL(file);
+
+  div.innerHTML = `
+    <div class="preview">🖼️</div>
+    <div class="info">
+      <div class="filename">${file.name}</div>
+      <div class="matched none" id="match-${id}">Checking match…</div>
+    </div>
+    <select id="sel-${id}" onchange="setProduct('${id}', this.value)">
+      <option value="">— Select Product —</option>
+      ${productOptions}
+    </select>
+    <div class="status pending" id="status-${id}">Pending</div>
+    <button class="remove-btn" onclick="removeItem('${id}')" title="Remove">✕</button>
+  `;
+  queueEl.appendChild(div);
+}
+
+async function autoMatch(id, filename) {
+  try {
+    const res  = await fetch('/admin/upload-images/match/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF },
+      body: JSON.stringify({ filename })
+    });
+    const data = await res.json();
+    const matchEl = document.getElementById(`match-${id}`);
+    const selEl   = document.getElementById(`sel-${id}`);
+    if (data.matched) {
+      matchEl.textContent = `✓ Auto-matched → [${data.product_id}] ${data.product_name}`;
+      matchEl.className = 'matched ok';
+      selEl.value = data.product_id;
+      setProduct(id, data.product_id);
+    } else {
+      matchEl.textContent = 'No auto-match — select a product below';
+      matchEl.className = 'matched none';
+    }
+  } catch { /* ignore */ }
+}
+
+function setProduct(id, productId) {
+  const item = queue.find(q => String(q.id) === String(id));
+  if (item) item.productId = productId;
+}
+
+function removeItem(id) {
+  queue = queue.filter(q => String(q.id) !== String(id));
+  document.getElementById(`qi-${id}`)?.remove();
+  document.getElementById('upload-all-btn').disabled = queue.length === 0;
+}
+
+function clearQueue() {
+  queue = [];
+  document.getElementById('upload-queue').innerHTML = '';
+  document.getElementById('upload-all-btn').disabled = true;
+  document.getElementById('progress-wrap').style.display = 'none';
+}
+
+// ── Upload ─────────────────────────────────────────────────────────────────
+async function uploadAll() {
+  const toUpload = queue.filter(q => q.status === 'pending' && q.productId);
+  if (toUpload.length === 0) {
+    toast('Please assign a product to each image first.', 'error'); return;
+  }
+
+  document.getElementById('upload-all-btn').disabled = true;
+  const progressWrap = document.getElementById('progress-wrap');
+  const progressFill = document.getElementById('progress-fill');
+  const progressLabel = document.getElementById('progress-label');
+  progressWrap.style.display = 'block';
+
+  let done = 0;
+  for (const item of toUpload) {
+    const statusEl = document.getElementById(`status-${item.id}`);
+    const qiEl     = document.getElementById(`qi-${item.id}`);
+    statusEl.textContent = 'Uploading…';
+    statusEl.className   = 'status uploading';
+
+    const formData = new FormData();
+    formData.append('image',      item.file);
+    formData.append('product_id', item.productId);
+
+    try {
+      const res  = await fetch('/admin/upload-images/upload/', {
+        method: 'POST', headers: { 'X-CSRFToken': CSRF }, body: formData
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        statusEl.textContent = '✓ Done';
+        statusEl.className   = 'status done';
+        qiEl.classList.add('done-item');
+        item.status = 'done';
+        // Update product table row
+        updateProductRow(data.product_id, data.image_url);
+      } else {
+        statusEl.textContent = '✗ ' + (data.error || 'Error');
+        statusEl.className   = 'status error';
+      }
+    } catch (e) {
+      statusEl.textContent = '✗ Network error';
+      statusEl.className   = 'status error';
+    }
+
+    done++;
+    const pct = Math.round((done / toUpload.length) * 100);
+    progressFill.style.width  = pct + '%';
+    progressLabel.textContent = `${done} of ${toUpload.length} uploaded (${pct}%)`;
+  }
+
+  toast(`✅ Uploaded ${done} image${done !== 1 ? 's' : ''} successfully!`, 'success');
+  document.getElementById('upload-all-btn').disabled = false;
+}
+
+function updateProductRow(productId, imageUrl) {
+  const thumbEl   = document.getElementById(`thumb-${productId}`);
+  const statusEl  = document.getElementById(`img-status-${productId}`);
+  if (thumbEl) {
+    thumbEl.innerHTML = `<img src="${imageUrl}" alt="" onerror="this.parentElement.innerHTML='✓'">`;
+  }
+  if (statusEl) {
+    statusEl.className   = 'has-image';
+    statusEl.innerHTML   = '<i class="fas fa-check-circle me-1"></i>Has image';
+  }
+}
+
+// ── Load existing product thumbnails ───────────────────────────────────────
+document.querySelectorAll('.product-thumb-img').forEach(img => {
+  const pid = img.dataset.productId;
+  // Fetch product image URL from Django
+  fetch(`/admin/upload-images/thumb/${pid}/`)
+    .then(r => r.json())
+    .then(d => { if (d.url) img.src = d.url; else img.parentElement.innerHTML = '📦'; })
+    .catch(() => { img.parentElement.innerHTML = '📦'; });
+});
+
+// ── Toast ──────────────────────────────────────────────────────────────────
+function toast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className   = type;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+</script>
+</body>
+</html>

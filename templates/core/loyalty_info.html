@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}T&TG Trade Loyalty Platform — Earn Points, Refer & Earn, Withdraw Funds{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section style="background:linear-gradient(135deg,#0a2540 0%,#1a3a5c 100%);padding:80px 0 60px">
+  <div class="container text-center">
+    <div class="d-inline-flex align-items-center gap-2 mb-3 px-3 py-1 rounded-pill" style="background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.25)">
+      <i class="fas fa-coins text-gold"></i>
+      <span style="color:#c9a84c;font-size:.8rem;font-weight:600;letter-spacing:1px">T&TG TRADE LOYALTY PLATFORM</span>
+    </div>
+    <h1 class="display-5 fw-800 text-white mb-3">Earn Points. Refer. Withdraw.</h1>
+    <p class="lead text-muted mx-auto" style="max-width:560px">
+      Every purchase on T&TG's online shopping platform earns you T&TG Loyalty Points.
+      Refer friends and earn even more. Withdraw your funds on Day 45.
+    </p>
+    {% if user.is_authenticated %}
+    <a href="{% url 'loyalty_dashboard' %}" class="btn btn-gold px-4 py-2 mt-2">
+      <i class="fas fa-chart-pie me-2"></i>My Loyalty Dashboard
+    </a>
+    {% else %}
+    <a href="{% url 'register' %}" class="btn btn-gold px-4 py-2 mt-2 me-2">
+      <i class="fas fa-user-plus me-2"></i>Join & Start Earning
+    </a>
+    <a href="{% url 'login' %}" class="btn btn-outline-secondary px-4 py-2 mt-2">Sign In</a>
+    {% endif %}
+  </div>
+</section>
+
+<!-- Four Pillars -->
+<section class="py-5 bg-white">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="fw-800" style="color:#0a2540">The Four Pillars</h2>
+      <p class="text-muted">T&TG Trade Loyalty Platform is built on four simple rewards</p>
+    </div>
+    <div class="row g-4">
+
+      <!-- A: Points -->
+      <div class="col-md-6 col-lg-3" id="points">
+        <div class="card h-100 border-0 shadow-sm text-center p-4" style="border-radius:16px;transition:.3s" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+          <div class="mb-3" style="font-size:2.5rem">🏆</div>
+          <div class="badge mb-2" style="background:rgba(201,168,76,.15);color:#c9a84c;font-size:.75rem;padding:4px 12px;border-radius:100px">A</div>
+          <h4 class="fw-700 mb-2" style="color:#0a2540">Points</h4>
+          <p class="text-muted small mb-3">Earn T&TG Loyalty Points automatically on every purchase on the online shopping platform.</p>
+          <div class="p-3 rounded-3" style="background:linear-gradient(135deg,#0a2540,#1a3a5c)">
+            <div class="text-gold fw-800 fs-4">{{ settings.consumer_rate|floatformat:0 }}%</div>
+            <div class="text-white-50 small">Consumer / End-User Rate</div>
+            <div class="text-muted small mt-1" style="font-size:.72rem">Applied after expenses & taxes</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- B: Promotions -->
+      <div class="col-md-6 col-lg-3" id="promotions">
+        <div class="card h-100 border-0 shadow-sm text-center p-4" style="border-radius:16px;transition:.3s" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+          <div class="mb-3" style="font-size:2.5rem">🎁</div>
+          <div class="badge mb-2" style="background:rgba(201,168,76,.15);color:#c9a84c;font-size:.75rem;padding:4px 12px;border-radius:100px">B</div>
+          <h4 class="fw-700 mb-2" style="color:#0a2540">Promotions</h4>
+          <p class="text-muted small mb-3">Seasonal promotions and partner bonuses that multiply your loyalty points on selected products.</p>
+          <div class="p-3 rounded-3" style="background:linear-gradient(135deg,#0a2540,#1a3a5c)">
+            <div class="text-gold fw-800 fs-4"><i class="fas fa-star"></i></div>
+            <div class="text-white-50 small">Seasonal & Partner Promotions</div>
+            <div class="text-muted small mt-1" style="font-size:.72rem">Watch for special campaigns</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- C: Referral -->
+      <div class="col-md-6 col-lg-3" id="referral">
+        <div class="card h-100 border-0 shadow-sm text-center p-4" style="border-radius:16px;transition:.3s" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+          <div class="mb-3" style="font-size:2.5rem">🤝</div>
+          <div class="badge mb-2" style="background:rgba(201,168,76,.15);color:#c9a84c;font-size:.75rem;padding:4px 12px;border-radius:100px">C</div>
+          <h4 class="fw-700 mb-2" style="color:#0a2540">Referral</h4>
+          <p class="text-muted small mb-3">Introduce other buyers to the platform. When they purchase, you earn a higher referral reward automatically.</p>
+          <div class="p-3 rounded-3" style="background:linear-gradient(135deg,#0a2540,#1a3a5c)">
+            <div class="text-gold fw-800 fs-4">{{ settings.referral_rate|floatformat:1 }}%</div>
+            <div class="text-white-50 small">Referral Reward Rate</div>
+            <div class="text-muted small mt-1" style="font-size:.72rem">Applied after expenses & taxes</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- D: Reward / Withdrawal -->
+      <div class="col-md-6 col-lg-3" id="reward">
+        <div class="card h-100 border-0 shadow-sm text-center p-4" style="border-radius:16px;transition:.3s" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
+          <div class="mb-3" style="font-size:2.5rem">💸</div>
+          <div class="badge mb-2" style="background:rgba(201,168,76,.15);color:#c9a84c;font-size:.75rem;padding:4px 12px;border-radius:100px">D</div>
+          <h4 class="fw-700 mb-2" style="color:#0a2540">Reward</h4>
+          <p class="text-muted small mb-3">Withdraw your T&TG Loyalty Points as funds. Payment is processed on Day 45 after your qualifying purchase.</p>
+          <div class="p-3 rounded-3" style="background:linear-gradient(135deg,#0a2540,#1a3a5c)">
+            <div class="text-gold fw-800 fs-4">Day {{ settings.payment_days }}</div>
+            <div class="text-white-50 small">Reward Payment Schedule</div>
+            <div class="text-muted small mt-1" style="font-size:.72rem">After date of purchase</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="py-5" style="background:#f8f9fa">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="fw-800" style="color:#0a2540">How It Works</h2>
+    </div>
+    <div class="row g-4 align-items-center">
+      <div class="col-lg-6">
+        <div class="d-flex gap-3 mb-4">
+          <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c96a);display:flex;align-items:center;justify-content:center;font-weight:800;color:#0a2540;flex-shrink:0">1</div>
+          <div>
+            <h6 class="fw-700 mb-1" style="color:#0a2540">Register & Shop</h6>
+            <p class="text-muted small mb-0">Create your account and buy products on the T&TG online shopping platform (textiles, shoes, watches or coffee).</p>
+          </div>
+        </div>
+        <div class="d-flex gap-3 mb-4">
+          <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c96a);display:flex;align-items:center;justify-content:center;font-weight:800;color:#0a2540;flex-shrink:0">2</div>
+          <div>
+            <h6 class="fw-700 mb-1" style="color:#0a2540">Earn T&TG Loyalty Points</h6>
+            <p class="text-muted small mb-0">You automatically earn <strong>{{ settings.consumer_rate|floatformat:0 }}%</strong> of the net purchase price as T&TG Loyalty Points. If you were referred, the referrer earns <strong>{{ settings.referral_rate|floatformat:1 }}%</strong>.</p>
+          </div>
+        </div>
+        <div class="d-flex gap-3 mb-4">
+          <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c96a);display:flex;align-items:center;justify-content:center;font-weight:800;color:#0a2540;flex-shrink:0">3</div>
+          <div>
+            <h6 class="fw-700 mb-1" style="color:#0a2540">Refer Others & Earn More</h6>
+            <p class="text-muted small mb-0">Share the platform. When your referred buyer places an order, you earn <strong>{{ settings.referral_rate|floatformat:1 }}%</strong> of their purchase net price.</p>
+          </div>
+        </div>
+        <div class="d-flex gap-3">
+          <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c96a);display:flex;align-items:center;justify-content:center;font-weight:800;color:#0a2540;flex-shrink:0">4</div>
+          <div>
+            <h6 class="fw-700 mb-1" style="color:#0a2540">Withdraw Your Funds</h6>
+            <p class="text-muted small mb-0">Submit a withdrawal request from your Loyalty Dashboard. Payment is processed on <strong>Day {{ settings.payment_days }}</strong> after the qualifying purchase date.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card border-0 shadow p-4" style="border-radius:20px;background:linear-gradient(135deg,#0a2540,#1a3a5c)">
+          <h5 class="text-gold fw-700 mb-4"><i class="fas fa-calculator me-2"></i>Quick Calculation Example</h5>
+          <div class="mb-3 p-3 rounded-3" style="background:rgba(255,255,255,.05)">
+            <div class="d-flex justify-content-between text-white-50 small mb-1"><span>Product Purchase</span><span>$100.00 USD</span></div>
+            <div class="d-flex justify-content-between text-white-50 small mb-1"><span>Your Points Earned ({{ settings.consumer_rate|floatformat:0 }}%)</span><span class="text-gold">$1.00</span></div>
+            <div class="d-flex justify-content-between text-white-50 small"><span>If you referred the buyer ({{ settings.referral_rate|floatformat:1 }}%)</span><span class="text-gold">$2.50</span></div>
+          </div>
+          <div class="p-3 rounded-3" style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2)">
+            <div class="text-gold small fw-600"><i class="fas fa-calendar-check me-2"></i>Payment Schedule</div>
+            <div class="text-white-50 small mt-1">Loyalty reward is paid on <strong class="text-gold">Day {{ settings.payment_days }}</strong> after purchase. Rates are calculated on net price after all expenses and taxes have been removed.</div>
+          </div>
+          <a href="{% url 'product_list' %}" class="btn btn-gold w-100 mt-4">
+            <i class="fas fa-shopping-bag me-2"></i>Start Shopping & Earning
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="background:linear-gradient(135deg,#0a2540,#1a3a5c);padding:60px 0" class="text-center">
+  <div class="container">
+    <h2 class="text-white fw-800 mb-3">Ready to Start Earning?</h2>
+    <p class="text-muted mb-4">Join T&TG Trade Corp — Canada 🇨🇦 · Uganda 🇺🇬 · Kenya 🇰🇪</p>
+    {% if user.is_authenticated %}
+    <a href="{% url 'product_list' %}" class="btn btn-gold px-5 py-2 me-2">Shop Now</a>
+    <a href="{% url 'loyalty_dashboard' %}" class="btn btn-outline-secondary px-5 py-2">My Dashboard</a>
+    {% else %}
+    <a href="{% url 'register' %}" class="btn btn-gold px-5 py-2 me-2">Register Free</a>
+    <a href="{% url 'login' %}" class="btn btn-outline-secondary px-5 py-2">Sign In</a>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

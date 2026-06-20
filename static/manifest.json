@@ -1,0 +1,43 @@
+{
+  "name": "T&TG Trade Corp — Online Shopping",
+  "short_name": "T&TG Shop",
+  "description": "Shop textiles, shoes, watches and coffee. Earn T&TG Loyalty Points. Canada · Uganda · Kenya.",
+  "start_url": "/marketplace/products/",
+  "display": "standalone",
+  "background_color": "#0a2540",
+  "theme_color": "#0a2540",
+  "orientation": "portrait-primary",
+  "categories": ["shopping", "business"],
+  "icons": [
+    {
+      "src": "/static/images/tg_logo.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/images/tg_logo.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Shop Clothing",
+      "url": "/marketplace/products/?category=clothing",
+      "description": "Browse clothing for men, women and children"
+    },
+    {
+      "name": "Shop Coffee",
+      "url": "/marketplace/products/?category=coffee",
+      "description": "Browse Robusta and Arabica green coffee"
+    },
+    {
+      "name": "My Loyalty Points",
+      "url": "/accounts/loyalty/",
+      "description": "Check your T&TG Loyalty Points balance"
+    }
+  ]
+}

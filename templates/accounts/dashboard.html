@@ -2,14 +2,19 @@
 {% block title %}Dashboard — T&TG Trade Corp{% endblock %}
 {% block content %}
 <div class="dash-wrap">
+
   <!-- Sidebar -->
   <aside class="dash-sidebar">
     <div class="px-3 mb-3">
       <div class="d-flex align-items-center gap-2">
-        {% if user.profile_photo %}
-        <img src="{{ user.profile_photo.url }}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)">
+        {% if user.safe_profile_photo_url %}
+        <img src="{{ user.safe_profile_photo_url }}"
+             style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)"
+             onerror="this.style.display='none'">
         {% else %}
-        <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;color:var(--primary);flex-shrink:0">{{ user.first_name.0|default:user.username.0|upper }}</div>
+        <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1rem;color:var(--primary);flex-shrink:0">
+          {{ user.first_name.0|default:user.username.0|upper }}
+        </div>
         {% endif %}
         <div>
           <div class="text-light fw-bold" style="font-size:.875rem">{{ user.get_full_name|default:user.username }}</div>
@@ -23,19 +28,25 @@
       {% endif %}
     </div>
     <hr style="border-color:var(--border)">
+
     <div class="sidebar-section">Main</div>
-    <a href="{% url 'dashboard' %}" class="sidebar-item active"><i class="fas fa-th-large"></i>Dashboard</a>
-    <a href="{% url 'profile' %}" class="sidebar-item"><i class="fas fa-user"></i>My Profile</a>
-    <a href="{% url 'avon_dashboard' %}" class="sidebar-item"><i class="fas fa-coins"></i>Avon Points</a>
-    <div class="sidebar-section">Trading</div>
-    <a href="{% url 'marketplace' %}" class="sidebar-item"><i class="fas fa-store"></i>Marketplace</a>
-    <a href="{% url 'my_orders' %}" class="sidebar-item"><i class="fas fa-box"></i>My Orders</a>
-    <div class="sidebar-section">Services</div>
-    <a href="{% url 'insurance' %}" class="sidebar-item"><i class="fas fa-shield-alt"></i>Insurance</a>
-    <a href="{% url 'brokerage' %}" class="sidebar-item"><i class="fas fa-chart-bar"></i>Brokerage</a>
+    <a href="{% url 'dashboard' %}"        class="sidebar-item active"><i class="fas fa-th-large"></i>Dashboard</a>
+    <a href="{% url 'profile' %}"           class="sidebar-item"><i class="fas fa-user"></i>My Profile</a>
+    <a href="{% url 'loyalty_dashboard' %}" class="sidebar-item"><i class="fas fa-coins"></i>T&TG Loyalty Points</a>
+
+    <div class="sidebar-section">Shop</div>
+    <a href="{% url 'marketplace' %}"      class="sidebar-item"><i class="fas fa-store"></i>Marketplace</a>
+    <a href="{% url 'my_orders' %}"        class="sidebar-item"><i class="fas fa-box"></i>My Orders</a>
+    <a href="{% url 'product_list' %}?category=clothing" class="sidebar-item"><i class="fas fa-tshirt"></i>Clothing</a>
+    <a href="{% url 'product_list' %}?category=coffee"   class="sidebar-item"><i class="fas fa-coffee"></i>Coffee</a>
+
+    <div class="sidebar-section">Trade & Exchange</div>
+    <a href="{% url 'forex' %}"            class="sidebar-item"><i class="fas fa-chart-line"></i>Live Exchange Rates</a>
+    <a href="{% url 'trade_ecommerce' %}"  class="sidebar-item"><i class="fas fa-exchange-alt"></i>Trade & e-Commerce</a>
+
     <div class="sidebar-section">Learning</div>
-    <a href="{% url 'training_home' %}" class="sidebar-item"><i class="fas fa-graduation-cap"></i>Training</a>
-    <a href="{% url 'tv_programs' %}" class="sidebar-item"><i class="fas fa-tv"></i>TV Programs</a>
+    <a href="{% url 'training_home' %}"    class="sidebar-item"><i class="fas fa-graduation-cap"></i>Training</a>
+    <a href="{% url 'tv_programs' %}"      class="sidebar-item"><i class="fas fa-tv"></i>TV Programs</a>
   </aside>
 
   <!-- Main Content -->
@@ -43,18 +54,20 @@
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
       <div>
         <h3 class="text-gold mb-0">Dashboard</h3>
-        <p class="text-muted mb-0" style="font-size:.875rem">Welcome back, {{ user.get_first_name|default:user.username }}</p>
+        <p class="text-muted mb-0" style="font-size:.875rem">Welcome back, {{ user.first_name|default:user.username }}</p>
       </div>
-      <a href="{% url 'marketplace' %}" class="btn btn-gold btn-sm"><i class="fas fa-plus me-2"></i>New Order</a>
+      <a href="{% url 'marketplace' %}" class="btn btn-gold btn-sm">
+        <i class="fas fa-plus me-2"></i>New Order
+      </a>
     </div>
 
-    <!-- Metrics Row -->
+    <!-- Metrics -->
     <div class="row g-3 mb-4">
       <div class="col-6 col-lg-3">
         <div class="dash-card text-center">
           <div class="stat-icon">💰</div>
           <div class="dash-metric">{{ user.avon_points|floatformat:0 }}</div>
-          <div class="dash-metric-label">Avon Points</div>
+          <div class="dash-metric-label">T&TG Loyalty Points</div>
         </div>
       </div>
       <div class="col-6 col-lg-3">
@@ -68,13 +81,13 @@
         <div class="dash-card text-center">
           <div class="stat-icon">⏳</div>
           <div class="dash-metric">{{ pending_orders }}</div>
-          <div class="dash-metric-label">Pending</div>
+          <div class="dash-metric-label">Pending Orders</div>
         </div>
       </div>
       <div class="col-6 col-lg-3">
         <div class="dash-card text-center">
           <div class="stat-icon">🌍</div>
-          <div class="dash-metric">{{ user.get_market_type_display|default:'—' }}</div>
+          <div class="dash-metric" style="font-size:1.1rem">{{ user.get_market_type_display|default:'—' }}</div>
           <div class="dash-metric-label">Market Type</div>
         </div>
       </div>
@@ -91,14 +104,24 @@
           {% if recent_orders %}
           <div class="table-responsive">
             <table class="table table-hover mb-0">
-              <thead><tr><th>Product</th><th>Qty</th><th>Total</th><th>Status</th></tr></thead>
+              <thead><tr><th>Product</th><th>Qty</th><th>Total</th><th>Reward Due</th><th>Status</th></tr></thead>
               <tbody>
               {% for order in recent_orders %}
               <tr>
-                <td><div class="fw-bold" style="font-size:.85rem">{{ order.product.name|truncatechars:25 }}</div><div class="text-muted" style="font-size:.72rem">{{ order.created_at|date:"M d, Y" }}</div></td>
+                <td>
+                  <div class="fw-bold" style="font-size:.85rem">{{ order.product.name|truncatechars:22 }}</div>
+                  <div class="text-muted" style="font-size:.72rem">{{ order.created_at|date:"M d, Y" }}</div>
+                </td>
                 <td>{{ order.quantity }}</td>
                 <td class="text-gold fw-bold">${{ order.total_price }}</td>
-                <td><span class="badge {% if order.status == 'accepted' %}badge-green{% elif order.status == 'pending' %}badge-gold{% elif order.status == 'not_accepted' %}badge-danger{% else %}badge-accent{% endif %}" style="font-size:.68rem">{{ order.get_status_display }}</span></td>
+                <td class="text-muted small">
+                  {% if order.reward_payment_date %}{{ order.reward_payment_date|date:"d M" }}{% else %}—{% endif %}
+                </td>
+                <td>
+                  <span class="badge {% if order.status == 'accepted' %}badge-green{% elif order.status == 'pending' %}badge-gold{% elif order.status == 'not_accepted' %}badge-danger{% else %}badge-accent{% endif %}" style="font-size:.68rem">
+                    {{ order.get_status_display }}
+                  </span>
+                </td>
               </tr>
               {% endfor %}
               </tbody>
@@ -113,35 +136,42 @@
         </div>
       </div>
 
-      <!-- Avon Points & Quick Actions -->
+      <!-- Loyalty Points card + Quick Actions -->
       <div class="col-lg-5">
         <div class="avon-card mb-3">
-          <div class="avon-label">Avon Points Balance</div>
+          <div class="avon-label">T&TG Loyalty Points Balance</div>
           <div class="avon-balance">{{ user.avon_points|floatformat:2 }}</div>
-          <div style="font-size:.75rem;color:var(--text-muted);margin-top:.5rem">Points</div>
-          <a href="{% url 'avon_dashboard' %}" class="btn btn-gold btn-sm mt-3 w-100">Manage Points</a>
+          <div style="font-size:.75rem;color:var(--text-muted);margin-top:.3rem">
+            Consumer rate: {{ loyalty_settings.consumer_rate|floatformat:0 }}% ·
+            Referral rate: {{ loyalty_settings.referral_rate|floatformat:1 }}%
+          </div>
+          <a href="{% url 'loyalty_dashboard' %}" class="btn btn-gold btn-sm mt-3 w-100">
+            <i class="fas fa-coins me-2"></i>Manage Loyalty Points
+          </a>
         </div>
+
         <div class="glass-card p-3">
           <h6 class="text-gold mb-3"><i class="fas fa-bolt me-2"></i>Quick Actions</h6>
           <div class="d-grid gap-2">
-            <a href="{% url 'marketplace' %}" class="btn btn-outline-gold btn-sm"><i class="fas fa-shopping-cart me-2"></i>Browse Marketplace</a>
+            <a href="{% url 'product_list' %}"                class="btn btn-outline-gold btn-sm"><i class="fas fa-shopping-cart me-2"></i>Browse Products</a>
             <a href="{% url 'product_list' %}?market=international" class="btn btn-outline-gold btn-sm"><i class="fas fa-globe me-2"></i>International Market</a>
-            <a href="{% url 'insurance' %}" class="btn btn-outline-gold btn-sm"><i class="fas fa-shield-alt me-2"></i>Get Insurance</a>
-            <a href="{% url 'training_home' %}" class="btn btn-outline-gold btn-sm"><i class="fas fa-graduation-cap me-2"></i>Training Programs</a>
+            <a href="{% url 'forex' %}"                        class="btn btn-outline-gold btn-sm"><i class="fas fa-chart-line me-2"></i>Live Exchange Rates</a>
+            <a href="{% url 'training_home' %}"                class="btn btn-outline-gold btn-sm"><i class="fas fa-graduation-cap me-2"></i>Training Programs</a>
+            <a href="{% url 'loyalty_dashboard' %}#tab-referral" class="btn btn-outline-gold btn-sm"><i class="fas fa-users me-2"></i>Refer a Friend & Earn</a>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Recent Transactions -->
+    <!-- Recent Loyalty Transactions -->
     {% if recent_transactions %}
     <div class="glass-card p-0 mt-4">
       <div class="p-3" style="border-bottom:1px solid var(--border)">
-        <h6 class="text-gold mb-0"><i class="fas fa-coins me-2"></i>Recent Avon Point Transactions</h6>
+        <h6 class="text-gold mb-0"><i class="fas fa-coins me-2"></i>Recent T&TG Loyalty Point Transactions</h6>
       </div>
       <div class="table-responsive">
         <table class="table table-hover mb-0">
-          <thead><tr><th>Type</th><th>Points</th><th>Status</th><th>Date</th></tr></thead>
+          <thead><tr><th>Type</th><th>Points</th><th>Payment Due</th><th>Status</th><th>Date</th></tr></thead>
           <tbody>
           {% for tx in recent_transactions %}
           <tr>
@@ -149,7 +179,14 @@
             <td class="{% if 'earn' in tx.transaction_type %}text-accent2{% else %}text-danger{% endif %} fw-bold">
               {% if 'earn' in tx.transaction_type %}+{% else %}-{% endif %}{{ tx.points }}
             </td>
-            <td><span class="badge {% if tx.status == 'completed' %}badge-green{% elif tx.status == 'pending' %}badge-gold{% else %}badge-muted{% endif %}" style="font-size:.65rem">{{ tx.get_status_display }}</span></td>
+            <td class="text-muted small">
+              {% if tx.min_execution_date %}{{ tx.min_execution_date|date:"d M Y" }}{% else %}—{% endif %}
+            </td>
+            <td>
+              <span class="badge {% if tx.status == 'completed' %}badge-green{% elif tx.status == 'pending' %}badge-gold{% else %}badge-muted{% endif %}" style="font-size:.65rem">
+                {{ tx.get_status_display }}
+              </span>
+            </td>
             <td class="text-muted" style="font-size:.8rem">{{ tx.created_at|date:"M d, Y" }}</td>
           </tr>
           {% endfor %}
@@ -159,6 +196,6 @@
     </div>
     {% endif %}
 
-  </div>
-</div>
+  </div><!-- /.dash-content -->
+</div><!-- /.dash-wrap -->
 {% endblock %}

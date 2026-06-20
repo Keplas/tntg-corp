@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Trade & e-Commerce — T&TG Trade Corp{% endblock %}
+{% block content %}
+<section style="background:linear-gradient(135deg,#0a2540,#1a3a5c);padding:80px 0 60px">
+  <div class="container text-center">
+    <div class="d-inline-flex align-items-center gap-2 mb-3 px-3 py-1 rounded-pill" style="background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.25)">
+      <i class="fas fa-exchange-alt text-gold"></i>
+      <span style="color:#c9a84c;font-size:.8rem;font-weight:600;letter-spacing:1px">TRADE & E-COMMERCE</span>
+    </div>
+    <h1 class="display-5 fw-800 text-white mb-3">Trade & e-Commerce</h1>
+    <p class="lead text-muted mx-auto" style="max-width:600px">
+      T&TG Trade Corporation — Import & Export (RM) registered. Facilitating seamless cross-border commerce across Canada 🇨🇦, Uganda 🇺🇬 and Kenya 🇰🇪.
+    </p>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4">
+        <div class="card border-0 shadow-sm p-4 h-100 text-center" style="border-radius:16px">
+          <div style="font-size:2.5rem;margin-bottom:1rem">🛒</div>
+          <h5 class="fw-700 mb-2" style="color:#0a2540">Online Shopping Platform</h5>
+          <p class="text-muted small">Buy textiles, clothing, shoes, watches and coffee. Local and international markets available.</p>
+          <a href="{% url 'marketplace' %}" class="btn btn-gold btn-sm mt-auto">Shop Now</a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card border-0 shadow-sm p-4 h-100 text-center" style="border-radius:16px">
+          <div style="font-size:2.5rem;margin-bottom:1rem">💱</div>
+          <h5 class="fw-700 mb-2" style="color:#0a2540">Live Exchange Rates</h5>
+          <p class="text-muted small">Track CAD/UGX, CAD/KES and UGX/KES — the currencies of our trade routes across our three operating countries.</p>
+          {% if forex_rates %}
+          <div class="mb-3">
+            {% for rate in forex_rates %}
+            <div class="d-flex justify-content-between small py-1 border-bottom">
+              <span class="fw-600 text-gold">{{ rate.from_currency }}/{{ rate.to_currency }}</span>
+              <span class="text-muted">{{ rate.rate|floatformat:4 }}</span>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+          <a href="{% url 'forex' %}" class="btn btn-gold btn-sm mt-auto">View All Rates</a>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="card border-0 shadow-sm p-4 h-100 text-center" style="border-radius:16px">
+          <div style="font-size:2.5rem;margin-bottom:1rem">🌍</div>
+          <h5 class="fw-700 mb-2" style="color:#0a2540">Import & Export (RM)</h5>
+          <p class="text-muted small">T&TG Trade Corp is a registered Import & Export corporation, facilitating cross-border trade and commerce between Canada, Uganda and Kenya.</p>
+          <a href="{% url 'contact' %}" class="btn btn-gold btn-sm mt-auto">Partner With Us</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

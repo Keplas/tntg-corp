@@ -7,8 +7,8 @@
     <div class="row g-5">
       <div class="col-lg-4">
         <div class="glass-card p-4 text-center mb-3">
-          {% if user.profile_photo %}
-          <img src="{{ user.profile_photo.url }}" style="width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin-bottom:1rem">
+          {% if user.safe_profile_photo_url %}
+          <img src="{{ user.safe_profile_photo_url }}" style="width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin-bottom:1rem" onerror="this.style.display='none'">
           {% else %}
           <div style="width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:2.5rem;color:var(--primary);margin:0 auto 1rem">{{ user.first_name.0|default:user.username.0|upper }}</div>
           {% endif %}
@@ -24,7 +24,7 @@
         <div class="glass-card p-3">
           <div class="avon-label mb-1">Avon Points</div>
           <div class="avon-balance" style="font-size:2rem">{{ user.avon_points|floatformat:2 }}</div>
-          <a href="{% url 'avon_dashboard' %}" class="btn btn-gold btn-sm w-100 mt-2">Manage Points</a>
+          <a href="{% url 'loyalty_dashboard' %}" class="btn btn-gold btn-sm w-100 mt-2">Manage Points</a>
         </div>
       </div>
       <div class="col-lg-8">
