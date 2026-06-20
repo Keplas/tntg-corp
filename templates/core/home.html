@@ -122,7 +122,12 @@
       <div class="col-md-6 col-lg-3">
         <div class="tg-card tg-reveal" id="card-shop">
           <div class="tg-card-canvas-wrap">
-            <canvas id="cvShop" class="tg-card-cv"></canvas>
+            <img class="tg-card-img" loading="lazy"
+                 src="https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=600&h=400&fit=crop&q=80"
+                 alt="Online shopping — clothing, shoes, watches and coffee"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='none';this.parentElement.querySelector('.tg-card-cv').style.opacity='1'">
+            <div class="tg-card-img-overlay"></div>
+            <canvas id="cvShop" class="tg-card-cv" style="opacity:.35"></canvas>
             <div class="tg-card-icon-overlay">🛒</div>
           </div>
           <div class="tg-card-body">
@@ -139,7 +144,12 @@
       <div class="col-md-6 col-lg-3">
         <div class="tg-card tg-card-loyalty tg-reveal" id="card-loyalty" style="transition-delay:.08s">
           <div class="tg-card-canvas-wrap">
-            <canvas id="cvLoyalty" class="tg-card-cv"></canvas>
+            <img class="tg-card-img" loading="lazy"
+                 src="https://images.unsplash.com/photo-1610375461246-83df859d849d?w=600&h=400&fit=crop&q=80"
+                 alt="T&TG Loyalty Platform — earn points and rewards"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='none';this.parentElement.querySelector('.tg-card-cv').style.opacity='1'">
+            <div class="tg-card-img-overlay"></div>
+            <canvas id="cvLoyalty" class="tg-card-cv" style="opacity:.35"></canvas>
             <div class="tg-card-icon-overlay">💰</div>
           </div>
           <div class="tg-card-body">
@@ -156,7 +166,12 @@
       <div class="col-md-6 col-lg-3">
         <div class="tg-card tg-card-forex tg-reveal" id="card-forex" style="transition-delay:.16s">
           <div class="tg-card-canvas-wrap">
-            <canvas id="cvForex" class="tg-card-cv"></canvas>
+            <img class="tg-card-img" loading="lazy"
+                 src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop&q=80"
+                 alt="Live exchange rates — CAD, UGX, KES trade routes"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='none';this.parentElement.querySelector('.tg-card-cv').style.opacity='1'">
+            <div class="tg-card-img-overlay"></div>
+            <canvas id="cvForex" class="tg-card-cv" style="opacity:.35"></canvas>
             <div class="tg-card-icon-overlay">💱</div>
           </div>
           <div class="tg-card-body">
@@ -173,7 +188,12 @@
       <div class="col-md-6 col-lg-3">
         <div class="tg-card tg-card-train tg-reveal" id="card-train" style="transition-delay:.24s">
           <div class="tg-card-canvas-wrap">
-            <canvas id="cvTrain" class="tg-card-cv"></canvas>
+            <img class="tg-card-img" loading="lazy"
+                 src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&h=400&fit=crop&q=80"
+                 alt="Training programs — farming, trade and e-commerce"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='none';this.parentElement.querySelector('.tg-card-cv').style.opacity='1'">
+            <div class="tg-card-img-overlay"></div>
+            <canvas id="cvTrain" class="tg-card-cv" style="opacity:.35"></canvas>
             <div class="tg-card-icon-overlay">🎓</div>
           </div>
           <div class="tg-card-body">
@@ -473,7 +493,7 @@
             {% if product.safe_image_url %}
             <img src="{{ product.safe_image_url }}" alt="{{ product.name }}"
                  style="width:100%;height:100%;object-fit:cover"
-                 onerror="this.style.display='none'">
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
             {% else %}
             <div class="product-placeholder">
               {% if product.category == 'clothing' %}👔{% elif product.category == 'shoes' %}👟{% elif product.category == 'watches' %}⌚{% elif product.category == 'coffee' %}☕{% else %}📦{% endif %}
@@ -597,7 +617,7 @@
           <div class="product-img-wrap">
             {% if product.safe_image_url %}
             <img src="{{ product.safe_image_url }}" alt="{{ product.name }}"
-                 style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">
+                 style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
             {% else %}
             <div class="product-placeholder">
               {% if product.category == 'clothing' %}👔{% elif product.category == 'shoes' %}👟{% elif product.category == 'watches' %}⌚{% elif product.category == 'coffee' %}☕{% else %}📦{% endif %}

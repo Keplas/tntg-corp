@@ -790,20 +790,39 @@ input::placeholder, textarea::placeholder, select::placeholder {
 
 /* canvas header area */
 .tg-card-canvas-wrap {
-  position: relative; height: 140px; overflow: hidden;
+  position: relative; height: 170px; overflow: hidden;
   background: linear-gradient(135deg, #060f1e, #0d2040);
   border-bottom: 1px solid rgba(201,168,76,.12);
 }
-.tg-card-cv { display: block; width: 100%; height: 100%; }
+.tg-card-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  z-index: 1;
+  transition: transform .5s cubic-bezier(.2,.8,.2,1);
+}
+.tg-card:hover .tg-card-img { transform: scale(1.06); }
+.tg-card-img-overlay {
+  position: absolute; inset: 0; z-index: 2;
+  background: linear-gradient(180deg,
+    rgba(6,15,30,.15) 0%,
+    rgba(6,15,30,.55) 60%,
+    rgba(6,15,30,.92) 100%);
+}
+.tg-card-cv { display: block; width: 100%; height: 100%; position: relative; z-index: 1; }
 .tg-card-icon-overlay {
-  position: absolute; bottom: 14px; left: 50%;
-  transform: translateX(-50%);
-  font-size: 2.2rem; line-height: 1;
-  filter: drop-shadow(0 4px 16px rgba(201,168,76,.5));
+  position: absolute; bottom: 12px; left: 16px;
+  width: 40px; height: 40px; border-radius: 11px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; line-height: 1;
+  background: rgba(13,31,53,.85);
+  border: 1px solid rgba(201,168,76,.35);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 16px rgba(0,0,0,.4);
   z-index: 3;
 }
 
-/* color accents per card type */
+/* color accents per card type (canvas-fallback only — unused once image loads) */
 .tg-card-loyalty   .tg-card-canvas-wrap { background: linear-gradient(135deg, #080d1a, #0f1e10); }
 .tg-card-forex     .tg-card-canvas-wrap { background: linear-gradient(135deg, #060f1e, #081828); }
 .tg-card-train     .tg-card-canvas-wrap { background: linear-gradient(135deg, #0a0e1e, #0e1228); }
