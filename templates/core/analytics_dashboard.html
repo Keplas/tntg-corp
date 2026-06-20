@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% block title %}Analytics Dashboard — T&TG Trade Corp{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>Analytics Dashboard</h1>
+    <p class="text-muted mb-0">Last 30 days sales trend · all-time totals below</p>
+  </div>
+</div>
+
+<section class="section" style="padding-top:2rem">
+  <div class="container">
+
+    <!-- Headline stats -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-lg-3">
+        <div class="glass-card p-3 text-center">
+          <div class="text-gold fw-900" style="font-size:1.5rem">${{ total_revenue|floatformat:0 }}</div>
+          <div class="text-muted small">Total Revenue</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="glass-card p-3 text-center">
+          <div class="text-gold fw-900" style="font-size:1.5rem">{{ total_orders }}</div>
+          <div class="text-muted small">Total Orders</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="glass-card p-3 text-center">
+          <div class="text-gold fw-900" style="font-size:1.5rem">${{ avg_order_value|floatformat:0 }}</div>
+          <div class="text-muted small">Avg Order Value</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="glass-card p-3 text-center">
+          <div class="text-gold fw-900" style="font-size:1.5rem">{{ total_customers }}</div>
+          <div class="text-muted small">Unique Customers</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="glass-card p-3 text-center">
+          <div class="text-gold fw-900" style="font-size:1.5rem">{{ total_points_issued|floatformat:0 }}</div>
+          <div class="text-muted small">Loyalty Points Issued</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="glass-card p-3 text-center">
+          <div class="text-gold fw-900" style="font-size:1.5rem">{{ pending_payouts|floatformat:0 }}</div>
+          <div class="text-muted small">Pending Point Payouts</div>
+        </div>
+      </div>
+      <div class="col-6 col-lg-3">
+        <div class="glass-card p-3 text-center">
+          <div class="text-gold fw-900" style="font-size:1.5rem">{{ total_products_active }}</div>
+          <div class="text-muted small">Active Products</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+      <!-- Sales trend chart -->
+      <div class="col-lg-8">
+        <div class="glass-card p-4">
+          <h6 class="text-gold mb-3">Revenue — Last 30 Days</h6>
+          <canvas id="salesChart" height="100"></canvas>
+        </div>
+      </div>
+      <!-- Order status -->
+      <div class="col-lg-4">
+        <div class="glass-card p-4">
+          <h6 class="text-gold mb-3">Order Status</h6>
+          <canvas id="statusChart" height="180"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+      <!-- Top products -->
+      <div class="col-lg-6">
+        <div class="glass-card p-4">
+          <h6 class="text-gold mb-3">Top Products by Revenue</h6>
+          {% for p in top_products %}
+          <div class="d-flex justify-content-between align-items-center py-2" style="border-bottom:1px solid rgba(201,168,76,.1)">
+            <div>
+              <div class="fw-600">{{ p.product__name }}</div>
+              <div class="text-muted small">{{ p.units }} units sold</div>
+            </div>
+            <div class="text-gold fw-700">${{ p.revenue|floatformat:0 }}</div>
+          </div>
+          {% empty %}
+          <p class="text-muted small mb-0">No orders yet.</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Category performance -->
+      <div class="col-lg-6">
+        <div class="glass-card p-4">
+          <h6 class="text-gold mb-3">Category Performance</h6>
+          <canvas id="categoryChart" height="180"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- Country breakdown -->
+      <div class="col-lg-6">
+        <div class="glass-card p-4">
+          <h6 class="text-gold mb-3">Top Destinations</h6>
+          {% for c in country_breakdown %}
+          <div class="d-flex justify-content-between align-items-center py-2" style="border-bottom:1px solid rgba(201,168,76,.1)">
+            <div class="fw-600">{{ c.destination_country|default:"—" }}</div>
+            <div>
+              <span class="text-muted small me-2">{{ c.count }} orders</span>
+              <span class="text-gold fw-700">${{ c.revenue|floatformat:0 }}</span>
+            </div>
+          </div>
+          {% empty %}
+          <p class="text-muted small mb-0">No orders yet.</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Payment status -->
+      <div class="col-lg-6">
+        <div class="glass-card p-4">
+          <h6 class="text-gold mb-3">Payment Status</h6>
+          {% for ps in payment_breakdown %}
+          <div class="d-flex justify-content-between align-items-center py-2" style="border-bottom:1px solid rgba(201,168,76,.1)">
+            <div class="fw-600 text-capitalize">{{ ps.payment_status }}</div>
+            <div class="text-gold fw-700">{{ ps.count }}</div>
+          </div>
+          {% empty %}
+          <p class="text-muted small mb-0">No orders yet.</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+(function(){
+  if (typeof Chart === 'undefined') return; // safe no-op if CDN fails to load
+
+  Chart.defaults.color = '#c4cdd6';
+  Chart.defaults.borderColor = 'rgba(201,168,76,.12)';
+
+  // Sales trend
+  var salesCtx = document.getElementById('salesChart');
+  if (salesCtx) {
+    new Chart(salesCtx, {
+      type: 'line',
+      data: {
+        labels: {{ sales_labels|safe }},
+        datasets: [{
+          label: 'Revenue ($)',
+          data: {{ sales_values|safe }},
+          borderColor: '#c9a84c',
+          backgroundColor: 'rgba(201,168,76,.12)',
+          fill: true,
+          tension: .35,
+          pointBackgroundColor: '#e8c96a',
+        }]
+      },
+      options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+  }
+
+  // Order status doughnut
+  var statusCtx = document.getElementById('statusChart');
+  if (statusCtx) {
+    new Chart(statusCtx, {
+      type: 'doughnut',
+      data: {
+        labels: [{% for s in status_breakdown %}'{{ s.status }}',{% endfor %}],
+        datasets: [{
+          data: [{% for s in status_breakdown %}{{ s.count }},{% endfor %}],
+          backgroundColor: ['#c9a84c','#e8c96a','#00a8e8','#00c896','#e63946','#a8853a'],
+          borderColor: '#0d1f35', borderWidth: 2,
+        }]
+      },
+      options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } } }
+    });
+  }
+
+  // Category bar chart
+  var catCtx = document.getElementById('categoryChart');
+  if (catCtx) {
+    new Chart(catCtx, {
+      type: 'bar',
+      data: {
+        labels: [{% for c in category_sales %}'{{ c.product__category|default:"Other" }}',{% endfor %}],
+        datasets: [{
+          label: 'Revenue ($)',
+          data: [{% for c in category_sales %}{{ c.revenue|default:0 }},{% endfor %}],
+          backgroundColor: '#c9a84c',
+          borderRadius: 6,
+        }]
+      },
+      options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+  }
+})();
+</script>
+{% endblock %}

@@ -7,7 +7,7 @@ const CACHE_ASSETS = [
   '/marketplace/products/',
   '/static/css/style.css',
   '/static/js/main.js',
-  '/static/images/tg_logo.jpeg',
+  '/static/images/logo.jpg',
 ];
 
 self.addEventListener('install', (event) => {

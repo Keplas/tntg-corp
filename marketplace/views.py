@@ -2,10 +2,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
+from django.urls import reverse
 from datetime import timedelta, date
 from .models import Product, Order, ProductReview
 from accounts.models import AvonPointTransaction
 from core.models import Notification, LoyaltySettings
+from core.emails import send_order_placed_email, send_order_confirmation_email
+from . import payments
 import decimal
 
 
@@ -128,6 +131,8 @@ def place_order(request, pk):
             f'/admin/marketplace/order/{order.pk}/change/'
         )
 
+        send_order_placed_email(order)
+
         rate_pct = float(rate) * 100
         messages.success(
             request,
@@ -135,7 +140,7 @@ def place_order(request, pk):
             f'({rate_pct:.1f}% of ${total}). '
             f'Reward payment scheduled for {reward_date.strftime("%d %b %Y")}.'
         )
-        return redirect('order_detail', pk=order.pk)
+        return redirect('payment_select', pk=order.pk)
 
     return render(request, 'marketplace/place_order.html', {
         'product':  product,
@@ -158,3 +163,87 @@ def order_detail(request, pk):
 
 def market_select(request):
     return render(request, 'marketplace/market_select.html')
+
+
+# ═══════════════════════════════════════════════════════════════
+# PAYMENTS — card (Stripe) and mobile money (Flutterwave)
+# ═══════════════════════════════════════════════════════════════
+
+@login_required
+def payment_select(request, pk):
+    """Let the buyer choose a payment method, or pay later (cash/manual)."""
+    order = get_object_or_404(Order, pk=pk, buyer=request.user)
+    return render(request, 'marketplace/payment_select.html', {
+        'order': order,
+        'stripe_ready': payments.stripe_configured(),
+        'flutterwave_ready': payments.flutterwave_configured(),
+    })
+
+
+@login_required
+def payment_start_card(request, pk):
+    order = get_object_or_404(Order, pk=pk, buyer=request.user)
+    success_url = request.build_absolute_uri(reverse('payment_success', args=[order.pk]))
+    cancel_url  = request.build_absolute_uri(reverse('payment_select', args=[order.pk]))
+
+    session_url, error = payments.create_stripe_checkout_session(order, success_url, cancel_url)
+    if error:
+        messages.error(request, error)
+        return redirect('payment_select', pk=order.pk)
+
+    order.payment_method = 'card'
+    order.payment_status = 'pending'
+    order.save(update_fields=['payment_method', 'payment_status'])
+    return redirect(session_url)
+
+
+@login_required
+def payment_start_mobile(request, pk):
+    order = get_object_or_404(Order, pk=pk, buyer=request.user)
+    if request.method != 'POST':
+        return redirect('payment_select', pk=order.pk)
+
+    phone = request.POST.get('phone', '').strip()
+    if not phone:
+        messages.error(request, 'Please enter a phone number for Mobile Money payment.')
+        return redirect('payment_select', pk=order.pk)
+
+    redirect_url = request.build_absolute_uri(reverse('payment_success', args=[order.pk]))
+    link, error = payments.create_flutterwave_payment(order, redirect_url, customer_phone=phone)
+    if error:
+        messages.error(request, error)
+        return redirect('payment_select', pk=order.pk)
+
+    order.payment_method = 'mobile_money'
+    order.payment_status = 'pending'
+    order.save(update_fields=['payment_method', 'payment_status'])
+    return redirect(link)
+
+
+@login_required
+def payment_success(request, pk):
+    """Landing page after returning from Stripe or Flutterwave — verifies payment."""
+    order = get_object_or_404(Order, pk=pk, buyer=request.user)
+
+    if order.payment_method == 'card':
+        session_id = request.GET.get('session_id', '')
+        paid, ref = payments.verify_stripe_session(session_id) if session_id else (False, '')
+    elif order.payment_method == 'mobile_money':
+        tx_id = request.GET.get('transaction_id', '')
+        paid, ref = payments.verify_flutterwave_transaction(tx_id) if tx_id else (False, '')
+    else:
+        paid, ref = False, ''
+
+    if paid:
+        order.payment_status = 'paid'
+        order.payment_reference = ref
+        order.paid_at = timezone.now()
+        order.save(update_fields=['payment_status', 'payment_reference', 'paid_at'])
+        send_order_confirmation_email(order)
+        messages.success(request, f'Payment confirmed for Order #{order.pk}. Thank you!')
+    else:
+        order.payment_status = 'failed'
+        order.save(update_fields=['payment_status'])
+        messages.warning(request, 'We could not confirm your payment yet. If you completed payment, it may take a few minutes to reflect — contact support if this persists.')
+
+    return redirect('order_detail', pk=order.pk)

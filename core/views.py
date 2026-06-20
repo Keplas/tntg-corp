@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import JsonResponse, HttpResponse
+from django.utils import timezone
 from marketplace.models import Product
 from training.models import TrainingProgram, TVProgram
 from services.models import ContactInquiry, ForexRate
@@ -154,3 +155,104 @@ def robots_txt(request):
         f"Sitemap: {domain}/sitemap.xml",
     ]
     return HttpResponse("\n".join(lines), content_type='text/plain')
+
+
+@staff_member_required
+def analytics_dashboard(request):
+    """
+    Admin analytics dashboard — sales trends, top products, order status
+    breakdown, and loyalty points overview. Built entirely from existing
+    Order/Product/AvonPointTransaction data — no new tracking required.
+    """
+    from django.db.models import Sum, Count, Avg
+    from django.db.models.functions import TruncDate
+    from datetime import timedelta
+    from marketplace.models import Order, Product
+    from accounts.models import AvonPointTransaction, CustomUser
+
+    today = timezone.now().date()
+    thirty_days_ago = today - timedelta(days=30)
+
+    orders_30d = Order.objects.filter(created_at__date__gte=thirty_days_ago)
+
+    # Revenue trend — daily totals for the last 30 days
+    daily_sales = (
+        orders_30d
+        .annotate(day=TruncDate('created_at'))
+        .values('day')
+        .annotate(total=Sum('total_price'), count=Count('id'))
+        .order_by('day')
+    )
+    sales_labels = [d['day'].strftime('%b %d') for d in daily_sales]
+    sales_values = [float(d['total'] or 0) for d in daily_sales]
+
+    # Top products by revenue (all-time)
+    top_products = (
+        Order.objects
+        .values('product__name')
+        .annotate(revenue=Sum('total_price'), units=Sum('quantity'))
+        .order_by('-revenue')[:8]
+    )
+
+    # Order status breakdown
+    status_breakdown = (
+        Order.objects.values('status').annotate(count=Count('id')).order_by('-count')
+    )
+
+    # Payment status breakdown
+    payment_breakdown = (
+        Order.objects.values('payment_status').annotate(count=Count('id')).order_by('-count')
+    )
+
+    # Category performance
+    category_sales = (
+        Order.objects
+        .values('product__category')
+        .annotate(revenue=Sum('total_price'), units=Sum('quantity'))
+        .order_by('-revenue')
+    )
+
+    # Headline stats
+    total_revenue   = Order.objects.aggregate(s=Sum('total_price'))['s'] or 0
+    total_orders    = Order.objects.count()
+    avg_order_value = Order.objects.aggregate(a=Avg('total_price'))['a'] or 0
+    total_customers = CustomUser.objects.filter(orders__isnull=False).distinct().count()
+    total_points_issued = AvonPointTransaction.objects.filter(
+        transaction_type__in=['earn_purchase', 'earn_referral']
+    ).aggregate(s=Sum('points'))['s'] or 0
+    pending_payouts = AvonPointTransaction.objects.filter(status='pending').aggregate(s=Sum('points'))['s'] or 0
+
+    # Country breakdown (where orders are shipping to)
+    country_breakdown = (
+        Order.objects.values('destination_country')
+        .annotate(count=Count('id'), revenue=Sum('total_price'))
+        .order_by('-revenue')[:6]
+    )
+
+    ctx = {
+        'total_revenue': total_revenue,
+        'total_orders': total_orders,
+        'avg_order_value': avg_order_value,
+        'total_customers': total_customers,
+        'total_points_issued': total_points_issued,
+        'pending_payouts': pending_payouts,
+        'sales_labels': sales_labels,
+        'sales_values': sales_values,
+        'top_products': top_products,
+        'status_breakdown': status_breakdown,
+        'payment_breakdown': payment_breakdown,
+        'category_sales': category_sales,
+        'country_breakdown': country_breakdown,
+        'total_products_active': Product.objects.filter(is_active=True).count(),
+    }
+    return render(request, 'core/analytics_dashboard.html', ctx)
+
+
+def set_language(request):
+    """Toggle site language between English and Swahili — stored in session."""
+    lang = request.GET.get('lang', 'en')
+    if lang not in ('en', 'sw'):
+        lang = 'en'
+    request.session['lang'] = lang
+    next_url = request.GET.get('next') or request.META.get('HTTP_REFERER') or '/'
+    return redirect(next_url)

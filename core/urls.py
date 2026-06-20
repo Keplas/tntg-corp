@@ -18,4 +18,8 @@ urlpatterns = [
     # SEO
     path('sitemap.xml',   views.sitemap_xml,         name='sitemap_xml'),
     path('robots.txt',    views.robots_txt,          name='robots_txt'),
+    # Analytics (staff only)
+    path('analytics/',    views.analytics_dashboard, name='analytics_dashboard'),
+    # Language toggle
+    path('set-language/', views.set_language,        name='set_language'),
 ]

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n_lite %}
 {% block title %}T&TG Trade Corp — Trade & e-Commerce Platform | Canada · Uganda · Kenya{% endblock %}
 
 
@@ -17,46 +18,44 @@
       <div class="col-lg-6 tg-hero-copy">
         <div class="tg-hero-eyebrow">
           <span class="pulse-dot"></span>
-          Import &amp; Export (RM) Registered
+          {% t "hero_eyebrow" %}
         </div>
 
         <h1 class="tg-hero-title">
-          <span>Trade &amp;</span>
-          <span class="gold-line">e-Commerce</span>
-          <span class="outline-line">Platform</span>
+          <span>{% t "hero_title_1" %}</span>
+          <span class="gold-line">{% t "hero_title_2" %}</span>
+          <span class="outline-line">{% t "hero_title_3" %}</span>
         </h1>
 
         <p class="tg-hero-sub">
-          T&TG Trade Corporation connects Canada, Uganda and Kenya through
-          seamless commerce. Shop textiles, shoes, watches and coffee.
-          Earn <strong>T&TG Loyalty Points</strong> on every purchase.
+          {% t "hero_sub" %}
         </p>
 
         <div class="tg-hero-ctas">
           <a href="{% url 'marketplace' %}" class="tg-cta-primary">
-            <i class="fas fa-store"></i> Shop Now
+            <i class="fas fa-store"></i> {% t "hero_shop_now" %}
           </a>
           <a href="{% url 'register' %}" class="tg-cta-secondary">
-            Get Started Free <i class="fas fa-arrow-right"></i>
+            {% t "hero_get_started" %} <i class="fas fa-arrow-right"></i>
           </a>
         </div>
 
         <div class="tg-stats-bar">
           <div class="tg-stat-item">
             <span class="tg-stat-val">{{ stats.products }}+</span>
-            <span class="tg-stat-lbl">Products</span>
+            <span class="tg-stat-lbl">{% t "hero_stat_products" %}</span>
           </div>
           <div class="tg-stat-item">
             <span class="tg-stat-val">3</span>
-            <span class="tg-stat-lbl">Countries</span>
+            <span class="tg-stat-lbl">{% t "hero_stat_countries" %}</span>
           </div>
           <div class="tg-stat-item">
             <span class="tg-stat-val">{{ stats.partners }}+</span>
-            <span class="tg-stat-lbl">Partners</span>
+            <span class="tg-stat-lbl">{% t "hero_stat_partners" %}</span>
           </div>
           <div class="tg-stat-item">
             <span class="tg-stat-val">{{ stats.transactions }}+</span>
-            <span class="tg-stat-lbl">Orders</span>
+            <span class="tg-stat-lbl">{% t "hero_stat_orders" %}</span>
           </div>
         </div>
       </div>

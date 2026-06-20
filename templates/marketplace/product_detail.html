@@ -5,7 +5,7 @@
 {% block og_title %}{{ product.name }} — T&TG Trade Corp{% endblock %}
 {% block og_description %}{{ product.description|default:"Shop quality products across Canada, Uganda and Kenya. Earn loyalty points on every order."|truncatechars:160 }}{% endblock %}
 {% block og_type %}product{% endblock %}
-{% block og_image %}{% if product.safe_image_url %}{{ product.safe_image_url }}{% else %}https://tntgcorp.com{% static 'images/tg_logo.jpeg' %}{% endif %}{% endblock %}
+{% block og_image %}{% if product.safe_image_url %}{{ product.safe_image_url }}{% else %}https://tntgcorp.com{% static 'images/logo.jpg' %}{% endif %}{% endblock %}
 
 {% block extra_head %}
 <script type="application/ld+json">

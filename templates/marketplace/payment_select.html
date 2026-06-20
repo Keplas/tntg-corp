@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}Pay for Order #{{ order.pk }} — T&TG Trade Corp{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'my_orders' %}">My Orders</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'order_detail' order.pk %}">Order #{{ order.pk }}</a></li>
+        <li class="breadcrumb-item active">Payment</li>
+      </ol>
+    </nav>
+    <h1>Complete Your Payment</h1>
+  </div>
+</div>
+
+<section class="section" style="padding-top:2rem">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-7">
+
+        <div class="glass-card p-4 mb-4">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Order #{{ order.pk }}</div>
+              <div class="fw-bold" style="font-size:1.1rem">{{ order.product.name }} × {{ order.quantity }}</div>
+            </div>
+            <div class="text-gold fw-bold" style="font-size:1.5rem">${{ order.total_price }}</div>
+          </div>
+        </div>
+
+        {% if order.payment_status == 'paid' %}
+        <div class="glass-card p-4 text-center">
+          <i class="fas fa-check-circle" style="font-size:2.5rem;color:#1a8c4a"></i>
+          <h5 class="mt-3">This order is already paid</h5>
+          <a href="{% url 'order_detail' order.pk %}" class="btn btn-outline-gold mt-3">View Order</a>
+        </div>
+        {% else %}
+
+        <div class="row g-4">
+          <!-- Card payment -->
+          <div class="col-md-6">
+            <div class="glass-card p-4 h-100 d-flex flex-column">
+              <i class="fas fa-credit-card text-gold mb-3" style="font-size:1.8rem"></i>
+              <h5 class="mb-2">Pay by Card</h5>
+              <p class="text-muted small flex-grow-1">Visa, Mastercard, and other major cards. Secured by Stripe.</p>
+              {% if stripe_ready %}
+              <a href="{% url 'payment_start_card' order.pk %}" class="btn btn-gold w-100 text-center">
+                Pay ${{ order.total_price }} by Card
+              </a>
+              {% else %}
+              <button class="btn btn-gold w-100 text-center" disabled style="opacity:.5;cursor:not-allowed">
+                Card Payments Coming Soon
+              </button>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Mobile money payment -->
+          <div class="col-md-6">
+            <div class="glass-card p-4 h-100 d-flex flex-column">
+              <i class="fas fa-mobile-screen-button text-gold mb-3" style="font-size:1.8rem"></i>
+              <h5 class="mb-2">Mobile Money</h5>
+              <p class="text-muted small flex-grow-1">MTN, Airtel Money, or M-Pesa. Secured by Flutterwave.</p>
+              {% if flutterwave_ready %}
+              <form method="post" action="{% url 'payment_start_mobile' order.pk %}">
+                {% csrf_token %}
+                <input type="tel" name="phone" class="form-control mb-2" placeholder="e.g. 256712345678" required>
+                <button type="submit" class="btn btn-gold w-100 text-center">
+                  Pay ${{ order.total_price }} by Mobile Money
+                </button>
+              </form>
+              {% else %}
+              <button class="btn btn-gold w-100 text-center" disabled style="opacity:.5;cursor:not-allowed">
+                Mobile Money Coming Soon
+              </button>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        {% if not stripe_ready and not flutterwave_ready %}
+        <div class="glass-card p-4 mt-4 text-center">
+          <i class="fas fa-info-circle text-gold mb-2" style="font-size: 1.4rem"></i>
+          <p class="text-muted small mb-0">
+            Online payment isn't set up yet. Your order has been recorded — our team will
+            contact you to arrange payment. You can also reach us via the WhatsApp button below.
+          </p>
+        </div>
+        {% endif %}
+
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

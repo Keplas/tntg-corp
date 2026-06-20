@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n_lite %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,14 +16,14 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="T&TG Shop">
-  <link rel="apple-touch-icon" href="{% static 'images/tg_logo.jpeg' %}">
+  <link rel="apple-touch-icon" href="{% static 'images/logo.jpg' %}">
 
   <!-- Open Graph (for social sharing) -->
   <meta property="og:type"        content="{% block og_type %}website{% endblock %}">
   <meta property="og:title"       content="{% block og_title %}T&TG Trade Corp — Trade & e-Commerce{% endblock %}">
   <meta property="og:description" content="{% block og_description %}Shop textiles, shoes, watches and coffee. Earn loyalty points. Canada · Uganda · Kenya.{% endblock %}">
   <meta property="og:url"         content="{% block og_url %}https://tntgcorp.com{{ request.path }}{% endblock %}">
-  <meta property="og:image"       content="{% block og_image %}https://tntgcorp.com{% static 'images/tg_logo.jpeg' %}{% endblock %}">
+  <meta property="og:image"       content="{% block og_image %}https://tntgcorp.com{% static 'images/logo.jpg' %}{% endblock %}">
   <meta name="twitter:card"       content="summary_large_image">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -335,11 +336,11 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
       <!-- BRAND (left) -->
       <a class="tg-brand" href="{% url 'home' %}">
         <div class="tg-brand-logo">
-          <img src="{% static 'images/tg_logo.jpeg' %}" alt="T&TG">
+          <img src="{% static 'images/logo.jpg' %}" alt="T&TG">
         </div>
         <div>
           <div class="tg-brand-name">T&TG Trade Corp</div>
-          <div class="tg-brand-sub">Connect · Trade · Grow · Earn</div>
+          <div class="tg-brand-sub">{% t "footer_tagline" %}</div>
         </div>
       </a>
 
@@ -350,12 +351,12 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
         <ul class="tg-nav-list">
 
           <li>
-            <a class="tg-nl {% if request.resolver_match.url_name == 'home' %}tg-active{% endif %}" href="{% url 'home' %}">Home</a>
+            <a class="tg-nl {% if request.resolver_match.url_name == 'home' %}tg-active{% endif %}" href="{% url 'home' %}">{% t "nav_home" %}</a>
           </li>
 
           <!-- Shop -->
           <li>
-            <button class="tg-nl">Shop <i class="fas fa-chevron-down tg-caret"></i></button>
+            <button class="tg-nl">{% t "nav_shop" %} <i class="fas fa-chevron-down tg-caret"></i></button>
             <div class="tg-dd tg-mega">
               <div class="tg-dd-col">
                 <div class="tg-dd-label">Markets</div>
@@ -383,7 +384,7 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 
           <!-- Trade & e-Commerce -->
           <li>
-            <button class="tg-nl">Trade & e-Commerce <i class="fas fa-chevron-down tg-caret"></i></button>
+            <button class="tg-nl">{% t "nav_trade" %} <i class="fas fa-chevron-down tg-caret"></i></button>
             <div class="tg-dd">
               <a href="{% url 'trade_ecommerce' %}" class="tg-dd-item"><span class="tg-dd-ico">🌐</span>Trade & e-Commerce</a>
               <a href="{% url 'forex' %}"            class="tg-dd-item"><span class="tg-dd-ico">💱</span>Live Exchange Rates</a>
@@ -394,13 +395,13 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
           <li>
             <a class="tg-nl {% if request.resolver_match.url_name == 'loyalty_info' %}tg-active{% endif %}"
                href="{% url 'loyalty_info' %}">
-              <span class="tg-loyalty-tag"><i class="fas fa-coins"></i> Loyalty</span>
+              <span class="tg-loyalty-tag"><i class="fas fa-coins"></i> {% t "nav_loyalty" %}</span>
             </a>
           </li>
 
           <!-- Training & TV -->
           <li>
-            <button class="tg-nl">Training & TV <i class="fas fa-chevron-down tg-caret"></i></button>
+            <button class="tg-nl">{% t "nav_training" %} <i class="fas fa-chevron-down tg-caret"></i></button>
             <div class="tg-dd">
               <a href="{% url 'training_home' %}" class="tg-dd-item"><span class="tg-dd-ico">🎓</span>Training Programs</a>
               <a href="{% url 'tv_programs' %}"   class="tg-dd-item"><span class="tg-dd-ico">📺</span>TV Programs</a>
@@ -409,16 +410,22 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 
           <li>
             <a class="tg-nl {% if request.resolver_match.url_name == 'about' %}tg-active{% endif %}"
-               href="{% url 'about' %}">About</a>
+               href="{% url 'about' %}">{% t "nav_about" %}</a>
           </li>
           <li>
             <a class="tg-nl {% if request.resolver_match.url_name == 'contact' %}tg-active{% endif %}"
-               href="{% url 'contact' %}">Contact</a>
+               href="{% url 'contact' %}">{% t "nav_contact" %}</a>
           </li>
         </ul>
 
         <!-- Auth / user actions -->
         <div class="tg-nav-auth">
+          <!-- Language toggle -->
+          <a href="{% url 'set_language' %}?lang={% if request.session.lang == 'sw' %}en{% else %}sw{% endif %}"
+             class="tg-bell" title="{% if request.session.lang == 'sw' %}Switch to English{% else %}Badili kwa Kiswahili{% endif %}">
+            <span style="font-size:.72rem;font-weight:800;letter-spacing:.5px">{% if request.session.lang == 'sw' %}EN{% else %}SW{% endif %}</span>
+          </a>
+
           <!-- Search -->
           <div class="tg-search-wrap" id="tgSearchWrap">
             <button id="tgSearchBtn" class="tg-bell" title="Search products" type="button">
@@ -440,6 +447,9 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 
           {% if user.is_authenticated %}
           {% if user.is_staff %}
+          <a href="{% url 'analytics_dashboard' %}" class="tg-bell" title="Analytics Dashboard">
+            <i class="fas fa-chart-line"></i>
+          </a>
           <a href="{% url 'notifications' %}" class="tg-bell" id="notif-bell" title="Notifications">
             <i class="fas fa-bell"></i>
             <span id="notif-count-badge" class="tg-bell-dot" style="display:none">0</span>
@@ -477,8 +487,8 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
           </ul>
 
           {% else %}
-          <a href="{% url 'login' %}"    class="tg-btn-ghost">Sign In</a>
-          <a href="{% url 'register' %}" class="tg-btn-primary">Get Started</a>
+          <a href="{% url 'login' %}"    class="tg-btn-ghost">{% t "nav_signin" %}</a>
+          <a href="{% url 'register' %}" class="tg-btn-primary">{% t "nav_getstarted" %}</a>
           {% endif %}
         </div>
       </div>
@@ -514,11 +524,11 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
     <div class="row g-5">
       <div class="col-lg-4">
         <div class="mb-3">
-          <img src="{% static 'images/tg_logo.jpeg' %}" alt="T&TG Trade Corp"
+          <img src="{% static 'images/logo.jpg' %}" alt="T&TG Trade Corp"
                style="width:72px;height:72px;object-fit:contain;background:#fff;border-radius:12px;padding:4px">
         </div>
         <div class="footer-logo">T&TG Trade Corp</div>
-        <div class="text-gold mb-2" style="font-size:.72rem;letter-spacing:2px;text-transform:uppercase">Connect · Trade · Grow · Earn</div>
+        <div class="text-gold mb-2" style="font-size:.72rem;letter-spacing:2px;text-transform:uppercase">{% t "footer_tagline" %}</div>
         <p class="footer-desc">Trade & e-Commerce platform facilitating seamless domestic and international commerce across Canada, Uganda and Kenya. Import & Export (RM) registered corporation.</p>
         <div class="mt-3 d-flex gap-2 flex-wrap">
           <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
@@ -585,7 +595,7 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
     </div>
 
     <div class="footer-bottom d-flex flex-wrap justify-content-between align-items-center gap-3">
-      <div class="small text-muted">© 2026 T&TG Trade Corporation. All rights reserved. Connect · Trade · Grow · Earn</div>
+      <div class="small text-muted">© 2026 T&TG Trade Corporation. {% t "footer_rights" %} {% t "footer_tagline" %}</div>
       <div class="small text-muted">Founder: <span class="text-gold">Tom Ssembiito</span> · Software: <span class="text-gold">Edgar Kitayimbwa</span></div>
     </div>
   </div>

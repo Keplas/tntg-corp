@@ -10,13 +10,13 @@
   "categories": ["shopping", "business"],
   "icons": [
     {
-      "src": "/static/images/tg_logo.jpeg",
+      "src": "/static/images/logo.jpg",
       "sizes": "192x192",
       "type": "image/jpeg",
       "purpose": "any maskable"
     },
     {
-      "src": "/static/images/tg_logo.jpeg",
+      "src": "/static/images/logo.jpg",
       "sizes": "512x512",
       "type": "image/jpeg",
       "purpose": "any maskable"

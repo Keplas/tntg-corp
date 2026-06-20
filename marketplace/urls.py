@@ -8,4 +8,9 @@ urlpatterns = [
     path('products/<int:pk>/order/', views.place_order, name='place_order'),
     path('orders/', views.my_orders, name='my_orders'),
     path('orders/<int:pk>/', views.order_detail, name='order_detail'),
+    # Payments
+    path('orders/<int:pk>/pay/',        views.payment_select,      name='payment_select'),
+    path('orders/<int:pk>/pay/card/',   views.payment_start_card,  name='payment_start_card'),
+    path('orders/<int:pk>/pay/mobile/', views.payment_start_mobile,name='payment_start_mobile'),
+    path('orders/<int:pk>/pay/success/',views.payment_success,     name='payment_success'),
 ]

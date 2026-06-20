@@ -85,6 +85,17 @@ class Order(models.Model):
         ('accepted','Accepted'),('not_accepted','Not Accepted'),
         ('shipped','Shipped'),('delivered','Delivered'),
     ]
+    PAYMENT_STATUS_CHOICES = [
+        ('unpaid',   'Unpaid'),
+        ('pending',  'Payment Pending'),
+        ('paid',     'Paid'),
+        ('failed',   'Payment Failed'),
+        ('refunded', 'Refunded'),
+    ]
+    PAYMENT_METHOD_CHOICES = [
+        ('card',         'Card (Stripe)'),
+        ('mobile_money', 'Mobile Money (Flutterwave)'),
+    ]
 
     buyer               = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='orders')
     product             = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -104,6 +115,12 @@ class Order(models.Model):
     reward_payment_date = models.DateField(blank=True, null=True,
                                            verbose_name='Reward Payment Due Date',
                                            help_text='Automatically set to 45 days after purchase')
+    # Payment tracking
+    payment_status    = models.CharField(max_length=12, choices=PAYMENT_STATUS_CHOICES, default='unpaid')
+    payment_method    = models.CharField(max_length=14, choices=PAYMENT_METHOD_CHOICES, blank=True)
+    payment_reference = models.CharField(max_length=120, blank=True,
+                                          help_text='Stripe session ID or Flutterwave transaction ref')
+    paid_at           = models.DateTimeField(blank=True, null=True)
     created_at          = models.DateTimeField(auto_now_add=True)
     updated_at          = models.DateTimeField(auto_now=True)
 
