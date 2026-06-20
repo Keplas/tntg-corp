@@ -968,3 +968,71 @@ input::placeholder, textarea::placeholder, select::placeholder {
 @media (prefers-reduced-motion: reduce) {
   .tg-reveal-ready .tg-reveal { opacity: 1; transform: none; transition: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   NAVBAR SEARCH — expanding icon-to-input pattern
+   ═══════════════════════════════════════════════════════════════ */
+.tg-search-wrap { position: relative; display: flex; align-items: center; }
+
+.tg-search-form {
+  position: absolute; right: 0; top: 50%;
+  transform: translateY(-50%) scaleX(0);
+  transform-origin: right center;
+  display: flex; align-items: center;
+  width: 280px; max-width: 60vw;
+  background: #0d1f35;
+  border: 1px solid rgba(201,168,76,.3);
+  border-radius: 100px;
+  padding: 4px 4px 4px 16px;
+  box-shadow: 0 12px 36px rgba(0,0,0,.5);
+  opacity: 0; pointer-events: none;
+  transition: transform .22s cubic-bezier(.4,0,.2,1), opacity .18s;
+  z-index: 1050;
+}
+.tg-search-wrap.tg-search-open .tg-search-form {
+  transform: translateY(-50%) scaleX(1);
+  opacity: 1; pointer-events: all;
+}
+.tg-search-wrap.tg-search-open #tgSearchBtn { opacity: 0; pointer-events: none; }
+
+.tg-search-input {
+  flex: 1; background: none; border: none; outline: none;
+  color: #dde4ec; font-size: .82rem; padding: 8px 4px;
+}
+.tg-search-input::placeholder { color: #6a88a8; }
+
+.tg-search-submit {
+  width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+  background: linear-gradient(135deg, #c9a84c, #e8c96a);
+  color: #060f1e; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .75rem;
+}
+
+@media (max-width: 991px) {
+  .tg-search-form { width: 100%; max-width: none; position: static; transform: none; opacity: 1; pointer-events: all; margin: 8px 0; }
+  .tg-search-wrap { display: block; }
+  #tgSearchBtn { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   WHATSAPP CLICK-TO-CHAT — floating button, stacked above TARA
+   ═══════════════════════════════════════════════════════════════ */
+#whatsapp-btn {
+  position: fixed; bottom: 100px; right: 28px; z-index: 99998;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: #25D366;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 1.6rem;
+  box-shadow: 0 6px 24px rgba(37,211,102,.5);
+  transition: transform .25s cubic-bezier(.4,0,.2,1), box-shadow .25s;
+  text-decoration: none;
+}
+#whatsapp-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 8px 30px rgba(37,211,102,.65);
+  color: #fff;
+}
+@media (max-width: 575px) {
+  #whatsapp-btn { bottom: 92px; right: 20px; width: 50px; height: 50px; font-size: 1.4rem; }
+}

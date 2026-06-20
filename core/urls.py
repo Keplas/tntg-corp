@@ -1,7 +1,6 @@
 from django.urls import path
 from . import views
 from .chatbot import chatbot_api
-from .views_image_upload import image_upload_page, image_upload_api, image_auto_match, product_thumb_url
 
 urlpatterns = [
     path('',              views.home,                name='home'),
@@ -16,9 +15,7 @@ urlpatterns = [
     path('notifications/mark-all-read/',      views.mark_all_read,          name='mark_all_read'),
     path('notifications/count/',              views.notification_count,     name='notification_count'),
     path('chat/',         chatbot_api,               name='chatbot_api'),
-    # Bulk image upload (admin only)
-    path('admin/upload-images/',              image_upload_page,  name='image_upload_page'),
-    path('admin/upload-images/upload/',       image_upload_api,   name='image_upload_api'),
-    path('admin/upload-images/match/',        image_auto_match,   name='image_auto_match'),
-    path('admin/upload-images/thumb/<int:product_id>/', product_thumb_url, name='product_thumb_url'),
+    # SEO
+    path('sitemap.xml',   views.sitemap_xml,         name='sitemap_xml'),
+    path('robots.txt',    views.robots_txt,          name='robots_txt'),
 ]

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from marketplace.models import Product
 from training.models import TrainingProgram, TVProgram
 from services.models import ContactInquiry, ForexRate
@@ -100,3 +100,57 @@ def notification_count(request):
         count = Notification.objects.filter(is_read=False).count()
         return JsonResponse({'count': count})
     return JsonResponse({'count': 0})
+
+
+# ═══════════════════════════════════════════════════════════════
+# SEO — sitemap.xml and robots.txt as plain views (no extra apps
+# or settings.py changes required — self-contained and safe to
+# drop in regardless of other local project customisations).
+# ═══════════════════════════════════════════════════════════════
+
+def sitemap_xml(request):
+    """Dynamic XML sitemap — static pages + all active products."""
+    domain = request.build_absolute_uri('/')[:-1]  # e.g. https://tntgcorp.com
+
+    static_pages = [
+        {'loc': '/',                       'priority': '1.0', 'changefreq': 'daily'},
+        {'loc': '/about/',                 'priority': '0.6', 'changefreq': 'monthly'},
+        {'loc': '/contact/',               'priority': '0.5', 'changefreq': 'monthly'},
+        {'loc': '/loyalty/',               'priority': '0.8', 'changefreq': 'weekly'},
+        {'loc': '/marketplace/products/',  'priority': '0.9', 'changefreq': 'daily'},
+        {'loc': '/services/forex/',        'priority': '0.6', 'changefreq': 'daily'},
+        {'loc': '/services/trade-ecommerce/', 'priority': '0.6', 'changefreq': 'weekly'},
+        {'loc': '/training/',              'priority': '0.6', 'changefreq': 'weekly'},
+    ]
+
+    urls = []
+    for page in static_pages:
+        urls.append(f"  <url><loc>{domain}{page['loc']}</loc>"
+                     f"<changefreq>{page['changefreq']}</changefreq>"
+                     f"<priority>{page['priority']}</priority></url>")
+
+    for product in Product.objects.filter(is_active=True):
+        urls.append(f"  <url><loc>{domain}/marketplace/products/{product.pk}/</loc>"
+                     f"<changefreq>weekly</changefreq><priority>0.7</priority></url>")
+
+    xml = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+           '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+           + '\n'.join(urls) +
+           '\n</urlset>')
+
+    return HttpResponse(xml, content_type='application/xml')
+
+
+def robots_txt(request):
+    """robots.txt — points crawlers to the sitemap, blocks admin/account areas."""
+    domain = request.build_absolute_uri('/')[:-1]
+    lines = [
+        "User-agent: *",
+        "Allow: /",
+        "Disallow: /admin/",
+        "Disallow: /accounts/dashboard/",
+        "Disallow: /accounts/profile/",
+        "Disallow: /marketplace/orders/",
+        f"Sitemap: {domain}/sitemap.xml",
+    ]
+    return HttpResponse("\n".join(lines), content_type='text/plain')

@@ -5,7 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}T&TG Trade Corp — Trade & e-Commerce Platform{% endblock %}</title>
-  <meta name="description" content="T&TG Trade Corporation — Trade & e-Commerce platform serving Canada, Uganda and Kenya. Shop textiles, clothing, shoes, watches and coffee. Earn T&TG Loyalty Points on every purchase.">
+  <meta name="description" content="{% block meta_description %}T&TG Trade Corporation — Trade & e-Commerce platform serving Canada, Uganda and Kenya. Shop textiles, clothing, shoes, watches and coffee. Earn T&TG Loyalty Points on every purchase.{% endblock %}">
+  <link rel="canonical" href="{% block canonical_url %}https://tntgcorp.com{{ request.path }}{% endblock %}">
+  <meta name="robots" content="index, follow">
 
   <!-- PWA / App Install -->
   <link rel="manifest" href="{% static 'manifest.json' %}">
@@ -16,12 +18,15 @@
   <link rel="apple-touch-icon" href="{% static 'images/tg_logo.jpeg' %}">
 
   <!-- Open Graph (for social sharing) -->
-  <meta property="og:type"        content="website">
-  <meta property="og:title"       content="T&TG Trade Corp — Trade & e-Commerce">
-  <meta property="og:description" content="Shop textiles, shoes, watches and coffee. Earn loyalty points. Canada · Uganda · Kenya.">
-  <meta property="og:url"         content="https://tntgcorp.com">
+  <meta property="og:type"        content="{% block og_type %}website{% endblock %}">
+  <meta property="og:title"       content="{% block og_title %}T&TG Trade Corp — Trade & e-Commerce{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}Shop textiles, shoes, watches and coffee. Earn loyalty points. Canada · Uganda · Kenya.{% endblock %}">
+  <meta property="og:url"         content="{% block og_url %}https://tntgcorp.com{{ request.path }}{% endblock %}">
+  <meta property="og:image"       content="{% block og_image %}https://tntgcorp.com{% static 'images/tg_logo.jpeg' %}{% endblock %}">
+  <meta name="twitter:card"       content="summary_large_image">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Manrope:wght@600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
@@ -309,6 +314,7 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
   }
 }
 </style>
+{% block extra_head %}{% endblock %}
 </head>
 <body>
 
@@ -329,7 +335,7 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
       <!-- BRAND (left) -->
       <a class="tg-brand" href="{% url 'home' %}">
         <div class="tg-brand-logo">
-          <img src="{% static 'images/logo.jpg' %}" alt="T&TG">
+          <img src="{% static 'images/tg_logo.jpeg' %}" alt="T&TG">
         </div>
         <div>
           <div class="tg-brand-name">T&TG Trade Corp</div>
@@ -413,6 +419,20 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 
         <!-- Auth / user actions -->
         <div class="tg-nav-auth">
+          <!-- Search -->
+          <div class="tg-search-wrap" id="tgSearchWrap">
+            <button id="tgSearchBtn" class="tg-bell" title="Search products" type="button">
+              <i class="fas fa-search"></i>
+            </button>
+            <form action="{% url 'product_list' %}" method="get" class="tg-search-form" id="tgSearchForm">
+              <input type="text" name="q" id="tgSearchInput" class="tg-search-input"
+                     placeholder="Search clothing, shoes, watches, coffee…" autocomplete="off">
+              <button type="submit" class="tg-search-submit" aria-label="Search">
+                <i class="fas fa-arrow-right"></i>
+              </button>
+            </form>
+          </div>
+
           <!-- Install App -->
           <button id="install-btn" class="tg-install-btn d-none" title="Install T&TG Shopping App">
             <i class="fas fa-download"></i>
@@ -566,7 +586,7 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 
     <div class="footer-bottom d-flex flex-wrap justify-content-between align-items-center gap-3">
       <div class="small text-muted">© 2026 T&TG Trade Corporation. All rights reserved. Connect · Trade · Grow · Earn</div>
-    
+      <div class="small text-muted">Founder: <span class="text-gold">Tom Ssembiito</span> · Software: <span class="text-gold">Edgar Kitayimbwa</span></div>
     </div>
   </div>
 </footer>
@@ -629,6 +649,15 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 </script>
 
 {% block extra_js %}{% endblock %}
+
+<!-- ═══ WHATSAPP CLICK-TO-CHAT ═══
+     ⚠️ REPLACE THE NUMBER BELOW with T&TG's real WhatsApp Business number
+     Format: country code + number, no spaces/symbols (e.g. Uganda: 256XXXXXXXXX)
+-->
+<a href="https://wa.me/256700000000?text=Hi%20T%26TG%2C%20I%27d%20like%20to%20know%20more%20about%20your%20products"
+   id="whatsapp-btn" target="_blank" rel="noopener" title="Chat with us on WhatsApp">
+  <i class="fab fa-whatsapp"></i>
+</a>
 
 <!-- ═══ TARA CHATBOT WIDGET ═══ -->
 <div id="chat-widget">
@@ -806,6 +835,26 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
   window.addEventListener('scroll', function(){
     nav && (nav.classList.toggle('scrolled', window.scrollY > 40));
   }, {passive: true});
+
+  // Search bar toggle
+  var searchWrap = document.getElementById('tgSearchWrap');
+  var searchBtn  = document.getElementById('tgSearchBtn');
+  var searchInput = document.getElementById('tgSearchInput');
+  if (searchBtn && searchWrap) {
+    searchBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      searchWrap.classList.add('tg-search-open');
+      setTimeout(function(){ searchInput && searchInput.focus(); }, 150);
+    });
+    document.addEventListener('click', function(e){
+      if (!searchWrap.contains(e.target)) {
+        searchWrap.classList.remove('tg-search-open');
+      }
+    });
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape') searchWrap.classList.remove('tg-search-open');
+    });
+  }
 
   // Mobile dropdown toggles
   document.querySelectorAll('.tg-has-drop').forEach(function(el){

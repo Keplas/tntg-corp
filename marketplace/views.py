@@ -10,6 +10,14 @@ import decimal
 
 
 def product_list(request):
+    # Capture referral code from a shared link (?ref=UNIQUE_ID) into the session
+    # so it survives browsing and auto-fills at checkout, without requiring
+    # the new buyer to manually type the referrer's ID.
+    ref_code = request.GET.get('ref', '')
+    if ref_code:
+        request.session['referred_by'] = ref_code
+        request.session.set_expiry(60 * 60 * 24 * 14)  # remember for 14 days
+
     market   = request.GET.get('market', 'both')
     category = request.GET.get('category', '')
     gender   = request.GET.get('gender', '')
@@ -36,6 +44,11 @@ def product_list(request):
 
 
 def product_detail(request, pk):
+    ref_code = request.GET.get('ref', '')
+    if ref_code:
+        request.session['referred_by'] = ref_code
+        request.session.set_expiry(60 * 60 * 24 * 14)
+
     product = get_object_or_404(Product, pk=pk, is_active=True)
     reviews = product.reviews.all()[:10]
     related = Product.objects.filter(category=product.category, is_active=True).exclude(pk=pk)[:4]
@@ -47,6 +60,7 @@ def product_detail(request, pk):
 def place_order(request, pk):
     product  = get_object_or_404(Product, pk=pk, is_active=True)
     settings = LoyaltySettings.get_settings()
+    session_referral = request.session.get('referred_by', '')
 
     if request.method == 'POST':
         qty          = int(request.POST.get('quantity', 1))
@@ -55,8 +69,8 @@ def place_order(request, pk):
         dest_address = request.POST.get('destination_address', '')
         arrival_date = request.POST.get('desired_arrival_date', '')
         arrival_time = request.POST.get('desired_arrival_time', '') or None
-        referred_by  = request.POST.get('referred_by', '')
-        referrer_id  = request.POST.get('referrer_unique_id', '')
+        referred_by  = request.POST.get('referred_by', '') or session_referral
+        referrer_id  = request.POST.get('referrer_unique_id', '') or session_referral
 
         total = product.price * qty
 
@@ -126,6 +140,7 @@ def place_order(request, pk):
     return render(request, 'marketplace/place_order.html', {
         'product':  product,
         'settings': settings,
+        'session_referral': session_referral,
     })
 
 

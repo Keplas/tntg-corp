@@ -91,31 +91,40 @@
     <!-- C: Referral -->
     <div class="tab-pane fade" id="tab-referral">
       <h5 class="fw-700 mb-3" style="color:#0a2540"><i class="fas fa-users text-gold me-2"></i>Referral Programme</h5>
+      {% with referral_link=request.scheme|add:"://"|add:request.get_host|add:"/marketplace/products/?ref="|add:user.unique_id %}
       <div class="row g-4 mb-4">
         <div class="col-md-6">
           <div class="card border-0 shadow-sm p-4 h-100" style="border-radius:16px">
-            <h6 class="fw-700 mb-3" style="color:#0a2540">Your Referral ID</h6>
+            <h6 class="fw-700 mb-3" style="color:#0a2540">Your Referral Link</h6>
             <div class="d-flex align-items-center gap-2">
-              <code class="p-2 rounded" style="background:#f8f9fa;color:#0a2540;font-size:1rem;font-weight:700;letter-spacing:2px">{{ user.unique_id }}</code>
-              <button class="btn btn-sm btn-outline-secondary" onclick="navigator.clipboard.writeText('{{ user.unique_id }}');this.innerHTML='<i class=\'fas fa-check\'></i> Copied!'">
-                <i class="fas fa-copy"></i> Copy
+              <code class="p-2 rounded flex-grow-1 text-truncate" style="background:#f8f9fa;color:#0a2540;font-size:.82rem">{{ referral_link }}</code>
+              <button class="btn btn-sm btn-outline-secondary flex-shrink-0" onclick="navigator.clipboard.writeText('{{ referral_link }}');this.innerHTML='<i class=\'fas fa-check\'></i>'">
+                <i class="fas fa-copy"></i>
               </button>
             </div>
-            <p class="text-muted small mt-3 mb-0">Share this ID. When a new buyer enters it at checkout, you earn <strong class="text-gold">{{ settings.referral_rate|floatformat:1 }}%</strong> of their net purchase price.</p>
+            <p class="text-muted small mt-3 mb-0">Anyone who shops through this link is automatically credited to you — they don't need to type anything in. You earn <strong class="text-gold">{{ settings.referral_rate|floatformat:1 }}%</strong> of their net purchase price.</p>
+            <div class="mt-3 text-center">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data={{ referral_link|urlencode }}"
+                   alt="QR code for your referral link" width="120" height="120"
+                   style="border-radius:10px;border:1px solid #eee" loading="lazy">
+              <div class="small text-muted mt-1">Scan to open your referral link</div>
+            </div>
           </div>
         </div>
         <div class="col-md-6">
           <div class="card border-0 shadow-sm p-4 h-100" style="border-radius:16px">
             <h6 class="fw-700 mb-3" style="color:#0a2540">Share the Platform</h6>
             <div class="d-flex flex-wrap gap-2">
-              <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="btn btn-sm" style="background:#1877f2;color:#fff;border-radius:20px"><i class="fab fa-facebook-f me-1"></i>Facebook</a>
-              <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" target="_blank" class="btn btn-sm" style="background:#0a66c2;color:#fff;border-radius:20px"><i class="fab fa-linkedin-in me-1"></i>LinkedIn</a>
-              <a href="https://wa.me/?text=Join T%26TG Trade Corp and earn loyalty points! {{ request.build_absolute_uri }}" target="_blank" class="btn btn-sm" style="background:#25d366;color:#fff;border-radius:20px"><i class="fab fa-whatsapp me-1"></i>WhatsApp</a>
-              <a href="https://www.tiktok.com" target="_blank" class="btn btn-sm" style="background:#000;color:#fff;border-radius:20px"><i class="fab fa-tiktok me-1"></i>TikTok</a>
+              <a href="https://www.facebook.com/sharer/sharer.php?u={{ referral_link|urlencode }}" target="_blank" class="btn btn-sm" style="background:#1877f2;color:#fff;border-radius:20px"><i class="fab fa-facebook-f me-1"></i>Facebook</a>
+              <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ referral_link|urlencode }}" target="_blank" class="btn btn-sm" style="background:#0a66c2;color:#fff;border-radius:20px"><i class="fab fa-linkedin-in me-1"></i>LinkedIn</a>
+              <a href="https://wa.me/?text=Join%20T%26TG%20Trade%20Corp%20and%20earn%20loyalty%20points!%20{{ referral_link|urlencode }}" target="_blank" class="btn btn-sm" style="background:#25d366;color:#fff;border-radius:20px"><i class="fab fa-whatsapp me-1"></i>WhatsApp</a>
+              <a href="https://twitter.com/intent/tweet?url={{ referral_link|urlencode }}&text=Join%20T%26TG%20Trade%20Corp%20and%20earn%20loyalty%20points!" target="_blank" class="btn btn-sm" style="background:#000;color:#fff;border-radius:20px"><i class="fab fa-x-twitter me-1"></i>X</a>
             </div>
+            <p class="text-muted small mt-3 mb-0">Your unique referral ID <strong class="text-gold">{{ user.unique_id }}</strong> is baked into every link above — no manual entry needed by the person you refer.</p>
           </div>
         </div>
       </div>
+      {% endwith %}
       {% if referral_txns %}
       <h6 class="fw-700 mb-3" style="color:#0a2540">Referral Earnings History</h6>
       <div class="table-responsive">

@@ -65,7 +65,8 @@
 
               <div class="col-md-6">
                 <label class="form-label">Referred By (Name or Company)</label>
-                <input type="text" name="referred_by" class="form-control" placeholder="Who referred you?">
+                <input type="text" name="referred_by" class="form-control"
+                       value="{{ session_referral }}" placeholder="Who referred you?">
               </div>
 
               <div class="col-12">
@@ -73,11 +74,19 @@
                   <span class="text-muted" style="font-size:.78rem">(optional — e.g. TG00123)</span>
                 </label>
                 <input type="text" name="referrer_unique_id" class="form-control"
+                       value="{{ session_referral }}"
                        placeholder="Enter referrer's T&TG ID to credit their loyalty points">
+                {% if session_referral %}
+                <div class="small mt-1" style="color:#1a8c4a">
+                  <i class="fas fa-check-circle me-1"></i>
+                  Referral <strong>{{ session_referral }}</strong> auto-detected from your shared link.
+                </div>
+                {% else %}
                 <div class="small text-muted mt-1">
                   <i class="fas fa-info-circle me-1 text-gold"></i>
                   Entering a referrer's ID gives them 2.5% loyalty points on this order.
                 </div>
+                {% endif %}
               </div>
             </div>
 
