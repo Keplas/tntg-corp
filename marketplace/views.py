@@ -233,7 +233,7 @@ def payment_start_mobile(request, pk):
         messages.error(request, conv_error)
         return redirect('payment_select', pk=order.pk)
 
-    charge_id, error = payments.create_flutterwave_payment(
+    charge_id, instruction_note, error = payments.create_flutterwave_payment(
         order, customer_phone=phone, local_amount=local_amount,
         country_code=country_code, network=network, currency=currency
     )
@@ -245,6 +245,13 @@ def payment_start_mobile(request, pk):
     order.payment_status = 'pending'
     order.payment_reference = charge_id  # store the charge ID for polling/verification
     order.save(update_fields=['payment_method', 'payment_status', 'payment_reference'])
+
+    # Stash the instruction text in session so payment_pending.html can show
+    # it — this is the actual customer-facing guidance from Flutterwave
+    # (in sandbox, this is the ONLY way to see what to do; no real push
+    # notification is sent to a real phone in test mode).
+    request.session[f'flw_instruction_{order.pk}'] = instruction_note
+
     return redirect('payment_pending', pk=order.pk)
 
 
@@ -253,7 +260,11 @@ def payment_pending(request, pk):
     """Waiting page for mobile money — tells the customer to check their
     phone for the push notification, and polls the server for status."""
     order = get_object_or_404(Order, pk=pk, buyer=request.user)
-    return render(request, 'marketplace/payment_pending.html', {'order': order})
+    instruction_note = request.session.get(f'flw_instruction_{order.pk}', '')
+    return render(request, 'marketplace/payment_pending.html', {
+        'order': order,
+        'instruction_note': instruction_note,
+    })
 
 
 @login_required

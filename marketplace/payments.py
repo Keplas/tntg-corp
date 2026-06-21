@@ -170,14 +170,18 @@ def create_flutterwave_payment(order, customer_phone, local_amount, country_code
 
     Unlike Stripe, there's no redirect link: the customer gets a push
     notification on their phone and must approve there. Returns
-    (charge_id, error) — charge_id is used later to poll/verify status.
+    (charge_id, instruction_note, error) — charge_id is used later to
+    poll/verify status; instruction_note is the customer-facing text
+    Flutterwave returns describing how to complete the payment (this is
+    the ONLY way to see what to do in sandbox mode, since no real push
+    notification is sent to a real phone there).
     """
     if not flutterwave_configured():
-        return None, 'Mobile Money payments are not yet configured. Please contact support or choose Card.'
+        return None, None, 'Mobile Money payments are not yet configured. Please contact support or choose Card.'
 
     token = _get_flutterwave_token()
     if not token:
-        return None, 'Could not authenticate with the Mobile Money provider. Please try again shortly.'
+        return None, None, 'Could not authenticate with the Mobile Money provider. Please try again shortly.'
 
     headers = {
         'Authorization': f'Bearer {token}',
@@ -210,13 +214,24 @@ def create_flutterwave_payment(order, customer_phone, local_amount, country_code
     try:
         resp = requests.post(f'{FLUTTERWAVE_API_BASE}/orchestration/direct-charges',
                               json=payload, headers=headers, timeout=20)
-        data = resp.json()
-        charge_id = (data.get('data') or {}).get('id') or data.get('id')
-        if charge_id:
-            return str(charge_id), None
-        return None, data.get('message', 'Payment initiation failed. Please check the phone number and try again.')
+        data = (resp.json().get('data') or {})
+        charge_id = data.get('id')
+        if not charge_id:
+            return None, None, resp.json().get('message', 'Payment initiation failed. Please check the phone number and try again.')
+
+        # Extract the customer-facing instruction text — in sandbox this is
+        # the ONLY way to see what to do next (no real push notification is
+        # sent to a real phone in test mode). In live mode, this is the same
+        # text that accompanies the real push notification.
+        next_action = data.get('next_action') or {}
+        instruction_note = (
+            (next_action.get('payment_instruction') or {}).get('note')
+            or (next_action.get('payment_instruction') or {}).get('message')
+            or None
+        )
+        return str(charge_id), instruction_note, None
     except Exception as e:
-        return None, f'Payment setup failed: {e}'
+        return None, None, f'Payment setup failed: {e}'
 
 
 def verify_flutterwave_transaction(charge_id):
