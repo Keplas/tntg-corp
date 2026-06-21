@@ -28,13 +28,13 @@ PRODUCTS = [
          description='High-altitude Arabica green coffee beans — smooth, nuanced flavour with bright acidity. Sourced from Uganda and Kenya.',
          price=35.00, currency='USD', quantity_available=400, unit='kg',
          market_type='both', origin_country='UG', is_featured=True,
-         image_url='https://images.unsplash.com/photo-1561766858-62033ae40ec3?w=600&h=400&fit=crop&q=80'),
+         image_url='https://tntgcorp.com/static/images/products/tg-coffee-bag.jpg'),
 
     dict(name='Robusta Green Coffee', category='coffee', gender_target='all',
          description='Premium Robusta green coffee beans sourced from Uganda. Rich, bold flavour profile ideal for espresso blends. Sold per kilogram.',
          price=28.00, currency='USD', quantity_available=500, unit='kg',
          market_type='both', origin_country='UG', is_featured=True,
-         image_url='https://images.unsplash.com/photo-1703646619157-eb553d16d402?w=600&h=400&fit=crop&q=80'),
+         image_url='https://tntgcorp.com/static/images/products/tg-coffee-bag.jpg'),
 
     # ── Suits — Men ───────────────────────────────────────────────────────────
     dict(name='Black Suit for Men', category='clothing', gender_target='men',
