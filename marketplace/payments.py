@@ -133,11 +133,40 @@ def _get_flutterwave_token():
         return None
 
 
-def create_flutterwave_payment(order, customer_phone, country_code='256', network='MTN', currency='UGX'):
+def convert_currency(amount, from_currency, to_currency):
+    """
+    Converts `amount` from `from_currency` to `to_currency` using the
+    ForexRate table (Services app — admin-editable at /admin or via the
+    Services > Forex Rates page).
+
+    Returns (converted_amount: Decimal|None, error: str|None). Deliberately
+    does NOT fall back to a guessed/default rate if one isn't found —
+    charging the wrong amount of real money is worse than blocking the
+    payment with a clear error.
+    """
+    if from_currency == to_currency:
+        return amount, None
+    from services.models import ForexRate
+    try:
+        rate_obj = ForexRate.objects.get(from_currency=from_currency, to_currency=to_currency)
+        return amount * rate_obj.rate, None
+    except ForexRate.DoesNotExist:
+        return None, (
+            f'No exchange rate is configured for {from_currency}/{to_currency}. '
+            f'Please contact support, or an admin can add this rate under Forex Rates.'
+        )
+
+
+def create_flutterwave_payment(order, customer_phone, local_amount, country_code='256', network='MTN', currency='UGX'):
     """
     Initiates a mobile money charge via Flutterwave's v4 orchestrator
     endpoint (single call — creates the customer, payment method, and
     charge together).
+
+    IMPORTANT: `local_amount` must already be converted into `currency`
+    by the caller (see convert_currency() above) — this function does NOT
+    convert order.total_price itself, since silently treating a USD total
+    as a UGX/KES amount was the exact bug that caused wildly wrong charges.
 
     Unlike Stripe, there's no redirect link: the customer gets a push
     notification on their phone and must approve there. Returns
@@ -160,7 +189,7 @@ def create_flutterwave_payment(order, customer_phone, country_code='256', networ
     last_name  = order.buyer.last_name or ''
 
     payload = {
-        'amount': float(order.total_price),
+        'amount': float(local_amount),
         'currency': currency,
         'reference': f'TNTG-ORDER-{order.pk}-{int(time.time())}',
         'payment_method': {

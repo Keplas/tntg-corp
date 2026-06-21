@@ -174,10 +174,16 @@ def market_select(request):
 def payment_select(request, pk):
     """Let the buyer choose a payment method, or pay later (cash/manual)."""
     order = get_object_or_404(Order, pk=pk, buyer=request.user)
+
+    ugx_amount, _ = payments.convert_currency(order.total_price, 'USD', 'UGX')
+    kes_amount, _ = payments.convert_currency(order.total_price, 'USD', 'KES')
+
     return render(request, 'marketplace/payment_select.html', {
         'order': order,
         'stripe_ready': payments.stripe_configured(),
         'flutterwave_ready': payments.flutterwave_configured(),
+        'ugx_amount': ugx_amount,
+        'kes_amount': kes_amount,
     })
 
 
@@ -219,8 +225,17 @@ def payment_start_mobile(request, pk):
         messages.error(request, 'Please enter a phone number for Mobile Money payment.')
         return redirect('payment_select', pk=order.pk)
 
+    # Orders are priced in USD; mobile money must charge in local currency.
+    # Convert here rather than ever passing the USD total directly —
+    # silently mismatching currencies would charge wildly the wrong amount.
+    local_amount, conv_error = payments.convert_currency(order.total_price, 'USD', currency)
+    if conv_error:
+        messages.error(request, conv_error)
+        return redirect('payment_select', pk=order.pk)
+
     charge_id, error = payments.create_flutterwave_payment(
-        order, customer_phone=phone, country_code=country_code, network=network, currency=currency
+        order, customer_phone=phone, local_amount=local_amount,
+        country_code=country_code, network=network, currency=currency
     )
     if error:
         messages.error(request, error)

@@ -67,7 +67,8 @@
                 {% csrf_token %}
                 <div class="row g-2 mb-2">
                   <div class="col-6">
-                    <select name="country_code" class="form-select" required>
+                    <select name="country_code" id="mmCountryCode" class="form-select" required
+                            data-ugx="{{ ugx_amount|floatformat:0 }}" data-kes="{{ kes_amount|floatformat:0 }}">
                       <option value="256">🇺🇬 Uganda</option>
                       <option value="254">🇰🇪 Kenya</option>
                     </select>
@@ -81,8 +82,19 @@
                   </div>
                 </div>
                 <input type="tel" name="phone" class="form-control mb-2" placeholder="e.g. 712345678 (no country code)" required>
+                {% if ugx_amount and kes_amount %}
+                <div class="small text-gold mb-2" id="mmEstimate">
+                  <i class="fas fa-calculator me-1"></i>
+                  You'll be charged approximately <strong>{{ ugx_amount|floatformat:0 }} UGX</strong>
+                </div>
+                {% else %}
+                <div class="small mb-2" style="color:#e6a23c">
+                  <i class="fas fa-triangle-exclamation me-1"></i>
+                  Exchange rate not available — payment may be blocked until an admin adds it.
+                </div>
+                {% endif %}
                 <button type="submit" class="btn btn-gold w-100 text-center">
-                  Pay ${{ order.total_price }} by Mobile Money
+                  Pay by Mobile Money
                 </button>
                 <div class="small text-muted mt-2">
                   <i class="fas fa-info-circle me-1"></i>
@@ -113,4 +125,23 @@
     </div>
   </div>
 </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function(){
+  var sel = document.getElementById('mmCountryCode');
+  var est = document.getElementById('mmEstimate');
+  if (!sel || !est) return;
+  sel.addEventListener('change', function(){
+    var ugx = sel.getAttribute('data-ugx');
+    var kes = sel.getAttribute('data-kes');
+    if (sel.value === '254') {
+      est.innerHTML = '<i class="fas fa-calculator me-1"></i>You\'ll be charged approximately <strong>' + kes + ' KES</strong>';
+    } else {
+      est.innerHTML = '<i class="fas fa-calculator me-1"></i>You\'ll be charged approximately <strong>' + ugx + ' UGX</strong>';
+    }
+  });
+})();
+</script>
 {% endblock %}
