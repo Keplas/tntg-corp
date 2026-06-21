@@ -12,7 +12,6 @@ GENDER_TARGET_CHOICES = [
     ('all',      'All'),
     ('men',      'Men'),
     ('women',    'Women'),
-    ('children', 'Children'),
 ]
 
 

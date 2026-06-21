@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import JsonResponse, HttpResponse
@@ -76,9 +77,9 @@ def coffee(request):
 
 @staff_member_required
 def notifications(request):
-    notifs       = Notification.objects.all()[:100]
-    unread_count = Notification.objects.filter(is_read=False).count()
-    return render(request, 'core/notifications.html', {'notifs': notifs, 'unread_count': unread_count})
+    # Notifications now live as a section within the Analytics Dashboard —
+    # redirect old links/bookmarks straight there.
+    return redirect(reverse('analytics_dashboard') + '#notifications')
 
 
 @staff_member_required
@@ -86,14 +87,14 @@ def mark_notification_read(request, pk):
     notif = get_object_or_404(Notification, pk=pk)
     notif.is_read = True
     notif.save()
-    return redirect(notif.link or 'notifications')
+    return redirect(notif.link or (reverse('analytics_dashboard') + '#notifications'))
 
 
 @staff_member_required
 def mark_all_read(request):
     Notification.objects.filter(is_read=False).update(is_read=True)
     messages.success(request, 'All notifications marked as read.')
-    return redirect('notifications')
+    return redirect(reverse('analytics_dashboard') + '#notifications')
 
 
 def notification_count(request):
@@ -229,6 +230,11 @@ def analytics_dashboard(request):
         .order_by('-revenue')[:6]
     )
 
+    # Notifications — now surfaced as a section within this dashboard
+    # rather than a separate top-level page (see notifications() below).
+    notifs       = Notification.objects.all()[:100]
+    unread_count = Notification.objects.filter(is_read=False).count()
+
     ctx = {
         'total_revenue': total_revenue,
         'total_orders': total_orders,
@@ -244,6 +250,8 @@ def analytics_dashboard(request):
         'category_sales': category_sales,
         'country_breakdown': country_breakdown,
         'total_products_active': Product.objects.filter(is_active=True).count(),
+        'notifs': notifs,
+        'unread_count': unread_count,
     }
     return render(request, 'core/analytics_dashboard.html', ctx)
 

@@ -45,7 +45,13 @@
         <div class="glass-card p-4">
           <h5 class="text-gold mb-4">Our Leadership</h5>
           <div class="d-flex align-items-center gap-3 mb-3 p-3" style="background:rgba(0,0,0,.2);border-radius:10px">
-            <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c96a);display:flex;align-items:center;justify-content:center;font-weight:800;color:#0a2540;flex-shrink:0">TS</div>
+            <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c96a);position:relative;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;color:#0a2540">
+              <span id="founder-initials">TS</span>
+              <img src="{% static 'images/founder-tom.jpg' %}" alt="Tom Ssembiito"
+                   style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none"
+                   onload="this.style.display='block';document.getElementById('founder-initials').style.display='none';"
+                   onerror="this.style.display='none';">
+            </div>
             <div>
               <div class="fw-bold">Tom Ssembiito</div>
               <div class="text-gold" style="font-size:.75rem">Founder & Operations Manager</div>
@@ -75,7 +81,7 @@
         <div class="service-card text-center">
           <div class="service-icon">🛒</div>
           <h5 class="text-gold">Online Shopping Platform</h5>
-          <p class="text-muted small">Textiles, clothing, shoes, watches and coffee for men, women and children. Local and international markets across Canada, Uganda and Kenya.</p>
+          <p class="text-muted small">Textiles, clothing, shoes, watches and coffee for men and women. Local and international markets across Canada, Uganda and Kenya.</p>
         </div>
       </div>
       <div class="col-md-4">

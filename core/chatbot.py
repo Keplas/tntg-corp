@@ -32,7 +32,7 @@ MARKETPLACE (Online Shopping Platform):
 - Local Market: open to individuals and companies in Canada, Uganda or Kenya
 - International Market: requires registered company + T&TG Certificate of completion
 - Product Categories: Clothing (Suits, Shirts, T-Shirts, Trousers), Shoes, Hand Watches, Coffee (Robusta Green Coffee, Arabica Green Coffee)
-- Target audiences: Men, Women, Children
+- Target audiences: Men, Women
 - Order types: Express (fast, higher cost) or Ordinary (standard, lower cost)
 - Buyers earn T&TG Loyalty Points on every purchase
 
@@ -164,7 +164,7 @@ def get_offline_reply(messages):
                 "Browse at **/marketplace/products/?category=coffee**.")
     if any(w in last for w in ['cloth', 'suit', 'shirt', 'trouser', 'shoe', 'watch', 'textile']):
         return ("👔 Our marketplace carries Suits, Shirts, T-Shirts, Trousers, Shoes and Hand Watches "
-                "for men, women and children. Browse at **/marketplace/products/**.")
+                "for men and women. Browse at **/marketplace/products/**.")
     if any(w in last for w in ['forex', 'exchange', 'currency', 'rate', 'cad', 'ugx', 'kes']):
         return ("💱 **Live Exchange Rates** — We track CAD/UGX, CAD/KES and UGX/KES — the currencies "
                 "of our trade routes across Canada, Uganda and Kenya. Visit **/services/forex/**.")

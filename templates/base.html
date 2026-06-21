@@ -440,11 +440,8 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 
           {% if user.is_authenticated %}
           {% if user.is_staff %}
-          <a href="{% url 'analytics_dashboard' %}" class="tg-bell" title="Analytics Dashboard">
+          <a href="{% url 'analytics_dashboard' %}#notifications" class="tg-bell" id="notif-bell" title="T&TG Analytics Dashboard">
             <i class="fas fa-chart-line"></i>
-          </a>
-          <a href="{% url 'notifications' %}" class="tg-bell" id="notif-bell" title="Notifications">
-            <i class="fas fa-bell"></i>
             <span id="notif-count-badge" class="tg-bell-dot" style="display:none">0</span>
           </a>
           {% endif %}
