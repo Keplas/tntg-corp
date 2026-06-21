@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block title %}Waiting for Payment — Order #{{ order.pk }}{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>Check Your Phone</h1>
+  </div>
+</div>
+
+<section class="section" style="padding-top:2rem">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <div class="glass-card p-5 text-center">
+
+          <div id="pendingState">
+            <div class="mb-4" style="font-size:3rem">
+              <i class="fas fa-mobile-screen-button text-gold tg-pulse-icon"></i>
+            </div>
+            <h4 class="mb-3">Approve the payment on your phone</h4>
+            <p class="text-muted">
+              We've sent a push notification to your mobile money app for
+              <strong>${{ order.total_price }}</strong>. Open it and enter
+              your PIN to complete the payment.
+            </p>
+            <div class="d-flex align-items-center justify-content-center gap-2 mt-4 text-muted small">
+              <span class="spinner-border spinner-border-sm" role="status"></span>
+              <span id="statusText">Waiting for confirmation…</span>
+            </div>
+          </div>
+
+          <div id="paidState" style="display:none">
+            <div class="mb-4" style="font-size:3rem;color:#1a8c4a">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <h4 class="mb-3">Payment Confirmed!</h4>
+            <p class="text-muted">Thank you — your order is being processed.</p>
+            <a href="{% url 'order_detail' order.pk %}" class="btn btn-gold mt-2">View Order</a>
+          </div>
+
+          <div class="mt-4 pt-3" style="border-top:1px solid rgba(201,168,76,.15)">
+            <p class="text-muted small mb-1">Didn't get the notification, or it expired?</p>
+            <a href="{% url 'payment_select' order.pk %}" class="text-gold small">Try again</a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.tg-pulse-icon { animation: tgPulseIcon 1.6s ease-in-out infinite; }
+@keyframes tgPulseIcon { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(1.08)} }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function(){
+  var pollUrl = "{% url 'poll_payment_status' order.pk %}";
+  var attempts = 0;
+  var maxAttempts = 60; // ~5 minutes at 5s intervals
+
+  function poll() {
+    attempts++;
+    fetch(pollUrl, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if (data.status === 'paid') {
+          document.getElementById('pendingState').style.display = 'none';
+          document.getElementById('paidState').style.display = 'block';
+          return; // stop polling
+        }
+        if (attempts < maxAttempts) {
+          setTimeout(poll, 5000);
+        } else {
+          document.getElementById('statusText').textContent =
+            'Still waiting — this is taking longer than usual. You can refresh this page to check again.';
+        }
+      })
+      .catch(function(){
+        if (attempts < maxAttempts) setTimeout(poll, 7000); // back off a bit on error
+      });
+  }
+
+  setTimeout(poll, 4000); // give the push notification a moment to arrive first
+})();
+</script>
+{% endblock %}
