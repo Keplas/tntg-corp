@@ -13,18 +13,16 @@ class ProductAdmin(admin.ModelAdmin):
     fields = [
         'name', 'category', 'gender_target', 'description', 'price', 'currency',
         'quantity_available', 'unit', 'market_type', 'seller',
-        'origin_country', 'image', 'video_url', 'is_active', 'is_featured',
+        'origin_country', 'image', 'image_url', 'video', 'video_url', 'is_active', 'is_featured',
     ]
 
     def image_preview(self, obj):
-        if obj.image:
-            try:
-                return format_html(
-                    '<img src="{}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;">',
-                    obj.image.url
-                )
-            except Exception:
-                return '⚠️'
+        url = obj.safe_image_url
+        if url:
+            return format_html(
+                '<img src="{}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;">',
+                url
+            )
         return '—'
     image_preview.short_description = 'Image'
 

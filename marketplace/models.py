@@ -28,8 +28,14 @@ class Product(models.Model):
     currency          = models.CharField(max_length=5, default='USD')
     quantity_available= models.IntegerField(default=0)
     unit              = models.CharField(max_length=50, default='unit')
-    image             = models.ImageField(upload_to='products/', blank=True, null=True)
-    video_url         = models.URLField(blank=True)
+    image             = models.ImageField(upload_to='products/', blank=True, null=True,
+                                          help_text='Upload your own photo — takes priority over Image URL below.')
+    image_url         = models.URLField(blank=True,
+                                        help_text='Stock/placeholder photo link — used only if no photo is uploaded above.')
+    video             = models.FileField(upload_to='products/videos/', blank=True, null=True,
+                                         help_text='Upload your own product video — takes priority over Video URL below.')
+    video_url         = models.URLField(blank=True,
+                                        help_text='YouTube/Vimeo link — used only if no video is uploaded above.')
     market_type       = models.CharField(max_length=20, choices=MARKET_CHOICES, default='both')
     seller            = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True,
                                           related_name='products')
@@ -43,19 +49,35 @@ class Product(models.Model):
 
     @property
     def safe_image_url(self):
-        if not self.image:
-            return None
-        try:
-            url = self.image.url
-            if url.startswith('/media/') or url.startswith('media/'):
-                import os
-                from django.conf import settings
-                local_path = os.path.join(settings.BASE_DIR, 'media', str(self.image))
-                if not os.path.exists(local_path):
-                    return None
-            return url
-        except Exception:
-            return None
+        if self.image:
+            try:
+                url = self.image.url
+                if url.startswith('/media/') or url.startswith('media/'):
+                    import os
+                    from django.conf import settings
+                    local_path = os.path.join(settings.BASE_DIR, 'media', str(self.image))
+                    if not os.path.exists(local_path):
+                        return self.image_url or None
+                return url
+            except Exception:
+                return self.image_url or None
+        return self.image_url or None
+
+    @property
+    def safe_video_url(self):
+        if self.video:
+            try:
+                url = self.video.url
+                if url.startswith('/media/') or url.startswith('media/'):
+                    import os
+                    from django.conf import settings
+                    local_path = os.path.join(settings.BASE_DIR, 'media', str(self.video))
+                    if not os.path.exists(local_path):
+                        return self.video_url or None
+                return url
+            except Exception:
+                return self.video_url or None
+        return self.video_url or None
 
     def loyalty_points_consumer(self):
         """1% of price for the end-user/consumer (rate comes from LoyaltySettings)."""

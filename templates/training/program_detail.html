@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load video_tags %}
 {% block title %}{{ program.title }} — T&TG Training{% endblock %}
 {% block content %}
 <div class="page-header">
@@ -19,9 +20,17 @@
         {% if program.video_url %}
         <div class="glass-card p-4 mb-4">
           <h5 class="text-gold mb-3"><i class="fas fa-play-circle me-2"></i>Program Preview</h5>
+          {% with embed_url=program.video_url|youtube_embed_url %}
+          {% if embed_url %}
+          <div style="aspect-ratio:16/9;border-radius:var(--radius-sm);overflow:hidden">
+            <iframe src="{{ embed_url }}" title="{{ program.title }} preview" style="width:100%;height:100%;border:0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          {% else %}
           <div style="aspect-ratio:16/9;background:var(--bg-card);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center">
             <a href="{{ program.video_url }}" target="_blank" class="btn btn-gold"><i class="fas fa-play me-2"></i>Watch Preview</a>
           </div>
+          {% endif %}
+          {% endwith %}
         </div>
         {% endif %}
         <div class="glass-card p-4">
