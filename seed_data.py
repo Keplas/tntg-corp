@@ -150,18 +150,14 @@ for from_c, to_c, rate in FOREX:
 
 # ── 4. Training Programs ──────────────────────────────────────────────────────
 TRAINING = [
-    dict(title='Modern & Tech Farming',
-         category='farming',
-         description='Cutting-edge farming techniques including precision agriculture, drone technology and soil analytics.',
-         duration_hours=12.5, certificate_fee=500),
-    dict(title='Trade & e-Commerce Business Setup',
-         category='enterprise',
-         description='How to set up and run a successful online trade and e-commerce business. Registration, logistics, marketing.',
-         duration_hours=6, certificate_fee=500),
     dict(title='Import & Export Operations',
          category='trade',
          description='Master the fundamentals of cross-border import/export: documentation, RM registration, customs and compliance.',
          duration_hours=8, certificate_fee=500),
+    dict(title='E-Commerce Business Setup & Management',
+         category='enterprise',
+         description='How to set up and run a successful online trade and e-commerce business. Registration, logistics, marketing.',
+         duration_hours=6, certificate_fee=500),
 ]
 for t in TRAINING:
     obj, c = TrainingProgram.objects.get_or_create(title=t['title'], defaults=t)

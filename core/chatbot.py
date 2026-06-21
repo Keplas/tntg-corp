@@ -16,7 +16,7 @@ COMPANY INFO:
 - Founded: October 14, 2026
 - Operates in: Canada 🇨🇦, Uganda 🇺🇬 and Kenya 🇰🇪
 - Import & Export (RM) registered corporation
-- Founder: Tom Ssembiito | Software Engineer: Edgar Kitayimbwa | Shareholder: Musana Francis
+- Founder: Tom Ssembiito
 
 ABOUT US:
 Founded on October 14 2026, T&TG Trade Corporation operates a Trade & e-Commerce platform designed to facilitate seamless domestic and international commerce. Our Toronto-based corporation operates globally, providing services across Canada, Uganda and Kenya. From our headquarters in Toronto, Ontario, Canada, we coordinate international operations that support cross-border collaboration, market development and service delivery.
