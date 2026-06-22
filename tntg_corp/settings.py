@@ -141,6 +141,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # so secure cookies, CSRF, and request.is_secure() all work correctly.
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+# Trust requests from the Render domain (and any custom domain you add).
+# Override via CSRF_TRUSTED_ORIGINS env var on Render if you have a custom domain:
+#   e.g.  CSRF_TRUSTED_ORIGINS=https://tntgcorp.com,https://www.tntgcorp.com
+_csrf_env = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
+CSRF_TRUSTED_ORIGINS = (
+    _csrf_env.split(',') if _csrf_env
+    else ['https://*.onrender.com', 'https://*.tntgcorp.com']
+)
+
 # ── Session ────────────────────────────────────────────────────────────────────
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
