@@ -57,15 +57,24 @@ def register(request):
 
 def login_view(request):
     if request.method == 'POST':
-        user = authenticate(
-            request,
-            username=request.POST.get('username'),
-            password=request.POST.get('password')
-        )
+        identifier = request.POST.get('username', '').strip()
+        password   = request.POST.get('password', '')
+
+        # Try username first, then fall back to email lookup
+        user = authenticate(request, username=identifier, password=password)
+
+        if user is None:
+            # Maybe they typed their email — look up the matching username
+            try:
+                matched = CustomUser.objects.get(email__iexact=identifier)
+                user = authenticate(request, username=matched.username, password=password)
+            except CustomUser.DoesNotExist:
+                pass
+
         if user:
             login(request, user)
             return redirect(request.GET.get('next', 'dashboard'))
-        messages.error(request, 'Invalid credentials.')
+        messages.error(request, 'Invalid username/email or password.')
     return render(request, 'accounts/login.html')
 
 
