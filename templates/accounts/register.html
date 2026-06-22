@@ -16,8 +16,7 @@
       <div class="step-indicator mb-4">
         <div class="si-item active"><div class="si-dot">1</div><div class="si-label">Identity</div></div>
         <div class="si-item"><div class="si-dot">2</div><div class="si-label">Market</div></div>
-        <div class="si-item"><div class="si-dot">3</div><div class="si-label">Documents</div></div>
-        <div class="si-item"><div class="si-dot">4</div><div class="si-label">Confirm</div></div>
+        <div class="si-item"><div class="si-dot">3</div><div class="si-label">Confirm</div></div>
       </div>
 
       <div class="glass-card p-4 p-lg-5">
@@ -128,64 +127,12 @@
             </div>
             <div class="d-flex justify-content-between mt-4">
               <button type="button" class="btn btn-outline-gold step-prev"><i class="fas fa-arrow-left me-2"></i>Back</button>
-              <button type="button" class="btn btn-gold step-next">Next: Documents <i class="fas fa-arrow-right ms-2"></i></button>
-            </div>
-          </div>
-
-          <!-- Step 3: Documents -->
-          <div class="reg-step" id="step-3">
-            <h5 class="text-gold mb-1"><i class="fas fa-id-card me-2"></i>Identity Verification</h5>
-            <p class="text-muted mb-4" style="font-size:.85rem">To protect our platform and comply with regulations, we require ID verification for all traders.</p>
-            <div class="row g-4">
-              <div class="col-md-6">
-                <label class="form-label">Profile Photo</label>
-                <div style="border:2px dashed rgba(201,168,76,.3);border-radius:10px;padding:1.5rem;text-align:center;cursor:pointer" onclick="document.getElementById('id_profile_photo').click()">
-                  <div style="font-size:2.5rem;margin-bottom:.5rem">🤳</div>
-                  <div class="small text-muted">Click to upload profile photo</div>
-                </div>
-                <input type="file" id="id_profile_photo" name="profile_photo" accept="image/*" style="display:none">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Selfie Photo *</label>
-                <div style="border:2px dashed rgba(201,168,76,.3);border-radius:10px;padding:1.5rem;text-align:center;cursor:pointer" onclick="document.getElementById('id_selfie').click()">
-                  <div style="font-size:2.5rem;margin-bottom:.5rem">📸</div>
-                  <div class="small text-muted">Clear face photo for verification</div>
-                </div>
-                <input type="file" id="id_selfie" name="selfie" accept="image/*" style="display:none">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">National ID — Front *</label>
-                <div style="border:2px dashed rgba(201,168,76,.3);border-radius:10px;padding:1.5rem;text-align:center;cursor:pointer" onclick="document.getElementById('id_front').click()">
-                  <div style="font-size:2.5rem;margin-bottom:.5rem">🪪</div>
-                  <div class="small text-muted">Front side of your National ID</div>
-                </div>
-                <input type="file" id="id_front" name="national_id_front" accept="image/*" style="display:none">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">National ID — Back *</label>
-                <div style="border:2px dashed rgba(201,168,76,.3);border-radius:10px;padding:1.5rem;text-align:center;cursor:pointer" onclick="document.getElementById('id_back').click()">
-                  <div style="font-size:2.5rem;margin-bottom:.5rem">🪪</div>
-                  <div class="small text-muted">Back side of your National ID</div>
-                </div>
-                <input type="file" id="id_back" name="national_id_back" accept="image/*" style="display:none">
-              </div>
-              <div class="col-12">
-                <label class="form-label">Declaration Document</label>
-                <div style="border:2px dashed rgba(201,168,76,.3);border-radius:10px;padding:1.5rem;text-align:center;cursor:pointer" onclick="document.getElementById('id_declaration').click()">
-                  <div style="font-size:2.5rem;margin-bottom:.5rem">📄</div>
-                  <div class="small text-muted">Upload your signed declaration / agreement</div>
-                </div>
-                <input type="file" id="id_declaration" name="declaration" style="display:none">
-              </div>
-            </div>
-            <div class="d-flex justify-content-between mt-4">
-              <button type="button" class="btn btn-outline-gold step-prev"><i class="fas fa-arrow-left me-2"></i>Back</button>
               <button type="button" class="btn btn-gold step-next">Review & Submit <i class="fas fa-arrow-right ms-2"></i></button>
             </div>
           </div>
 
-          <!-- Step 4: Confirm -->
-          <div class="reg-step" id="step-4">
+          <!-- Step 3: Confirm -->
+          <div class="reg-step" id="step-3">
             <h5 class="text-gold mb-4"><i class="fas fa-check-circle me-2"></i>Review & Submit</h5>
             <div class="glass-card p-4 mb-4">
               <div class="row g-3 small">

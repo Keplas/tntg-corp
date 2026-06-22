@@ -34,7 +34,7 @@ def register(request):
             is_partner=d.get('is_partner', '') == 'on',
             partner_company=d.get('partner_company', ''),
         )
-        for field in ['profile_photo', 'national_id_front', 'national_id_back', 'selfie', 'declaration']:
+        for field in ['profile_photo']:
             if request.FILES.get(field):
                 setattr(user, field, request.FILES[field])
         user.save()
@@ -48,13 +48,6 @@ def register(request):
             ),
             f'/admin/accounts/customuser/{user.pk}/change/'
         )
-        if user.national_id_front or user.selfie:
-            Notification.notify(
-                'kyc',
-                f"KYC Documents Submitted by {user.get_full_name() or user.username}",
-                f"User {user.unique_id} has submitted identity documents for verification.",
-                f'/admin/accounts/customuser/{user.pk}/change/'
-            )
 
         login(request, user)
         messages.success(request, f'Welcome to T&TG Trade Corp! Your ID is {user.unique_id}.')
