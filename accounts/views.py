@@ -34,10 +34,9 @@ def register(request):
             is_partner=d.get('is_partner', '') == 'on',
             partner_company=d.get('partner_company', ''),
         )
-        for field in ['profile_photo']:
-            if request.FILES.get(field):
-                setattr(user, field, request.FILES[field])
-        user.save()
+        if request.FILES.get('profile_photo'):
+            user.profile_photo = request.FILES['profile_photo']
+            user.save(update_fields=['profile_photo'])
 
         Notification.notify(
             'registration',
@@ -49,7 +48,7 @@ def register(request):
             f'/admin/accounts/customuser/{user.pk}/change/'
         )
 
-        login(request, user)
+        login(request, user, backend="accounts.backends.FlexAuthBackend")
         messages.success(request, f'Welcome to T&TG Trade Corp! Your ID is {user.unique_id}.')
         return redirect('dashboard')
     return render(request, 'accounts/register.html')
@@ -59,22 +58,11 @@ def login_view(request):
     if request.method == 'POST':
         identifier = request.POST.get('username', '').strip()
         password   = request.POST.get('password', '')
-
-        # Try username first, then fall back to email lookup
         user = authenticate(request, username=identifier, password=password)
-
-        if user is None:
-            # Maybe they typed their email — look up the matching username
-            try:
-                matched = CustomUser.objects.get(email__iexact=identifier)
-                user = authenticate(request, username=matched.username, password=password)
-            except CustomUser.DoesNotExist:
-                pass
-
         if user:
-            login(request, user)
+            login(request, user, backend="accounts.backends.FlexAuthBackend")
             return redirect(request.GET.get('next', 'dashboard'))
-        messages.error(request, 'Invalid username/email or password.')
+        messages.error(request, 'Invalid username, email or password.')
     return render(request, 'accounts/login.html')
 
 
@@ -114,7 +102,10 @@ def profile(request):
         user.website    = request.POST.get('website',    user.website)
         if request.FILES.get('profile_photo'):
             user.profile_photo = request.FILES['profile_photo']
-        user.save()
+        user.save(update_fields=[
+            'first_name', 'last_name', 'phone', 'city',
+            'address', 'bio', 'website', 'profile_photo',
+        ])
         messages.success(request, 'Profile updated successfully.')
         return redirect('profile')
     return render(request, 'accounts/profile.html')
