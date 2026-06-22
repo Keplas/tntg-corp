@@ -94,19 +94,20 @@
 /* ── nav menu (right side, always visible on desktop) ── */
 .tg-nav-menu {
   display: flex; align-items: center;
-  margin-left: auto; gap: 2px;
+  flex: 1; margin-left: 0; gap: 2px;
+  justify-content: flex-end;
 }
 
 .tg-nav-list {
   display: flex; align-items: center;
-  list-style: none; margin: 0; padding: 0; gap: 1px;
+  list-style: none; margin: 0; padding: 0; gap: 2px;
 }
 .tg-nav-list > li { position: relative; }
 
 /* every nav link/button */
 .tg-nl {
   display: flex; align-items: center; gap: 4px;
-  padding: 7px 11px; border-radius: 8px;
+  padding: 7px 14px; border-radius: 8px;
   font-size: .82rem; font-weight: 500;
   color: var(--tg-text); text-decoration: none;
   background: none; border: none; cursor: pointer;
@@ -194,8 +195,8 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 /* ── auth buttons ── */
 .tg-nav-auth {
   display: flex; align-items: center; gap: 8px;
-  margin-left: 10px;
-  padding-left: 12px;
+  margin-left: auto;
+  padding-left: 14px;
   border-left: 1px solid rgba(201,168,76,.15);
 }
 .tg-btn-ghost {
@@ -650,11 +651,8 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 
 {% block extra_js %}{% endblock %}
 
-<!-- ═══ WHATSAPP CLICK-TO-CHAT ═══
-     ⚠️ REPLACE THE NUMBER BELOW with T&TG's real WhatsApp Business number
-     Format: country code + number, no spaces/symbols (e.g. Uganda: 256XXXXXXXXX)
--->
-<a href="https://wa.me/256700000000?text=Hi%20T%26TG%2C%20I%27d%20like%20to%20know%20more%20about%20your%20products"
+<!-- ═══ WHATSAPP CLICK-TO-CHAT ═══ -->
+<a href="https://wa.me/14168323512?text=Hi%20T%26TG%2C%20I%27d%20like%20to%20know%20more%20about%20your%20products"
    id="whatsapp-btn" target="_blank" rel="noopener" title="Chat with us on WhatsApp">
   <i class="fab fa-whatsapp"></i>
 </a>
