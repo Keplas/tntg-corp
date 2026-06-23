@@ -1,220 +1,381 @@
 {% extends 'base.html' %}
-{% block title %}T&TG Trade Loyalty Platform — My Dashboard{% endblock %}
+{% block title %}T&TG Loyalty Dashboard — {{ user.get_full_name|default:user.username }}{% endblock %}
+
 {% block content %}
-<div style="background:linear-gradient(135deg,#0a2540,#1a3a5c);padding:50px 0 40px">
+<style>
+  .ld-bg     { background:#0a0a0a; }
+  .ld-card   { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.15); border-radius:16px; }
+  .ld-gold   { color:#c9a84c; }
+  .ld-muted  { color:#7a6e5f; }
+  .ld-text   { color:#e0d5c0; }
+
+  /* membership card */
+  .mem-card {
+    background:linear-gradient(135deg,#c9a84c 0%,#e8c96a 40%,#a07820 100%);
+    border-radius:20px; padding:28px; position:relative; overflow:hidden;
+    box-shadow:0 20px 60px rgba(201,168,76,.3);
+  }
+  .mem-card::before {
+    content:''; position:absolute; top:-40px; right:-40px;
+    width:180px; height:180px; border-radius:50%;
+    background:rgba(255,255,255,.08);
+  }
+  .mem-card::after {
+    content:''; position:absolute; bottom:-60px; right:40px;
+    width:240px; height:240px; border-radius:50%;
+    background:rgba(255,255,255,.05);
+  }
+
+  /* tab styling */
+  .ld-tabs { border-bottom:1px solid rgba(201,168,76,.2); margin-bottom:28px; }
+  .ld-tabs .nav-link {
+    color:#7a6e5f; border:none; border-bottom:2px solid transparent;
+    padding:12px 20px; font-weight:700; font-size:.85rem; letter-spacing:.5px;
+    background:none; border-radius:0;
+  }
+  .ld-tabs .nav-link:hover  { color:#c9a84c; }
+  .ld-tabs .nav-link.active { color:#c9a84c; border-bottom-color:#c9a84c; }
+
+  /* table */
+  .ld-table { width:100%; border-collapse:collapse; font-size:.85rem; }
+  .ld-table thead th { color:#7a6e5f; font-size:.72rem; letter-spacing:1px; text-transform:uppercase; padding:10px 12px; border-bottom:1px solid rgba(201,168,76,.15); }
+  .ld-table tbody td { padding:12px; border-bottom:1px solid rgba(255,255,255,.04); color:#e0d5c0; vertical-align:middle; }
+  .ld-table tbody tr:hover td { background:rgba(201,168,76,.04); }
+
+  /* form inputs */
+  .ld-input {
+    background:rgba(255,255,255,.05) !important;
+    border:1px solid rgba(201,168,76,.2) !important;
+    color:#e0d5c0 !important; border-radius:10px;
+  }
+  .ld-input:focus { border-color:rgba(201,168,76,.5) !important; box-shadow:0 0 0 3px rgba(201,168,76,.1) !important; }
+  .ld-input option { background:#1a1000; color:#e0d5c0; }
+</style>
+
+<!-- ═══ HERO / MEMBERSHIP CARD ═══════════════════════════════════════ -->
+<section class="ld-bg" style="padding:50px 0 40px;position:relative;overflow:hidden">
+  <div style="position:absolute;top:-120px;left:-80px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.07),transparent 70%);pointer-events:none"></div>
+
   <div class="container">
-    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
-      <div>
-        <div class="text-gold small fw-600 mb-1"><i class="fas fa-coins me-2"></i>T&TG TRADE LOYALTY PLATFORM</div>
-        <h2 class="text-white fw-800 mb-0">{{ user.get_full_name|default:user.username }}</h2>
-        <div class="text-muted small">{{ user.unique_id }} · {{ user.get_country_display }}</div>
+    <div class="row align-items-center g-5">
+
+      <!-- Left: greeting -->
+      <div class="col-lg-5">
+        <div class="d-inline-flex align-items-center gap-2 mb-3 px-3 py-1 rounded-pill" style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2)">
+          <i class="fas fa-crown ld-gold" style="font-size:.72rem"></i>
+          <span class="ld-gold" style="font-size:.7rem;font-weight:700;letter-spacing:2px">T&TG LOYALTY PLATFORM</span>
+        </div>
+        <div class="ld-muted small mb-1">Welcome back,</div>
+        <h2 style="color:#fff;font-weight:900;font-size:2rem;letter-spacing:-0.5px" class="mb-1">
+          {{ user.get_full_name|default:user.username }}
+        </h2>
+        <div class="ld-muted small">{{ user.unique_id }} · {{ user.get_country_display }}</div>
       </div>
-      <div class="text-center p-4 rounded-3" style="background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.25);min-width:180px">
-        <div class="text-gold fw-800" style="font-size:2rem">{{ user.avon_points|floatformat:2 }}</div>
-        <div class="text-white-50 small">T&TG Loyalty Points</div>
-        <div class="text-muted" style="font-size:.72rem">≈ ${{ user.avon_points|floatformat:2 }} USD</div>
+
+      <!-- Right: membership card -->
+      <div class="col-lg-7">
+        <div class="mem-card">
+          <div style="position:relative;z-index:2">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <div style="font-size:.65rem;font-weight:800;letter-spacing:2px;color:rgba(26,10,0,.7)">GOLD MEMBER 👑</div>
+                <div style="font-size:2.8rem;font-weight:900;color:#1a0a00;line-height:1">{{ user.avon_points|floatformat:2 }}</div>
+                <div style="font-size:.7rem;font-weight:700;color:rgba(26,10,0,.6);letter-spacing:1px">LOYALTY POINTS</div>
+              </div>
+              <div style="font-size:2rem;font-weight:900;color:rgba(26,10,0,.15);font-style:italic;letter-spacing:-2px">T&TG</div>
+            </div>
+            <div style="height:4px;background:rgba(26,10,0,.15);border-radius:4px;margin-bottom:8px">
+              <div style="height:100%;width:70%;background:rgba(26,10,0,.35);border-radius:4px"></div>
+            </div>
+            <div class="d-flex justify-content-between align-items-end">
+              <div style="font-size:.72rem;color:rgba(26,10,0,.6)">≈ ${{ user.avon_points|floatformat:2 }} USD</div>
+              <div style="font-size:.65rem;color:rgba(26,10,0,.5)">{{ user.unique_id }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Rates bar -->
+    <div class="row g-3 mt-4">
+      <div class="col-4">
+        <div class="ld-card p-3 text-center">
+          <div class="ld-gold fw-800 fs-5">{{ settings.consumer_rate|floatformat:0 }}%</div>
+          <div class="ld-muted" style="font-size:.72rem">Your Earn Rate</div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="ld-card p-3 text-center">
+          <div class="ld-gold fw-800 fs-5">{{ settings.referral_rate|floatformat:1 }}%</div>
+          <div class="ld-muted" style="font-size:.72rem">Referral Rate</div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="ld-card p-3 text-center">
+          <div class="ld-gold fw-800 fs-5">Day {{ settings.payment_days }}</div>
+          <div class="ld-muted" style="font-size:.72rem">Payment Day</div>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<div class="container py-5">
-  <!-- Rates banner -->
-  <div class="alert border-0 mb-4" style="background:rgba(201,168,76,.08);border-left:4px solid #c9a84c !important;border-radius:12px">
-    <div class="row g-3 text-center">
-      <div class="col-sm-4">
-        <div class="text-gold fw-800 fs-5">{{ settings.consumer_rate|floatformat:0 }}%</div>
-        <div class="small text-muted">Your Earn Rate (Consumer)</div>
-      </div>
-      <div class="col-sm-4">
-        <div class="text-gold fw-800 fs-5">{{ settings.referral_rate|floatformat:1 }}%</div>
-        <div class="small text-muted">Referral Earn Rate</div>
-      </div>
-      <div class="col-sm-4">
-        <div class="text-gold fw-800 fs-5">Day {{ settings.payment_days }}</div>
-        <div class="small text-muted">Payment Processing Day</div>
-      </div>
-    </div>
-  </div>
+<!-- ═══ TABS ═════════════════════════════════════════════════════════ -->
+<section class="ld-bg" style="padding:40px 0 80px">
+  <div class="container">
+    <ul class="nav ld-tabs flex-wrap">
+      <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab-points"><i class="fas fa-coins me-2"></i>A · Points</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-promotions"><i class="fas fa-star me-2"></i>B · Promotions</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-referral"><i class="fas fa-users me-2"></i>C · Referral</a></li>
+      <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-reward"><i class="fas fa-wallet me-2"></i>D · Reward</a></li>
+    </ul>
 
-  <!-- Tabs -->
-  <ul class="nav nav-tabs mb-4" style="border-bottom:2px solid rgba(201,168,76,.2)">
-    <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab-points"><i class="fas fa-coins me-1 text-gold"></i><span class="fw-600">A · Points</span></a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-promotions"><i class="fas fa-star me-1 text-gold"></i><span class="fw-600">B · Promotions</span></a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-referral"><i class="fas fa-users me-1 text-gold"></i><span class="fw-600">C · Referral</span></a></li>
-    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-reward"><i class="fas fa-wallet me-1 text-gold"></i><span class="fw-600">D · Reward</span></a></li>
-  </ul>
+    <div class="tab-content">
 
-  <div class="tab-content">
-
-    <!-- A: Points -->
-    <div class="tab-pane fade show active" id="tab-points">
-      <h5 class="fw-700 mb-3" style="color:#0a2540"><i class="fas fa-coins text-gold me-2"></i>Earn Your Points</h5>
-      {% if earned_txns %}
-      <div class="table-responsive">
-        <table class="table table-hover align-middle">
-          <thead style="background:#f8f9fa">
-            <tr><th>Date</th><th>Description</th><th>Type</th><th class="text-end">Points Earned</th><th>Status</th><th>Payment Due</th></tr>
-          </thead>
-          <tbody>
-            {% for tx in earned_txns %}
-            <tr>
-              <td class="small text-muted">{{ tx.created_at|date:"d M Y" }}</td>
-              <td class="small">{{ tx.description }}</td>
-              <td><span class="badge {% if tx.transaction_type == 'earn_referral' %}bg-success{% else %}bg-primary{% endif %}" style="font-size:.7rem">{{ tx.get_transaction_type_display }}</span></td>
-              <td class="text-end fw-600 text-gold">+{{ tx.points|floatformat:2 }}</td>
-              <td><span class="badge bg-success" style="font-size:.7rem">{{ tx.get_status_display }}</span></td>
-              <td class="small text-muted">{% if tx.min_execution_date %}{{ tx.min_execution_date|date:"d M Y" }}{% else %}—{% endif %}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-      {% else %}
-      <div class="text-center py-5 text-muted">
-        <i class="fas fa-shopping-bag fa-3x mb-3 text-gold" style="opacity:.4"></i>
-        <p>No purchases yet. <a href="{% url 'product_list' %}">Start shopping</a> to earn T&TG Loyalty Points.</p>
-      </div>
-      {% endif %}
-    </div>
-
-    <!-- B: Promotions -->
-    <div class="tab-pane fade" id="tab-promotions">
-      <h5 class="fw-700 mb-3" style="color:#0a2540"><i class="fas fa-star text-gold me-2"></i>Promotions</h5>
-      <div class="text-center py-5">
-        <div style="font-size:3rem">🎁</div>
-        <h6 class="fw-700 mt-3 mb-2" style="color:#0a2540">Coming Soon</h6>
-        <p class="text-muted">Seasonal promotions and partner bonuses will appear here. Keep shopping to qualify for future promotional campaigns across Canada, Uganda and Kenya.</p>
-      </div>
-    </div>
-
-    <!-- C: Referral -->
-    <div class="tab-pane fade" id="tab-referral">
-      <h5 class="fw-700 mb-3" style="color:#0a2540"><i class="fas fa-users text-gold me-2"></i>Referral Programme</h5>
-      {% with referral_link=request.scheme|add:"://"|add:request.get_host|add:"/marketplace/products/?ref="|add:user.unique_id %}
-      <div class="row g-4 mb-4">
-        <div class="col-md-6">
-          <div class="card border-0 shadow-sm p-4 h-100" style="border-radius:16px">
-            <h6 class="fw-700 mb-3" style="color:#0a2540">Your Referral Link</h6>
-            <div class="d-flex align-items-center gap-2">
-              <code class="p-2 rounded flex-grow-1 text-truncate" style="background:#f8f9fa;color:#0a2540;font-size:.82rem">{{ referral_link }}</code>
-              <button class="btn btn-sm btn-outline-secondary flex-shrink-0" onclick="navigator.clipboard.writeText('{{ referral_link }}');this.innerHTML='<i class=\'fas fa-check\'></i>'">
-                <i class="fas fa-copy"></i>
-              </button>
-            </div>
-            <p class="text-muted small mt-3 mb-0">Anyone who shops through this link is automatically credited to you — they don't need to type anything in. You earn <strong class="text-gold">{{ settings.referral_rate|floatformat:1 }}%</strong> of their net purchase price.</p>
-            <div class="mt-3 text-center">
-              <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data={{ referral_link|urlencode }}"
-                   alt="QR code for your referral link" width="120" height="120"
-                   style="border-radius:10px;border:1px solid #eee" loading="lazy">
-              <div class="small text-muted mt-1">Scan to open your referral link</div>
-            </div>
+      <!-- ── A: Points ─────────────────────────────────────────────── -->
+      <div class="tab-pane fade show active" id="tab-points">
+        <div class="d-flex align-items-center gap-3 mb-4">
+          <div style="width:44px;height:44px;border-radius:12px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);display:flex;align-items:center;justify-content:center">
+            <i class="fas fa-coins ld-gold"></i>
+          </div>
+          <div>
+            <h5 style="color:#fff;font-weight:800;margin:0">Earn Your Points</h5>
+            <div class="ld-muted" style="font-size:.8rem">Every purchase earns {{ settings.consumer_rate|floatformat:0 }}% loyalty points</div>
           </div>
         </div>
-        <div class="col-md-6">
-          <div class="card border-0 shadow-sm p-4 h-100" style="border-radius:16px">
-            <h6 class="fw-700 mb-3" style="color:#0a2540">Share the Platform</h6>
-            <div class="d-flex flex-wrap gap-2">
-              <a href="https://www.facebook.com/sharer/sharer.php?u={{ referral_link|urlencode }}" target="_blank" class="btn btn-sm" style="background:#1877f2;color:#fff;border-radius:20px"><i class="fab fa-facebook-f me-1"></i>Facebook</a>
-              <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ referral_link|urlencode }}" target="_blank" class="btn btn-sm" style="background:#0a66c2;color:#fff;border-radius:20px"><i class="fab fa-linkedin-in me-1"></i>LinkedIn</a>
-              <a href="https://wa.me/?text=Join%20T%26TG%20Trade%20Corp%20and%20earn%20loyalty%20points!%20{{ referral_link|urlencode }}" target="_blank" class="btn btn-sm" style="background:#25d366;color:#fff;border-radius:20px"><i class="fab fa-whatsapp me-1"></i>WhatsApp</a>
-              <a href="https://twitter.com/intent/tweet?url={{ referral_link|urlencode }}&text=Join%20T%26TG%20Trade%20Corp%20and%20earn%20loyalty%20points!" target="_blank" class="btn btn-sm" style="background:#000;color:#fff;border-radius:20px"><i class="fab fa-x-twitter me-1"></i>X</a>
-            </div>
-            <p class="text-muted small mt-3 mb-0">Your unique referral ID <strong class="text-gold">{{ user.unique_id }}</strong> is baked into every link above — no manual entry needed by the person you refer.</p>
-          </div>
-        </div>
-      </div>
-      {% endwith %}
-      {% if referral_txns %}
-      <h6 class="fw-700 mb-3" style="color:#0a2540">Referral Earnings History</h6>
-      <div class="table-responsive">
-        <table class="table table-hover align-middle">
-          <thead style="background:#f8f9fa">
-            <tr><th>Date</th><th>Description</th><th class="text-end">Points Earned</th><th>Status</th><th>Payment Due</th></tr>
-          </thead>
-          <tbody>
-            {% for tx in referral_txns %}
-            <tr>
-              <td class="small text-muted">{{ tx.created_at|date:"d M Y" }}</td>
-              <td class="small">{{ tx.description }}</td>
-              <td class="text-end fw-600 text-gold">+{{ tx.points|floatformat:2 }}</td>
-              <td><span class="badge bg-success" style="font-size:.7rem">{{ tx.get_status_display }}</span></td>
-              <td class="small text-muted">{% if tx.min_execution_date %}{{ tx.min_execution_date|date:"d M Y" }}{% else %}—{% endif %}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-      {% else %}
-      <p class="text-muted text-center py-3">No referral earnings yet. Share your ID <strong class="text-gold">{{ user.unique_id }}</strong> to start earning {{ settings.referral_rate|floatformat:1 }}%.</p>
-      {% endif %}
-    </div>
 
-    <!-- D: Reward / Withdrawal -->
-    <div class="tab-pane fade" id="tab-reward">
-      <div class="row g-4">
-        <div class="col-md-5">
-          <div class="card border-0 shadow-sm p-4" style="border-radius:16px;background:linear-gradient(135deg,#0a2540,#1a3a5c)">
-            <h6 class="text-gold fw-700 mb-4"><i class="fas fa-wallet me-2"></i>Withdraw Your Funds</h6>
-            <div class="mb-3 p-3 rounded-3" style="background:rgba(255,255,255,.05)">
-              <div class="text-white-50 small">Available Balance</div>
-              <div class="text-gold fw-800 fs-4">{{ user.avon_points|floatformat:2 }} pts</div>
-              <div class="text-white-50" style="font-size:.75rem">≈ ${{ user.avon_points|floatformat:2 }} USD</div>
-            </div>
-            <form method="POST">
-              {% csrf_token %}
-              <input type="hidden" name="action" value="withdrawal">
-              <div class="mb-3">
-                <label class="form-label text-white-50 small">Points to Withdraw</label>
-                <input type="number" name="points" class="form-control" step="0.01" min="1" max="{{ user.avon_points }}"
-                       placeholder="Enter amount" style="background:rgba(255,255,255,.07);border:1px solid rgba(201,168,76,.2);color:#fff;border-radius:10px">
-              </div>
-              <div class="mb-3">
-                <label class="form-label text-white-50 small">Quarter</label>
-                <select name="quarter" class="form-select" style="background:rgba(255,255,255,.07);border:1px solid rgba(201,168,76,.2);color:#fff;border-radius:10px">
-                  {% for q in quarters %}<option value="{{ q }}">{{ q }}</option>{% endfor %}
-                </select>
-              </div>
-              <div class="alert mb-3 p-2 small" style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);border-radius:8px;color:#c9a84c">
-                <i class="fas fa-calendar-check me-1"></i>
-                Payment processed on Day {{ settings.payment_days }} after your qualifying purchase date
-              </div>
-              <button type="submit" class="btn btn-gold w-100">
-                <i class="fas fa-paper-plane me-2"></i>Submit Withdrawal
-              </button>
-            </form>
-          </div>
-        </div>
-        <div class="col-md-7">
-          <h6 class="fw-700 mb-3" style="color:#0a2540">Withdrawal History</h6>
-          {% if withdraw_txns %}
-          <div class="table-responsive">
-            <table class="table table-hover align-middle">
-              <thead style="background:#f8f9fa">
-                <tr><th>Date</th><th>Amount</th><th>Quarter</th><th>Payment Due</th><th>Status</th></tr>
+        {% if earned_txns %}
+        <div class="ld-card" style="overflow:hidden">
+          <div style="overflow-x:auto">
+            <table class="ld-table">
+              <thead>
+                <tr>
+                  <th>Date</th><th>Description</th><th>Type</th>
+                  <th style="text-align:right">Points</th><th>Status</th><th>Payment Due</th>
+                </tr>
               </thead>
               <tbody>
-                {% for tx in withdraw_txns %}
+                {% for tx in earned_txns %}
                 <tr>
-                  <td class="small text-muted">{{ tx.created_at|date:"d M Y" }}</td>
-                  <td class="fw-600">{{ tx.points|floatformat:2 }} pts</td>
-                  <td>{{ tx.quarter }}</td>
-                  <td class="small text-muted">{% if tx.min_execution_date %}{{ tx.min_execution_date|date:"d M Y" }}{% else %}—{% endif %}</td>
-                  <td><span class="badge {% if tx.status == 'completed' %}bg-success{% elif tx.status == 'processing' %}bg-warning text-dark{% elif tx.status == 'not_accepted' %}bg-danger{% else %}bg-secondary{% endif %}" style="font-size:.7rem">{{ tx.get_status_display }}</span></td>
+                  <td class="ld-muted">{{ tx.created_at|date:"d M Y" }}</td>
+                  <td>{{ tx.description }}</td>
+                  <td>
+                    <span style="background:{% if tx.transaction_type == 'earn_referral' %}rgba(34,197,94,.15);color:#4ade80{% else %}rgba(201,168,76,.15);color:#c9a84c{% endif %};padding:3px 10px;border-radius:100px;font-size:.7rem;font-weight:700">
+                      {{ tx.get_transaction_type_display }}
+                    </span>
+                  </td>
+                  <td style="text-align:right;color:#c9a84c;font-weight:800">+{{ tx.points|floatformat:2 }}</td>
+                  <td><span style="background:rgba(34,197,94,.15);color:#4ade80;padding:3px 10px;border-radius:100px;font-size:.7rem;font-weight:700">{{ tx.get_status_display }}</span></td>
+                  <td class="ld-muted">{% if tx.min_execution_date %}{{ tx.min_execution_date|date:"d M Y" }}{% else %}—{% endif %}</td>
                 </tr>
                 {% endfor %}
               </tbody>
             </table>
           </div>
-          {% else %}
-          <div class="text-center py-5 text-muted">
-            <i class="fas fa-wallet fa-3x mb-3 text-gold" style="opacity:.4"></i>
-            <p>No withdrawals yet. Submit your first withdrawal once you have earned points.</p>
+        </div>
+        {% else %}
+        <div class="ld-card p-5 text-center">
+          <i class="fas fa-shopping-bag ld-gold" style="font-size:3rem;opacity:.4"></i>
+          <h6 style="color:#fff;margin-top:16px">No purchases yet</h6>
+          <p class="ld-muted mb-4">Start shopping to earn T&TG Loyalty Points on every purchase.</p>
+          <a href="{% url 'product_list' %}" class="btn btn-gold px-4"><i class="fas fa-shopping-bag me-2"></i>Browse Products</a>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- ── B: Promotions ─────────────────────────────────────────── -->
+      <div class="tab-pane fade" id="tab-promotions">
+        <div class="d-flex align-items-center gap-3 mb-4">
+          <div style="width:44px;height:44px;border-radius:12px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);display:flex;align-items:center;justify-content:center">
+            <i class="fas fa-star ld-gold"></i>
           </div>
-          {% endif %}
+          <div>
+            <h5 style="color:#fff;font-weight:800;margin:0">Promotions</h5>
+            <div class="ld-muted" style="font-size:.8rem">Seasonal bonuses and partner campaigns</div>
+          </div>
+        </div>
+        <div class="ld-card p-5 text-center">
+          <div style="font-size:3rem;margin-bottom:12px">🎁</div>
+          <h6 style="color:#fff;font-weight:800">Coming Soon</h6>
+          <p class="ld-muted" style="max-width:400px;margin:8px auto 0;line-height:1.7">
+            Seasonal promotions and partner bonuses will appear here. Keep shopping to qualify for future campaigns across Canada, Uganda and Kenya.
+          </p>
         </div>
       </div>
+
+      <!-- ── C: Referral ───────────────────────────────────────────── -->
+      <div class="tab-pane fade" id="tab-referral">
+        <div class="d-flex align-items-center gap-3 mb-4">
+          <div style="width:44px;height:44px;border-radius:12px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);display:flex;align-items:center;justify-content:center">
+            <i class="fas fa-users ld-gold"></i>
+          </div>
+          <div>
+            <h5 style="color:#fff;font-weight:800;margin:0">Referral Programme</h5>
+            <div class="ld-muted" style="font-size:.8rem">Earn {{ settings.referral_rate|floatformat:1 }}% when your referred buyers purchase</div>
+          </div>
+        </div>
+
+        {% with referral_link=request.scheme|add:"://"|add:request.get_host|add:"/marketplace/products/?ref="|add:user.unique_id %}
+        <div class="row g-4 mb-4">
+          <div class="col-md-6">
+            <div class="ld-card p-4 h-100">
+              <h6 class="ld-gold fw-700 mb-3"><i class="fas fa-link me-2"></i>Your Referral Link</h6>
+              <div class="d-flex align-items-center gap-2 mb-3">
+                <code class="p-2 rounded flex-grow-1 text-truncate" style="background:rgba(255,255,255,.05);color:#c9a84c;font-size:.78rem;border:1px solid rgba(201,168,76,.15)">{{ referral_link }}</code>
+                <button class="btn btn-sm flex-shrink-0" style="background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);color:#c9a84c;border-radius:8px"
+                  onclick="navigator.clipboard.writeText('{{ referral_link }}');this.innerHTML='<i class=\'fas fa-check\'></i>'">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+              <p class="ld-muted mb-4" style="font-size:.82rem;line-height:1.6">
+                Anyone who shops through this link is automatically credited to you. You earn
+                <strong class="ld-gold">{{ settings.referral_rate|floatformat:1 }}%</strong> of their net purchase price.
+              </p>
+              <div class="text-center">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data={{ referral_link|urlencode }}&bgcolor=0a0a0a&color=c9a84c"
+                     alt="Referral QR" width="120" height="120"
+                     style="border-radius:12px;border:1px solid rgba(201,168,76,.2)" loading="lazy">
+                <div class="ld-muted mt-2" style="font-size:.72rem">Scan to share your link</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="ld-card p-4 h-100">
+              <h6 class="ld-gold fw-700 mb-3"><i class="fas fa-share-alt me-2"></i>Share the Platform</h6>
+              <div class="d-flex flex-wrap gap-2 mb-4">
+                <a href="https://www.facebook.com/sharer/sharer.php?u={{ referral_link|urlencode }}" target="_blank" class="btn btn-sm" style="background:rgba(24,119,242,.2);color:#60a5fa;border:1px solid rgba(24,119,242,.3);border-radius:20px"><i class="fab fa-facebook-f me-1"></i>Facebook</a>
+                <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ referral_link|urlencode }}" target="_blank" class="btn btn-sm" style="background:rgba(10,102,194,.2);color:#60a5fa;border:1px solid rgba(10,102,194,.3);border-radius:20px"><i class="fab fa-linkedin-in me-1"></i>LinkedIn</a>
+                <a href="https://wa.me/?text=Join%20T%26TG%20Trade%20Corp%20and%20earn%20loyalty%20points!%20{{ referral_link|urlencode }}" target="_blank" class="btn btn-sm" style="background:rgba(37,211,102,.2);color:#4ade80;border:1px solid rgba(37,211,102,.3);border-radius:20px"><i class="fab fa-whatsapp me-1"></i>WhatsApp</a>
+                <a href="https://twitter.com/intent/tweet?url={{ referral_link|urlencode }}&text=Join%20T%26TG%20Trade%20Corp!" target="_blank" class="btn btn-sm" style="background:rgba(255,255,255,.08);color:#e0d5c0;border:1px solid rgba(255,255,255,.15);border-radius:20px"><i class="fab fa-x-twitter me-1"></i>X</a>
+              </div>
+              <div class="ld-card p-3" style="background:rgba(201,168,76,.05)">
+                <div class="ld-muted" style="font-size:.78rem;line-height:1.6">
+                  Your unique referral ID <strong class="ld-gold">{{ user.unique_id }}</strong> is baked into every link — no manual entry needed by the person you refer.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {% if referral_txns %}
+        <h6 style="color:#fff;font-weight:800;margin-bottom:16px">Referral Earnings History</h6>
+        <div class="ld-card" style="overflow:hidden">
+          <div style="overflow-x:auto">
+            <table class="ld-table">
+              <thead>
+                <tr><th>Date</th><th>Description</th><th style="text-align:right">Points</th><th>Status</th><th>Payment Due</th></tr>
+              </thead>
+              <tbody>
+                {% for tx in referral_txns %}
+                <tr>
+                  <td class="ld-muted">{{ tx.created_at|date:"d M Y" }}</td>
+                  <td>{{ tx.description }}</td>
+                  <td style="text-align:right;color:#c9a84c;font-weight:800">+{{ tx.points|floatformat:2 }}</td>
+                  <td><span style="background:rgba(34,197,94,.15);color:#4ade80;padding:3px 10px;border-radius:100px;font-size:.7rem;font-weight:700">{{ tx.get_status_display }}</span></td>
+                  <td class="ld-muted">{% if tx.min_execution_date %}{{ tx.min_execution_date|date:"d M Y" }}{% else %}—{% endif %}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {% else %}
+        <div class="ld-card p-4 text-center">
+          <p class="ld-muted mb-0">No referral earnings yet. Share your ID <strong class="ld-gold">{{ user.unique_id }}</strong> to start earning {{ settings.referral_rate|floatformat:1 }}%.</p>
+        </div>
+        {% endif %}
+        {% endwith %}
+      </div>
+
+      <!-- ── D: Reward / Withdrawal ────────────────────────────────── -->
+      <div class="tab-pane fade" id="tab-reward">
+        <div class="d-flex align-items-center gap-3 mb-4">
+          <div style="width:44px;height:44px;border-radius:12px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);display:flex;align-items:center;justify-content:center">
+            <i class="fas fa-wallet ld-gold"></i>
+          </div>
+          <div>
+            <h5 style="color:#fff;font-weight:800;margin:0">Withdraw Your Funds</h5>
+            <div class="ld-muted" style="font-size:.8rem">Payment processed on Day {{ settings.payment_days }} after purchase</div>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <!-- Withdrawal form -->
+          <div class="col-md-5">
+            <div class="ld-card p-4">
+              <div class="mb-4 p-4 rounded-3 text-center" style="background:linear-gradient(135deg,rgba(201,168,76,.15),rgba(201,168,76,.05));border:1px solid rgba(201,168,76,.2)">
+                <div class="ld-muted small mb-1">Available Balance</div>
+                <div class="ld-gold fw-900" style="font-size:2.2rem">{{ user.avon_points|floatformat:2 }}</div>
+                <div class="ld-muted" style="font-size:.75rem">points ≈ ${{ user.avon_points|floatformat:2 }} USD</div>
+              </div>
+              <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="withdrawal">
+                <div class="mb-3">
+                  <label class="ld-muted mb-1 d-block" style="font-size:.8rem">Points to Withdraw</label>
+                  <input type="number" name="points" class="form-control ld-input" step="0.01" min="1" max="{{ user.avon_points }}" placeholder="Enter amount">
+                </div>
+                <div class="mb-3">
+                  <label class="ld-muted mb-1 d-block" style="font-size:.8rem">Quarter</label>
+                  <select name="quarter" class="form-select ld-input">
+                    {% for q in quarters %}<option value="{{ q }}">{{ q }}</option>{% endfor %}
+                  </select>
+                </div>
+                <div class="p-3 rounded-3 mb-4" style="background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.15)">
+                  <div class="ld-gold" style="font-size:.78rem"><i class="fas fa-calendar-check me-2"></i>Paid on Day {{ settings.payment_days }} after qualifying purchase</div>
+                </div>
+                <button type="submit" class="btn btn-gold w-100 py-2">
+                  <i class="fas fa-paper-plane me-2"></i>Submit Withdrawal
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Withdrawal history -->
+          <div class="col-md-7">
+            <h6 style="color:#fff;font-weight:800;margin-bottom:16px">Withdrawal History</h6>
+            {% if withdraw_txns %}
+            <div class="ld-card" style="overflow:hidden">
+              <div style="overflow-x:auto">
+                <table class="ld-table">
+                  <thead>
+                    <tr><th>Date</th><th>Amount</th><th>Quarter</th><th>Payment Due</th><th>Status</th></tr>
+                  </thead>
+                  <tbody>
+                    {% for tx in withdraw_txns %}
+                    <tr>
+                      <td class="ld-muted">{{ tx.created_at|date:"d M Y" }}</td>
+                      <td style="color:#e0d5c0;font-weight:700">{{ tx.points|floatformat:2 }} pts</td>
+                      <td class="ld-muted">{{ tx.quarter }}</td>
+                      <td class="ld-muted">{% if tx.min_execution_date %}{{ tx.min_execution_date|date:"d M Y" }}{% else %}—{% endif %}</td>
+                      <td>
+                        <span style="padding:3px 10px;border-radius:100px;font-size:.7rem;font-weight:700;
+                          {% if tx.status == 'completed' %}background:rgba(34,197,94,.15);color:#4ade80
+                          {% elif tx.status == 'processing' %}background:rgba(251,191,36,.15);color:#fbbf24
+                          {% elif tx.status == 'not_accepted' %}background:rgba(239,68,68,.15);color:#f87171
+                          {% else %}background:rgba(255,255,255,.08);color:#7a6e5f{% endif %}">
+                          {{ tx.get_status_display }}
+                        </span>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            {% else %}
+            <div class="ld-card p-5 text-center">
+              <i class="fas fa-wallet ld-gold" style="font-size:3rem;opacity:.4"></i>
+              <h6 style="color:#fff;margin-top:16px">No withdrawals yet</h6>
+              <p class="ld-muted">Submit your first withdrawal once you have earned points.</p>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
-</div>
+</section>
 {% endblock %}
