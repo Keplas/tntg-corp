@@ -9,6 +9,11 @@ def trade_ecommerce(request):
     return render(request, 'services/trade_ecommerce.html', {'forex_rates': forex_rates})
 
 
+def import_export(request):
+    """Import & Export operations page."""
+    return render(request, 'services/import_export.html')
+
+
 def forex(request):
     """Live exchange rates — CAD/UGX, CAD/KES, UGX/KES."""
     rates = ForexRate.objects.all()

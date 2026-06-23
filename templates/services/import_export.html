@@ -1,0 +1,301 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Import & Export Operations — T&TG Trade Corp{% endblock %}
+
+{% block content %}
+<style>
+  .ie-bg    { background:#0a0a0a; }
+  .ie-card  { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.15); border-radius:16px; transition:border-color .25s, transform .25s; }
+  .ie-card:hover { border-color:rgba(201,168,76,.4); transform:translateY(-3px); }
+  .ie-gold  { color:#c9a84c; }
+  .ie-muted { color:#7a6e5f; }
+  .ie-text  { color:#e0d5c0; }
+  .ie-icon  { width:56px; height:56px; border-radius:14px; background:rgba(201,168,76,.1); border:1px solid rgba(201,168,76,.2); display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0; }
+  .step-num { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg,#c9a84c,#e8c96a); display:flex; align-items:center; justify-content:center; font-weight:900; color:#1a0a00; font-size:.85rem; flex-shrink:0; }
+  .country-flag { font-size:2rem; }
+</style>
+
+<!-- ═══ HERO ══════════════════════════════════════════════════════════ -->
+<section class="ie-bg" style="padding:80px 0 60px;position:relative;overflow:hidden">
+  <div style="position:absolute;top:-100px;right:-100px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.07),transparent 70%);pointer-events:none"></div>
+  <div style="position:absolute;bottom:-80px;left:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.05),transparent 70%);pointer-events:none"></div>
+
+  <div class="container text-center" style="position:relative;z-index:1">
+    <div class="d-inline-flex align-items-center gap-2 mb-4 px-3 py-1 rounded-pill" style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2)">
+      <i class="fas fa-ship ie-gold" style="font-size:.75rem"></i>
+      <span class="ie-gold" style="font-size:.72rem;font-weight:700;letter-spacing:2px">T&TG TRADE CORP · REGISTERED RM</span>
+    </div>
+    <h1 style="font-size:clamp(2rem,5vw,3.5rem);font-weight:900;color:#fff;letter-spacing:-1px;line-height:1.1" class="mb-3">
+      Import &amp; Export<br><span class="ie-gold">Operations</span>
+    </h1>
+    <p class="ie-text mx-auto mb-5" style="max-width:600px;font-size:1.05rem;line-height:1.7">
+      T&TG Trade Corp is a registered Import &amp; Export (RM) corporation, facilitating seamless cross-border commerce between <strong class="ie-gold">Canada 🇨🇦</strong>, <strong class="ie-gold">Uganda 🇺🇬</strong> and <strong class="ie-gold">Kenya 🇰🇪</strong>.
+    </p>
+
+    <!-- Trade route flags -->
+    <div class="d-flex justify-content-center align-items-center gap-3 flex-wrap mb-5">
+      <div class="ie-card px-4 py-3 text-center">
+        <div class="country-flag mb-1">🇨🇦</div>
+        <div style="color:#fff;font-size:.8rem;font-weight:700">Canada</div>
+        <div class="ie-muted" style="font-size:.7rem">Origin / Destination</div>
+      </div>
+      <div class="ie-gold" style="font-size:1.5rem">⟷</div>
+      <div class="ie-card px-4 py-3 text-center">
+        <div class="country-flag mb-1">🇺🇬</div>
+        <div style="color:#fff;font-size:.8rem;font-weight:700">Uganda</div>
+        <div class="ie-muted" style="font-size:.7rem">Origin / Destination</div>
+      </div>
+      <div class="ie-gold" style="font-size:1.5rem">⟷</div>
+      <div class="ie-card px-4 py-3 text-center">
+        <div class="country-flag mb-1">🇰🇪</div>
+        <div style="color:#fff;font-size:.8rem;font-weight:700">Kenya</div>
+        <div class="ie-muted" style="font-size:.7rem">Origin / Destination</div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-center gap-3 flex-wrap">
+      <a href="{% url 'contact' %}" class="btn btn-gold px-4 py-2">
+        <i class="fas fa-handshake me-2"></i>Partner With Us
+      </a>
+      <a href="{% url 'product_list' %}?category=coffee" class="btn px-4 py-2" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:none">
+        <i class="fas fa-box me-2"></i>View Export Products
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ WHAT WE TRADE ═════════════════════════════════════════════════ -->
+<section class="ie-bg" style="padding:80px 0;border-top:1px solid rgba(201,168,76,.08)">
+  <div class="container">
+    <div class="text-center mb-5">
+      <div class="ie-gold mb-2" style="font-size:.75rem;letter-spacing:3px;font-weight:700">OUR PRODUCTS</div>
+      <h2 style="color:#fff;font-weight:900;font-size:2rem">What We Import &amp; Export</h2>
+      <div style="width:60px;height:2px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin:16px auto 0"></div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="ie-card p-4 h-100">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="ie-icon">☕</div>
+            <h6 style="color:#fff;font-weight:800;margin:0">Green Coffee</h6>
+          </div>
+          <p class="ie-muted mb-3" style="font-size:.85rem;line-height:1.6">
+            Premium Arabica and Robusta green coffee beans sourced from Uganda, exported to international markets.
+          </p>
+          <div style="border-top:1px solid rgba(201,168,76,.1);padding-top:12px">
+            <div class="ie-gold" style="font-size:.72rem;font-weight:700">🇺🇬 Uganda → 🌍 World</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="ie-card p-4 h-100">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="ie-icon">👔</div>
+            <h6 style="color:#fff;font-weight:800;margin:0">Textiles &amp; Clothing</h6>
+          </div>
+          <p class="ie-muted mb-3" style="font-size:.85rem;line-height:1.6">
+            Quality suits, shirts, and clothing imported from Canada and distributed across East African markets.
+          </p>
+          <div style="border-top:1px solid rgba(201,168,76,.1);padding-top:12px">
+            <div class="ie-gold" style="font-size:.72rem;font-weight:700">🇨🇦 Canada → 🇺🇬🇰🇪 East Africa</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="ie-card p-4 h-100">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="ie-icon">⌚</div>
+            <h6 style="color:#fff;font-weight:800;margin:0">Watches &amp; Accessories</h6>
+          </div>
+          <p class="ie-muted mb-3" style="font-size:.85rem;line-height:1.6">
+            Premium hand watches imported from Canada, available across our local and international marketplace.
+          </p>
+          <div style="border-top:1px solid rgba(201,168,76,.1);padding-top:12px">
+            <div class="ie-gold" style="font-size:.72rem;font-weight:700">🇨🇦 Canada → 🇺🇬🇰🇪 East Africa</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="ie-card p-4 h-100">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="ie-icon">👟</div>
+            <h6 style="color:#fff;font-weight:800;margin:0">Footwear</h6>
+          </div>
+          <p class="ie-muted mb-3" style="font-size:.85rem;line-height:1.6">
+            Men's and women's shoes sourced from Canada, made available through both local and international channels.
+          </p>
+          <div style="border-top:1px solid rgba(201,168,76,.1);padding-top:12px">
+            <div class="ie-gold" style="font-size:.72rem;font-weight:700">🇨🇦 Canada → 🇺🇬🇰🇪 East Africa</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ══════════════════════════════════════════════════ -->
+<section class="ie-bg" style="padding:80px 0;border-top:1px solid rgba(201,168,76,.08)">
+  <div class="container">
+    <div class="text-center mb-5">
+      <div class="ie-gold mb-2" style="font-size:.75rem;letter-spacing:3px;font-weight:700">THE PROCESS</div>
+      <h2 style="color:#fff;font-weight:900;font-size:2rem">How Import &amp; Export Works</h2>
+      <div style="width:60px;height:2px;background:linear-gradient(90deg,transparent,#c9a84c,transparent);margin:16px auto 0"></div>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+      {% for step in steps %}{% endfor %}
+      <div class="col-md-6 col-lg-4">
+        <div class="ie-card p-4 h-100">
+          <div class="d-flex align-items-start gap-3 mb-3">
+            <div class="step-num">1</div>
+            <h6 style="color:#fff;font-weight:800;margin:0;padding-top:6px">Source &amp; Verify</h6>
+          </div>
+          <p class="ie-muted" style="font-size:.85rem;line-height:1.6">Identify and verify quality products or commodities from certified suppliers in the origin country, ensuring compliance with export standards.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="ie-card p-4 h-100">
+          <div class="d-flex align-items-start gap-3 mb-3">
+            <div class="step-num">2</div>
+            <h6 style="color:#fff;font-weight:800;margin:0;padding-top:6px">Documentation</h6>
+          </div>
+          <p class="ie-muted" style="font-size:.85rem;line-height:1.6">Prepare all required trade documents — commercial invoices, certificates of origin, packing lists, and customs declarations for smooth border clearance.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="ie-card p-4 h-100">
+          <div class="d-flex align-items-start gap-3 mb-3">
+            <div class="step-num">3</div>
+            <h6 style="color:#fff;font-weight:800;margin:0;padding-top:6px">Customs Clearance</h6>
+          </div>
+          <p class="ie-muted" style="font-size:.85rem;line-height:1.6">Handle customs procedures, duties and taxes at point of entry/exit. T&TG manages compliance with Canadian, Ugandan and Kenyan trade regulations.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="ie-card p-4 h-100">
+          <div class="d-flex align-items-start gap-3 mb-3">
+            <div class="step-num">4</div>
+            <h6 style="color:#fff;font-weight:800;margin:0;padding-top:6px">Logistics &amp; Shipping</h6>
+          </div>
+          <p class="ie-muted" style="font-size:.85rem;line-height:1.6">Coordinate freight — air or sea — with trusted logistics partners. Full cargo tracking from origin warehouse to final destination.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="ie-card p-4 h-100">
+          <div class="d-flex align-items-start gap-3 mb-3">
+            <div class="step-num">5</div>
+            <h6 style="color:#fff;font-weight:800;margin:0;padding-top:6px">Payment &amp; Settlement</h6>
+          </div>
+          <p class="ie-muted" style="font-size:.85rem;line-height:1.6">Secure multi-currency settlement across CAD, UGX and KES. Transparent foreign exchange rates with no hidden fees for our trade partners.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-4">
+        <div class="ie-card p-4 h-100">
+          <div class="d-flex align-items-start gap-3 mb-3">
+            <div class="step-num">6</div>
+            <h6 style="color:#fff;font-weight:800;margin:0;padding-top:6px">Delivery &amp; After-Care</h6>
+          </div>
+          <p class="ie-muted" style="font-size:.85rem;line-height:1.6">Final-mile delivery to buyers with post-shipment support. Our team follows up to ensure every consignment meets agreed quality and quantity standards.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ WHY T&TG ══════════════════════════════════════════════════════ -->
+<section class="ie-bg" style="padding:80px 0;border-top:1px solid rgba(201,168,76,.08)">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-5">
+        <div class="ie-gold mb-2" style="font-size:.75rem;letter-spacing:3px;font-weight:700">WHY CHOOSE US</div>
+        <h2 style="color:#fff;font-weight:900;font-size:2rem;line-height:1.2" class="mb-4">Your Trusted Trade Partner Across Borders</h2>
+        <p class="ie-muted mb-4" style="line-height:1.7">T&TG Trade Corp brings together deep knowledge of East African and Canadian markets, combined with a registered RM import/export licence and an established network of suppliers, freight agents and customs brokers.</p>
+        <a href="{% url 'contact' %}" class="btn btn-gold px-4 py-2">
+          <i class="fas fa-envelope me-2"></i>Get In Touch
+        </a>
+      </div>
+      <div class="col-lg-7">
+        <div class="row g-3">
+          <div class="col-6">
+            <div class="ie-card p-3 d-flex align-items-start gap-3">
+              <div style="color:#c9a84c;font-size:1.3rem;flex-shrink:0">✅</div>
+              <div>
+                <div style="color:#fff;font-size:.85rem;font-weight:700">Registered RM</div>
+                <div class="ie-muted" style="font-size:.75rem">Fully licensed import/export corporation</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="ie-card p-3 d-flex align-items-start gap-3">
+              <div style="color:#c9a84c;font-size:1.3rem;flex-shrink:0">🌍</div>
+              <div>
+                <div style="color:#fff;font-size:.85rem;font-weight:700">3 Countries</div>
+                <div class="ie-muted" style="font-size:.75rem">Canada, Uganda &amp; Kenya</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="ie-card p-3 d-flex align-items-start gap-3">
+              <div style="color:#c9a84c;font-size:1.3rem;flex-shrink:0">💱</div>
+              <div>
+                <div style="color:#fff;font-size:.85rem;font-weight:700">Multi-Currency</div>
+                <div class="ie-muted" style="font-size:.75rem">CAD · UGX · KES payments</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="ie-card p-3 d-flex align-items-start gap-3">
+              <div style="color:#c9a84c;font-size:1.3rem;flex-shrink:0">📦</div>
+              <div>
+                <div style="color:#fff;font-size:.85rem;font-weight:700">End-to-End</div>
+                <div class="ie-muted" style="font-size:.75rem">Sourcing to final delivery</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="ie-card p-3 d-flex align-items-start gap-3">
+              <div style="color:#c9a84c;font-size:1.3rem;flex-shrink:0">🤝</div>
+              <div>
+                <div style="color:#fff;font-size:.85rem;font-weight:700">Trusted Partners</div>
+                <div class="ie-muted" style="font-size:.75rem">Verified freight &amp; customs agents</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="ie-card p-3 d-flex align-items-start gap-3">
+              <div style="color:#c9a84c;font-size:1.3rem;flex-shrink:0">📈</div>
+              <div>
+                <div style="color:#fff;font-size:.85rem;font-weight:700">Growing Network</div>
+                <div class="ie-muted" style="font-size:.75rem">Expanding routes &amp; products</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA ══════════════════════════════════════════════════════════ -->
+<section class="ie-bg" style="padding:80px 0;border-top:1px solid rgba(201,168,76,.08)">
+  <div class="container">
+    <div class="ie-card p-5 text-center" style="background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(201,168,76,.03))">
+      <div class="ie-gold mb-2" style="font-size:.75rem;letter-spacing:3px;font-weight:700">WORK WITH US</div>
+      <h2 style="color:#fff;font-weight:900;font-size:2rem" class="mb-3">Ready to Start Trading?</h2>
+      <p class="ie-muted mx-auto mb-4" style="max-width:500px;line-height:1.7">
+        Whether you're looking to import goods into Uganda or Kenya, or export commodities to Canada and beyond — T&TG Trade Corp is your registered partner.
+      </p>
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <a href="{% url 'contact' %}" class="btn btn-gold px-5 py-2">
+          <i class="fas fa-handshake me-2"></i>Partner With Us
+        </a>
+        <a href="{% url 'forex' %}" class="btn px-5 py-2" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:none">
+          <i class="fas fa-chart-line me-2"></i>Live Rates
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

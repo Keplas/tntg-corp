@@ -381,6 +381,7 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
             <button class="tg-nl">{% t "nav_trade" %} <i class="fas fa-chevron-down tg-caret"></i></button>
             <div class="tg-dd">
               <a href="{% url 'trade_ecommerce' %}" class="tg-dd-item"><span class="tg-dd-ico">🌐</span>Trade & e-Commerce</a>
+              <a href="{% url 'import_export' %}"   class="tg-dd-item"><span class="tg-dd-ico">🚢</span>Import & Export</a>
               <a href="{% url 'forex' %}"            class="tg-dd-item"><span class="tg-dd-ico">💱</span>Live Exchange Rates</a>
             </div>
           </li>
@@ -402,13 +403,13 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
             </div>
           </li>
 
+          <!-- Company -->
           <li>
-            <a class="tg-nl {% if request.resolver_match.url_name == 'about' %}tg-active{% endif %}"
-               href="{% url 'about' %}">{% t "nav_about" %}</a>
-          </li>
-          <li>
-            <a class="tg-nl {% if request.resolver_match.url_name == 'contact' %}tg-active{% endif %}"
-               href="{% url 'contact' %}">{% t "nav_contact" %}</a>
+            <button class="tg-nl">Company <i class="fas fa-chevron-down tg-caret"></i></button>
+            <div class="tg-dd">
+              <a href="{% url 'about' %}"   class="tg-dd-item {% if request.resolver_match.url_name == 'about' %}tg-active{% endif %}"><span class="tg-dd-ico">🏢</span>About Us</a>
+              <a href="{% url 'contact' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'contact' %}tg-active{% endif %}"><span class="tg-dd-ico">✉️</span>Contact Us</a>
+            </div>
           </li>
         </ul>
 
