@@ -7,7 +7,7 @@ from django.utils import timezone
 from marketplace.models import Product
 from training.models import TrainingProgram, TVProgram
 from services.models import ContactInquiry, ForexRate
-from .models import Notification, LoyaltySettings
+from .models import Notification, LoyaltySettings, BlogPost
 
 OPERATION_COUNTRIES = [
     {'code': 'CA', 'name': 'Canada', 'flag': '🇨🇦'},
@@ -264,3 +264,46 @@ def set_language(request):
     request.session['lang'] = lang
     next_url = request.GET.get('next') or request.META.get('HTTP_REFERER') or '/'
     return redirect(next_url)
+
+
+# ── Blog / News ────────────────────────────────────────────────────────────────
+
+def blog_list(request):
+    """Blog & News listing — filterable by category."""
+    category = request.GET.get('category', '')
+    posts = BlogPost.objects.filter(is_published=True)
+    if category:
+        posts = posts.filter(category=category)
+
+    featured  = BlogPost.objects.filter(is_published=True, is_featured=True).first()
+    categories = BlogPost.CATEGORY_CHOICES
+
+    # Simple manual pagination (10 per page)
+    from django.core.paginator import Paginator
+    paginator  = Paginator(posts, 9)
+    page_num   = request.GET.get('page', 1)
+    page_obj   = paginator.get_page(page_num)
+
+    return render(request, 'core/blog_list.html', {
+        'page_obj':   page_obj,
+        'featured':   featured,
+        'categories': categories,
+        'current_cat': category,
+    })
+
+
+def blog_detail(request, slug):
+    """Single blog post."""
+    post = get_object_or_404(BlogPost, slug=slug, is_published=True)
+
+    # Increment view count
+    BlogPost.objects.filter(pk=post.pk).update(views_count=post.views_count + 1)
+
+    related = BlogPost.objects.filter(
+        is_published=True, category=post.category
+    ).exclude(pk=post.pk)[:3]
+
+    return render(request, 'core/blog_detail.html', {
+        'post':    post,
+        'related': related,
+    })

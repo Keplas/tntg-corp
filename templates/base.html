@@ -412,6 +412,60 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
       <!-- NAV MENU (right — always visible on desktop) -->
       <div class="tg-nav-menu" id="tgNavMenu">
 
+        <!-- Desktop nav list (hidden on mobile via CSS) -->
+        <ul class="tg-nav-list">
+          <li>
+            <a class="tg-nl {% if request.resolver_match.url_name == 'home' %}tg-active{% endif %}" href="{% url 'home' %}">{% t "nav_home" %}</a>
+          </li>
+          <li>
+            <button class="tg-nl">{% t "nav_shop" %} <i class="fas fa-chevron-down tg-caret"></i></button>
+            <div class="tg-dd tg-mega">
+              <div class="tg-dd-col">
+                <div class="tg-dd-label">Markets</div>
+                <a href="{% url 'marketplace' %}"                      class="tg-dd-item"><span class="tg-dd-ico">🌍</span>All Markets</a>
+                <a href="{% url 'product_list' %}?market=local"         class="tg-dd-item"><span class="tg-dd-ico">🏠</span>Local Market</a>
+                <a href="{% url 'product_list' %}?market=international" class="tg-dd-item"><span class="tg-dd-ico">✈️</span>International</a>
+              </div>
+              <div class="tg-dd-sep"></div>
+              <div class="tg-dd-col">
+                <div class="tg-dd-label">Categories</div>
+                <a href="{% url 'product_list' %}?category=clothing" class="tg-dd-item"><span class="tg-dd-ico">👔</span>Clothing</a>
+                <a href="{% url 'product_list' %}?category=shoes"    class="tg-dd-item"><span class="tg-dd-ico">👟</span>Shoes</a>
+                <a href="{% url 'product_list' %}?category=watches"  class="tg-dd-item"><span class="tg-dd-ico">⌚</span>Watches</a>
+                <a href="{% url 'product_list' %}?category=coffee"   class="tg-dd-item"><span class="tg-dd-ico">☕</span>Coffee</a>
+              </div>
+            </div>
+          </li>
+          <li>
+            <button class="tg-nl">{% t "nav_trade" %} <i class="fas fa-chevron-down tg-caret"></i></button>
+            <div class="tg-dd">
+              <a href="{% url 'trade_ecommerce' %}" class="tg-dd-item"><span class="tg-dd-ico">🌐</span>Trade & e-Commerce</a>
+              <a href="{% url 'import_export' %}"   class="tg-dd-item"><span class="tg-dd-ico">🚢</span>Import & Export</a>
+              <a href="{% url 'forex' %}"            class="tg-dd-item"><span class="tg-dd-ico">💱</span>Live Exchange Rates</a>
+            </div>
+          </li>
+          <li>
+            <a class="tg-nl {% if request.resolver_match.url_name == 'loyalty_info' %}tg-active{% endif %}" href="{% url 'loyalty_info' %}">
+              <span class="tg-loyalty-tag"><i class="fas fa-coins"></i> {% t "nav_loyalty" %}</span>
+            </a>
+          </li>
+          <li>
+            <button class="tg-nl">{% t "nav_training" %} <i class="fas fa-chevron-down tg-caret"></i></button>
+            <div class="tg-dd">
+              <a href="{% url 'training_home' %}" class="tg-dd-item"><span class="tg-dd-ico">🎓</span>Onboarding Program</a>
+              <a href="{% url 'tv_programs' %}"   class="tg-dd-item"><span class="tg-dd-ico">📺</span>Streaming</a>
+            </div>
+          </li>
+          <li>
+            <button class="tg-nl">Company <i class="fas fa-chevron-down tg-caret"></i></button>
+            <div class="tg-dd">
+              <a href="{% url 'about' %}"     class="tg-dd-item {% if request.resolver_match.url_name == 'about' %}tg-active{% endif %}"><span class="tg-dd-ico">🏢</span>About Us</a>
+              <a href="{% url 'contact' %}"   class="tg-dd-item {% if request.resolver_match.url_name == 'contact' %}tg-active{% endif %}"><span class="tg-dd-ico">✉️</span>Contact Us</a>
+              <a href="{% url 'blog_list' %}" class="tg-dd-item {% if 'blog' in request.resolver_match.url_name %}tg-active{% endif %}"><span class="tg-dd-ico">📰</span>Blog & News</a>
+            </div>
+          </li>
+        </ul>
+
         <!-- Auth / user actions -->
         <div class="tg-nav-auth">
           <!-- Language toggle -->
@@ -572,8 +626,9 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
         Company <i class="fas fa-chevron-down tg-mob-caret"></i>
       </button>
       <div class="tg-mob-sub">
-        <a href="{% url 'about' %}"   class="tg-mob-sub-item"><span class="tg-dd-ico">🏢</span>About Us</a>
-        <a href="{% url 'contact' %}" class="tg-mob-sub-item"><span class="tg-dd-ico">✉️</span>Contact Us</a>
+        <a href="{% url 'about' %}"     class="tg-mob-sub-item"><span class="tg-dd-ico">🏢</span>About Us</a>
+        <a href="{% url 'contact' %}"   class="tg-mob-sub-item"><span class="tg-dd-ico">✉️</span>Contact Us</a>
+        <a href="{% url 'blog_list' %}" class="tg-mob-sub-item"><span class="tg-dd-ico">📰</span>Blog & News</a>
       </div>
     </li>
 
@@ -676,6 +731,7 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
       <div class="col-6 col-lg-2">
         <div class="footer-title">Company</div>
         <a href="{% url 'about' %}"        class="footer-link">About Us</a>
+        <a href="{% url 'blog_list' %}"    class="footer-link">Blog & News</a>
         <a href="{% url 'trade_ecommerce' %}" class="footer-link">Trade & e-Commerce</a>
         <a href="{% url 'training_home' %}" class="footer-link">Training</a>
         <a href="{% url 'tv_programs' %}"  class="footer-link">TV Programs</a>

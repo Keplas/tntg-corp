@@ -15,6 +15,8 @@ urlpatterns = [
     path('notifications/mark-all-read/',      views.mark_all_read,          name='mark_all_read'),
     path('notifications/count/',              views.notification_count,     name='notification_count'),
     path('chat/',         chatbot_api,               name='chatbot_api'),
+    path('blog/',              views.blog_list,   name='blog_list'),
+    path('blog/<slug:slug>/',  views.blog_detail, name='blog_detail'),
     # SEO
     path('sitemap.xml',   views.sitemap_xml,         name='sitemap_xml'),
     path('robots.txt',    views.robots_txt,          name='robots_txt'),

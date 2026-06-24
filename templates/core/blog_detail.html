@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% block title %}{{ post.title }} — T&TG Trade Corp Blog{% endblock %}
+{% block content %}
+<style>
+  .bd-bg    { background:#0a0a0a; }
+  .bd-gold  { color:#c9a84c; }
+  .bd-muted { color:#7a6e5f; }
+  .bd-text  { color:#e0d5c0; }
+  .bd-tag   { display:inline-block; padding:3px 12px; border-radius:100px; font-size:.72rem; font-weight:700; background:rgba(201,168,76,.12); color:#c9a84c; border:1px solid rgba(201,168,76,.2); }
+  .bd-card  { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.15); border-radius:16px; overflow:hidden; transition:border-color .2s, transform .2s; text-decoration:none; display:block; }
+  .bd-card:hover { border-color:rgba(201,168,76,.4); transform:translateY(-3px); }
+
+  /* Article body typography */
+  .bd-body { color:#c8c0b0; line-height:1.85; font-size:1.05rem; }
+  .bd-body h2, .bd-body h3 { color:#fff; font-weight:800; margin:2rem 0 1rem; }
+  .bd-body h2 { font-size:1.5rem; }
+  .bd-body h3 { font-size:1.2rem; }
+  .bd-body p  { margin-bottom:1.2rem; }
+  .bd-body a  { color:#c9a84c; }
+  .bd-body ul, .bd-body ol { padding-left:1.5rem; margin-bottom:1.2rem; }
+  .bd-body li { margin-bottom:.5rem; }
+  .bd-body blockquote { border-left:3px solid #c9a84c; padding:12px 20px; margin:1.5rem 0; background:rgba(201,168,76,.06); border-radius:0 10px 10px 0; color:#c8c0b0; font-style:italic; }
+  .bd-body strong { color:#e0d5c0; }
+  .bd-body hr { border-color:rgba(201,168,76,.15); margin:2rem 0; }
+  .bd-body img { max-width:100%; border-radius:12px; margin:1rem 0; }
+</style>
+
+<section class="bd-bg" style="padding:60px 0 80px">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+
+        <!-- Breadcrumb -->
+        <nav class="mb-4" style="font-size:.82rem">
+          <a href="{% url 'blog_list' %}" class="bd-muted" style="text-decoration:none"><i class="fas fa-newspaper me-1"></i>Blog</a>
+          <span class="bd-muted mx-2">›</span>
+          <a href="{% url 'blog_list' %}?category={{ post.category }}" class="bd-gold" style="text-decoration:none">{{ post.get_category_display }}</a>
+        </nav>
+
+        <!-- Tags + meta -->
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-4">
+          <span class="bd-tag">{{ post.get_category_display }}</span>
+          <span class="bd-muted" style="font-size:.8rem"><i class="fas fa-clock me-1"></i>{{ post.reading_time }} min read</span>
+          <span class="bd-muted" style="font-size:.8rem"><i class="fas fa-eye me-1"></i>{{ post.views_count }} views</span>
+        </div>
+
+        <!-- Title -->
+        <h1 style="color:#fff;font-weight:900;font-size:clamp(1.6rem,4vw,2.4rem);line-height:1.2;letter-spacing:-.5px" class="mb-4">{{ post.title }}</h1>
+
+        <!-- Author + date -->
+        <div class="d-flex align-items-center gap-3 mb-5 pb-4" style="border-bottom:1px solid rgba(201,168,76,.12)">
+          <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c96a);display:flex;align-items:center;justify-content:center;font-weight:800;color:#1a0a00;flex-shrink:0;font-size:.9rem">
+            {{ post.author.first_name.0|default:"T" }}
+          </div>
+          <div>
+            <div style="color:#fff;font-weight:700;font-size:.88rem">{{ post.author.get_full_name|default:"T&TG Team" }}</div>
+            <div class="bd-muted" style="font-size:.75rem">
+              {% if post.published_at %}Published {{ post.published_at|date:"d F Y" }}{% endif %}
+              {% if post.updated_at %} · Updated {{ post.updated_at|date:"d F Y" }}{% endif %}
+            </div>
+          </div>
+          <!-- Share -->
+          <div class="ms-auto d-flex gap-2">
+            <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text={{ post.title|urlencode }}" target="_blank" class="btn btn-sm" style="background:rgba(255,255,255,.06);color:#e0d5c0;border:none;border-radius:8px"><i class="fab fa-x-twitter"></i></a>
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" target="_blank" class="btn btn-sm" style="background:rgba(255,255,255,.06);color:#e0d5c0;border:none;border-radius:8px"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://wa.me/?text={{ post.title|urlencode }}%20{{ request.build_absolute_uri|urlencode }}" target="_blank" class="btn btn-sm" style="background:rgba(255,255,255,.06);color:#e0d5c0;border:none;border-radius:8px"><i class="fab fa-whatsapp"></i></a>
+          </div>
+        </div>
+
+        <!-- Cover image -->
+        {% if post.safe_cover_url %}
+        <img src="{{ post.safe_cover_url }}" alt="{{ post.title }}" style="width:100%;border-radius:16px;margin-bottom:2rem;aspect-ratio:16/9;object-fit:cover">
+        {% endif %}
+
+        <!-- Excerpt (lead) -->
+        <p style="color:#c9a84c;font-size:1.1rem;font-style:italic;border-left:3px solid #c9a84c;padding-left:16px;margin-bottom:2rem;line-height:1.7">{{ post.excerpt }}</p>
+
+        <!-- Article body -->
+        <div class="bd-body">
+          {{ post.content|safe }}
+        </div>
+
+        <!-- Tags footer -->
+        <div class="d-flex align-items-center gap-2 mt-5 pt-4" style="border-top:1px solid rgba(201,168,76,.12)">
+          <span class="bd-muted" style="font-size:.8rem">Category:</span>
+          <a href="{% url 'blog_list' %}?category={{ post.category }}" class="bd-tag" style="text-decoration:none">{{ post.get_category_display }}</a>
+          <a href="{% url 'blog_list' %}" class="btn btn-sm ms-auto" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:none;border-radius:8px">
+            <i class="fas fa-arrow-left me-1"></i>All Articles
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Related articles -->
+    {% if related %}
+    <div class="mt-5 pt-4" style="border-top:1px solid rgba(201,168,76,.1)">
+      <h4 style="color:#fff;font-weight:800;margin-bottom:24px">Related Articles</h4>
+      <div class="row g-4">
+        {% for rpost in related %}
+        <div class="col-md-4">
+          <a href="{{ rpost.get_absolute_url }}" class="bd-card">
+            {% if rpost.safe_cover_url %}
+            <img src="{{ rpost.safe_cover_url }}" alt="{{ rpost.title }}" style="width:100%;aspect-ratio:16/9;object-fit:cover">
+            {% else %}
+            <div style="width:100%;aspect-ratio:16/9;background:linear-gradient(135deg,#1a1000,#2a1a00);display:flex;align-items:center;justify-content:center">
+              <i class="fas fa-newspaper" style="font-size:2rem;color:rgba(201,168,76,.3)"></i>
+            </div>
+            {% endif %}
+            <div class="p-3">
+              <span class="bd-tag mb-2 d-inline-block">{{ rpost.get_category_display }}</span>
+              <h6 style="color:#fff;font-weight:700;font-size:.9rem;line-height:1.35">{{ rpost.title }}</h6>
+              <div class="bd-muted mt-1" style="font-size:.75rem"><i class="fas fa-clock me-1"></i>{{ rpost.reading_time }} min</div>
+            </div>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+{% endblock %}
