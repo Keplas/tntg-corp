@@ -1,0 +1,301 @@
+{# Included inside blog_list.html — the dynamic live image feed section #}
+<style>
+/* ── Ticker ─────────────────────────────── */
+.lf-ticker       { background:#0d0800; border-top:1px solid rgba(201,168,76,.2); border-bottom:1px solid rgba(201,168,76,.2); overflow:hidden; height:38px; display:flex; align-items:center; }
+.lf-ticker-label { padding:0 16px; background:linear-gradient(135deg,#c9a84c,#e8c96a); color:#1a0a00; font-size:.7rem; font-weight:900; letter-spacing:1.5px; white-space:nowrap; height:100%; display:flex; align-items:center; flex-shrink:0; z-index:2; }
+.lf-ticker-track { display:flex; gap:0; white-space:nowrap; animation:tickerScroll 40s linear infinite; }
+.lf-ticker-track:hover { animation-play-state:paused; }
+.lf-ticker-item  { padding:0 32px 0 0; font-size:.75rem; color:#c9a84c; font-weight:600; letter-spacing:.3px; display:flex; align-items:center; gap:8px; }
+.lf-ticker-dot   { width:5px; height:5px; border-radius:50%; background:#c9a84c; flex-shrink:0; animation:tickerPulse 2s ease-in-out infinite; }
+@keyframes tickerScroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+@keyframes tickerPulse  { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
+
+/* ── Hero Carousel ──────────────────────── */
+.lf-carousel     { position:relative; overflow:hidden; background:#000; }
+.lf-slides       { display:flex; transition:transform .7s cubic-bezier(.4,0,.2,1); }
+.lf-slide        { min-width:100%; position:relative; }
+.lf-slide img    { width:100%; height:480px; object-fit:cover; display:block; filter:brightness(.55); }
+.lf-slide-caption {
+  position:absolute; bottom:0; left:0; right:0;
+  padding:40px 40px 32px;
+  background:linear-gradient(to top,rgba(0,0,0,.85) 0%,transparent 100%);
+}
+.lf-slide-tag    { display:inline-block; padding:3px 12px; border-radius:100px; font-size:.68rem; font-weight:800; letter-spacing:1px; background:linear-gradient(135deg,#c9a84c,#e8c96a); color:#1a0a00; margin-bottom:10px; }
+.lf-slide h2     { color:#fff; font-weight:900; font-size:clamp(1.3rem,3vw,2rem); line-height:1.2; margin:0 0 8px; }
+.lf-slide p      { color:rgba(255,255,255,.75); font-size:.88rem; margin:0; max-width:560px; }
+.lf-btn { position:absolute; top:50%; transform:translateY(-50%); width:44px; height:44px; border-radius:50%; background:rgba(201,168,76,.2); border:1px solid rgba(201,168,76,.3); color:#c9a84c; font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; z-index:5; transition:background .2s; backdrop-filter:blur(4px); }
+.lf-btn:hover    { background:rgba(201,168,76,.4); }
+.lf-btn-prev     { left:16px; }
+.lf-btn-next     { right:16px; }
+.lf-dots         { position:absolute; bottom:16px; right:40px; display:flex; gap:6px; }
+.lf-dot          { width:7px; height:7px; border-radius:50%; background:rgba(255,255,255,.3); cursor:pointer; transition:background .2s; }
+.lf-dot.active   { background:#c9a84c; }
+/* live badge */
+.lf-live-badge   { position:absolute; top:20px; left:24px; background:#e03030; color:#fff; font-size:.65rem; font-weight:800; letter-spacing:1px; padding:4px 10px; border-radius:100px; display:flex; align-items:center; gap:5px; z-index:5; }
+.lf-live-dot     { width:6px; height:6px; border-radius:50%; background:#fff; animation:tickerPulse 1s ease-in-out infinite; }
+
+/* ── Market feed strip ──────────────────── */
+.lf-feed-strip   { display:flex; gap:0; overflow:hidden; background:#060f1e; border-top:1px solid rgba(201,168,76,.1); }
+.lf-feed-scroll  { display:flex; gap:0; animation:feedScroll 55s linear infinite; }
+.lf-feed-scroll:hover { animation-play-state:paused; }
+.lf-feed-card    { min-width:280px; padding:16px 20px; border-right:1px solid rgba(201,168,76,.08); flex-shrink:0; cursor:pointer; transition:background .2s; }
+.lf-feed-card:hover { background:rgba(201,168,76,.05); }
+.lf-feed-img     { width:100%; height:120px; object-fit:cover; border-radius:10px; margin-bottom:10px; }
+.lf-feed-tag     { font-size:.62rem; font-weight:700; color:#c9a84c; letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+.lf-feed-title   { font-size:.82rem; font-weight:700; color:#e0d5c0; line-height:1.4; margin-bottom:6px; }
+.lf-feed-meta    { font-size:.68rem; color:#7a6e5f; display:flex; gap:10px; }
+@keyframes feedScroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+</style>
+
+<!-- ══ LIVE TICKER ════════════════════════════════════════════════════════ -->
+<div class="lf-ticker">
+  <div class="lf-ticker-label">🔴 LIVE</div>
+  <div style="overflow:hidden;flex:1">
+    <div class="lf-ticker-track">
+      <!-- Set 1 -->
+      <span class="lf-ticker-item"><span class="lf-ticker-dot"></span>☕ Arabica Coffee (ICE) — $195.40/lb · Uganda export season in full swing</span>
+      <span class="lf-ticker-item"><span class="lf-ticker-dot"></span>💱 CAD/UGX — 1 CAD = 2,891 UGX · Stable</span>
+      <span class="lf-ticker-item"><span class="lf-ticker-dot"></span>🚢 East African shipping routes — Red Sea disruptions pushing up freight costs 12%</span>
+      <span class="lf-ticker-item"><span class="lf-ticker-dot"></span>☕ Robusta Coffee (Nairobi) — $128.20/lb · Strong demand from European buyers</span>
+      <span class="lf-ticker-item"><span class="lf-ticker-dot"></span>💱 CAD/KES — 1 CAD = 103.4 KES · Slight upward pressure</span>
+      <span class="lf-ticker-item"><span class="lf-ticker-dot"></span>📦 Uganda exports up 8% YoY · Coffee leads at 62% of total export value</span>
+      <span class="lf-ticker-item"><span class="lf-ticker-dot"></span>🌍 East African Community trade volumes — Record $8.2B quarter</span>
+      <span class="lf-ticker-item"><span class="lf-ticker-dot"></span>📈 Kenya tea exports — Mombasa auction prices up 5.3% this week</span>
+      <span class="lf-ticker-item"><span class="lf-ticker-dot"></span>💱 UGX/KES — 1 UGX = 0.036 KES · Steady</span>
+      <span class="lf-ticker-item"><span class="lf-ticker-dot"></span>🏭 Canada manufacturing imports — Clothing & textiles demand rising Q2 2026</span>
+      <!-- Set 2 (duplicate for seamless loop) -->
+      <span class="lf-ticker-item"><span class="lf-ticker-dot"></span>☕ Arabica Coffee (ICE) — $195.40/lb · Uganda export season in full swing</span>
+      <span class="lf-ticker-item"><span class="lf-ticker-dot"></span>💱 CAD/UGX — 1 CAD = 2,891 UGX · Stable</span>
+      <span class="lf-ticker-item"><span class="lf-ticker-dot"></span>🚢 East African shipping routes — Red Sea disruptions pushing up freight costs 12%</span>
+      <span class="lf-ticker-item"><span class="lf-ticker-dot"></span>☕ Robusta Coffee (Nairobi) — $128.20/lb · Strong demand from European buyers</span>
+      <span class="lf-ticker-item"><span class="lf-ticker-dot"></span>💱 CAD/KES — 1 CAD = 103.4 KES · Slight upward pressure</span>
+      <span class="lf-ticker-item"><span class="lf-ticker-dot"></span>📦 Uganda exports up 8% YoY · Coffee leads at 62% of total export value</span>
+      <span class="lf-ticker-item"><span class="lf-ticker-dot"></span>🌍 East African Community trade volumes — Record $8.2B quarter</span>
+      <span class="lf-ticker-item"><span class="lf-ticker-dot"></span>📈 Kenya tea exports — Mombasa auction prices up 5.3% this week</span>
+      <span class="lf-ticker-item"><span class="lf-ticker-dot"></span>💱 UGX/KES — 1 UGX = 0.036 KES · Steady</span>
+      <span class="lf-ticker-item"><span class="lf-ticker-dot"></span>🏭 Canada manufacturing imports — Clothing & textiles demand rising Q2 2026</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ HERO CAROUSEL ══════════════════════════════════════════════════════ -->
+<div class="lf-carousel" id="lfCarousel">
+  <div class="lf-live-badge"><span class="lf-live-dot"></span>LIVE FEED</div>
+
+  <div class="lf-slides" id="lfSlides">
+    <!-- Slide 1: Coffee beans -->
+    <div class="lf-slide">
+      <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=1400&h=480&fit=crop&q=80" alt="Coffee beans">
+      <div class="lf-slide-caption">
+        <span class="lf-slide-tag">☕ COFFEE MARKET</span>
+        <h2>Uganda Arabica Coffee Prices Hit 3-Month High</h2>
+        <p>Strong European and North American demand is driving Arabica green coffee prices higher. Uganda's harvest season is delivering exceptional quality crops this year.</p>
+      </div>
+    </div>
+    <!-- Slide 2: Shipping containers -->
+    <div class="lf-slide">
+      <img src="https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=1400&h=480&fit=crop&q=80" alt="Shipping containers">
+      <div class="lf-slide-caption">
+        <span class="lf-slide-tag">🚢 IMPORT & EXPORT</span>
+        <h2>East African Export Routes: Navigating 2026 Freight Challenges</h2>
+        <p>Shipping costs from East African ports remain elevated due to Red Sea disruptions. T&TG Trade Corp continues to offer competitive rates through our trusted logistics network.</p>
+      </div>
+    </div>
+    <!-- Slide 3: Cargo ship -->
+    <div class="lf-slide">
+      <img src="https://images.unsplash.com/photo-1590496793907-4d66e2994b4d?w=1400&h=480&fit=crop&q=80" alt="Cargo ship at port">
+      <div class="lf-slide-caption">
+        <span class="lf-slide-tag">📦 TRADE NEWS</span>
+        <h2>Mombasa Port Sets New Container Throughput Record in Q1 2026</h2>
+        <p>Kenya's Mombasa Port has processed a record 1.4 million TEUs in Q1 2026, signalling strong growth in East African trade volumes and export capacity.</p>
+      </div>
+    </div>
+    <!-- Slide 4: Coffee close-up -->
+    <div class="lf-slide">
+      <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348?w=1400&h=480&fit=crop&q=80" alt="Coffee beans flat lay">
+      <div class="lf-slide-caption">
+        <span class="lf-slide-tag">⚖️ REGULATIONS</span>
+        <h2>New EU Deforestation Regulation: What It Means for Ugandan Coffee Exporters</h2>
+        <p>The EU's EUDR now requires all coffee importers to verify their supply chains are deforestation-free. T&TG sources only from certified, traceable farms.</p>
+      </div>
+    </div>
+    <!-- Slide 5: Containers at dock -->
+    <div class="lf-slide">
+      <img src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1400&h=480&fit=crop&q=80" alt="Cargo ships docked">
+      <div class="lf-slide-caption">
+        <span class="lf-slide-tag">🌍 EAST AFRICA</span>
+        <h2>East African Community Removes 18 Trade Barriers in Landmark Agreement</h2>
+        <p>The EAC summit has reached agreement on removing key non-tariff barriers between Uganda, Kenya, Tanzania and Rwanda — a major win for cross-border traders.</p>
+      </div>
+    </div>
+  </div>
+
+  <button class="lf-btn lf-btn-prev" id="lfPrev"><i class="fas fa-chevron-left"></i></button>
+  <button class="lf-btn lf-btn-next" id="lfNext"><i class="fas fa-chevron-right"></i></button>
+  <div class="lf-dots" id="lfDots">
+    <div class="lf-dot active" data-i="0"></div>
+    <div class="lf-dot" data-i="1"></div>
+    <div class="lf-dot" data-i="2"></div>
+    <div class="lf-dot" data-i="3"></div>
+    <div class="lf-dot" data-i="4"></div>
+  </div>
+</div>
+
+<!-- ══ MARKET IMAGE FEED STRIP ════════════════════════════════════════════ -->
+<div style="background:#060f1e;padding:12px 0 0;border-top:1px solid rgba(201,168,76,.12)">
+  <div style="padding:0 20px 10px;display:flex;align-items:center;gap:10px">
+    <span style="font-size:.65rem;font-weight:800;letter-spacing:2px;color:#c9a84c">LATEST FROM THE MARKET</span>
+    <span style="font-size:.65rem;color:#7a6e5f">Auto-scrolling · hover to pause</span>
+    <div style="width:8px;height:8px;border-radius:50%;background:#e03030;margin-left:auto;animation:tickerPulse 1s ease-in-out infinite"></div>
+  </div>
+  <div class="lf-feed-strip">
+    <div class="lf-feed-scroll" id="lfFeed">
+      <!-- Card 1 -->
+      <div class="lf-feed-card">
+        <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=280&h=120&fit=crop&q=75" alt="Coffee" class="lf-feed-img">
+        <div class="lf-feed-tag">☕ Coffee Market</div>
+        <div class="lf-feed-title">Arabica futures climb on supply concerns from Uganda</div>
+        <div class="lf-feed-meta"><span>T&TG News</span><span>2h ago</span></div>
+      </div>
+      <!-- Card 2 -->
+      <div class="lf-feed-card">
+        <img src="https://images.unsplash.com/photo-1606185540834-d6e7483ee1a4?w=280&h=120&fit=crop&q=75" alt="Cargo ship" class="lf-feed-img">
+        <div class="lf-feed-tag">🚢 Shipping</div>
+        <div class="lf-feed-title">Freight rates stabilise as Red Sea situation improves</div>
+        <div class="lf-feed-meta"><span>Trade Desk</span><span>4h ago</span></div>
+      </div>
+      <!-- Card 3 -->
+      <div class="lf-feed-card">
+        <img src="https://images.unsplash.com/photo-1678182451047-196f22a4143e?w=280&h=120&fit=crop&q=75" alt="Containers" class="lf-feed-img">
+        <div class="lf-feed-tag">📦 Import Tips</div>
+        <div class="lf-feed-title">5 documents every first-time importer needs before customs</div>
+        <div class="lf-feed-meta"><span>T&TG Guide</span><span>1d ago</span></div>
+      </div>
+      <!-- Card 4 -->
+      <div class="lf-feed-card">
+        <img src="https://images.unsplash.com/photo-1601311852860-1d8f42381551?w=280&h=120&fit=crop&q=75" alt="Ship at sea" class="lf-feed-img">
+        <div class="lf-feed-tag">🌍 East Africa</div>
+        <div class="lf-feed-title">Uganda's coffee sector targets $1B export revenue in 2026</div>
+        <div class="lf-feed-meta"><span>Market Watch</span><span>2d ago</span></div>
+      </div>
+      <!-- Card 5 -->
+      <div class="lf-feed-card">
+        <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?w=280&h=120&fit=crop&q=75" alt="Barista" class="lf-feed-img">
+        <div class="lf-feed-tag">☕ Coffee</div>
+        <div class="lf-feed-title">Specialty coffee demand from Canada reaches record high</div>
+        <div class="lf-feed-meta"><span>T&TG News</span><span>3d ago</span></div>
+      </div>
+      <!-- Card 6 -->
+      <div class="lf-feed-card">
+        <img src="https://images.unsplash.com/photo-1558318830-853081b6bb6e?w=280&h=120&fit=crop&q=75" alt="Containers at water" class="lf-feed-img">
+        <div class="lf-feed-tag">⚖️ Regulations</div>
+        <div class="lf-feed-title">New UCDA quality standards for green coffee exporters 2026</div>
+        <div class="lf-feed-meta"><span>Regulatory Update</span><span>4d ago</span></div>
+      </div>
+      <!-- Card 7 -->
+      <div class="lf-feed-card">
+        <img src="https://images.unsplash.com/photo-1670121180530-cfcba4438038?w=280&h=120&fit=crop&q=75" alt="Cargo dock" class="lf-feed-img">
+        <div class="lf-feed-tag">🏢 Company</div>
+        <div class="lf-feed-title">T&TG expands Canadian distribution network to Alberta</div>
+        <div class="lf-feed-meta"><span>T&TG News</span><span>5d ago</span></div>
+      </div>
+      <!-- Card 8 -->
+      <div class="lf-feed-card">
+        <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=280&h=120&fit=crop&q=75" alt="Coffee beans" class="lf-feed-img">
+        <div class="lf-feed-tag">📈 Market</div>
+        <div class="lf-feed-title">How climate change is reshaping East African coffee regions</div>
+        <div class="lf-feed-meta"><span>T&TG Analysis</span><span>1w ago</span></div>
+      </div>
+      <!-- DUPLICATE for seamless loop -->
+      <div class="lf-feed-card">
+        <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=280&h=120&fit=crop&q=75" alt="Coffee" class="lf-feed-img">
+        <div class="lf-feed-tag">☕ Coffee Market</div>
+        <div class="lf-feed-title">Arabica futures climb on supply concerns from Uganda</div>
+        <div class="lf-feed-meta"><span>T&TG News</span><span>2h ago</span></div>
+      </div>
+      <div class="lf-feed-card">
+        <img src="https://images.unsplash.com/photo-1606185540834-d6e7483ee1a4?w=280&h=120&fit=crop&q=75" alt="Cargo ship" class="lf-feed-img">
+        <div class="lf-feed-tag">🚢 Shipping</div>
+        <div class="lf-feed-title">Freight rates stabilise as Red Sea situation improves</div>
+        <div class="lf-feed-meta"><span>Trade Desk</span><span>4h ago</span></div>
+      </div>
+      <div class="lf-feed-card">
+        <img src="https://images.unsplash.com/photo-1678182451047-196f22a4143e?w=280&h=120&fit=crop&q=75" alt="Containers" class="lf-feed-img">
+        <div class="lf-feed-tag">📦 Import Tips</div>
+        <div class="lf-feed-title">5 documents every first-time importer needs before customs</div>
+        <div class="lf-feed-meta"><span>T&TG Guide</span><span>1d ago</span></div>
+      </div>
+      <div class="lf-feed-card">
+        <img src="https://images.unsplash.com/photo-1601311852860-1d8f42381551?w=280&h=120&fit=crop&q=75" alt="Ship at sea" class="lf-feed-img">
+        <div class="lf-feed-tag">🌍 East Africa</div>
+        <div class="lf-feed-title">Uganda's coffee sector targets $1B export revenue in 2026</div>
+        <div class="lf-feed-meta"><span>Market Watch</span><span>2d ago</span></div>
+      </div>
+      <div class="lf-feed-card">
+        <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?w=280&h=120&fit=crop&q=75" alt="Barista" class="lf-feed-img">
+        <div class="lf-feed-tag">☕ Coffee</div>
+        <div class="lf-feed-title">Specialty coffee demand from Canada reaches record high</div>
+        <div class="lf-feed-meta"><span>T&TG News</span><span>3d ago</span></div>
+      </div>
+      <div class="lf-feed-card">
+        <img src="https://images.unsplash.com/photo-1558318830-853081b6bb6e?w=280&h=120&fit=crop&q=75" alt="Containers at water" class="lf-feed-img">
+        <div class="lf-feed-tag">⚖️ Regulations</div>
+        <div class="lf-feed-title">New UCDA quality standards for green coffee exporters 2026</div>
+        <div class="lf-feed-meta"><span>Regulatory Update</span><span>4d ago</span></div>
+      </div>
+      <div class="lf-feed-card">
+        <img src="https://images.unsplash.com/photo-1670121180530-cfcba4438038?w=280&h=120&fit=crop&q=75" alt="Cargo dock" class="lf-feed-img">
+        <div class="lf-feed-tag">🏢 Company</div>
+        <div class="lf-feed-title">T&TG expands Canadian distribution network to Alberta</div>
+        <div class="lf-feed-meta"><span>T&TG News</span><span>5d ago</span></div>
+      </div>
+      <div class="lf-feed-card">
+        <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=280&h=120&fit=crop&q=75" alt="Coffee beans" class="lf-feed-img">
+        <div class="lf-feed-tag">📈 Market</div>
+        <div class="lf-feed-title">How climate change is reshaping East African coffee regions</div>
+        <div class="lf-feed-meta"><span>T&TG Analysis</span><span>1w ago</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ── Carousel ──────────────────────────────────────────────────────────
+  var slides   = document.getElementById('lfSlides');
+  var dots     = document.querySelectorAll('.lf-dot');
+  var total    = dots.length;
+  var current  = 0;
+  var autoPlay;
+
+  function goTo(n){
+    current = (n + total) % total;
+    slides.style.transform = 'translateX(-' + (current * 100) + '%)';
+    dots.forEach(function(d, i){ d.classList.toggle('active', i === current); });
+  }
+
+  function next(){ goTo(current + 1); }
+  function prev(){ goTo(current - 1); }
+  function startAuto(){ autoPlay = setInterval(next, 5000); }
+  function stopAuto() { clearInterval(autoPlay); }
+
+  document.getElementById('lfNext').addEventListener('click', function(){ stopAuto(); next(); startAuto(); });
+  document.getElementById('lfPrev').addEventListener('click', function(){ stopAuto(); prev(); startAuto(); });
+  dots.forEach(function(d){ d.addEventListener('click', function(){ stopAuto(); goTo(parseInt(d.dataset.i)); startAuto(); }); });
+
+  // pause on hover
+  var car = document.getElementById('lfCarousel');
+  car.addEventListener('mouseenter', stopAuto);
+  car.addEventListener('mouseleave', startAuto);
+
+  // touch swipe
+  var startX = 0;
+  car.addEventListener('touchstart', function(e){ startX = e.touches[0].clientX; }, {passive:true});
+  car.addEventListener('touchend', function(e){
+    var dx = e.changedTouches[0].clientX - startX;
+    if(Math.abs(dx) > 40){ stopAuto(); dx < 0 ? next() : prev(); startAuto(); }
+  }, {passive:true});
+
+  startAuto();
+})();
+</script>

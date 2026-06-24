@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% block title %}Blog & News — T&TG Trade Corp{% endblock %}
+{% block content %}
+
+{% include 'core/blog_live_feed.html' %}
+<style>
+  .bl-bg    { background:#0a0a0a; }
+  .bl-card  { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.15); border-radius:16px; overflow:hidden; transition:border-color .25s, transform .25s; text-decoration:none; display:block; }
+  .bl-card:hover { border-color:rgba(201,168,76,.4); transform:translateY(-4px); }
+  .bl-gold  { color:#c9a84c; }
+  .bl-muted { color:#7a6e5f; }
+  .bl-text  { color:#e0d5c0; }
+  .bl-tag   { display:inline-block; padding:3px 10px; border-radius:100px; font-size:.68rem; font-weight:700; background:rgba(201,168,76,.12); color:#c9a84c; border:1px solid rgba(201,168,76,.2); }
+  .bl-cat-btn { padding:7px 18px; border-radius:100px; font-size:.78rem; font-weight:600; border:1px solid rgba(201,168,76,.2); color:#7a6e5f; background:none; cursor:pointer; text-decoration:none; transition:all .2s; }
+  .bl-cat-btn:hover, .bl-cat-btn.active { background:rgba(201,168,76,.12); color:#c9a84c; border-color:rgba(201,168,76,.4); }
+  .bl-img   { width:100%; aspect-ratio:16/9; object-fit:cover; background:#111; }
+  .bl-feat-img { width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:16px; }
+</style>
+
+<!-- HERO -->
+<section class="bl-bg" style="padding:70px 0 50px;position:relative;overflow:hidden">
+  <div style="position:absolute;top:-80px;right:-80px;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.07),transparent 70%);pointer-events:none"></div>
+  <div class="container">
+    <div class="d-inline-flex align-items-center gap-2 mb-4 px-3 py-1 rounded-pill" style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2)">
+      <i class="fas fa-newspaper bl-gold" style="font-size:.75rem"></i>
+      <span class="bl-gold" style="font-size:.7rem;font-weight:700;letter-spacing:2px">T&TG TRADE CORP</span>
+    </div>
+    <h1 style="font-size:clamp(2rem,5vw,3.2rem);font-weight:900;color:#fff;letter-spacing:-1px" class="mb-2">Blog &amp; <span class="bl-gold">News</span></h1>
+    <p class="bl-muted" style="max-width:520px;font-size:1rem;line-height:1.7">Trade insights, coffee market updates, import tips and East African business news — straight from the T&TG team.</p>
+  </div>
+</section>
+
+<section class="bl-bg" style="padding:0 0 80px">
+  <div class="container">
+
+    <!-- Category filter -->
+    <div class="d-flex flex-wrap gap-2 mb-5 pb-4" style="border-bottom:1px solid rgba(201,168,76,.1)">
+      <a href="{% url 'blog_list' %}" class="bl-cat-btn {% if not current_cat %}active{% endif %}">All</a>
+      {% for val, label in categories %}
+      <a href="{% url 'blog_list' %}?category={{ val }}" class="bl-cat-btn {% if current_cat == val %}active{% endif %}">{{ label }}</a>
+      {% endfor %}
+    </div>
+
+    <!-- Featured article -->
+    {% if featured and not current_cat %}
+    <div class="row g-4 mb-5">
+      <div class="col-lg-7">
+        {% if featured.safe_cover_url %}
+        <img src="{{ featured.safe_cover_url }}" alt="{{ featured.title }}" class="bl-feat-img">
+        {% else %}
+        <div class="bl-feat-img d-flex align-items-center justify-content-center" style="background:linear-gradient(135deg,#1a1000,#2a1a00)">
+          <i class="fas fa-newspaper" style="font-size:4rem;color:rgba(201,168,76,.3)"></i>
+        </div>
+        {% endif %}
+      </div>
+      <div class="col-lg-5 d-flex flex-column justify-content-center">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span class="bl-tag">⭐ Featured</span>
+          <span class="bl-tag">{{ featured.get_category_display }}</span>
+        </div>
+        <h2 style="color:#fff;font-weight:900;font-size:1.6rem;line-height:1.25" class="mb-3">{{ featured.title }}</h2>
+        <p class="bl-muted mb-4" style="line-height:1.7">{{ featured.excerpt }}</p>
+        <div class="d-flex align-items-center gap-3 mb-4" style="font-size:.8rem">
+          <span class="bl-muted"><i class="fas fa-user me-1"></i>{{ featured.author.get_full_name|default:"T&TG Team" }}</span>
+          <span class="bl-muted"><i class="fas fa-clock me-1"></i>{{ featured.reading_time }} min read</span>
+          <span class="bl-muted"><i class="fas fa-eye me-1"></i>{{ featured.views_count }}</span>
+        </div>
+        <a href="{{ featured.get_absolute_url }}" class="btn btn-gold px-4 py-2 align-self-start">
+          Read Article <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(201,168,76,.1);margin-bottom:40px"></div>
+    {% endif %}
+
+    <!-- Article grid -->
+    {% if page_obj %}
+    <div class="row g-4">
+      {% for post in page_obj %}
+      <div class="col-md-6 col-lg-4">
+        <a href="{{ post.get_absolute_url }}" class="bl-card h-100">
+          <!-- Cover -->
+          {% if post.safe_cover_url %}
+          <img src="{{ post.safe_cover_url }}" alt="{{ post.title }}" class="bl-img">
+          {% else %}
+          <div class="bl-img d-flex align-items-center justify-content-center" style="background:linear-gradient(135deg,#1a1000,#2a1a00)">
+            <i class="fas fa-newspaper" style="font-size:2.5rem;color:rgba(201,168,76,.3)"></i>
+          </div>
+          {% endif %}
+          <!-- Content -->
+          <div class="p-4">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="bl-tag">{{ post.get_category_display }}</span>
+              <span class="bl-muted ms-auto" style="font-size:.72rem"><i class="fas fa-clock me-1"></i>{{ post.reading_time }} min</span>
+            </div>
+            <h5 style="color:#fff;font-weight:800;line-height:1.3;font-size:1rem" class="mb-2">{{ post.title }}</h5>
+            <p class="bl-muted mb-3" style="font-size:.83rem;line-height:1.6">{{ post.excerpt|truncatechars:120 }}</p>
+            <div class="d-flex align-items-center justify-content-between mt-auto" style="font-size:.75rem">
+              <span class="bl-muted">{{ post.author.get_full_name|default:"T&TG Team" }}</span>
+              <span class="bl-muted">{% if post.published_at %}{{ post.published_at|date:"d M Y" }}{% endif %}</span>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="d-flex justify-content-center gap-2 mt-5">
+      {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}{% if current_cat %}&category={{ current_cat }}{% endif %}" class="btn px-4" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:none;border-radius:10px">
+        <i class="fas fa-arrow-left me-2"></i>Previous
+      </a>
+      {% endif %}
+      <span class="d-flex align-items-center px-3 bl-muted" style="font-size:.85rem">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}{% if current_cat %}&category={{ current_cat }}{% endif %}" class="btn px-4" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:none;border-radius:10px">
+        Next <i class="fas fa-arrow-right ms-2"></i>
+      </a>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="text-center py-5">
+      <div style="font-size:4rem;opacity:.2;margin-bottom:16px">📰</div>
+      <h5 style="color:#fff;font-weight:700">No articles yet</h5>
+      <p class="bl-muted">Check back soon — trade news and insights are coming.</p>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+{% endblock %}
