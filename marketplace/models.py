@@ -51,15 +51,17 @@ class Product(models.Model):
         if self.image:
             try:
                 url = self.image.url
-                if url.startswith('/media/') or url.startswith('media/'):
-                    import os
-                    from django.conf import settings
-                    local_path = os.path.join(settings.BASE_DIR, 'media', str(self.image))
-                    if not os.path.exists(local_path):
-                        return self.image_url or None
-                return url
+                # Cloudinary URLs start with https:// — return directly
+                if url.startswith('http'):
+                    return url
+                # Local /media/ URL — only return if file actually exists on disk
+                import os
+                from django.conf import settings as djsettings
+                local_path = os.path.join(djsettings.MEDIA_ROOT, str(self.image))
+                if os.path.exists(local_path):
+                    return url
             except Exception:
-                return self.image_url or None
+                pass
         return self.image_url or None
 
     @property

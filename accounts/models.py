@@ -62,13 +62,14 @@ class CustomUser(AbstractUser):
             return None
         try:
             url = self.profile_photo.url
-            if url.startswith('/media/') or url.startswith('media/'):
-                import os
-                from django.conf import settings
-                local_path = os.path.join(settings.BASE_DIR, 'media', str(self.profile_photo))
-                if not os.path.exists(local_path):
-                    return None
-            return url
+            if url.startswith('http'):
+                return url
+            import os
+            from django.conf import settings as djsettings
+            local_path = os.path.join(djsettings.MEDIA_ROOT, str(self.profile_photo))
+            if os.path.exists(local_path):
+                return url
+            return None
         except Exception:
             return None
 
