@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.utils import timezone
 from datetime import timedelta, date
 from .models import CustomUser, AvonPointTransaction
 from marketplace.models import Order
@@ -73,26 +75,20 @@ def logout_view(request):
 
 
 @login_required
-def dashboard(request):
-    user         = request.user
-    recent_orders       = Order.objects.filter(buyer=user).order_by('-created_at')[:5]
-    recent_transactions = AvonPointTransaction.objects.filter(user=user).order_by('-created_at')[:5]
-    settings     = LoyaltySettings.get_settings()
-    ctx = {
-        'user':                user,
-        'recent_orders':       recent_orders,
-        'recent_transactions': recent_transactions,
-        'total_orders':        Order.objects.filter(buyer=user).count(),
-        'pending_orders':      Order.objects.filter(buyer=user, status='pending').count(),
-        'loyalty_settings':    settings,
-    }
-    return render(request, 'accounts/dashboard.html', ctx)
-
-
 @login_required
-def profile(request):
-    if request.method == 'POST':
-        user = request.user
+def dashboard(request):
+    """Unified admin dashboard — Dashboard + Profile + Loyalty + Analytics + Notifications."""
+    from django.db.models import Sum, Count, Avg
+    from django.db.models.functions import TruncDate
+    from datetime import timedelta, date
+    from marketplace.models import Order, Product
+    from core.models import Notification, LoyaltySettings, BlogPost
+
+    user     = request.user
+    settings = LoyaltySettings.get_settings()
+
+    # ── Profile form POST ─────────────────────────────────────────────────────
+    if request.method == 'POST' and request.POST.get('action') == 'profile':
         user.first_name = request.POST.get('first_name', user.first_name)
         user.last_name  = request.POST.get('last_name',  user.last_name)
         user.phone      = request.POST.get('phone',      user.phone)
@@ -103,12 +99,103 @@ def profile(request):
         if request.FILES.get('profile_photo'):
             user.profile_photo = request.FILES['profile_photo']
         user.save(update_fields=[
-            'first_name', 'last_name', 'phone', 'city',
-            'address', 'bio', 'website', 'profile_photo',
+            'first_name','last_name','phone','city',
+            'address','bio','website','profile_photo',
         ])
         messages.success(request, 'Profile updated successfully.')
-        return redirect('profile')
-    return render(request, 'accounts/profile.html')
+        return redirect(reverse('dashboard') + '#profile')
+
+    # ── Loyalty withdrawal POST ───────────────────────────────────────────────
+    if request.method == 'POST' and request.POST.get('action') == 'withdrawal':
+        quarter = request.POST.get('quarter', 'Q1')
+        pts = float(request.POST.get('points', 0))
+        if pts > 0 and float(user.avon_points) >= pts:
+            pay_date = date.today() + timedelta(days=settings.payment_days)
+            AvonPointTransaction.objects.create(
+                user=user, transaction_type='withdrawal',
+                points=pts, quarter=quarter, status='pending',
+                min_execution_date=pay_date,
+                description=f"Withdrawal of {pts} T&TG Loyalty Points ({quarter})"
+            )
+            Notification.notify(
+                'sell_order',
+                f"Loyalty Points Withdrawal — {user.get_full_name() or user.username}",
+                f"User {user.unique_id} requested withdrawal of {pts} points ({quarter}). Payment due: {pay_date}",
+                '/analytics/'
+            )
+            messages.success(request, f'Withdrawal of {pts} points submitted. Payment by {pay_date.strftime("%d %b %Y")}.')
+        else:
+            messages.error(request, 'Insufficient points or invalid amount.')
+        return redirect(reverse('dashboard') + '#loyalty')
+
+    # ── User Dashboard data ───────────────────────────────────────────────────
+    recent_orders       = Order.objects.filter(buyer=user).order_by('-created_at')[:5]
+    recent_transactions = AvonPointTransaction.objects.filter(user=user).order_by('-created_at')[:5]
+    total_orders        = Order.objects.filter(buyer=user).count()
+    pending_orders      = Order.objects.filter(buyer=user, status='pending').count()
+
+    # ── Loyalty data ──────────────────────────────────────────────────────────
+    transactions  = AvonPointTransaction.objects.filter(user=user).order_by('-created_at')
+    earned_txns   = transactions.filter(transaction_type__startswith='earn_')
+    referral_txns = transactions.filter(transaction_type='earn_referral')
+    withdraw_txns = transactions.filter(transaction_type='withdrawal')
+    quarters      = ['Q1','Q2','Q3','Q4']
+
+    ctx = {
+        'user': user, 'settings': settings,
+        # dashboard
+        'recent_orders': recent_orders, 'recent_transactions': recent_transactions,
+        'total_orders': total_orders, 'pending_orders': pending_orders,
+        'loyalty_settings': settings,
+        # loyalty
+        'transactions': transactions, 'earned_txns': earned_txns,
+        'referral_txns': referral_txns, 'withdraw_txns': withdraw_txns,
+        'quarters': quarters,
+    }
+
+    # ── Analytics (staff only) ────────────────────────────────────────────────
+    if user.is_staff:
+        today           = timezone.now().date()
+        thirty_days_ago = today - timedelta(days=30)
+        orders_30d      = Order.objects.filter(created_at__date__gte=thirty_days_ago)
+
+        daily_sales = (
+            orders_30d.annotate(day=TruncDate('created_at'))
+            .values('day').annotate(total=Sum('total_price'), count=Count('id'))
+            .order_by('day')
+        )
+
+        notifs       = Notification.objects.all()[:100]
+        unread_count = Notification.objects.filter(is_read=False).count()
+
+        ctx.update({
+            'is_staff_view': True,
+            'total_revenue':        Order.objects.aggregate(s=Sum('total_price'))['s'] or 0,
+            'total_orders_all':     Order.objects.count(),
+            'avg_order_value':      Order.objects.aggregate(a=Avg('total_price'))['a'] or 0,
+            'total_customers':      CustomUser.objects.filter(orders__isnull=False).distinct().count(),
+            'total_points_issued':  AvonPointTransaction.objects.filter(
+                                        transaction_type__in=['earn_purchase','earn_referral']
+                                    ).aggregate(s=Sum('points'))['s'] or 0,
+            'pending_payouts':      AvonPointTransaction.objects.filter(status='pending').aggregate(s=Sum('points'))['s'] or 0,
+            'total_products_active': Product.objects.filter(is_active=True).count(),
+            'sales_labels':  [d['day'].strftime('%b %d') for d in daily_sales],
+            'sales_values':  [float(d['total'] or 0) for d in daily_sales],
+            'top_products':  Order.objects.values('product__name').annotate(revenue=Sum('total_price'), units=Sum('quantity')).order_by('-revenue')[:8],
+            'status_breakdown': Order.objects.values('status').annotate(count=Count('id')).order_by('-count'),
+            'payment_breakdown': Order.objects.values('payment_status').annotate(count=Count('id')).order_by('-count'),
+            'category_sales': Order.objects.values('product__category').annotate(revenue=Sum('total_price'), units=Sum('quantity')).order_by('-revenue'),
+            'country_breakdown': Order.objects.values('destination_country').annotate(count=Count('id'), revenue=Sum('total_price')).order_by('-revenue')[:6],
+            'notifs': notifs, 'unread_count': unread_count,
+        })
+
+    return render(request, 'accounts/dashboard.html', ctx)
+
+
+@login_required
+def profile(request):
+    """Redirect to unified dashboard #profile section."""
+    return redirect(reverse('dashboard') + '#profile')
 
 
 @login_required

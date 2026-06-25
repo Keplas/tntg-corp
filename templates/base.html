@@ -572,6 +572,23 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
       <a class="tg-mob-link" href="{% url 'home' %}">Home</a>
     </li>
 
+    {% if user.is_authenticated %}
+    <li class="tg-mob-li">
+      <button class="tg-mob-link tg-mob-toggle">
+        My Account <i class="fas fa-chevron-down tg-mob-caret"></i>
+      </button>
+      <div class="tg-mob-sub">
+        <a href="{% url 'dashboard' %}"         class="tg-mob-sub-item"><span class="tg-dd-ico">⚡</span>Dashboard</a>
+        <a href="{% url 'dashboard' %}#profile"  class="tg-mob-sub-item"><span class="tg-dd-ico">👤</span>My Profile</a>
+        <a href="{% url 'dashboard' %}#loyalty"  class="tg-mob-sub-item"><span class="tg-dd-ico">💰</span>Loyalty Points</a>
+        <a href="{% url 'my_orders' %}"          class="tg-mob-sub-item"><span class="tg-dd-ico">📦</span>My Orders</a>
+        {% if user.is_staff %}
+        <a href="{% url 'dashboard' %}#analytics" class="tg-mob-sub-item"><span class="tg-dd-ico">📊</span>Analytics</a>
+        {% endif %}
+      </div>
+    </li>
+    {% endif %}
+
     <!-- Shop -->
     <li class="tg-mob-li">
       <button class="tg-mob-link tg-mob-toggle">
