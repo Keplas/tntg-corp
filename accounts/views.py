@@ -4,6 +4,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
+from django.db.models import Sum
 from datetime import timedelta, date
 from .models import CustomUser, AvonPointTransaction
 from marketplace.models import Order
@@ -40,6 +41,33 @@ def register(request):
             user.profile_photo = request.FILES['profile_photo']
             user.save(update_fields=['profile_photo'])
 
+        # Send email verification
+        import secrets, hashlib
+        from django.core.mail import send_mail
+        from django.conf import settings as djsettings
+        token = secrets.token_urlsafe(32)
+        user.email_verify_token = hashlib.sha256(token.encode()).hexdigest()
+        user.save(update_fields=['email_verify_token'])
+        verify_url = request.build_absolute_uri(
+            reverse('verify_email', kwargs={'token': token})
+        )
+        try:
+            send_mail(
+                subject='Verify your T&TG Trade Corp email',
+                message=(
+                    f'Hi {user.first_name or user.username},\n\n'
+                    f'Welcome to T&TG Trade Corp! Please verify your email:\n\n'
+                    f'{verify_url}\n\n'
+                    f'Your unique ID is: {user.unique_id}\n\n'
+                    f'If you did not create this account, ignore this email.\n\nT&TG Trade Corp'
+                ),
+                from_email=getattr(djsettings, 'DEFAULT_FROM_EMAIL', ''),
+                recipient_list=[user.email],
+                fail_silently=True,
+            )
+        except Exception:
+            pass
+
         Notification.notify(
             'registration',
             f"New User Registered: {user.get_full_name() or user.username}",
@@ -51,21 +79,65 @@ def register(request):
         )
 
         login(request, user, backend="accounts.backends.FlexAuthBackend")
-        messages.success(request, f'Welcome to T&TG Trade Corp! Your ID is {user.unique_id}.')
+        messages.success(request, f'Welcome to T&TG Trade Corp! Your ID is {user.unique_id}. Check your email to verify your account.')
         return redirect('dashboard')
     return render(request, 'accounts/register.html')
 
 
 def login_view(request):
     if request.method == 'POST':
+        from django.conf import settings as djsettings
         identifier = request.POST.get('username', '').strip()
         password   = request.POST.get('password', '')
+
+        # Find user object for lockout tracking
+        user_obj = None
+        for lookup in ['username__iexact', 'email__iexact', 'phone']:
+            try:
+                user_obj = CustomUser.objects.get(**{lookup: identifier})
+                break
+            except (CustomUser.DoesNotExist, CustomUser.MultipleObjectsReturned):
+                pass
+
+        # Check lockout
+        if user_obj and user_obj.locked_until:
+            if timezone.now() < user_obj.locked_until:
+                remaining = int((user_obj.locked_until - timezone.now()).total_seconds() // 60) + 1
+                messages.error(request, f'Account locked. Try again in {remaining} minute(s).')
+                return render(request, 'accounts/login.html')
+            else:
+                user_obj.login_attempts = 0
+                user_obj.locked_until   = None
+                user_obj.save(update_fields=['login_attempts', 'locked_until'])
+
         user = authenticate(request, username=identifier, password=password)
+
         if user:
-            login(request, user, backend="accounts.backends.FlexAuthBackend")
+            user.login_attempts = 0
+            user.locked_until   = None
+            user.save(update_fields=['login_attempts', 'locked_until'])
+            login(request, user, backend='accounts.backends.FlexAuthBackend')
             return redirect(request.GET.get('next', 'dashboard'))
-        messages.error(request, 'Invalid username, email or password.')
+
+        # Failed attempt
+        if user_obj:
+            user_obj.login_attempts += 1
+            max_att     = getattr(djsettings, 'MAX_LOGIN_ATTEMPTS', 5)
+            lockout_min = getattr(djsettings, 'LOCKOUT_MINUTES', 30)
+            if user_obj.login_attempts >= max_att:
+                from datetime import timedelta as td
+                user_obj.locked_until = timezone.now() + td(minutes=lockout_min)
+                user_obj.save(update_fields=['login_attempts', 'locked_until'])
+                messages.error(request, f'Too many failed attempts. Account locked for {lockout_min} minutes.')
+            else:
+                left = max_att - user_obj.login_attempts
+                user_obj.save(update_fields=['login_attempts'])
+                messages.error(request, f'Invalid credentials. {left} attempt(s) left before lockout.')
+        else:
+            messages.error(request, 'Invalid username/email or password.')
+
     return render(request, 'accounts/login.html')
+
 
 
 @login_required
@@ -107,26 +179,84 @@ def dashboard(request):
 
     # ── Loyalty withdrawal POST ───────────────────────────────────────────────
     if request.method == 'POST' and request.POST.get('action') == 'withdrawal':
+        from django.contrib.auth.hashers import check_password as chk_pw
+        from django.core.mail import send_mail
+        from django.conf import settings as djsettings
+
         quarter = request.POST.get('quarter', 'Q1')
-        pts = float(request.POST.get('points', 0))
-        if pts > 0 and float(user.avon_points) >= pts:
-            pay_date = date.today() + timedelta(days=settings.payment_days)
-            AvonPointTransaction.objects.create(
-                user=user, transaction_type='withdrawal',
-                points=pts, quarter=quarter, status='pending',
-                min_execution_date=pay_date,
-                description=f"Withdrawal of {pts} T&TG Loyalty Points ({quarter})"
-            )
-            Notification.notify(
-                'sell_order',
-                f"Loyalty Points Withdrawal — {user.get_full_name() or user.username}",
-                f"User {user.unique_id} requested withdrawal of {pts} points ({quarter}). Payment due: {pay_date}",
-                '/analytics/'
-            )
-            messages.success(request, f'Withdrawal of {pts} points submitted. Payment by {pay_date.strftime("%d %b %Y")}.')
-        else:
+        pts     = float(request.POST.get('points', 0))
+        pin     = request.POST.get('withdrawal_pin', '').strip()
+
+        # Require PIN to be set
+        if not user.withdrawal_pin_set:
+            messages.error(request, 'Please set a withdrawal PIN before making withdrawals.')
+            return redirect(reverse('set_withdrawal_pin'))
+
+        # Verify PIN
+        if not chk_pw(pin, user.withdrawal_pin):
+            messages.error(request, 'Incorrect withdrawal PIN. Please try again.')
+            return redirect(reverse('dashboard') + '#loyalty')
+
+        # Check sufficient balance
+        if pts <= 0 or float(user.avon_points) < pts:
             messages.error(request, 'Insufficient points or invalid amount.')
+            return redirect(reverse('dashboard') + '#loyalty')
+
+        # Check daily withdrawal limit
+        from datetime import datetime
+        today_start = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        today_total = AvonPointTransaction.objects.filter(
+            user=user, transaction_type='withdrawal',
+            created_at__gte=today_start
+        ).aggregate(s=Sum('points'))['s'] or 0
+        daily_limit = float(user.daily_withdrawal_limit)
+        if float(today_total) + pts > daily_limit:
+            remaining_today = max(0, daily_limit - float(today_total))
+            messages.error(request,
+                f'Daily withdrawal limit is ${daily_limit:.0f}. '
+                f'You have ${remaining_today:.2f} remaining today.')
+            return redirect(reverse('dashboard') + '#loyalty')
+
+        # All checks passed — create withdrawal
+        pay_date = date.today() + timedelta(days=settings.payment_days)
+        AvonPointTransaction.objects.create(
+            user=user, transaction_type='withdrawal',
+            points=pts, quarter=quarter, status='pending',
+            min_execution_date=pay_date,
+            description=f"Withdrawal of {pts} T&TG Loyalty Points ({quarter})"
+        )
+        Notification.notify(
+            'sell_order',
+            f"Loyalty Points Withdrawal — {user.get_full_name() or user.username}",
+            f"User {user.unique_id} requested withdrawal of {pts} points ({quarter}). Payment due: {pay_date}",
+            '/analytics/'
+        )
+
+        # Email confirmation to user
+        try:
+            send_mail(
+                subject='Withdrawal Request Confirmed — T&TG Trade Corp',
+                message=(
+                    f'Hi {user.first_name or user.username},\n\n'
+                    f'Your withdrawal request has been received:\n\n'
+                    f'  Amount: {pts} T&TG Loyalty Points (≈ ${pts:.2f} USD)\n'
+                    f'  Quarter: {quarter}\n'
+                    f'  Payment due: {pay_date.strftime("%d %B %Y")}\n\n'
+                    f'If you did not request this withdrawal, contact us immediately.\n\n'
+                    f'T&TG Trade Corp | {user.unique_id}'
+                ),
+                from_email=getattr(djsettings, 'DEFAULT_FROM_EMAIL', ''),
+                recipient_list=[user.email],
+                fail_silently=True,
+            )
+        except Exception:
+            pass
+
+        messages.success(request,
+            f'Withdrawal of {pts} points submitted. Payment by {pay_date.strftime("%d %b %Y")}. '
+            f'Confirmation sent to {user.email}.')
         return redirect(reverse('dashboard') + '#loyalty')
+
 
     # ── User Dashboard data ───────────────────────────────────────────────────
     recent_orders       = Order.objects.filter(buyer=user).order_by('-created_at')[:5]
@@ -269,3 +399,129 @@ def public_profile(request, username):
         'profile_user': profile_user,
         'products':     products,
     })
+
+
+# ── Forgot / Reset password ────────────────────────────────────────────────────
+
+def forgot_password(request):
+    if request.method == 'POST':
+        email = request.POST.get('email', '').strip()
+        try:
+            user = CustomUser.objects.get(email__iexact=email)
+            import secrets, hashlib
+            from datetime import timedelta
+            from django.core.mail import send_mail
+            from django.conf import settings as djsettings
+
+            token = secrets.token_urlsafe(32)
+            user.password_reset_token   = hashlib.sha256(token.encode()).hexdigest()
+            user.password_reset_expires = timezone.now() + timedelta(
+                hours=getattr(djsettings, 'RESET_TOKEN_HOURS', 24)
+            )
+            user.save(update_fields=['password_reset_token', 'password_reset_expires'])
+
+            reset_url = request.build_absolute_uri(
+                reverse('reset_password', kwargs={'token': token})
+            )
+            try:
+                send_mail(
+                    subject='Reset your T&TG password',
+                    message=(
+                        f'Hi {user.first_name or user.username},\n\n'
+                        f'Click the link below to reset your password.\n'
+                        f'This link expires in 24 hours.\n\n{reset_url}\n\n'
+                        f'If you did not request this, ignore this email.\n\nT&TG Trade Corp'
+                    ),
+                    from_email=getattr(djsettings, 'DEFAULT_FROM_EMAIL', ''),
+                    recipient_list=[user.email],
+                    fail_silently=True,
+                )
+            except Exception:
+                pass
+        except CustomUser.DoesNotExist:
+            pass  # Don't reveal if email exists
+
+        messages.success(request, 'If that email exists we\'ve sent a reset link. Check your inbox.')
+        return redirect('forgot_password')
+    return render(request, 'accounts/forgot_password.html')
+
+
+def reset_password(request, token):
+    import hashlib
+    token_hash = hashlib.sha256(token.encode()).hexdigest()
+    try:
+        user = CustomUser.objects.get(
+            password_reset_token=token_hash,
+            password_reset_expires__gt=timezone.now()
+        )
+    except CustomUser.DoesNotExist:
+        messages.error(request, 'This reset link is invalid or has expired.')
+        return redirect('forgot_password')
+
+    if request.method == 'POST':
+        pw1 = request.POST.get('password', '')
+        pw2 = request.POST.get('confirm_password', '')
+        if pw1 != pw2:
+            messages.error(request, 'Passwords do not match.')
+        elif len(pw1) < 8:
+            messages.error(request, 'Password must be at least 8 characters.')
+        else:
+            user.set_password(pw1)
+            user.password_reset_token   = ''
+            user.password_reset_expires = None
+            user.login_attempts         = 0
+            user.locked_until           = None
+            user.save(update_fields=[
+                'password', 'password_reset_token', 'password_reset_expires',
+                'login_attempts', 'locked_until'
+            ])
+            messages.success(request, 'Password reset successfully. You can now sign in.')
+            return redirect('login')
+
+    return render(request, 'accounts/reset_password.html', {'token': token})
+
+
+# ── Email verification ──────────────────────────────────────────────────────────
+
+def verify_email(request, token):
+    import hashlib
+    token_hash = hashlib.sha256(token.encode()).hexdigest()
+    try:
+        user = CustomUser.objects.get(email_verify_token=token_hash)
+        user.email_verified      = True
+        user.email_verify_token  = ''
+        user.save(update_fields=['email_verified', 'email_verify_token'])
+        messages.success(request, 'Email verified! Your account is now fully active.')
+    except CustomUser.DoesNotExist:
+        messages.error(request, 'This verification link is invalid or already used.')
+    return redirect('dashboard')
+
+
+# ── Withdrawal PIN ──────────────────────────────────────────────────────────────
+
+@login_required
+def set_withdrawal_pin(request):
+    user = request.user
+    if request.method == 'POST':
+        from django.contrib.auth.hashers import make_password, check_password as chk_pw
+        action = request.POST.get('action')
+
+        if action == 'set_pin':
+            pin     = request.POST.get('pin', '').strip()
+            pin2    = request.POST.get('pin2', '').strip()
+            current = request.POST.get('current_pin', '').strip()
+
+            if not pin.isdigit() or len(pin) != 4:
+                messages.error(request, 'PIN must be exactly 4 digits.')
+            elif pin != pin2:
+                messages.error(request, 'PINs do not match.')
+            elif user.withdrawal_pin_set and not chk_pw(current, user.withdrawal_pin):
+                messages.error(request, 'Current PIN is incorrect.')
+            else:
+                user.withdrawal_pin     = make_password(pin)
+                user.withdrawal_pin_set = True
+                user.save(update_fields=['withdrawal_pin', 'withdrawal_pin_set'])
+                messages.success(request, 'Withdrawal PIN set successfully.')
+                return redirect(reverse('dashboard') + '#loyalty')
+
+    return render(request, 'accounts/set_pin.html')

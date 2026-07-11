@@ -1,30 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
 {% block title %}{{ product.name }} — T&TG Online Shopping Platform{% endblock %}
-{% block meta_description %}{{ product.name }} — {{ product.get_category_display }} available on T&TG Trade Corp. {{ product.description|default:"Shop now and earn T&TG Loyalty Points on every purchase."|truncatechars:140 }}{% endblock %}
-{% block og_title %}{{ product.name }} — T&TG Trade Corp{% endblock %}
-{% block og_description %}{{ product.description|default:"Shop quality products across Canada, Uganda and Kenya. Earn loyalty points on every order."|truncatechars:160 }}{% endblock %}
-{% block og_type %}product{% endblock %}
-{% block og_image %}{% if product.safe_image_url %}{{ product.safe_image_url }}{% else %}https://tntgcorp.com{% static 'images/logo.jpg' %}{% endif %}{% endblock %}
-
-{% block extra_head %}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org/",
-  "@type": "Product",
-  "name": {{ product.name|escapejs }},
-  "image": "{% if product.safe_image_url %}{{ product.safe_image_url }}{% endif %}",
-  "description": {{ product.description|default:product.name|escapejs }},
-  "offers": {
-    "@type": "Offer",
-    "url": "https://tntgcorp.com{{ request.path }}",
-    "priceCurrency": "USD",
-    "price": "{{ product.price }}",
-    "availability": "{% if product.is_active %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}"
-  }
-}
-</script>
-{% endblock %}
 
 {% block content %}
 <div class="page-header">
@@ -45,14 +20,11 @@
 
       <!-- Image -->
       <div class="col-lg-6">
-        <div style="border-radius:var(--radius);overflow:hidden;background:linear-gradient(135deg,#0d1f35,#1a3a5c);aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;position:relative">
+        <div style="border-radius:var(--radius);overflow:hidden;background:linear-gradient(135deg,#0d1f35,#1a3a5c);aspect-ratio:4/3;display:flex;align-items:center;justify-content:center">
           {% if product.safe_image_url %}
           <img src="{{ product.safe_image_url }}" alt="{{ product.name }}"
                style="width:100%;height:100%;object-fit:cover"
-               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-          <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:8rem;opacity:.3;position:absolute;inset:0">
-            {% if product.category == 'clothing' %}👔{% elif product.category == 'shoes' %}👟{% elif product.category == 'watches' %}⌚{% elif product.category == 'coffee' %}☕{% else %}📦{% endif %}
-          </div>
+               onerror="this.parentElement.innerHTML='<div style=\'font-size:8rem;opacity:.3\'>{% if product.category == \"clothing\" %}👔{% elif product.category == \"shoes\" %}👟{% elif product.category == \"watches\" %}⌚{% elif product.category == \"coffee\" %}☕{% else %}📦{% endif %}</div>'">
           {% else %}
           <div style="font-size:8rem;opacity:.3">
             {% if product.category == 'clothing' %}👔{% elif product.category == 'shoes' %}👟{% elif product.category == 'watches' %}⌚{% elif product.category == 'coffee' %}☕{% else %}📦{% endif %}
@@ -144,8 +116,8 @@
         </div>
         {% endif %}
 
-        {% if product.safe_video_url %}
-        <a href="{{ product.safe_video_url }}" target="_blank" class="btn btn-outline-gold btn-sm mb-3">
+        {% if product.video_url %}
+        <a href="{{ product.video_url }}" target="_blank" class="btn btn-outline-gold btn-sm mb-3">
           <i class="fas fa-play me-2"></i>Watch Product Video
         </a>
         {% endif %}

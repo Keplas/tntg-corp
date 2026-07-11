@@ -3,13 +3,15 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# ── Security ───────────────────────────────────────────────────────────────────
 SECRET_KEY = os.environ.get(
     'SECRET_KEY',
     'django-insecure-tntg-trade-corp-2026-secure-key-change-in-production'
 )
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
+# ── Apps ───────────────────────────────────────────────────────────────────────
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -26,6 +28,7 @@ INSTALLED_APPS = [
     'training',
 ]
 
+# ── Middleware ─────────────────────────────────────────────────────────────────
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -58,6 +61,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'tntg_corp.wsgi.application'
 
+# ── Database ───────────────────────────────────────────────────────────────────
 DATABASE_URL = os.environ.get('DATABASE_URL', '')
 if DATABASE_URL:
     import dj_database_url
@@ -70,11 +74,13 @@ else:
         }
     }
 
+# ── Auth ───────────────────────────────────────────────────────────────────────
 AUTH_USER_MODEL = 'accounts.CustomUser'
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/accounts/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 
+# Allows login with username, email, or phone number.
 AUTHENTICATION_BACKENDS = [
     'accounts.backends.FlexAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
@@ -87,20 +93,22 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+# ── Localisation ───────────────────────────────────────────────────────────────
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+# ── Static Files ───────────────────────────────────────────────────────────────
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# ── Media / Image Storage ──────────────────────────────────────────────────────
 MEDIA_ROOT = BASE_DIR / 'media'
-MEDIA_URL  = '/media/'
+MEDIA_URL = '/media/'
 
-# ── Cloudinary (set these 3 env vars on Render for persistent media uploads) ──
 CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME', '')
 CLOUDINARY_API_KEY    = os.environ.get('CLOUDINARY_API_KEY', '')
 CLOUDINARY_API_SECRET = os.environ.get('CLOUDINARY_API_SECRET', '')

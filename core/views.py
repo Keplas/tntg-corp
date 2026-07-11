@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import JsonResponse, HttpResponse
@@ -7,7 +6,7 @@ from django.utils import timezone
 from marketplace.models import Product
 from training.models import TrainingProgram, TVProgram
 from services.models import ContactInquiry, ForexRate
-from .models import Notification, LoyaltySettings, BlogPost
+from .models import Notification, LoyaltySettings
 
 OPERATION_COUNTRIES = [
     {'code': 'CA', 'name': 'Canada', 'flag': '🇨🇦'},
@@ -77,9 +76,9 @@ def coffee(request):
 
 @staff_member_required
 def notifications(request):
-    # Notifications now live as a section within the Analytics Dashboard —
-    # redirect old links/bookmarks straight there.
-    return redirect(reverse('analytics_dashboard') + '#notifications')
+    notifs       = Notification.objects.all()[:100]
+    unread_count = Notification.objects.filter(is_read=False).count()
+    return render(request, 'core/notifications.html', {'notifs': notifs, 'unread_count': unread_count})
 
 
 @staff_member_required
@@ -87,14 +86,14 @@ def mark_notification_read(request, pk):
     notif = get_object_or_404(Notification, pk=pk)
     notif.is_read = True
     notif.save()
-    return redirect(notif.link or (reverse('analytics_dashboard') + '#notifications'))
+    return redirect(notif.link or 'notifications')
 
 
 @staff_member_required
 def mark_all_read(request):
     Notification.objects.filter(is_read=False).update(is_read=True)
     messages.success(request, 'All notifications marked as read.')
-    return redirect(reverse('analytics_dashboard') + '#notifications')
+    return redirect('notifications')
 
 
 def notification_count(request):
@@ -230,11 +229,6 @@ def analytics_dashboard(request):
         .order_by('-revenue')[:6]
     )
 
-    # Notifications — now surfaced as a section within this dashboard
-    # rather than a separate top-level page (see notifications() below).
-    notifs       = Notification.objects.all()[:100]
-    unread_count = Notification.objects.filter(is_read=False).count()
-
     ctx = {
         'total_revenue': total_revenue,
         'total_orders': total_orders,
@@ -250,8 +244,6 @@ def analytics_dashboard(request):
         'category_sales': category_sales,
         'country_breakdown': country_breakdown,
         'total_products_active': Product.objects.filter(is_active=True).count(),
-        'notifs': notifs,
-        'unread_count': unread_count,
     }
     return render(request, 'core/analytics_dashboard.html', ctx)
 
@@ -264,46 +256,3 @@ def set_language(request):
     request.session['lang'] = lang
     next_url = request.GET.get('next') or request.META.get('HTTP_REFERER') or '/'
     return redirect(next_url)
-
-
-# ── Blog / News ────────────────────────────────────────────────────────────────
-
-def blog_list(request):
-    """Blog & News listing — filterable by category."""
-    category = request.GET.get('category', '')
-    posts = BlogPost.objects.filter(is_published=True)
-    if category:
-        posts = posts.filter(category=category)
-
-    featured  = BlogPost.objects.filter(is_published=True, is_featured=True).first()
-    categories = BlogPost.CATEGORY_CHOICES
-
-    # Simple manual pagination (10 per page)
-    from django.core.paginator import Paginator
-    paginator  = Paginator(posts, 9)
-    page_num   = request.GET.get('page', 1)
-    page_obj   = paginator.get_page(page_num)
-
-    return render(request, 'core/blog_list.html', {
-        'page_obj':   page_obj,
-        'featured':   featured,
-        'categories': categories,
-        'current_cat': category,
-    })
-
-
-def blog_detail(request, slug):
-    """Single blog post."""
-    post = get_object_or_404(BlogPost, slug=slug, is_published=True)
-
-    # Increment view count
-    BlogPost.objects.filter(pk=post.pk).update(views_count=post.views_count + 1)
-
-    related = BlogPost.objects.filter(
-        is_published=True, category=post.category
-    ).exclude(pk=post.pk)[:3]
-
-    return render(request, 'core/blog_detail.html', {
-        'post':    post,
-        'related': related,
-    })

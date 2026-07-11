@@ -8,28 +8,13 @@ or silently failing — so the rest of the checkout flow degrades gracefully
 until real credentials are added.
 
 Required environment variables (set these on Render, never commit them):
-    STRIPE_SECRET_KEY          — starts with sk_test_... or sk_live_...
-    STRIPE_PUBLISHABLE_KEY     — starts with pk_test_... or pk_live_...
-    STRIPE_WEBHOOK_SECRET      — starts with whsec_...
-    FLUTTERWAVE_CLIENT_ID      — UUID, from Flutterwave sandbox/live dashboard
-    FLUTTERWAVE_CLIENT_SECRET  — from the same dashboard page
-
-Note on Flutterwave: this targets the v4 API, which uses OAuth2
-(Client ID/Secret exchanged for a short-lived access token) rather than a
-static secret key — this is what Flutterwave's sandbox issues by default
-for new developer accounts as of mid-2026. v4 is public beta; if Flutterwave
-changes endpoint behaviour, the create/verify functions below are the
-isolated place to update.
-
-IMPORTANT — mobile money UX difference from card payments: unlike Stripe's
-hosted checkout (which redirects to a payment page), Flutterwave v4 mobile
-money sends a PUSH NOTIFICATION directly to the customer's phone. There is
-no redirect link — the customer must open that notification and approve on
-their device, then your app polls/checks the charge status. See
-payment_pending.html / the poll_payment_status view for how this is handled.
+    STRIPE_SECRET_KEY        — starts with sk_test_... or sk_live_...
+    STRIPE_PUBLISHABLE_KEY   — starts with pk_test_... or pk_live_...
+    STRIPE_WEBHOOK_SECRET    — starts with whsec_...
+    FLUTTERWAVE_SECRET_KEY   — starts with FLWSECK_TEST-... or FLWSECK-...
+    FLUTTERWAVE_PUBLIC_KEY   — starts with FLWPUBK_TEST-... or FLWPUBK-...
 """
 import os
-import time
 import requests
 from decimal import Decimal
 
@@ -37,18 +22,10 @@ STRIPE_SECRET_KEY      = os.environ.get('STRIPE_SECRET_KEY', '')
 STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLISHABLE_KEY', '')
 STRIPE_WEBHOOK_SECRET   = os.environ.get('STRIPE_WEBHOOK_SECRET', '')
 
-FLUTTERWAVE_CLIENT_ID     = os.environ.get('FLUTTERWAVE_CLIENT_ID', '')
-FLUTTERWAVE_CLIENT_SECRET = os.environ.get('FLUTTERWAVE_CLIENT_SECRET', '')
+FLUTTERWAVE_SECRET_KEY = os.environ.get('FLUTTERWAVE_SECRET_KEY', '')
+FLUTTERWAVE_PUBLIC_KEY = os.environ.get('FLUTTERWAVE_PUBLIC_KEY', '')
 
-# Sandbox base URL. Flutterwave's "Go Live" step issues a separate
-# production base URL — update this (or make it env-driven) when you
-# switch from sandbox to live credentials.
-FLUTTERWAVE_API_BASE  = 'https://developersandbox-api.flutterwave.com'
-FLUTTERWAVE_TOKEN_URL = 'https://idp.flutterwave.com/realms/flutterwave/protocol/openid-connect/token'
-
-# Simple in-process token cache — avoids re-authenticating on every request.
-# Lives only as long as the worker process; fine at this order volume.
-_flw_token_cache = {'token': None, 'expires_at': 0}
+FLUTTERWAVE_API_BASE = 'https://api.flutterwave.com/v3'
 
 
 def stripe_configured():
@@ -56,10 +33,8 @@ def stripe_configured():
 
 
 def flutterwave_configured():
-    return bool(FLUTTERWAVE_CLIENT_ID and FLUTTERWAVE_CLIENT_SECRET)
+    return bool(FLUTTERWAVE_SECRET_KEY)
 
-
-# ── Stripe (cards) ───────────────────────────────────────────────────
 
 def create_stripe_checkout_session(order, success_url, cancel_url):
     """
@@ -109,151 +84,56 @@ def verify_stripe_session(session_id):
         return False, ''
 
 
-# ── Flutterwave v4 (mobile money) ────────────────────────────────────
-
-def _get_flutterwave_token():
-    """Fetches (and caches) an OAuth2 access token via client_credentials grant."""
-    now = time.time()
-    if _flw_token_cache['token'] and _flw_token_cache['expires_at'] > now + 30:
-        return _flw_token_cache['token']
-    try:
-        resp = requests.post(FLUTTERWAVE_TOKEN_URL, data={
-            'client_id': FLUTTERWAVE_CLIENT_ID,
-            'client_secret': FLUTTERWAVE_CLIENT_SECRET,
-            'grant_type': 'client_credentials',
-        }, timeout=15)
-        data = resp.json()
-        token = data.get('access_token')
-        if not token:
-            return None
-        _flw_token_cache['token'] = token
-        _flw_token_cache['expires_at'] = now + int(data.get('expires_in', 600))
-        return token
-    except Exception:
-        return None
-
-
-def convert_currency(amount, from_currency, to_currency):
+def create_flutterwave_payment(order, redirect_url, customer_phone=''):
     """
-    Converts `amount` from `from_currency` to `to_currency` using the
-    ForexRate table (Services app — admin-editable at /admin or via the
-    Services > Forex Rates page).
-
-    Returns (converted_amount: Decimal|None, error: str|None). Deliberately
-    does NOT fall back to a guessed/default rate if one isn't found —
-    charging the wrong amount of real money is worse than blocking the
-    payment with a clear error.
-    """
-    if from_currency == to_currency:
-        return amount, None
-    from services.models import ForexRate
-    try:
-        rate_obj = ForexRate.objects.get(from_currency=from_currency, to_currency=to_currency)
-        return amount * rate_obj.rate, None
-    except ForexRate.DoesNotExist:
-        return None, (
-            f'No exchange rate is configured for {from_currency}/{to_currency}. '
-            f'Please contact support, or an admin can add this rate under Forex Rates.'
-        )
-
-
-def create_flutterwave_payment(order, customer_phone, local_amount, country_code='256', network='MTN', currency='UGX'):
-    """
-    Initiates a mobile money charge via Flutterwave's v4 orchestrator
-    endpoint (single call — creates the customer, payment method, and
-    charge together).
-
-    IMPORTANT: `local_amount` must already be converted into `currency`
-    by the caller (see convert_currency() above) — this function does NOT
-    convert order.total_price itself, since silently treating a USD total
-    as a UGX/KES amount was the exact bug that caused wildly wrong charges.
-
-    Unlike Stripe, there's no redirect link: the customer gets a push
-    notification on their phone and must approve there. Returns
-    (charge_id, instruction_note, error) — charge_id is used later to
-    poll/verify status; instruction_note is the customer-facing text
-    Flutterwave returns describing how to complete the payment (this is
-    the ONLY way to see what to do in sandbox mode, since no real push
-    notification is sent to a real phone there).
+    Initiates a Flutterwave payment (supports MTN/Airtel Money, M-Pesa, cards).
+    Returns (payment_link, error).
     """
     if not flutterwave_configured():
-        return None, None, 'Mobile Money payments are not yet configured. Please contact support or choose Card.'
-
-    token = _get_flutterwave_token()
-    if not token:
-        return None, None, 'Could not authenticate with the Mobile Money provider. Please try again shortly.'
+        return None, 'Mobile Money payments are not yet configured. Please contact support or choose Card.'
 
     headers = {
-        'Authorization': f'Bearer {token}',
+        'Authorization': f'Bearer {FLUTTERWAVE_SECRET_KEY}',
         'Content-Type': 'application/json',
-        'X-Trace-Id': f'tntg-order-{order.pk}-{int(time.time())}',
-        'X-Idempotency-Key': f'tntg-order-{order.pk}-{int(time.time())}',
     }
-    first_name = order.buyer.first_name or order.buyer.username
-    last_name  = order.buyer.last_name or ''
-
     payload = {
-        'amount': float(local_amount),
-        'currency': currency,
-        'reference': f'TNTG-ORDER-{order.pk}-{int(time.time())}',
-        'payment_method': {
-            'type': 'mobile_money',
-            'mobile_money': {
-                'country_code': country_code,
-                'network': network,
-                'phone_number': customer_phone,
-            },
-        },
+        'tx_ref': f'TNTG-ORDER-{order.pk}-{order.created_at.timestamp():.0f}',
+        'amount': str(order.total_price),
+        'currency': 'USD',
+        'redirect_url': redirect_url,
         'customer': {
             'email': order.buyer.email or 'no-reply@tntgcorp.com',
-            'name': {'first': first_name, 'last': last_name},
-            'phone': {'country_code': country_code, 'number': customer_phone},
+            'phonenumber': customer_phone,
+            'name': order.buyer.get_full_name() or order.buyer.username,
         },
+        'customizations': {
+            'title': 'T&TG Trade Corp',
+            'description': f'Order #{order.pk} — {order.product.name}',
+        },
+        'meta': {'order_id': str(order.pk)},
     }
 
     try:
-        resp = requests.post(f'{FLUTTERWAVE_API_BASE}/orchestration/direct-charges',
-                              json=payload, headers=headers, timeout=20)
-        data = (resp.json().get('data') or {})
-        charge_id = data.get('id')
-        if not charge_id:
-            return None, None, resp.json().get('message', 'Payment initiation failed. Please check the phone number and try again.')
-
-        # Extract the customer-facing instruction text — in sandbox this is
-        # the ONLY way to see what to do next (no real push notification is
-        # sent to a real phone in test mode). In live mode, this is the same
-        # text that accompanies the real push notification.
-        next_action = data.get('next_action') or {}
-        instruction_note = (
-            (next_action.get('payment_instruction') or {}).get('note')
-            or (next_action.get('payment_instruction') or {}).get('message')
-            or None
-        )
-        return str(charge_id), instruction_note, None
+        resp = requests.post(f'{FLUTTERWAVE_API_BASE}/payments', json=payload, headers=headers, timeout=15)
+        data = resp.json()
+        if data.get('status') == 'success':
+            return data['data']['link'], None
+        return None, data.get('message', 'Payment initiation failed.')
     except Exception as e:
-        return None, None, f'Payment setup failed: {e}'
+        return None, f'Payment setup failed: {e}'
 
 
-def verify_flutterwave_transaction(charge_id):
-    """
-    Checks a Flutterwave v4 charge's status by ID.
-    Returns (paid: bool, reference: str, raw_status: str).
-    Defensive about exact field naming since v4 is in public beta —
-    treats any status containing "success" (case-insensitive) as paid.
-    """
-    if not flutterwave_configured() or not charge_id:
-        return False, '', ''
-
-    token = _get_flutterwave_token()
-    if not token:
-        return False, '', ''
-
-    headers = {'Authorization': f'Bearer {token}', 'Content-Type': 'application/json'}
+def verify_flutterwave_transaction(transaction_id):
+    """Verify a Flutterwave transaction by its ID. Returns (paid: bool, reference: str)."""
+    if not flutterwave_configured():
+        return False, ''
+    headers = {'Authorization': f'Bearer {FLUTTERWAVE_SECRET_KEY}'}
     try:
-        resp = requests.get(f'{FLUTTERWAVE_API_BASE}/charges/{charge_id}', headers=headers, timeout=15)
-        data = (resp.json().get('data') or {})
-        status = str(data.get('status', '')).lower()
-        paid = 'success' in status or status == 'completed'
-        return paid, str(data.get('id', charge_id)), status
+        resp = requests.get(f'{FLUTTERWAVE_API_BASE}/transactions/{transaction_id}/verify',
+                             headers=headers, timeout=15)
+        data = resp.json()
+        if data.get('status') == 'success' and data['data']['status'] == 'successful':
+            return True, str(data['data']['id'])
+        return False, ''
     except Exception:
-        return False, '', ''
+        return False, ''

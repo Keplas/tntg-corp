@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Notification, LoyaltySettings, BlogPost
+from .models import Notification, LoyaltySettings
 
 
 @admin.register(Notification)
@@ -40,19 +40,3 @@ class LoyaltySettingsAdmin(admin.ModelAdmin):
 
     def has_delete_permission(self, request, obj=None):
         return False
-
-
-@admin.register(BlogPost)
-class BlogPostAdmin(admin.ModelAdmin):
-    list_display  = ('title', 'category', 'author', 'is_published', 'is_featured', 'views_count', 'published_at')
-    list_filter   = ('is_published', 'is_featured', 'category')
-    search_fields = ('title', 'excerpt', 'content')
-    prepopulated_fields = {'slug': ('title',)}
-    list_editable = ('is_published', 'is_featured')
-    ordering      = ('-published_at', '-created_at')
-    fieldsets = (
-        (None, {'fields': ('title', 'slug', 'category', 'author')}),
-        ('Content', {'fields': ('excerpt', 'content')}),
-        ('Cover Image', {'fields': ('cover_image', 'cover_image_url')}),
-        ('Publishing', {'fields': ('is_published', 'is_featured', 'published_at')}),
-    )

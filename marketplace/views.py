@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from django.urls import reverse
-from django.http import JsonResponse
 from datetime import timedelta, date
 from .models import Product, Order, ProductReview
 from accounts.models import AvonPointTransaction
@@ -174,16 +173,10 @@ def market_select(request):
 def payment_select(request, pk):
     """Let the buyer choose a payment method, or pay later (cash/manual)."""
     order = get_object_or_404(Order, pk=pk, buyer=request.user)
-
-    ugx_amount, _ = payments.convert_currency(order.total_price, 'USD', 'UGX')
-    kes_amount, _ = payments.convert_currency(order.total_price, 'USD', 'KES')
-
     return render(request, 'marketplace/payment_select.html', {
         'order': order,
         'stripe_ready': payments.stripe_configured(),
         'flutterwave_ready': payments.flutterwave_configured(),
-        'ugx_amount': ugx_amount,
-        'kes_amount': kes_amount,
     })
 
 
@@ -206,96 +199,38 @@ def payment_start_card(request, pk):
 
 @login_required
 def payment_start_mobile(request, pk):
-    """
-    Initiates a Flutterwave mobile money charge. Unlike card payments,
-    there's no redirect link — the customer gets a push notification on
-    their phone and must approve there, so we send them to a waiting
-    page that polls for the result instead.
-    """
     order = get_object_or_404(Order, pk=pk, buyer=request.user)
     if request.method != 'POST':
         return redirect('payment_select', pk=order.pk)
 
-    phone        = request.POST.get('phone', '').strip()
-    country_code = request.POST.get('country_code', '256').strip()  # default Uganda
-    network      = request.POST.get('network', 'MTN').strip()
-    currency     = {'256': 'UGX', '254': 'KES'}.get(country_code, 'UGX')
-
+    phone = request.POST.get('phone', '').strip()
     if not phone:
         messages.error(request, 'Please enter a phone number for Mobile Money payment.')
         return redirect('payment_select', pk=order.pk)
 
-    # Orders are priced in USD; mobile money must charge in local currency.
-    # Convert here rather than ever passing the USD total directly —
-    # silently mismatching currencies would charge wildly the wrong amount.
-    local_amount, conv_error = payments.convert_currency(order.total_price, 'USD', currency)
-    if conv_error:
-        messages.error(request, conv_error)
-        return redirect('payment_select', pk=order.pk)
-
-    charge_id, instruction_note, error = payments.create_flutterwave_payment(
-        order, customer_phone=phone, local_amount=local_amount,
-        country_code=country_code, network=network, currency=currency
-    )
+    redirect_url = request.build_absolute_uri(reverse('payment_success', args=[order.pk]))
+    link, error = payments.create_flutterwave_payment(order, redirect_url, customer_phone=phone)
     if error:
         messages.error(request, error)
         return redirect('payment_select', pk=order.pk)
 
     order.payment_method = 'mobile_money'
     order.payment_status = 'pending'
-    order.payment_reference = charge_id  # store the charge ID for polling/verification
-    order.save(update_fields=['payment_method', 'payment_status', 'payment_reference'])
-
-    # Stash the instruction text in session so payment_pending.html can show
-    # it — this is the actual customer-facing guidance from Flutterwave
-    # (in sandbox, this is the ONLY way to see what to do; no real push
-    # notification is sent to a real phone in test mode).
-    request.session[f'flw_instruction_{order.pk}'] = instruction_note
-
-    return redirect('payment_pending', pk=order.pk)
-
-
-@login_required
-def payment_pending(request, pk):
-    """Waiting page for mobile money — tells the customer to check their
-    phone for the push notification, and polls the server for status."""
-    order = get_object_or_404(Order, pk=pk, buyer=request.user)
-    instruction_note = request.session.get(f'flw_instruction_{order.pk}', '')
-    return render(request, 'marketplace/payment_pending.html', {
-        'order': order,
-        'instruction_note': instruction_note,
-    })
-
-
-@login_required
-def poll_payment_status(request, pk):
-    """JSON endpoint — payment_pending.html polls this every few seconds."""
-    order = get_object_or_404(Order, pk=pk, buyer=request.user)
-
-    if order.payment_status == 'paid':
-        return JsonResponse({'status': 'paid'})
-
-    if order.payment_method == 'mobile_money' and order.payment_reference:
-        paid, ref, raw_status = payments.verify_flutterwave_transaction(order.payment_reference)
-        if paid:
-            order.payment_status = 'paid'
-            order.paid_at = timezone.now()
-            order.save(update_fields=['payment_status', 'paid_at'])
-            send_order_confirmation_email(order)
-            return JsonResponse({'status': 'paid'})
-        return JsonResponse({'status': 'pending', 'raw_status': raw_status})
-
-    return JsonResponse({'status': order.payment_status})
+    order.save(update_fields=['payment_method', 'payment_status'])
+    return redirect(link)
 
 
 @login_required
 def payment_success(request, pk):
-    """Landing page after returning from Stripe's hosted checkout."""
+    """Landing page after returning from Stripe or Flutterwave — verifies payment."""
     order = get_object_or_404(Order, pk=pk, buyer=request.user)
 
     if order.payment_method == 'card':
         session_id = request.GET.get('session_id', '')
         paid, ref = payments.verify_stripe_session(session_id) if session_id else (False, '')
+    elif order.payment_method == 'mobile_money':
+        tx_id = request.GET.get('transaction_id', '')
+        paid, ref = payments.verify_flutterwave_transaction(tx_id) if tx_id else (False, '')
     else:
         paid, ref = False, ''
 

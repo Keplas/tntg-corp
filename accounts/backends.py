@@ -1,7 +1,13 @@
 """
-Flexible authentication backend for T&TG Trade Corp.
-Accepts username, email, or phone — tried independently so a collision
-between one user's fields and another's can never block login.
+Custom authentication backend for T&TG Trade Corp.
+
+Allows users to sign in with any of:
+  - username  (case-insensitive)
+  - email     (case-insensitive)
+  - phone     (exact match)
+
+Each field is tried independently so a collision between one user's
+username and another user's phone/email can never silently block login.
 """
 from django.contrib.auth.backends import ModelBackend
 from .models import CustomUser
@@ -16,28 +22,30 @@ class FlexAuthBackend(ModelBackend):
         identifier = username.strip()
         user = None
 
-        # 1. Try username (case-insensitive)
-        try:
-            user = CustomUser.objects.get(username__iexact=identifier)
-        except (CustomUser.DoesNotExist, CustomUser.MultipleObjectsReturned):
-            user = None
+        # 1. Username — case-insensitive
+        if user is None:
+            try:
+                user = CustomUser.objects.get(username__iexact=identifier)
+            except (CustomUser.DoesNotExist, CustomUser.MultipleObjectsReturned):
+                user = None
 
-        # 2. Try email (case-insensitive)
+        # 2. Email — case-insensitive
         if user is None:
             try:
                 user = CustomUser.objects.get(email__iexact=identifier)
             except (CustomUser.DoesNotExist, CustomUser.MultipleObjectsReturned):
                 user = None
 
-        # 3. Try phone (exact)
-        if user is None:
+        # 3. Phone — exact
+        if user is None and identifier:
             try:
                 user = CustomUser.objects.get(phone=identifier)
             except (CustomUser.DoesNotExist, CustomUser.MultipleObjectsReturned):
                 user = None
 
         if user is None:
-            CustomUser().set_password(password)   # timing attack prevention
+            # Dummy password check to prevent timing-based user enumeration
+            CustomUser().set_password(password)
             return None
 
         if user.check_password(password) and self.user_can_authenticate(user):

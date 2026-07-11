@@ -18,19 +18,11 @@
               <i class="fas fa-mobile-screen-button text-gold tg-pulse-icon"></i>
             </div>
             <h4 class="mb-3">Approve the payment on your phone</h4>
-
-            {% if instruction_note %}
-            <div class="glass-card p-3 mb-3 text-start" style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25)">
-              <i class="fas fa-circle-info text-gold me-2"></i>{{ instruction_note }}
-            </div>
-            {% else %}
             <p class="text-muted">
               We've sent a push notification to your mobile money app for
               <strong>${{ order.total_price }}</strong>. Open it and enter
               your PIN to complete the payment.
             </p>
-            {% endif %}
-
             <div class="d-flex align-items-center justify-content-center gap-2 mt-4 text-muted small">
               <span class="spinner-border spinner-border-sm" role="status"></span>
               <span id="statusText">Waiting for confirmation…</span>
