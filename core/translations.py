@@ -33,7 +33,7 @@ TRANSLATIONS = {
         'hero_title_1': 'Trade &',
         'hero_title_2': 'e-Commerce',
         'hero_title_3': 'Platform',
-        'hero_sub': 'T&TG Trade Corporation connects Canada, Uganda, Kenya and USA (Ohio) through seamless commerce. Shop T&TG Arabica and Robusta green coffee. Earn T&TG Loyalty Points on every purchase.',
+        'hero_sub': 'T&TG Trade Corporation based in Toronto, ON Canada connects Uganda, Kenya and USA through seamless e-commerce. Shop T&TG's Artisanal Coffee Based Goods, Premium Green Arabica Coffee and Robusta Green Coffee. Earn T&TG Loyalty Points on Every purchase.',
         'hero_shop_now': 'Shop Now',
         'hero_get_started': 'Get Started Free',
         'hero_stat_products': 'Products',
