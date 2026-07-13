@@ -68,3 +68,59 @@ class LoyaltySettings(models.Model):
         """Returns the singleton settings row, creating defaults on first call."""
         obj, _ = cls.objects.get_or_create(pk=1)
         return obj
+
+
+class BlogPost(models.Model):
+    CATEGORY_CHOICES = [
+        ('trade_news',    '📰 Trade News'),
+        ('coffee_market', '☕ Coffee Market'),
+        ('import_tips',   '🚢 Import & Export Tips'),
+        ('east_africa',   '🌍 East Africa'),
+        ('regulations',   '⚖️ Regulations & Compliance'),
+        ('company_news',  '🏢 Company News'),
+    ]
+
+    title           = models.CharField(max_length=200)
+    slug            = models.SlugField(unique=True, max_length=220)
+    excerpt         = models.TextField(max_length=400, help_text='Short summary shown on the blog listing page.')
+    content         = models.TextField(help_text='Full article content. HTML is supported.')
+    category        = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default='trade_news')
+    author          = models.ForeignKey(
+                          'accounts.CustomUser', on_delete=models.SET_NULL,
+                          null=True, blank=True, related_name='blog_posts'
+                      )
+    cover_image     = models.ImageField(upload_to='blog/', blank=True, null=True)
+    cover_image_url = models.URLField(blank=True, help_text='Stock photo URL used if no image is uploaded.')
+    is_published    = models.BooleanField(default=False)
+    is_featured     = models.BooleanField(default=False, help_text='Show in the featured slot at the top of the blog.')
+    views_count     = models.PositiveIntegerField(default=0)
+    published_at    = models.DateTimeField(null=True, blank=True)
+    created_at      = models.DateTimeField(auto_now_add=True)
+    updated_at      = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-published_at', '-created_at']
+        verbose_name        = 'Blog Post'
+        verbose_name_plural = 'Blog Posts'
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('blog_detail', kwargs={'slug': self.slug})
+
+    @property
+    def reading_time(self):
+        """Estimated reading time in minutes (avg 200 words/min)."""
+        word_count = len(self.content.split())
+        return max(1, round(word_count / 200))
+
+    @property
+    def safe_cover_url(self):
+        if self.cover_image:
+            try:
+                return self.cover_image.url
+            except Exception:
+                pass
+        return self.cover_image_url or ''

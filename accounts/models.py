@@ -56,25 +56,16 @@ class CustomUser(AbstractUser):
     profile_link   = models.CharField(max_length=100, blank=True, unique=True, null=True)
     website        = models.URLField(blank=True)
 
-    # ── Security fields ────────────────────────────────────────────────────────
-    # Login lockout
-    login_attempts    = models.PositiveSmallIntegerField(default=0)
-    locked_until      = models.DateTimeField(null=True, blank=True)
 
-    # Email verification
+    # ── Security fields ───────────────────────────────────────────────────────
+    login_attempts         = models.PositiveSmallIntegerField(default=0)
+    locked_until           = models.DateTimeField(null=True, blank=True)
     email_verified         = models.BooleanField(default=False)
     email_verify_token     = models.CharField(max_length=64, blank=True)
-
-    # Password reset
     password_reset_token   = models.CharField(max_length=64, blank=True)
     password_reset_expires = models.DateTimeField(null=True, blank=True)
-
-    # Withdrawal PIN (hashed, separate from login password)
-    withdrawal_pin     = models.CharField(max_length=128, blank=True,
-                             help_text='Hashed 4-digit PIN required for every withdrawal.')
-    withdrawal_pin_set = models.BooleanField(default=False)
-
-    # Daily withdrawal limit (USD equivalent)
+    withdrawal_pin         = models.CharField(max_length=128, blank=True)
+    withdrawal_pin_set     = models.BooleanField(default=False)
     daily_withdrawal_limit = models.DecimalField(max_digits=10, decimal_places=2, default=500)
 
     @property

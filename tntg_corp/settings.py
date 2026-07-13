@@ -9,7 +9,7 @@ SECRET_KEY = os.environ.get(
     'django-insecure-tntg-trade-corp-2026-secure-key-change-in-production'
 )
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+ALLOWED_HOSTS = ['tntg-corp.onrender.com', 'tntgcorp.com', 'localhost', '127.0.0.1', '.onrender.com']
 
 # ── Apps ───────────────────────────────────────────────────────────────────────
 INSTALLED_APPS = [
@@ -134,3 +134,10 @@ else:
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ── Trusted origins for CSRF (required behind Render's reverse proxy) ──────────
+CSRF_TRUSTED_ORIGINS = [
+    'https://tntg-corp.onrender.com',
+    'https://tntgcorp.com',
+    'https://*.onrender.com',
+]

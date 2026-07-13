@@ -384,11 +384,14 @@ document.querySelectorAll('.notif-filter').forEach(function(btn){
 /* ── Charts ───────────────────────────────────────────────────────── */
 var salesCtx = document.getElementById('salesChart');
 if(salesCtx){
+  var gradient = salesCtx.getContext('2d').createLinearGradient(0, 0, 0, 300);
+  gradient.addColorStop(0, 'rgba(201,168,76,.35)');
+  gradient.addColorStop(1, 'rgba(201,168,76,.01)');
   new Chart(salesCtx, {
     type: 'line',
     data: {
       labels: {{ sales_labels|safe }},
-      datasets: [{ label:'Revenue (USD)', data: {{ sales_values|safe }}, borderColor:'#c9a84c', backgroundColor:'rgba(201,168,76,.08)', tension:.4, fill:true, pointBackgroundColor:'#c9a84c', pointRadius:3 }]
+      datasets: [{ label:'Revenue (USD)', data: {{ sales_values|safe }}, borderColor:'#c9a84c', backgroundColor: gradient, tension:.4, fill:true, pointBackgroundColor:'#c9a84c', pointRadius:4, pointHoverRadius:6, borderWidth:2 }]
     },
     options: { responsive:true, plugins:{legend:{display:false}}, scales:{ x:{ticks:{color:'#7a6e5f',font:{size:10}}, grid:{color:'rgba(255,255,255,.04)'}}, y:{ticks:{color:'#7a6e5f',font:{size:10}}, grid:{color:'rgba(255,255,255,.04)'}} } }
   });

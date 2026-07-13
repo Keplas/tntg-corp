@@ -108,30 +108,6 @@
 </section>
 
 <!-- ═══ WHAT WE OFFER ═══ -->
-
-<!-- ── T&TG Coffee Image Strip ─────────────────────────────────────── -->
-<div class="tg-img-strip">
-  <div class="tg-img-strip-track">
-    <img src="https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=340&h=220&fit=crop&q=70" alt="Coffee plantation Uganda">
-    <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=340&h=220&fit=crop&q=70" alt="Coffee espresso">
-    <img src="https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=340&h=220&fit=crop&q=70" alt="Shipping containers">
-    <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=340&h=220&fit=crop&q=70" alt="Coffee beans">
-    <img src="https://images.unsplash.com/photo-1590496793907-4d66e2994b4d?w=340&h=220&fit=crop&q=70" alt="Cargo port">
-    <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=340&h=220&fit=crop&q=70" alt="Forex trading">
-    <img src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=340&h=220&fit=crop&q=70" alt="Cargo ship">
-    <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?w=340&h=220&fit=crop&q=70" alt="Coffee pour">
-    <!-- duplicate for seamless loop -->
-    <img src="https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=340&h=220&fit=crop&q=70" alt="Coffee plantation Uganda">
-    <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=340&h=220&fit=crop&q=70" alt="Coffee espresso">
-    <img src="https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=340&h=220&fit=crop&q=70" alt="Shipping containers">
-    <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=340&h=220&fit=crop&q=70" alt="Coffee beans">
-    <img src="https://images.unsplash.com/photo-1590496793907-4d66e2994b4d?w=340&h=220&fit=crop&q=70" alt="Cargo port">
-    <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=340&h=220&fit=crop&q=70" alt="Forex trading">
-    <img src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=340&h=220&fit=crop&q=70" alt="Cargo ship">
-    <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?w=340&h=220&fit=crop&q=70" alt="Coffee pour">
-  </div>
-</div>
-<div class="tg-glow-divider"></div>
 <section class="tg-offer-section">
   <!-- animated section canvas background -->
   <canvas id="offerBg" class="tg-offer-bg-canvas"></canvas>
@@ -145,7 +121,7 @@
 
     <div class="row g-4">
 
-      <!-- ── Card 1: T&TG Artisanal Coffee Based Goods ── -->
+      <!-- ── Card 1: T&TG Coffee Shop ── -->
       <div class="col-md-6 col-lg-3">
         <div class="tg-card tg-reveal" id="card-shop">
           <div class="tg-card-canvas-wrap">
@@ -158,7 +134,7 @@
             <div class="tg-card-icon-overlay">☕</div>
           </div>
           <div class="tg-card-body">
-            <h5 class="tg-card-title">T&TG Artisanal Coffee Based Goods</h5>
+            <h5 class="tg-card-title">T&TG Coffee Shop</h5>
             <p class="tg-card-text">Premium T&amp;TG Arabica and Robusta green coffee, sourced from Uganda and exported across our trade corridors.</p>
             <a href="{% url 'marketplace' %}" class="tg-card-btn">
               Explore Market <i class="fas fa-arrow-right"></i>
@@ -495,7 +471,7 @@
 <section class="section" style="background:rgba(255,255,255,.02)">
   <div class="container">
     <div class="section-header tg-reveal">
-      <div class="section-label">T&TG Artisanal Coffee Based Goods Platform</div>
+      <div class="section-label">T&TG Coffee Shop Platform</div>
       <h2>Featured <span class="text-gold">Products</span></h2>
       <div class="divider-gold"></div>
     </div>
@@ -753,20 +729,20 @@
 
   var GOLD        = '#c9a84c';
   var GOLD_BRIGHT = '#e8c96a';
-  var HIGHLIGHTED = { '124': true, '800': true, '404': true, '840': true }; // Canada, Uganda, Kenya, USA
+  var HIGHLIGHTED = { '124': true, '800': true, '404': true }; // Canada, Uganda, Kenya
   var CITIES = {
     toronto: [-79.38, 43.65],
     ohio:    [-82.99, 39.96],
     kampala: [ 32.58,  0.35],
     nairobi: [ 36.82, -1.29]
   };
-  // Routes flow: Canada (HQ) → USA → East Africa
   var ROUTES = [
-    { from: CITIES.toronto, to: CITIES.ohio    },  // Canada → USA
-    { from: CITIES.toronto, to: CITIES.kampala },  // Canada → Uganda
-    { from: CITIES.toronto, to: CITIES.nairobi },  // Canada → Kenya
-    { from: CITIES.ohio,    to: CITIES.kampala },  // USA → Uganda
-    { from: CITIES.ohio,    to: CITIES.nairobi },  // USA → Kenya
+    [CITIES.toronto, CITIES.kampala],
+    [CITIES.toronto, CITIES.nairobi],
+    [CITIES.toronto, CITIES.ohio],
+    [CITIES.ohio,    CITIES.kampala],
+    [CITIES.ohio,    CITIES.nairobi],
+    [CITIES.kampala, CITIES.nairobi]
   ];
 
   var canvas, ctx, projection, pathGen, W, H;

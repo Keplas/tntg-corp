@@ -3,6 +3,8 @@ from . import views
 from .chatbot import chatbot_api
 
 urlpatterns = [
+    path('withdrawals/<int:pk>/approve/', views.approve_withdrawal, name='approve_withdrawal'),
+    path('withdrawals/<int:pk>/reject/',  views.reject_withdrawal,  name='reject_withdrawal'),
     path('',              views.home,                name='home'),
     path('about/',        views.about,               name='about'),
     path('contact/',      views.contact,             name='contact'),
@@ -22,4 +24,6 @@ urlpatterns = [
     path('analytics/',    views.analytics_dashboard, name='analytics_dashboard'),
     # Language toggle
     path('set-language/', views.set_language,        name='set_language'),
+    path('blog/',             views.blog_list,   name='blog_list'),
+    path('blog/<slug:slug>/', views.blog_detail, name='blog_detail'),
 ]

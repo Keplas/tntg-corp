@@ -12,6 +12,7 @@ OPERATION_COUNTRIES = [
     {'code': 'CA', 'name': 'Canada', 'flag': '🇨🇦'},
     {'code': 'UG', 'name': 'Uganda', 'flag': '🇺🇬'},
     {'code': 'KE', 'name': 'Kenya',  'flag': '🇰🇪'},
+    {'code': 'US', 'name': 'USA',    'flag': '🇺🇸'},
 ]
 
 
@@ -256,3 +257,88 @@ def set_language(request):
     request.session['lang'] = lang
     next_url = request.GET.get('next') or request.META.get('HTTP_REFERER') or '/'
     return redirect(next_url)
+
+
+# ── Withdrawal approval (staff only) ──────────────────────────────────────────
+from django.contrib.admin.views.decorators import staff_member_required
+
+@staff_member_required
+def approve_withdrawal(request, pk):
+    from accounts.models import AvonPointTransaction
+    from django.shortcuts import get_object_or_404
+    from django.core.mail import send_mail
+    from django.conf import settings as djsettings
+    txn  = get_object_or_404(AvonPointTransaction, pk=pk, status='pending_approval')
+    user = txn.user
+    if float(user.avon_points) < float(txn.points):
+        messages.error(request, f'Cannot approve: insufficient balance for {user.username}.')
+        return redirect(request.META.get('HTTP_REFERER', '/accounts/dashboard/#notifications'))
+    user.avon_points = float(user.avon_points) - float(txn.points)
+    user.save(update_fields=['avon_points'])
+    txn.status      = 'approved'
+    txn.description = txn.description + ' [Admin approved]'
+    txn.save(update_fields=['status', 'description'])
+    try:
+        send_mail(
+            subject='Withdrawal Approved ✓ — T&TG Trade Corp',
+            message=(
+                f'Hi {user.first_name or user.username},\n\n'
+                f'Your withdrawal of {txn.points} points has been approved.\n'
+                f'Payment will be processed on the scheduled date.\n\nT&TG Trade Corp'
+            ),
+            from_email=getattr(djsettings, 'DEFAULT_FROM_EMAIL', ''),
+            recipient_list=[user.email], fail_silently=True,
+        )
+    except Exception:
+        pass
+    messages.success(request, f'Withdrawal #{pk} approved. {txn.points} points deducted from {user.username}.')
+    return redirect(request.META.get('HTTP_REFERER', '/accounts/dashboard/#notifications'))
+
+
+@staff_member_required
+def reject_withdrawal(request, pk):
+    from accounts.models import AvonPointTransaction
+    from django.shortcuts import get_object_or_404
+    from django.core.mail import send_mail
+    from django.conf import settings as djsettings
+    txn    = get_object_or_404(AvonPointTransaction, pk=pk, status='pending_approval')
+    reason = request.POST.get('reason', 'Rejected by admin.')
+    txn.status      = 'rejected'
+    txn.description = txn.description + f' [Rejected: {reason}]'
+    txn.save(update_fields=['status', 'description'])
+    try:
+        user = txn.user
+        send_mail(
+            subject='Withdrawal Declined — T&TG Trade Corp',
+            message=(
+                f'Hi {user.first_name or user.username},\n\n'
+                f'Your withdrawal of {txn.points} points was declined.\n'
+                f'Reason: {reason}\n'
+                f'Your balance has NOT been affected.\n\nT&TG Trade Corp'
+            ),
+            from_email=getattr(djsettings, 'DEFAULT_FROM_EMAIL', ''),
+            recipient_list=[user.email], fail_silently=True,
+        )
+    except Exception:
+        pass
+    messages.warning(request, f'Withdrawal #{pk} rejected. No points deducted.')
+    return redirect(request.META.get('HTTP_REFERER', '/accounts/dashboard/#notifications'))
+
+
+def blog_list(request):
+    from .models import BlogPost
+    posts    = BlogPost.objects.filter(is_published=True).order_by('-created_at')
+    featured = posts.filter(is_featured=True).first()
+    ctx = {'posts': posts, 'featured': featured}
+    return render(request, 'core/blog_list.html', ctx)
+
+
+def blog_detail(request, slug):
+    from .models import BlogPost
+    post = get_object_or_404(BlogPost, slug=slug, is_published=True)
+    post.views_count += 1
+    post.save(update_fields=['views_count'])
+    related = BlogPost.objects.filter(
+        is_published=True, category=post.category
+    ).exclude(pk=post.pk)[:3]
+    return render(request, 'core/blog_detail.html', {'post': post, 'related': related})

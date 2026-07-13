@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Notification, LoyaltySettings
+from .models import Notification, LoyaltySettings, BlogPost
 
 
 @admin.register(Notification)
@@ -8,35 +8,20 @@ class NotificationAdmin(admin.ModelAdmin):
     list_filter   = ['notif_type', 'is_read']
     actions       = ['mark_read']
 
+    @admin.action(description='Mark selected as read')
     def mark_read(self, request, queryset):
         queryset.update(is_read=True)
-    mark_read.short_description = "Mark selected as read"
 
 
 @admin.register(LoyaltySettings)
 class LoyaltySettingsAdmin(admin.ModelAdmin):
-    list_display = ['consumer_rate_display', 'referral_rate_display', 'payment_days', 'updated_at']
-    fieldsets = (
-        ('T&TG Trade Loyalty Platform — Rate Configuration', {
-            'description': (
-                'These rates are applied automatically on every purchase. '
-                'Changes take effect immediately for all new orders.'
-            ),
-            'fields': ('consumer_rate', 'referral_rate', 'payment_days'),
-        }),
-    )
+    list_display = ['consumer_rate', 'referral_rate', 'payment_days']
 
-    def consumer_rate_display(self, obj):
-        return f"{float(obj.consumer_rate)*100:.2f}% (Consumer)"
-    consumer_rate_display.short_description = 'Consumer Rate'
 
-    def referral_rate_display(self, obj):
-        return f"{float(obj.referral_rate)*100:.2f}% (Referral)"
-    referral_rate_display.short_description = 'Referral Rate'
-
-    def has_add_permission(self, request):
-        # Only one settings row allowed
-        return not LoyaltySettings.objects.exists()
-
-    def has_delete_permission(self, request, obj=None):
-        return False
+@admin.register(BlogPost)
+class BlogPostAdmin(admin.ModelAdmin):
+    list_display       = ['title', 'category', 'author', 'is_published', 'is_featured', 'created_at']
+    list_filter        = ['category', 'is_published', 'is_featured']
+    list_editable      = ['is_published', 'is_featured']
+    prepopulated_fields = {'slug': ('title',)}
+    search_fields      = ['title', 'excerpt', 'content']

@@ -147,7 +147,6 @@ def logout_view(request):
 
 
 @login_required
-@login_required
 def dashboard(request):
     """Unified admin dashboard — Dashboard + Profile + Loyalty + Analytics + Notifications."""
     from django.db.models import Sum, Count, Avg
