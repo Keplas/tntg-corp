@@ -311,7 +311,7 @@ STRIP_HTML = """
 <!-- ── T&TG Coffee Image Strip ─────────────────────────────────────── -->
 <div class="tg-img-strip">
   <div class="tg-img-strip-track">
-    <img src="https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=340&h=220&fit=crop&q=70" alt="Coffee plantation Uganda">
+    <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=340&h=220&fit=crop&q=70" alt="Coffee roasting">
     <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=340&h=220&fit=crop&q=70" alt="Coffee espresso">
     <img src="https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=340&h=220&fit=crop&q=70" alt="Shipping containers">
     <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=340&h=220&fit=crop&q=70" alt="Coffee beans">
@@ -320,7 +320,7 @@ STRIP_HTML = """
     <img src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=340&h=220&fit=crop&q=70" alt="Cargo ship">
     <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?w=340&h=220&fit=crop&q=70" alt="Coffee pour">
     <!-- duplicate for seamless loop -->
-    <img src="https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?w=340&h=220&fit=crop&q=70" alt="Coffee plantation Uganda">
+    <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=340&h=220&fit=crop&q=70" alt="Coffee roasting">
     <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=340&h=220&fit=crop&q=70" alt="Coffee espresso">
     <img src="https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=340&h=220&fit=crop&q=70" alt="Shipping containers">
     <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=340&h=220&fit=crop&q=70" alt="Coffee beans">
