@@ -68,7 +68,7 @@ home = home.replace(
     'photo-1567401893414-76b7b1e5a7a5?w=600&h=400&fit=crop&q=80',
     'photo-1447933601403-0c6688de566e?w=600&h=400&fit=crop&q=80'
 )
-home = home.replace('Online Shopping', 'T&TG Coffee Shop')
+home = home.replace('Online Shopping', 'T&TG Shopping Platform')
 home = home.replace(
     'alt="Online shopping — clothing, shoes, watches and coffee"',
     'alt="T&TG Coffee — Arabica and Robusta green coffee"'
