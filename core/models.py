@@ -36,12 +36,12 @@ class Notification(models.Model):
 class LoyaltySettings(models.Model):
     """Admin-configurable rates and rules for the T&TG Trade Loyalty Platform."""
     consumer_rate = models.DecimalField(
-        max_digits=6, decimal_places=4, default=0.0100,
+        max_digits=6, decimal_places=4, default=0.0050,
         verbose_name='Consumer Reward Rate',
         help_text='End-user/consumer reward as a decimal — e.g. 0.0100 = 1%'
     )
     referral_rate = models.DecimalField(
-        max_digits=6, decimal_places=4, default=0.0250,
+        max_digits=6, decimal_places=4, default=0.0100,
         verbose_name='Referral Reward Rate',
         help_text='Reward for referring a buyer as a decimal — e.g. 0.0250 = 2.5%'
     )
