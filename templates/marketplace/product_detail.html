@@ -24,7 +24,7 @@
           {% if product.safe_image_url %}
           <img src="{{ product.safe_image_url }}" alt="{{ product.name }}"
                style="width:100%;height:100%;object-fit:cover"
-               onerror="this.parentElement.innerHTML='<div style=\'font-size:8rem;opacity:.3\'>{% if product.category == \"clothing\" %}👔{% elif product.category == \"shoes\" %}👟{% elif product.category == \"watches\" %}⌚{% elif product.category == \"coffee\" %}☕{% else %}📦{% endif %}</div>'">
+               onerror="this.style.display='none'">
           {% else %}
           <div style="font-size:8rem;opacity:.3">
             {% if product.category == 'clothing' %}👔{% elif product.category == 'shoes' %}👟{% elif product.category == 'watches' %}⌚{% elif product.category == 'coffee' %}☕{% else %}📦{% endif %}
@@ -166,7 +166,7 @@
               {% if p.safe_image_url %}
               <img src="{{ p.safe_image_url }}" alt="{{ p.name }}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">
               {% else %}
-              <div class="product-placeholder" style="font-size:3rem">{% if p.category == 'clothing' %}👔{% elif p.category == 'shoes' %}👟{% elif p.category == 'watches' %}⌚{% elif p.category == 'coffee' %}☕{% else %}📦{% endif %}</div>
+              <div class="product-placeholder" style="font-size:3rem">☕</div>
               {% endif %}
             </div>
             <div class="product-body" style="padding:1rem">
