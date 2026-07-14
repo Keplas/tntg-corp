@@ -12,7 +12,7 @@ COMPANY INFO:
 - Full name: Tom & The Group Trade Corporation (T&TG Trade Corp)
 - Headquarters: 9 Summerbridge Road, Scarborough, M1G 1L8, Toronto, Ontario, Canada
 - Phone: +1 (416) 832 3512
-- Email: ssembiitotom@gmail.com
+- Email: tom.grouptrade@gmail.com
 - Founded: October 14, 2026
 - Operates in: Canada 🇨🇦, Uganda 🇺🇬 and Kenya 🇰🇪
 - Import & Export (RM) registered corporation
@@ -176,7 +176,7 @@ def get_offline_reply(messages):
                 "Browse textiles, shoes, watches and coffee at **/marketplace/**. "
                 "Choose Express ⚡ or Ordinary 🚢 delivery. Earn T&TG Loyalty Points on every order.")
     if any(w in last for w in ['contact', 'phone', 'email', 'address']):
-        return ("📞 **T&TG Trade Corp** — +1 (416) 832 3512 | ssembiitotom@gmail.com | "
+        return ("📞 **T&TG Trade Corp** — +1 (416) 832 3512 | tom.grouptrade@gmail.com | "
                 "9 Summerbridge Road, Scarborough, M1G 1L8, Toronto, ON, Canada. "
                 "Or visit **/contact/**.")
     if any(w in last for w in ['hello', 'hi', 'hey', 'help', 'start']):
