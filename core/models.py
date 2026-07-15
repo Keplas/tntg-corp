@@ -124,3 +124,12 @@ class BlogPost(models.Model):
             except Exception:
                 pass
         return self.cover_image_url or ''
+
+
+class NewsletterSubscriber(models.Model):
+    email      = models.EmailField(unique=True)
+    name       = models.CharField(max_length=100, blank=True)
+    consent    = models.BooleanField(default=True)  # CASL explicit consent
+    subscribed = models.DateTimeField(auto_now_add=True)
+    active     = models.BooleanField(default=True)
+    def __str__(self): return self.email

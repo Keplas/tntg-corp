@@ -247,3 +247,99 @@ def payment_success(request, pk):
         messages.warning(request, 'We could not confirm your payment yet. If you completed payment, it may take a few minutes to reflect — contact support if this persists.')
 
     return redirect('order_detail', pk=order.pk)
+
+
+# ════════════════════════════════════════════════════════════════════════
+# SHOPPING CART (session-based)
+# ════════════════════════════════════════════════════════════════════════
+
+def cart_view(request):
+    cart  = request.session.get('cart', {})
+    items = []
+    total = decimal.Decimal('0')
+    for pk_str, qty in cart.items():
+        try:
+            p = Product.objects.get(pk=int(pk_str), is_active=True)
+            sub = p.price * qty
+            total += sub
+            items.append({'product': p, 'qty': qty, 'subtotal': sub})
+        except Product.DoesNotExist:
+            pass
+    return render(request, 'marketplace/cart.html', {'items': items, 'total': total, 'count': len(items)})
+
+
+def cart_add(request, pk):
+    product = get_object_or_404(Product, pk=pk, is_active=True)
+    qty  = max(1, int(request.POST.get('quantity', 1)))
+    cart = request.session.get('cart', {})
+    cart[str(pk)] = cart.get(str(pk), 0) + qty
+    request.session['cart'] = cart
+    messages.success(request, f'☕ {product.name} added to cart ({cart[str(pk)]} kg total).')
+    return redirect(request.META.get('HTTP_REFERER', reverse('cart')))
+
+
+def cart_remove(request, pk):
+    cart = request.session.get('cart', {})
+    cart.pop(str(pk), None)
+    request.session['cart'] = cart
+    return redirect('cart')
+
+
+def cart_update(request, pk):
+    qty  = int(request.POST.get('quantity', 1))
+    cart = request.session.get('cart', {})
+    if qty <= 0:
+        cart.pop(str(pk), None)
+    else:
+        cart[str(pk)] = qty
+    request.session['cart'] = cart
+    return redirect('cart')
+
+
+# ════════════════════════════════════════════════════════════════════════
+# PRODUCT REVIEWS
+# ════════════════════════════════════════════════════════════════════════
+
+@login_required
+def submit_review(request, pk):
+    product = get_object_or_404(Product, pk=pk, is_active=True)
+    if request.method == 'POST':
+        rating  = int(request.POST.get('rating', 5))
+        comment = request.POST.get('comment', '').strip()
+        if comment:
+            exists = ProductReview.objects.filter(product=product, user=request.user).exists()
+            if not exists:
+                ProductReview.objects.create(
+                    product=product, user=request.user,
+                    rating=max(1, min(5, rating)), comment=comment
+                )
+                messages.success(request, 'Thank you for your review!')
+            else:
+                messages.warning(request, 'You have already reviewed this product.')
+        else:
+            messages.error(request, 'Please write a comment with your review.')
+    return redirect('product_detail', pk=pk)
+
+
+# ════════════════════════════════════════════════════════════════════════
+# WISHLIST
+# ════════════════════════════════════════════════════════════════════════
+
+@login_required
+def wishlist_toggle(request, pk):
+    from .models import Wishlist
+    product = get_object_or_404(Product, pk=pk, is_active=True)
+    obj, created = Wishlist.objects.get_or_create(user=request.user, product=product)
+    if not created:
+        obj.delete()
+        messages.info(request, f'Removed {product.name} from your wishlist.')
+    else:
+        messages.success(request, f'❤️ {product.name} saved to wishlist.')
+    return redirect(request.META.get('HTTP_REFERER', reverse('product_detail', kwargs={'pk': pk})))
+
+
+@login_required
+def wishlist_view(request):
+    from .models import Wishlist
+    items = Wishlist.objects.filter(user=request.user).select_related('product')
+    return render(request, 'marketplace/wishlist.html', {'items': items})

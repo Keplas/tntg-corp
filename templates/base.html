@@ -461,6 +461,7 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
             <div class="tg-dd">
               <a href="{% url 'about' %}"     class="tg-dd-item {% if request.resolver_match.url_name == 'about' %}tg-active{% endif %}"><span class="tg-dd-ico">🏢</span>About Us</a>
               <a href="{% url 'contact' %}"   class="tg-dd-item {% if request.resolver_match.url_name == 'contact' %}tg-active{% endif %}"><span class="tg-dd-ico">✉️</span>Contact Us</a>
+              <a href="{% url 'faq' %}" class="tg-dd-item "><span class="tg-dd-ico">❓</span>FAQ</a>
               <a href="{% url 'blog_list' %}" class="tg-dd-item {% if 'blog' in request.resolver_match.url_name %}tg-active{% endif %}"><span class="tg-dd-ico">📰</span>Blog & News</a>
             </div>
           </li>
@@ -525,6 +526,8 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
                   <span class="tg-pts-badge">{{ user.avon_points|floatformat:0 }}</span>
                 </a>
                 <a href="{% url 'my_orders' %}" class="tg-dd-item"><span class="tg-dd-ico">📦</span>My Orders</a>
+                <a href="{% url 'wishlist' %}" class="tg-dd-item"><span class="tg-dd-ico">❤️</span>My Wishlist</a>
+                <a href="{% url 'cart' %}" class="tg-dd-item"><span class="tg-dd-ico">🛒</span>My Cart</a>
                 <div style="height:1px;background:rgba(201,168,76,.12);margin:6px 8px"></div>
                 <a href="{% url 'logout' %}" class="tg-dd-item tg-dd-danger"><span class="tg-dd-ico">🚪</span>Sign Out</a>
               </div>
@@ -532,7 +535,14 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
           </ul>
 
           {% else %}
-          <a href="{% url 'login' %}"    class="tg-btn-ghost">{% t "nav_signin" %}</a>
+          {% with cart_count=request.session.cart|length %}
+          {% if cart_count %}
+          <a href="{% url 'cart' %}" style="position:relative;display:inline-flex;align-items:center;gap:6px;color:#c9a84c;text-decoration:none;padding:8px 12px;border:1px solid rgba(201,168,76,.3);border-radius:100px;font-size:.82rem;font-weight:700" id="cart_icon">
+            🛒 <span style="background:#c9a84c;color:#1a0a00;border-radius:100px;padding:1px 7px;font-size:.7rem;font-weight:800">{{ cart_count }}</span>
+          </a>
+          {% endif %}
+        {% endwith %}
+        <a href="{% url 'login' %}"    class="tg-btn-ghost">{% t "nav_signin" %}</a>
           <a href="{% url 'register' %}" class="tg-btn-primary">{% t "nav_getstarted" %}</a>
           {% endif %}
         </div>

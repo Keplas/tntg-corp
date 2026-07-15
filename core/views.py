@@ -349,3 +349,71 @@ def privacy_policy(request):
 
 def terms(request):
     return render(request, 'core/terms.html')
+
+
+def faq(request):
+    faqs = {
+        "☕ About Our Coffee": [
+            ("What types of coffee does T&TG sell?",
+             "T&TG Arabica Green Coffee ($35/kg) — smooth high-altitude beans from Uganda; and T&TG Robusta Green Coffee ($28/kg) — bold beans ideal for espresso blends and commercial roasters."),
+            ("Where is the coffee sourced?",
+             "All T&TG coffee is sourced directly from Uganda, East Africa. Our supply chain is CFIA-certified and traceable from farm to port."),
+            ("What is the minimum order quantity?",
+             "You can order as little as 1 kg. For bulk and export orders (25kg+), contact tom.grouptrade@gmail.com for pricing."),
+        ],
+        "🛒 Orders & Shopping": [
+            ("How do I place an order?",
+             "Browse products, add to cart, then sign in to complete checkout. You can also click Buy Now on any product page."),
+            ("Can I cancel my order?",
+             "Under the Ontario Consumer Protection Act 2002, you have a 7-day right to cancel. Email tom.grouptrade@gmail.com with your order number within 7 days."),
+            ("How do I track my order?",
+             "Log in and go to My Account → My Orders to see live order status updates."),
+        ],
+        "🚚 Shipping & Delivery": [
+            ("Which countries do you ship to?",
+             "Canada, Uganda, Kenya and USA (Ohio). Contact us for other destinations."),
+            ("How long does delivery take?",
+             "Canada: 5–10 business days. USA/Ohio: 7–14 days. Uganda/Kenya: 14–21 days. Customs clearance may add time for international orders."),
+            ("Who pays import duties?",
+             "The buyer is responsible for import duties and taxes in their destination country."),
+        ],
+        "💰 Loyalty Points": [
+            ("How do I earn loyalty points?",
+             "You earn 0.5% of your order value as loyalty points on every purchase. Referred purchases earn at 1%."),
+            ("When can I withdraw?",
+             "Day 45 after a qualifying purchase. Withdrawals require admin approval and your 4-digit security PIN."),
+        ],
+        "💳 Payments": [
+            ("What payment methods are accepted?",
+             "Credit/debit cards (Stripe) and mobile money (Flutterwave). T&TG never stores card details."),
+        ],
+        "🔒 Account & Security": [
+            ("How do I reset my password?",
+             "Click Forgot password on the Sign In page. A reset link will be sent to your registered email (valid 24 hours)."),
+            ("Why is my account locked?",
+             "Accounts lock for 30 minutes after 5 failed login attempts. Email tom.grouptrade@gmail.com for urgent help."),
+        ],
+    }
+    return render(request, 'core/faq.html', {'faqs': faqs})
+
+
+def newsletter_subscribe(request):
+    from .models import NewsletterSubscriber
+    from django.http import JsonResponse
+    if request.method == 'POST':
+        email   = request.POST.get('email','').strip()
+        name    = request.POST.get('name','').strip()
+        consent = request.POST.get('consent','') == 'on'
+        if not consent:
+            messages.error(request, 'Please confirm your consent to subscribe.')
+        elif email:
+            sub, created = NewsletterSubscriber.objects.get_or_create(
+                email=email, defaults={'name': name, 'consent': True}
+            )
+            if created:
+                messages.success(request,
+                    f'✅ Subscribed! Thank you {name or ""}. '
+                    f'You can unsubscribe at any time via email to tom.grouptrade@gmail.com.')
+            else:
+                messages.info(request, 'You are already subscribed to T&TG updates.')
+    return redirect(request.META.get('HTTP_REFERER', reverse('home')))

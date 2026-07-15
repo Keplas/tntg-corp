@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}My Wishlist — T&TG Trade Corp{% endblock %}
+{% block content %}
+<section style="background:#060f1e;min-height:80vh;padding:60px 0">
+<div class="container">
+  <h2 style="color:#fff;font-weight:900;margin-bottom:32px">❤️ My Wishlist</h2>
+  {% if items %}
+  <div class="row g-4">
+    {% for item in items %}
+    <div class="col-md-6 col-lg-4">
+      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.15);border-radius:16px;padding:24px">
+        <div style="font-size:3rem;text-align:center;margin-bottom:12px">☕</div>
+        <h5 style="color:#fff;font-weight:800">{{ item.product.name }}</h5>
+        <div style="color:#c9a84c;font-weight:700;margin:8px 0">{{ item.product.currency }} {{ item.product.price }}/{{ item.product.unit }}</div>
+        <p style="color:#7a6e5f;font-size:.82rem">{{ item.product.description|truncatechars:80 }}</p>
+        <div class="d-flex gap-2 mt-3">
+          <form method="POST" action="{% url 'cart_add' item.product.pk %}" style="flex:1">
+            {% csrf_token %}<input type="hidden" name="quantity" value="1">
+            <button class="btn btn-gold w-100" type="submit">Add to Cart</button>
+          </form>
+          <a href="{% url 'wishlist_toggle' item.product.pk %}" style="padding:10px 14px;border-radius:10px;background:rgba(239,68,68,.1);color:#f87171;text-decoration:none;border:1px solid rgba(239,68,68,.2)">✕</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div style="text-align:center;padding:80px 20px">
+    <div style="font-size:5rem;opacity:.2;margin-bottom:16px">❤️</div>
+    <h4 style="color:#fff">Your wishlist is empty</h4>
+    <p style="color:#7a6e5f">Save products you love for later</p>
+    <a href="{% url 'product_list' %}" class="btn btn-gold mt-3 px-5">Discover Products</a>
+  </div>
+  {% endif %}
+</div>
+</section>
+{% endblock %}
