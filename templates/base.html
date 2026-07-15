@@ -3,128 +3,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}T&TG Trade Corp — Trade & e-Commerce Platform{% endblock %}</title>
-  <meta name="description" content="{% block meta_description %}T&TG Trade Corporation — Premium coffee shopping platform. Shop Arabica &amp; Robusta green coffee. Canada · USA · Uganda · Kenya. Earn T&TG Loyalty Points on every purchase.{% endblock %}">
-  <link rel="canonical" href="{% block canonical_url %}https://tntgcorp.com{{ request.path }}{% endblock %}">
-  <meta name="robots" content="index, follow">
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>{% block title %}T&TG Trade Corp — Trade & e-Commerce Platform{% endblock %}</title>
+ <meta name="description" content="{% block meta_description %}T&TG Trade Corporation — Premium coffee shopping platform. Shop Arabica &amp; Robusta green coffee. Canada · USA · Uganda · Kenya. Earn T&TG Loyalty Points on every purchase.{% endblock %}">
+ <link rel="canonical" href="{% block canonical_url %}https://tntgcorp.com{{ request.path }}{% endblock %}">
+ <meta name="robots" content="index, follow">
 
-  <!-- PWA / App Install -->
-  <link rel="manifest" href="{% static 'manifest.json' %}">
-  <meta name="theme-color" content="#0a2540">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="T&TG Shop">
-  <link rel="apple-touch-icon" href="{% static 'images/logo.jpg' %}">
+ <!-- PWA / App Install -->
+ <link rel="manifest" href="{% static 'manifest.json' %}">
+ <meta name="theme-color" content="#0a2540">
+ <meta name="apple-mobile-web-app-capable" content="yes">
+ <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+ <meta name="apple-mobile-web-app-title" content="T&TG Shop">
+ <link rel="apple-touch-icon" href="{% static 'images/logo.jpg' %}">
 
-  <!-- Open Graph (for social sharing) -->
-  <meta property="og:type"        content="{% block og_type %}website{% endblock %}">
-  <meta property="og:title"       content="{% block og_title %}T&TG Trade Corp — Trade & e-Commerce{% endblock %}">
-  <meta property="og:description" content="{% block og_description %}Shop T&TG Artisanal Coffee Based Goods, Arabica &amp; Robusta green coffee. Earn loyalty points. Canada · USA · Uganda · Kenya.{% endblock %}">
-  <meta property="og:url"         content="{% block og_url %}https://tntgcorp.com{{ request.path }}{% endblock %}">
-  <meta property="og:image"       content="{% block og_image %}https://tntgcorp.com{% static 'images/logo.jpg' %}{% endblock %}">
-  <meta name="twitter:card"       content="summary_large_image">
+ <!-- Open Graph (for social sharing) -->
+ <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+ <meta property="og:title" content="{% block og_title %}T&TG Trade Corp — Trade & e-Commerce{% endblock %}">
+ <meta property="og:description" content="{% block og_description %}Shop T&TG Artisanal Coffee Based Goods, Arabica &amp; Robusta green coffee. Earn loyalty points. Canada · USA · Uganda · Kenya.{% endblock %}">
+ <meta property="og:url" content="{% block og_url %}https://tntgcorp.com{{ request.path }}{% endblock %}">
+ <meta property="og:image" content="{% block og_image %}https://tntgcorp.com{% static 'images/logo.jpg' %}{% endblock %}">
+ <meta name="twitter:card" content="summary_large_image">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.googleapis.com">
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Manrope:wght@600;700;800;900&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Manrope:wght@600;700;800;900&display=swap" rel="stylesheet">
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+ <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+ <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
 <style>
 /* ═══ T&TG NAVBAR — clean horizontal tabs on right ═══════════ */
 :root {
-  --tg-gold:   #c9a84c;
-  --tg-goldlt: #e8c96a;
-  --tg-navy:   #060f1e;
-  --tg-card:   #0d1f35;
-  --tg-border: rgba(201,168,76,.18);
-  --tg-muted:  #c4cdd6;
-  --tg-text:   #c8d8e8;
-  --tg-nav-h:  70px;
+ --tg-gold: #c9a84c;
+ --tg-goldlt: #e8c96a;
+ --tg-navy: #060f1e;
+ --tg-card: #0d1f35;
+ --tg-border: rgba(201,168,76,.18);
+ --tg-muted: #c4cdd6;
+ --tg-text: #c8d8e8;
+ --tg-nav-h: 70px;
 }
 
 /* bar */
 .tg-navbar {
-  position: sticky; top: 0; z-index: 1040;
-  height: var(--tg-nav-h);
-  background: rgba(6,15,30,.9);
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
-  border-bottom: 1px solid var(--tg-border);
-  box-shadow: 0 2px 40px rgba(0,0,0,.35);
-  transition: background .3s, box-shadow .3s;
+ position: sticky; top: 0; z-index: 1040;
+ height: var(--tg-nav-h);
+ background: rgba(6,15,30,.9);
+ backdrop-filter: blur(22px);
+ -webkit-backdrop-filter: blur(22px);
+ border-bottom: 1px solid var(--tg-border);
+ box-shadow: 0 2px 40px rgba(0,0,0,.35);
+ transition: background .3s, box-shadow .3s;
 }
 .tg-navbar.scrolled {
-  background: rgba(6,15,30,.98);
-  box-shadow: 0 4px 48px rgba(0,0,0,.5);
+ background: rgba(6,15,30,.98);
+ box-shadow: 0 4px 48px rgba(0,0,0,.5);
 }
 
 /* inner flex row */
 .tg-nav-inner {
-  display: flex; align-items: center;
-  height: 100%; gap: 0;
+ display: flex; align-items: center;
+ height: 100%; gap: 0;
 }
 
 /* ── brand (left) ── */
 .tg-brand {
-  display: flex; align-items: center; gap: 12px;
-  text-decoration: none; flex-shrink: 0;
-  padding: 0 20px 0 0;
-  border-right: 1px solid rgba(201,168,76,.15);
-  margin-right: 12px;
+ display: flex; align-items: center; gap: 12px;
+ text-decoration: none; flex-shrink: 0;
+ padding: 0 20px 0 0;
+ border-right: 1px solid rgba(201,168,76,.15);
+ margin-right: 12px;
 }
 .tg-brand-logo img {
-  width: 42px; height: 42px; border-radius: 9px;
-  object-fit: contain; background: #fff; padding: 3px;
-  box-shadow: 0 4px 14px rgba(201,168,76,.25);
+ width: 42px; height: 42px; border-radius: 9px;
+ object-fit: contain; background: #fff; padding: 3px;
+ box-shadow: 0 4px 14px rgba(201,168,76,.25);
 }
 .tg-brand-name {
-  font-family: 'Manrope', 'Inter', sans-serif;
-  font-size: .92rem; font-weight: 800;
-  color: #fff; letter-spacing: -.3px; line-height: 1.1;
+ font-family: 'Manrope', 'Inter', sans-serif;
+ font-size: .92rem; font-weight: 800;
+ color: #fff; letter-spacing: -.3px; line-height: 1.1;
 }
 .tg-brand-sub {
-  font-size: .58rem; font-weight: 600;
-  color: var(--tg-gold); letter-spacing: 1.8px; text-transform: uppercase;
+ font-size: .58rem; font-weight: 600;
+ color: var(--tg-gold); letter-spacing: 1.8px; text-transform: uppercase;
 }
 
 /* ── nav menu (right side, always visible on desktop) ── */
 .tg-nav-menu {
-  display: flex; align-items: center;
-  flex: 1; margin-left: 0; gap: 2px;
-  justify-content: flex-start;
+ display: flex; align-items: center;
+ flex: 1; margin-left: 0; gap: 2px;
+ justify-content: flex-start;
 }
 
 .tg-nav-list {
-  display: flex; align-items: center;
-  list-style: none; margin: 0; padding: 0; gap: 2px;
+ display: flex; align-items: center;
+ list-style: none; margin: 0; padding: 0; gap: 2px;
 }
 .tg-nav-list > li { position: relative; }
 
 /* every nav link/button */
 .tg-nl {
-  display: flex; align-items: center; gap: 4px;
-  padding: 7px 14px; border-radius: 8px;
-  font-size: .82rem; font-weight: 500;
-  color: var(--tg-text); text-decoration: none;
-  background: none; border: none; cursor: pointer;
-  white-space: nowrap; transition: color .18s, background .18s;
-  position: relative;
+ display: flex; align-items: center; gap: 4px;
+ padding: 7px 14px; border-radius: 8px;
+ font-size: .82rem; font-weight: 500;
+ color: var(--tg-text); text-decoration: none;
+ background: none; border: none; cursor: pointer;
+ white-space: nowrap; transition: color .18s, background .18s;
+ position: relative;
 }
 .tg-nl::after {
-  content: ''; position: absolute;
-  bottom: 3px; left: 11px; right: 11px;
-  height: 2px; border-radius: 2px;
-  background: var(--tg-gold);
-  transform: scaleX(0); transform-origin: left;
-  transition: transform .22s cubic-bezier(.4,0,.2,1);
+ content: ''; position: absolute;
+ bottom: 3px; left: 11px; right: 11px;
+ height: 2px; border-radius: 2px;
+ background: var(--tg-gold);
+ transform: scaleX(0); transform-origin: left;
+ transition: transform .22s cubic-bezier(.4,0,.2,1);
 }
-.tg-nl:hover        { color: #fff; background: rgba(255,255,255,.05); }
+.tg-nl:hover { color: #fff; background: rgba(255,255,255,.05); }
 .tg-nl:hover::after { transform: scaleX(1); }
-.tg-nl.tg-active    { color: var(--tg-gold); }
+.tg-nl.tg-active { color: var(--tg-gold); }
 .tg-nl.tg-active::after { transform: scaleX(1); }
 
 /* caret icon */
@@ -134,38 +134,38 @@ li:focus-within > .tg-nl > .tg-caret { transform: rotate(180deg); opacity: 1; }
 
 /* loyalty pill */
 .tg-loyalty-tag {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 4px 10px; border-radius: 100px;
-  background: rgba(201,168,76,.1); border: 1px solid rgba(201,168,76,.28);
-  color: var(--tg-gold); font-size: .77rem; font-weight: 700;
-  transition: background .18s;
+ display: inline-flex; align-items: center; gap: 5px;
+ padding: 4px 10px; border-radius: 100px;
+ background: rgba(201,168,76,.1); border: 1px solid rgba(201,168,76,.28);
+ color: var(--tg-gold); font-size: .77rem; font-weight: 700;
+ transition: background .18s;
 }
 .tg-nl:hover .tg-loyalty-tag { background: rgba(201,168,76,.2); }
 
 /* ── dropdowns ── */
 .tg-dd {
-  position: absolute; top: calc(100% + 10px); left: 50%;
-  transform: translateX(-50%);
-  background: #0b1a2e;
-  border: 1px solid rgba(201,168,76,.18);
-  border-radius: 14px; padding: 8px;
-  min-width: 200px;
-  box-shadow: 0 20px 56px rgba(0,0,0,.6);
-  opacity: 0; pointer-events: none;
-  transition: opacity .18s, transform .18s;
-  transform: translateX(-50%) translateY(-6px);
-  z-index: 999;
+ position: absolute; top: calc(100% + 10px); left: 50%;
+ transform: translateX(-50%);
+ background: #0b1a2e;
+ border: 1px solid rgba(201,168,76,.18);
+ border-radius: 14px; padding: 8px;
+ min-width: 200px;
+ box-shadow: 0 20px 56px rgba(0,0,0,.6);
+ opacity: 0; pointer-events: none;
+ transition: opacity .18s, transform .18s;
+ transform: translateX(-50%) translateY(-6px);
+ z-index: 999;
 }
 .tg-dd.tg-mega {
-  display: flex; gap: 0; min-width: 500px; left: 0;
-  transform: translateY(-6px);
+ display: flex; gap: 0; min-width: 500px; left: 0;
+ transform: translateY(-6px);
 }
 .tg-dd.tg-end { left: auto; right: 0; transform: translateY(-6px); }
 
 li:hover > .tg-dd,
 li:focus-within > .tg-dd {
-  opacity: 1; pointer-events: all;
-  transform: translateX(-50%) translateY(0);
+ opacity: 1; pointer-events: all;
+ transform: translateX(-50%) translateY(0);
 }
 li:hover > .tg-dd.tg-mega,
 li:hover > .tg-dd.tg-end,
@@ -176,15 +176,15 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 .tg-dd-sep { width: 1px; background: rgba(201,168,76,.1); margin: 6px 0; }
 
 .tg-dd-label {
-  font-size: .6rem; font-weight: 700; letter-spacing: 2px;
-  text-transform: uppercase; color: rgba(201,168,76,.65);
-  padding: 6px 10px 4px;
+ font-size: .6rem; font-weight: 700; letter-spacing: 2px;
+ text-transform: uppercase; color: rgba(201,168,76,.65);
+ padding: 6px 10px 4px;
 }
 .tg-dd-item {
-  display: flex; align-items: center; gap: 9px;
-  padding: 9px 10px; border-radius: 8px;
-  font-size: .82rem; font-weight: 500; color: var(--tg-text);
-  text-decoration: none; transition: background .15s, color .15s;
+ display: flex; align-items: center; gap: 9px;
+ padding: 9px 10px; border-radius: 8px;
+ font-size: .82rem; font-weight: 500; color: var(--tg-text);
+ text-decoration: none; transition: background .15s, color .15s;
 }
 .tg-dd-item:hover { background: rgba(201,168,76,.1); color: #fff; }
 .tg-dd-ico { font-size: .95rem; width: 20px; text-align: center; }
@@ -194,89 +194,89 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 
 /* ── auth buttons ── */
 .tg-nav-auth {
-  display: flex; align-items: center; gap: 8px;
-  margin-left: auto;
-  padding-left: 14px;
-  border-left: 1px solid rgba(201,168,76,.15);
+ display: flex; align-items: center; gap: 8px;
+ margin-left: auto;
+ padding-left: 14px;
+ border-left: 1px solid rgba(201,168,76,.15);
 }
 .tg-btn-ghost {
-  padding: 7px 16px; border-radius: 8px;
-  border: 1px solid rgba(255,255,255,.14);
-  color: #e8f0fe; font-size: .82rem; font-weight: 500;
-  text-decoration: none; white-space: nowrap;
-  transition: border-color .2s, color .2s, background .2s;
+ padding: 7px 16px; border-radius: 8px;
+ border: 1px solid rgba(255,255,255,.14);
+ color: #e8f0fe; font-size: .82rem; font-weight: 500;
+ text-decoration: none; white-space: nowrap;
+ transition: border-color .2s, color .2s, background .2s;
 }
 .tg-btn-ghost:hover { border-color: var(--tg-gold); color: var(--tg-gold); background: rgba(201,168,76,.06); }
 .tg-btn-primary {
-  padding: 7px 18px; border-radius: 8px;
-  background: linear-gradient(135deg, var(--tg-gold), var(--tg-goldlt));
-  color: #060f1e; font-size: .82rem; font-weight: 800;
-  text-decoration: none; white-space: nowrap; border: none;
-  box-shadow: 0 4px 14px rgba(201,168,76,.3);
-  transition: transform .2s, box-shadow .2s;
+ padding: 7px 18px; border-radius: 8px;
+ background: linear-gradient(135deg, var(--tg-gold), var(--tg-goldlt));
+ color: #060f1e; font-size: .82rem; font-weight: 800;
+ text-decoration: none; white-space: nowrap; border: none;
+ box-shadow: 0 4px 14px rgba(201,168,76,.3);
+ transition: transform .2s, box-shadow .2s;
 }
 .tg-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 22px rgba(201,168,76,.45); color: #060f1e; }
 
 /* user pill */
 .tg-user-pill {
-  display: flex; align-items: center; gap: 7px;
-  padding: 4px 12px 4px 4px; border-radius: 100px;
-  border: 1px solid rgba(201,168,76,.2); background: rgba(255,255,255,.04);
-  cursor: pointer; transition: border-color .2s; white-space: nowrap;
-  font-size: .82rem; color: var(--tg-text); font-weight: 500;
+ display: flex; align-items: center; gap: 7px;
+ padding: 4px 12px 4px 4px; border-radius: 100px;
+ border: 1px solid rgba(201,168,76,.2); background: rgba(255,255,255,.04);
+ cursor: pointer; transition: border-color .2s; white-space: nowrap;
+ font-size: .82rem; color: var(--tg-text); font-weight: 500;
 }
 .tg-user-pill:hover { border-color: rgba(201,168,76,.45); }
 .tg-avatar {
-  width: 28px; height: 28px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--tg-gold), var(--tg-goldlt));
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 800; font-size: .72rem; color: #060f1e; flex-shrink: 0;
+ width: 28px; height: 28px; border-radius: 50%;
+ background: linear-gradient(135deg, var(--tg-gold), var(--tg-goldlt));
+ display: flex; align-items: center; justify-content: center;
+ font-weight: 800; font-size: .72rem; color: #060f1e; flex-shrink: 0;
 }
 .tg-avatar img { width:28px;height:28px;border-radius:50%;object-fit:cover; }
 
 /* points badge */
 .tg-pts-badge {
-  background: rgba(201,168,76,.15); color: var(--tg-gold);
-  border: 1px solid rgba(201,168,76,.25); border-radius: 100px;
-  font-size: .6rem; font-weight: 700; padding: 2px 7px; margin-left: auto;
+ background: rgba(201,168,76,.15); color: var(--tg-gold);
+ border: 1px solid rgba(201,168,76,.25); border-radius: 100px;
+ font-size: .6rem; font-weight: 700; padding: 2px 7px; margin-left: auto;
 }
 
 /* notif bell */
 .tg-bell {
-  position: relative; width: 36px; height: 36px; border-radius: 8px;
-  border: 1px solid rgba(201,168,76,.18); background: rgba(255,255,255,.04);
-  color: var(--tg-text); display: flex; align-items: center; justify-content: center;
-  text-decoration: none; font-size: .9rem; transition: border-color .2s, color .2s;
+ position: relative; width: 36px; height: 36px; border-radius: 8px;
+ border: 1px solid rgba(201,168,76,.18); background: rgba(255,255,255,.04);
+ color: var(--tg-text); display: flex; align-items: center; justify-content: center;
+ text-decoration: none; font-size: .9rem; transition: border-color .2s, color .2s;
 }
 .tg-bell:hover { border-color: var(--tg-gold); color: var(--tg-gold); }
 .tg-bell-dot {
-  position: absolute; top: 4px; right: 4px;
-  width: 15px; height: 15px; border-radius: 50%;
-  background: #e63946; border: 2px solid #060f1e;
-  font-size: .5rem; font-weight: 700; color: #fff;
-  display: flex; align-items: center; justify-content: center;
+ position: absolute; top: 4px; right: 4px;
+ width: 15px; height: 15px; border-radius: 50%;
+ background: #e63946; border: 2px solid #060f1e;
+ font-size: .5rem; font-weight: 700; color: #fff;
+ display: flex; align-items: center; justify-content: center;
 }
 
 /* install btn */
 .tg-install-btn {
-  width: 36px; height: 36px; border-radius: 8px;
-  border: 1px solid rgba(201,168,76,.25); background: rgba(201,168,76,.07);
-  color: var(--tg-gold); cursor: pointer; font-size: .88rem;
-  display: flex; align-items: center; justify-content: center;
-  transition: background .2s;
+ width: 36px; height: 36px; border-radius: 8px;
+ border: 1px solid rgba(201,168,76,.25); background: rgba(201,168,76,.07);
+ color: var(--tg-gold); cursor: pointer; font-size: .88rem;
+ display: flex; align-items: center; justify-content: center;
+ transition: background .2s;
 }
 .tg-install-btn:hover { background: rgba(201,168,76,.18); }
 
 /* ── hamburger ── */
 .tg-hamburger {
-  display: none; flex-direction: column; gap: 5px;
-  padding: 8px; border: 1px solid rgba(201,168,76,.2);
-  border-radius: 8px; background: none; cursor: pointer;
-  margin-left: 12px; flex-shrink: 0;
+ display: none; flex-direction: column; gap: 5px;
+ padding: 8px; border: 1px solid rgba(201,168,76,.2);
+ border-radius: 8px; background: none; cursor: pointer;
+ margin-left: 12px; flex-shrink: 0;
 }
 .tg-hamburger span {
-  display: block; width: 22px; height: 2px;
-  background: var(--tg-text); border-radius: 2px; transition: .3s;
+ display: block; width: 22px; height: 2px;
+ background: var(--tg-text); border-radius: 2px; transition: .3s;
 }
 .tg-hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
 .tg-hamburger.open span:nth-child(2) { opacity: 0; }
@@ -284,57 +284,57 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 
 /* ── MOBILE (≤ 991px) ── */
 @media (max-width: 991px) {
-  .tg-hamburger { display: flex; }
-  /* Hide the desktop nav menu on mobile */
-  .tg-nav-menu  { display: none !important; }
-  .tg-nav-auth  { display: none !important; }
+ .tg-hamburger { display: flex; }
+ /* Hide the desktop nav menu on mobile */
+ .tg-nav-menu { display: none !important; }
+ .tg-nav-auth { display: none !important; }
 }
 
 /* ── Standalone mobile overlay (outside <nav>, so backdrop-filter can't clip it) ── */
 .tg-mob-overlay {
-  display: none;
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  background: #0a0a0a;
-  z-index: 99999;
-  overflow-y: auto;
-  flex-direction: column;
-  -webkit-overflow-scrolling: touch;
+ display: none;
+ position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+ background: #0a0a0a;
+ z-index: 99999;
+ overflow-y: auto;
+ flex-direction: column;
+ -webkit-overflow-scrolling: touch;
 }
 .tg-mob-overlay.open { display: flex; }
 
 /* Only show on mobile */
 @media (min-width: 992px) {
-  .tg-mob-overlay { display: none !important; }
+ .tg-mob-overlay { display: none !important; }
 }
 
 /* Header row */
 .tg-mob-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 20px;
-  border-bottom: 1px solid rgba(201,168,76,.15);
-  flex-shrink: 0;
+ display: flex; align-items: center; justify-content: space-between;
+ padding: 18px 20px;
+ border-bottom: 1px solid rgba(201,168,76,.15);
+ flex-shrink: 0;
 }
 .tg-mob-close {
-  width: 40px; height: 40px; border-radius: 50%;
-  background: rgba(255,255,255,.06); border: none; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  color: #e0d5c0; font-size: 1.1rem;
+ width: 40px; height: 40px; border-radius: 50%;
+ background: rgba(255,255,255,.06); border: none; cursor: pointer;
+ display: flex; align-items: center; justify-content: center;
+ color: #e0d5c0; font-size: 1.1rem;
 }
 
 /* Nav list */
 .tg-mob-list {
-  list-style: none; margin: 0; padding: 0 20px;
-  flex: 1;
+ list-style: none; margin: 0; padding: 0 20px;
+ flex: 1;
 }
 .tg-mob-li {
-  border-bottom: 1px solid rgba(255,255,255,.07);
+ border-bottom: 1px solid rgba(255,255,255,.07);
 }
 .tg-mob-link {
-  display: flex; justify-content: space-between; align-items: center;
-  width: 100%; padding: 18px 0;
-  font-size: 1.2rem; font-weight: 600; color: #e0d5c0;
-  background: none; border: none; text-align: left; text-decoration: none;
-  cursor: pointer;
+ display: flex; justify-content: space-between; align-items: center;
+ width: 100%; padding: 18px 0;
+ font-size: 1.2rem; font-weight: 600; color: #e0d5c0;
+ background: none; border: none; text-align: left; text-decoration: none;
+ cursor: pointer;
 }
 .tg-mob-link:hover { color: #c9a84c; }
 .tg-mob-caret { font-size: .75rem; transition: transform .2s; }
@@ -344,40 +344,40 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 .tg-mob-sub { display: none; padding: 4px 0 14px 4px; }
 .tg-mob-li.mob-open .tg-mob-sub { display: block; }
 .tg-mob-sub-label {
-  font-size: .68rem; letter-spacing: 2px; font-weight: 700;
-  color: #c9a84c; padding: 8px 0 4px; text-transform: uppercase;
+ font-size: .68rem; letter-spacing: 2px; font-weight: 700;
+ color: #c9a84c; padding: 8px 0 4px; text-transform: uppercase;
 }
 .tg-mob-sub-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 12px; margin-bottom: 2px;
-  font-size: .95rem; color: #7a6e5f;
-  border-radius: 8px; text-decoration: none;
-  border-bottom: 1px solid rgba(255,255,255,.04);
+ display: flex; align-items: center; gap: 10px;
+ padding: 10px 12px; margin-bottom: 2px;
+ font-size: .95rem; color: #7a6e5f;
+ border-radius: 8px; text-decoration: none;
+ border-bottom: 1px solid rgba(255,255,255,.04);
 }
 .tg-mob-sub-item:hover { color: #e0d5c0; background: rgba(201,168,76,.06); }
 
 /* Bottom CTA strip */
 .tg-mob-cta {
-  display: flex; flex-direction: column; gap: 10px;
-  padding: 20px; flex-shrink: 0;
-  border-top: 1px solid rgba(201,168,76,.15);
+ display: flex; flex-direction: column; gap: 10px;
+ padding: 20px; flex-shrink: 0;
+ border-top: 1px solid rgba(201,168,76,.15);
 }
 .tg-mob-cta-login {
-  display: block; text-align: center; padding: 14px;
-  border: 1px solid rgba(201,168,76,.35); border-radius: 12px;
-  color: #c9a84c; font-weight: 700; font-size: .95rem;
-  text-decoration: none;
+ display: block; text-align: center; padding: 14px;
+ border: 1px solid rgba(201,168,76,.35); border-radius: 12px;
+ color: #c9a84c; font-weight: 700; font-size: .95rem;
+ text-decoration: none;
 }
 .tg-mob-cta-register {
-  display: block; text-align: center; padding: 14px;
-  background: linear-gradient(135deg,#c9a84c,#e8c96a); border-radius: 12px;
-  color: #1a0a00; font-weight: 800; font-size: .95rem;
-  text-decoration: none;
+ display: block; text-align: center; padding: 14px;
+ background: linear-gradient(135deg,#c9a84c,#e8c96a); border-radius: 12px;
+ color: #1a0a00; font-weight: 800; font-size: .95rem;
+ text-decoration: none;
 }
 .tg-mob-cta-user {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px; border-radius: 12px;
-  background: rgba(201,168,76,.07); border: 1px solid rgba(201,168,76,.15);
+ display: flex; align-items: center; gap: 12px;
+ padding: 12px; border-radius: 12px;
+ background: rgba(201,168,76,.07); border: 1px solid rgba(201,168,76,.15);
 }
 </style>
 {% block extra_head %}{% endblock %}
@@ -386,316 +386,316 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 
 <!-- ═══ DYNAMIC BACKGROUND — animated gradient orbs + grid texture ═══ -->
 <div class="tg-bg-layer" aria-hidden="true">
-  <div class="tg-bg-orb tg-bg-orb-1"></div>
-  <div class="tg-bg-orb tg-bg-orb-2"></div>
-  <div class="tg-bg-orb tg-bg-orb-3"></div>
-  <div class="tg-bg-orb tg-bg-orb-4"></div>
-  <div class="tg-bg-grid"></div>
+ <div class="tg-bg-orb tg-bg-orb-1"></div>
+ <div class="tg-bg-orb tg-bg-orb-2"></div>
+ <div class="tg-bg-orb tg-bg-orb-3"></div>
+ <div class="tg-bg-orb tg-bg-orb-4"></div>
+ <div class="tg-bg-grid"></div>
 </div>
 
 <!-- ═══ NAVBAR ═══ -->
 <nav class="tg-navbar" id="tgNavbar">
-  <div class="container-xl">
-    <div class="tg-nav-inner">
+ <div class="container-xl">
+ <div class="tg-nav-inner">
 
-      <!-- BRAND (left) -->
-      <a class="tg-brand" href="{% url 'home' %}">
-        <div class="tg-brand-logo">
-          <img src="{% static 'images/logo.jpg' %}" alt="T&TG">
-        </div>
-        <div>
-          <div class="tg-brand-name">T&TG Trade Corp</div>
-          <div class="tg-brand-sub">{% t "footer_tagline" %}</div>
-        </div>
-      </a>
+ <!-- BRAND (left) -->
+ <a class="tg-brand" href="{% url 'home' %}">
+ <div class="tg-brand-logo">
+ <img src="{% static 'images/logo.jpg' %}" alt="T&TG">
+ </div>
+ <div>
+ <div class="tg-brand-name">T&TG Trade Corp</div>
+ <div class="tg-brand-sub">{% t "footer_tagline" %}</div>
+ </div>
+ </a>
 
-      <!-- NAV MENU (right — always visible on desktop) -->
-      <div class="tg-nav-menu" id="tgNavMenu">
+ <!-- NAV MENU (right — always visible on desktop) -->
+ <div class="tg-nav-menu" id="tgNavMenu">
 
-        <!-- Desktop nav list (hidden on mobile via CSS) -->
-        <ul class="tg-nav-list">
-          <li>
-            <a class="tg-nl {% if request.resolver_match.url_name == 'home' %}tg-active{% endif %}" href="{% url 'home' %}">{% t "nav_home" %}</a>
-          </li>
-          <li>
-            <button class="tg-nl">{% t "nav_shop" %} <i class="fas fa-chevron-down tg-caret"></i></button>
-            <div class="tg-dd tg-mega">
-              <div class="tg-dd-col">
-                <div class="tg-dd-label">Markets</div>
-                <a href="{% url 'marketplace' %}"                      class="tg-dd-item"><span class="tg-dd-ico">☕</span>All Coffee Products</a>
-                <a href="{% url 'product_list' %}?market=local"         class="tg-dd-item"><span class="tg-dd-ico">🇨🇦</span>Canadians</a>
-                <a href="{% url 'product_list' %}?market=international" class="tg-dd-item"><span class="tg-dd-ico">🌐</span>Global Clients</a>
-              </div>
-              <div class="tg-dd-sep"></div>
-              <div class="tg-dd-col">
-                <div class="tg-dd-label">Categories</div>
-                <a href="{% url 'product_list' %}?category=coffee"              class="tg-dd-item"><span class="tg-dd-ico">☕</span>All Coffee</a>
-                <a href="{% url 'product_list' %}?category=coffee&name=arabica"  class="tg-dd-item"><span class="tg-dd-ico">🌱</span>Arabica Green Coffee</a>
-                <a href="{% url 'product_list' %}?category=coffee&name=robusta"  class="tg-dd-item"><span class="tg-dd-ico">🫘</span>Robusta Green Coffee</a>
-                <a href="{% url 'product_list' %}?category=coffee&name=artisanal" class="tg-dd-item"><span class="tg-dd-ico">✨</span>Artisanal Coffee Goods</a>
-              </div>
-            </div>
-          </li>
-          <li>
-            <button class="tg-nl">{% t "nav_trade" %} <i class="fas fa-chevron-down tg-caret"></i></button>
-            <div class="tg-dd">
-              <a href="{% url 'trade_ecommerce' %}" class="tg-dd-item"><span class="tg-dd-ico">🌐</span>Trade & e-Commerce</a>
-              <a href="{% url 'import_export' %}"   class="tg-dd-item"><span class="tg-dd-ico">🚢</span>Import & Export</a>
-              <a href="{% url 'forex' %}"            class="tg-dd-item"><span class="tg-dd-ico">💱</span>Live Exchange Rates</a>
-            </div>
-          </li>
-          <li>
-            <a class="tg-nl {% if request.resolver_match.url_name == 'loyalty_info' %}tg-active{% endif %}" href="{% url 'loyalty_info' %}">
-              <span class="tg-loyalty-tag"><i class="fas fa-coins"></i> {% t "nav_loyalty" %}</span>
-            </a>
-          </li>
-          <li>
-            <button class="tg-nl">{% t "nav_training" %} <i class="fas fa-chevron-down tg-caret"></i></button>
-            <div class="tg-dd">
-              <a href="{% url 'training_home' %}" class="tg-dd-item"><span class="tg-dd-ico">🎓</span>Onboarding Program</a>
-              <a href="{% url 'tv_programs' %}"   class="tg-dd-item"><span class="tg-dd-ico">📺</span>Streaming</a>
-            </div>
-          </li>
-          <li>
-            <button class="tg-nl">Company <i class="fas fa-chevron-down tg-caret"></i></button>
-            <div class="tg-dd">
-              <a href="{% url 'about' %}"     class="tg-dd-item {% if request.resolver_match.url_name == 'about' %}tg-active{% endif %}"><span class="tg-dd-ico">🏢</span>About Us</a>
-              <a href="{% url 'contact' %}"   class="tg-dd-item {% if request.resolver_match.url_name == 'contact' %}tg-active{% endif %}"><span class="tg-dd-ico">✉️</span>Contact Us</a>
-              <a href="{% url 'faq' %}" class="tg-dd-item "><span class="tg-dd-ico">❓</span>FAQ</a>
-              <a href="{% url 'blog_list' %}" class="tg-dd-item {% if 'blog' in request.resolver_match.url_name %}tg-active{% endif %}"><span class="tg-dd-ico">📰</span>Blog & News</a>
-            </div>
-          </li>
-        </ul>
+ <!-- Desktop nav list (hidden on mobile via CSS) -->
+ <ul class="tg-nav-list">
+ <li>
+ <a class="tg-nl {% if request.resolver_match.url_name == 'home' %}tg-active{% endif %}" href="{% url 'home' %}">{% t "nav_home" %}</a>
+ </li>
+ <li>
+ <button class="tg-nl">{% t "nav_shop" %} <i class="fas fa-chevron-down tg-caret"></i></button>
+ <div class="tg-dd tg-mega">
+ <div class="tg-dd-col">
+ <div class="tg-dd-label">Markets</div>
+ <a href="{% url 'marketplace' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>All Coffee Products</a>
+ <a href="{% url 'product_list' %}?market=local" class="tg-dd-item"><span class="tg-dd-ico"></span>Canadians</a>
+ <a href="{% url 'product_list' %}?market=international" class="tg-dd-item"><span class="tg-dd-ico"></span>Global Clients</a>
+ </div>
+ <div class="tg-dd-sep"></div>
+ <div class="tg-dd-col">
+ <div class="tg-dd-label">Categories</div>
+ <a href="{% url 'product_list' %}?category=coffee" class="tg-dd-item"><span class="tg-dd-ico"></span>All Coffee</a>
+ <a href="{% url 'product_list' %}?category=coffee&name=arabica" class="tg-dd-item"><span class="tg-dd-ico"></span>Arabica Green Coffee</a>
+ <a href="{% url 'product_list' %}?category=coffee&name=robusta" class="tg-dd-item"><span class="tg-dd-ico"></span>Robusta Green Coffee</a>
+ <a href="{% url 'product_list' %}?category=coffee&name=artisanal" class="tg-dd-item"><span class="tg-dd-ico"></span>Artisanal Coffee Goods</a>
+ </div>
+ </div>
+ </li>
+ <li>
+ <button class="tg-nl">{% t "nav_trade" %} <i class="fas fa-chevron-down tg-caret"></i></button>
+ <div class="tg-dd">
+ <a href="{% url 'trade_ecommerce' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>Trade & e-Commerce</a>
+ <a href="{% url 'import_export' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>Import & Export</a>
+ <a href="{% url 'forex' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>Live Exchange Rates</a>
+ </div>
+ </li>
+ <li>
+ <a class="tg-nl {% if request.resolver_match.url_name == 'loyalty_info' %}tg-active{% endif %}" href="{% url 'loyalty_info' %}">
+ <span class="tg-loyalty-tag"><i class="fas fa-coins"></i> {% t "nav_loyalty" %}</span>
+ </a>
+ </li>
+ <li>
+ <button class="tg-nl">{% t "nav_training" %} <i class="fas fa-chevron-down tg-caret"></i></button>
+ <div class="tg-dd">
+ <a href="{% url 'training_home' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>Onboarding Program</a>
+ <a href="{% url 'tv_programs' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>Streaming</a>
+ </div>
+ </li>
+ <li>
+ <button class="tg-nl">Company <i class="fas fa-chevron-down tg-caret"></i></button>
+ <div class="tg-dd">
+ <a href="{% url 'about' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'about' %}tg-active{% endif %}"><span class="tg-dd-ico"></span>About Us</a>
+ <a href="{% url 'contact' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'contact' %}tg-active{% endif %}"><span class="tg-dd-ico">️</span>Contact Us</a>
+ <a href="{% url 'faq' %}" class="tg-dd-item "><span class="tg-dd-ico"></span>FAQ</a>
+ <a href="{% url 'blog_list' %}" class="tg-dd-item {% if 'blog' in request.resolver_match.url_name %}tg-active{% endif %}"><span class="tg-dd-ico"></span>Blog & News</a>
+ </div>
+ </li>
+ </ul>
 
-        <!-- Auth / user actions -->
-        <div class="tg-nav-auth">
-          <!-- Language toggle -->
-          <a href="{% url 'set_language' %}?lang={% if request.session.lang == 'sw' %}en{% else %}sw{% endif %}"
-             class="tg-bell" title="{% if request.session.lang == 'sw' %}Switch to English{% else %}Badili kwa Kiswahili{% endif %}">
-            <span style="font-size:.72rem;font-weight:800;letter-spacing:.5px">{% if request.session.lang == 'sw' %}EN{% else %}SW{% endif %}</span>
-          </a>
+ <!-- Auth / user actions -->
+ <div class="tg-nav-auth">
+ <!-- Language toggle -->
+ <a href="{% url 'set_language' %}?lang={% if request.session.lang == 'sw' %}en{% else %}sw{% endif %}"
+ class="tg-bell" title="{% if request.session.lang == 'sw' %}Switch to English{% else %}Badili kwa Kiswahili{% endif %}">
+ <span style="font-size:.72rem;font-weight:800;letter-spacing:.5px">{% if request.session.lang == 'sw' %}EN{% else %}SW{% endif %}</span>
+ </a>
 
-          <!-- Search -->
-          <div class="tg-search-wrap" id="tgSearchWrap">
-            <button id="tgSearchBtn" class="tg-bell" title="Search products" type="button">
-              <i class="fas fa-search"></i>
-            </button>
-            <form action="{% url 'product_list' %}" method="get" class="tg-search-form" id="tgSearchForm">
-              <input type="text" name="q" id="tgSearchInput" class="tg-search-input"
-                     placeholder="Search T&TG coffee — Arabica, Robusta…" autocomplete="off">
-              <button type="submit" class="tg-search-submit" aria-label="Search">
-                <i class="fas fa-arrow-right"></i>
-              </button>
-            </form>
-          </div>
+ <!-- Search -->
+ <div class="tg-search-wrap" id="tgSearchWrap">
+ <button id="tgSearchBtn" class="tg-bell" title="Search products" type="button">
+ <i class="fas fa-search"></i>
+ </button>
+ <form action="{% url 'product_list' %}" method="get" class="tg-search-form" id="tgSearchForm">
+ <input type="text" name="q" id="tgSearchInput" class="tg-search-input"
+ placeholder="Search T&TG coffee — Arabica, Robusta…" autocomplete="off">
+ <button type="submit" class="tg-search-submit" aria-label="Search">
+ <i class="fas fa-arrow-right"></i>
+ </button>
+ </form>
+ </div>
 
-          <!-- Install App -->
-          <button id="install-btn" class="tg-install-btn d-none" title="Install T&TG Shopping App">
-            <i class="fas fa-download"></i>
-          </button>
+ <!-- Install App -->
+ <button id="install-btn" class="tg-install-btn d-none" title="Install T&TG Shopping App">
+ <i class="fas fa-download"></i>
+ </button>
 
-          {% if user.is_authenticated %}
-          {% if user.is_staff %}
-          <a href="{% url 'analytics_dashboard' %}#notifications" class="tg-bell" id="notif-bell" title="T&TG Analytics Dashboard">
-            <i class="fas fa-chart-line"></i>
-            <span id="notif-count-badge" class="tg-bell-dot" style="display:none">0</span>
-          </a>
-          {% endif %}
+ {% if user.is_authenticated %}
+ {% if user.is_staff %}
+ <a href="{% url 'analytics_dashboard' %}#notifications" class="tg-bell" id="notif-bell" title="T&TG Analytics Dashboard">
+ <i class="fas fa-chart-line"></i>
+ <span id="notif-count-badge" class="tg-bell-dot" style="display:none">0</span>
+ </a>
+ {% endif %}
 
-          <!-- User dropdown -->
-          <ul class="tg-nav-list">
-            <li>
-              <div class="tg-user-pill tg-nl" style="padding:4px 10px 4px 4px">
-                {% if user.safe_profile_photo_url %}
-                <div class="tg-avatar"><img src="{{ user.safe_profile_photo_url }}" onerror="this.style.display='none'"></div>
-                {% else %}
-                <div class="tg-avatar">{{ user.first_name.0|default:user.username.0|upper }}</div>
-                {% endif %}
-                <span class="d-none d-xl-inline">{{ user.get_short_name|default:user.username }}</span>
-                <i class="fas fa-chevron-down tg-caret ms-1"></i>
-              </div>
-              <div class="tg-dd tg-end" style="min-width:220px">
-                <div class="tg-dd-uhead">
-                  <div style="color:#e8f0fe;font-weight:700;font-size:.86rem">{{ user.get_full_name|default:user.username }}</div>
-                  <div style="color:#c9a84c;font-size:.7rem">{{ user.unique_id }}</div>
-                </div>
-                <a href="{% url 'dashboard' %}"        class="tg-dd-item"><span class="tg-dd-ico">⚡</span>Dashboard</a>
-                <a href="{% url 'profile' %}"           class="tg-dd-item"><span class="tg-dd-ico">👤</span>My Profile</a>
-                <a href="{% url 'loyalty_dashboard' %}" class="tg-dd-item">
-                  <span class="tg-dd-ico">💰</span>Loyalty Points
-                  <span class="tg-pts-badge">{{ user.avon_points|floatformat:0 }}</span>
-                </a>
-                <a href="{% url 'my_orders' %}" class="tg-dd-item"><span class="tg-dd-ico">📦</span>My Orders</a>
-                <a href="{% url 'wishlist' %}" class="tg-dd-item"><span class="tg-dd-ico">❤️</span>My Wishlist</a>
-                <a href="{% url 'cart' %}" class="tg-dd-item"><span class="tg-dd-ico">🛒</span>My Cart</a>
-                <div style="height:1px;background:rgba(201,168,76,.12);margin:6px 8px"></div>
-                <a href="{% url 'logout' %}" class="tg-dd-item tg-dd-danger"><span class="tg-dd-ico">🚪</span>Sign Out</a>
-              </div>
-            </li>
-          </ul>
+ <!-- User dropdown -->
+ <ul class="tg-nav-list">
+ <li>
+ <div class="tg-user-pill tg-nl" style="padding:4px 10px 4px 4px">
+ {% if user.safe_profile_photo_url %}
+ <div class="tg-avatar"><img src="{{ user.safe_profile_photo_url }}" onerror="this.style.display='none'"></div>
+ {% else %}
+ <div class="tg-avatar">{{ user.first_name.0|default:user.username.0|upper }}</div>
+ {% endif %}
+ <span class="d-none d-xl-inline">{{ user.get_short_name|default:user.username }}</span>
+ <i class="fas fa-chevron-down tg-caret ms-1"></i>
+ </div>
+ <div class="tg-dd tg-end" style="min-width:220px">
+ <div class="tg-dd-uhead">
+ <div style="color:#e8f0fe;font-weight:700;font-size:.86rem">{{ user.get_full_name|default:user.username }}</div>
+ <div style="color:#c9a84c;font-size:.7rem">{{ user.unique_id }}</div>
+ </div>
+ <a href="{% url 'dashboard' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>Dashboard</a>
+ <a href="{% url 'profile' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>My Profile</a>
+ <a href="{% url 'loyalty_dashboard' %}" class="tg-dd-item">
+ <span class="tg-dd-ico"></span>Loyalty Points
+ <span class="tg-pts-badge">{{ user.avon_points|floatformat:0 }}</span>
+ </a>
+ <a href="{% url 'my_orders' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>My Orders</a>
+ <a href="{% url 'wishlist' %}" class="tg-dd-item"><span class="tg-dd-ico">️</span>My Wishlist</a>
+ <a href="{% url 'cart' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>My Cart</a>
+ <div style="height:1px;background:rgba(201,168,76,.12);margin:6px 8px"></div>
+ <a href="{% url 'logout' %}" class="tg-dd-item tg-dd-danger"><span class="tg-dd-ico"></span>Sign Out</a>
+ </div>
+ </li>
+ </ul>
 
-          {% else %}
-          {% with cart_count=request.session.cart|length %}
-          {% if cart_count %}
-          <a href="{% url 'cart' %}" style="position:relative;display:inline-flex;align-items:center;gap:6px;color:#c9a84c;text-decoration:none;padding:8px 12px;border:1px solid rgba(201,168,76,.3);border-radius:100px;font-size:.82rem;font-weight:700" id="cart_icon">
-            🛒 <span style="background:#c9a84c;color:#1a0a00;border-radius:100px;padding:1px 7px;font-size:.7rem;font-weight:800">{{ cart_count }}</span>
-          </a>
-          {% endif %}
-        {% endwith %}
-        <a href="{% url 'login' %}"    class="tg-btn-ghost">{% t "nav_signin" %}</a>
-          <a href="{% url 'register' %}" class="tg-btn-primary">{% t "nav_getstarted" %}</a>
-          {% endif %}
-        </div>
-      </div>
+ {% else %}
+ {% with cart_count=request.session.cart|length %}
+ {% if cart_count %}
+ <a href="{% url 'cart' %}" style="position:relative;display:inline-flex;align-items:center;gap:6px;color:#c9a84c;text-decoration:none;padding:8px 12px;border:1px solid rgba(201,168,76,.3);border-radius:100px;font-size:.82rem;font-weight:700" id="cart_icon">
+ <span style="background:#c9a84c;color:#1a0a00;border-radius:100px;padding:1px 7px;font-size:.7rem;font-weight:800">{{ cart_count }}</span>
+ </a>
+ {% endif %}
+ {% endwith %}
+ <a href="{% url 'login' %}" class="tg-btn-ghost">{% t "nav_signin" %}</a>
+ <a href="{% url 'register' %}" class="tg-btn-primary">{% t "nav_getstarted" %}</a>
+ {% endif %}
+ </div>
+ </div>
 
-      <!-- Mobile hamburger -->
-      <button class="tg-hamburger" id="tgHamburger" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
+ <!-- Mobile hamburger -->
+ <button class="tg-hamburger" id="tgHamburger" aria-label="Menu">
+ <span></span><span></span><span></span>
+ </button>
 
-    </div>
-  </div>
+ </div>
+ </div>
 </nav>
 
 <!-- ═══ MOBILE FULL-SCREEN OVERLAY ═══════════════════════════════════════
-     Placed OUTSIDE <nav> so backdrop-filter on .tg-navbar cannot create a
-     new containing block that breaks position:fixed on this element.
-     Only visible on mobile (≤991px) — hidden on desktop via CSS.
+ Placed OUTSIDE <nav> so backdrop-filter on .tg-navbar cannot create a
+ new containing block that breaks position:fixed on this element.
+ Only visible on mobile (≤991px) — hidden on desktop via CSS.
 ─────────────────────────────────────────────────────────────────────── -->
 <div class="tg-mob-overlay" id="tgMobOverlay" aria-hidden="true">
 
-  <!-- Header: logo + close -->
-  <div class="tg-mob-header">
-    <a href="{% url 'home' %}" style="display:flex;align-items:center;gap:10px;text-decoration:none" id="tgMobLogoLink">
-      <img src="{% static 'images/logo.jpg' %}" alt="T&TG" style="width:36px;height:36px;border-radius:8px;object-fit:cover">
-      <span style="color:#c9a84c;font-weight:900;font-size:1rem;letter-spacing:.5px">T&TG Trade Corp</span>
-    </a>
-    <button class="tg-mob-close" id="tgMobClose" aria-label="Close menu">
-      <i class="fas fa-times"></i>
-    </button>
-  </div>
+ <!-- Header: logo + close -->
+ <div class="tg-mob-header">
+ <a href="{% url 'home' %}" style="display:flex;align-items:center;gap:10px;text-decoration:none" id="tgMobLogoLink">
+ <img src="{% static 'images/logo.jpg' %}" alt="T&TG" style="width:36px;height:36px;border-radius:8px;object-fit:cover">
+ <span style="color:#c9a84c;font-weight:900;font-size:1rem;letter-spacing:.5px">T&TG Trade Corp</span>
+ </a>
+ <button class="tg-mob-close" id="tgMobClose" aria-label="Close menu">
+ <i class="fas fa-times"></i>
+ </button>
+ </div>
 
-  <!-- Nav rows -->
-  <ul class="tg-mob-list" id="tgMobList">
+ <!-- Nav rows -->
+ <ul class="tg-mob-list" id="tgMobList">
 
-    <li class="tg-mob-li">
-      <a class="tg-mob-link" href="{% url 'home' %}">Home</a>
-    </li>
+ <li class="tg-mob-li">
+ <a class="tg-mob-link" href="{% url 'home' %}">Home</a>
+ </li>
 
-    {% if user.is_authenticated %}
-    <li class="tg-mob-li">
-      <button class="tg-mob-link tg-mob-toggle">
-        My Account <i class="fas fa-chevron-down tg-mob-caret"></i>
-      </button>
-      <div class="tg-mob-sub">
-        <a href="{% url 'dashboard' %}"         class="tg-mob-sub-item"><span class="tg-dd-ico">⚡</span>Dashboard</a>
-        <a href="{% url 'dashboard' %}#profile"  class="tg-mob-sub-item"><span class="tg-dd-ico">👤</span>My Profile</a>
-        <a href="{% url 'dashboard' %}#loyalty"  class="tg-mob-sub-item"><span class="tg-dd-ico">💰</span>Loyalty Points</a>
-        <a href="{% url 'my_orders' %}"          class="tg-mob-sub-item"><span class="tg-dd-ico">📦</span>My Orders</a>
-        {% if user.is_staff %}
-        <a href="{% url 'dashboard' %}#analytics" class="tg-mob-sub-item"><span class="tg-dd-ico">📊</span>Analytics</a>
-        {% endif %}
-      </div>
-    </li>
-    {% endif %}
+ {% if user.is_authenticated %}
+ <li class="tg-mob-li">
+ <button class="tg-mob-link tg-mob-toggle">
+ My Account <i class="fas fa-chevron-down tg-mob-caret"></i>
+ </button>
+ <div class="tg-mob-sub">
+ <a href="{% url 'dashboard' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Dashboard</a>
+ <a href="{% url 'dashboard' %}#profile" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>My Profile</a>
+ <a href="{% url 'dashboard' %}#loyalty" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Loyalty Points</a>
+ <a href="{% url 'my_orders' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>My Orders</a>
+ {% if user.is_staff %}
+ <a href="{% url 'dashboard' %}#analytics" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Analytics</a>
+ {% endif %}
+ </div>
+ </li>
+ {% endif %}
 
-    <!-- Shop -->
-    <li class="tg-mob-li">
-      <button class="tg-mob-link tg-mob-toggle">
-        Shop <i class="fas fa-chevron-down tg-mob-caret"></i>
-      </button>
-      <div class="tg-mob-sub">
-        <div class="tg-mob-sub-label">Markets</div>
-        <a href="{% url 'marketplace' %}"                      class="tg-mob-sub-item"><span class="tg-dd-ico">☕</span>All Coffee Products</a>
-        <a href="{% url 'product_list' %}?market=local"         class="tg-mob-sub-item"><span class="tg-dd-ico">🇨🇦</span>Canadians</a>
-        <a href="{% url 'product_list' %}?market=international" class="tg-mob-sub-item"><span class="tg-dd-ico">🌐</span>Global Clients</a>
-        <div class="tg-mob-sub-label" style="margin-top:8px">Categories</div>
-        <a href="{% url 'product_list' %}?category=coffee"               class="tg-mob-sub-item"><span class="tg-dd-ico">☕</span>All Coffee</a>
-        <a href="{% url 'product_list' %}?category=coffee&name=arabica"   class="tg-mob-sub-item"><span class="tg-dd-ico">🌱</span>Arabica</a>
-        <a href="{% url 'product_list' %}?category=coffee&name=robusta"   class="tg-mob-sub-item"><span class="tg-dd-ico">🫘</span>Robusta</a>
-        <a href="{% url 'product_list' %}?category=coffee&name=artisanal" class="tg-mob-sub-item"><span class="tg-dd-ico">✨</span>Artisanal</a>
-        <a href="{% url 'cart' %}" class="tg-mob-sub-item"><span class="tg-dd-ico">🛒</span>My Cart</a>
-        <a href="{% url 'wishlist' %}" class="tg-mob-sub-item"><span class="tg-dd-ico">❤️</span>My Wishlist</a>
-      </div>
-    </li>
+ <!-- Shop -->
+ <li class="tg-mob-li">
+ <button class="tg-mob-link tg-mob-toggle">
+ Shop <i class="fas fa-chevron-down tg-mob-caret"></i>
+ </button>
+ <div class="tg-mob-sub">
+ <div class="tg-mob-sub-label">Markets</div>
+ <a href="{% url 'marketplace' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>All Coffee Products</a>
+ <a href="{% url 'product_list' %}?market=local" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Canadians</a>
+ <a href="{% url 'product_list' %}?market=international" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Global Clients</a>
+ <div class="tg-mob-sub-label" style="margin-top:8px">Categories</div>
+ <a href="{% url 'product_list' %}?category=coffee" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>All Coffee</a>
+ <a href="{% url 'product_list' %}?category=coffee&name=arabica" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Arabica</a>
+ <a href="{% url 'product_list' %}?category=coffee&name=robusta" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Robusta</a>
+ <a href="{% url 'product_list' %}?category=coffee&name=artisanal" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Artisanal</a>
+ <a href="{% url 'cart' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>My Cart</a>
+ <a href="{% url 'wishlist' %}" class="tg-mob-sub-item"><span class="tg-dd-ico">️</span>My Wishlist</a>
+ </div>
+ </li>
 
-    <!-- Trade -->
-    <li class="tg-mob-li">
-      <button class="tg-mob-link tg-mob-toggle">
-        Trade <i class="fas fa-chevron-down tg-mob-caret"></i>
-      </button>
-      <div class="tg-mob-sub">
-        <a href="{% url 'trade_ecommerce' %}" class="tg-mob-sub-item"><span class="tg-dd-ico">🌐</span>Trade & e-Commerce</a>
-        <a href="{% url 'import_export' %}"   class="tg-mob-sub-item"><span class="tg-dd-ico">🚢</span>Import & Export</a>
-        <a href="{% url 'forex' %}"            class="tg-mob-sub-item"><span class="tg-dd-ico">💱</span>Live Exchange Rates</a>
-      </div>
-    </li>
+ <!-- Trade -->
+ <li class="tg-mob-li">
+ <button class="tg-mob-link tg-mob-toggle">
+ Trade <i class="fas fa-chevron-down tg-mob-caret"></i>
+ </button>
+ <div class="tg-mob-sub">
+ <a href="{% url 'trade_ecommerce' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Trade & e-Commerce</a>
+ <a href="{% url 'import_export' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Import & Export</a>
+ <a href="{% url 'forex' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Live Exchange Rates</a>
+ </div>
+ </li>
 
-    <!-- Loyalty -->
-    <li class="tg-mob-li">
-      <a class="tg-mob-link" href="{% url 'loyalty_info' %}">
-        <i class="fas fa-coins" style="color:#c9a84c;margin-right:8px;font-size:.85rem"></i>Loyalty
-      </a>
-    </li>
+ <!-- Loyalty -->
+ <li class="tg-mob-li">
+ <a class="tg-mob-link" href="{% url 'loyalty_info' %}">
+ <i class="fas fa-coins" style="color:#c9a84c;margin-right:8px;font-size:.85rem"></i>Loyalty
+ </a>
+ </li>
 
-    <!-- Training -->
-    <li class="tg-mob-li">
-      <button class="tg-mob-link tg-mob-toggle">
-        Training <i class="fas fa-chevron-down tg-mob-caret"></i>
-      </button>
-      <div class="tg-mob-sub">
-        <a href="{% url 'training_home' %}" class="tg-mob-sub-item"><span class="tg-dd-ico">🎓</span>Onboarding Program</a>
-        <a href="{% url 'tv_programs' %}"   class="tg-mob-sub-item"><span class="tg-dd-ico">📺</span>Streaming</a>
-      </div>
-    </li>
+ <!-- Training -->
+ <li class="tg-mob-li">
+ <button class="tg-mob-link tg-mob-toggle">
+ Training <i class="fas fa-chevron-down tg-mob-caret"></i>
+ </button>
+ <div class="tg-mob-sub">
+ <a href="{% url 'training_home' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Onboarding Program</a>
+ <a href="{% url 'tv_programs' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Streaming</a>
+ </div>
+ </li>
 
-    <!-- Company -->
-    <li class="tg-mob-li">
-      <button class="tg-mob-link tg-mob-toggle">
-        Company <i class="fas fa-chevron-down tg-mob-caret"></i>
-      </button>
-      <div class="tg-mob-sub">
-        <a href="{% url 'about' %}"     class="tg-mob-sub-item"><span class="tg-dd-ico">🏢</span>About Us</a>
-        <a href="{% url 'contact' %}"   class="tg-mob-sub-item"><span class="tg-dd-ico">✉️</span>Contact Us</a>
-        <a href="{% url 'blog_list' %}" class="tg-mob-sub-item"><span class="tg-dd-ico">📰</span>Blog & News</a>
-      </div>
-    </li>
+ <!-- Company -->
+ <li class="tg-mob-li">
+ <button class="tg-mob-link tg-mob-toggle">
+ Company <i class="fas fa-chevron-down tg-mob-caret"></i>
+ </button>
+ <div class="tg-mob-sub">
+ <a href="{% url 'about' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>About Us</a>
+ <a href="{% url 'contact' %}" class="tg-mob-sub-item"><span class="tg-dd-ico">️</span>Contact Us</a>
+ <a href="{% url 'blog_list' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Blog & News</a>
+ </div>
+ </li>
 
-  </ul>
+ </ul>
 
-  <!-- Bottom CTA -->
-  <div class="tg-mob-cta">
-    {% if user.is_authenticated %}
-    <div class="tg-mob-cta-user">
-      {% if user.safe_profile_photo_url %}
-      <div class="tg-avatar"><img src="{{ user.safe_profile_photo_url }}" onerror="this.style.display='none'"></div>
-      {% else %}
-      <div class="tg-avatar">{{ user.first_name.0|default:user.username.0|upper }}</div>
-      {% endif %}
-      <div>
-        <div style="color:#fff;font-weight:700;font-size:.9rem">{{ user.get_full_name|default:user.username }}</div>
-        <div style="color:#7a6e5f;font-size:.75rem">{{ user.unique_id }}</div>
-      </div>
-      <a href="{% url 'logout' %}" class="btn btn-sm ms-auto" style="background:rgba(255,255,255,.06);color:#c9a84c;border:1px solid rgba(201,168,76,.2);border-radius:8px;font-size:.8rem">Log out</a>
-    </div>
-    {% else %}
-    <a href="{% url 'login' %}"    class="tg-mob-cta-login">Sign In</a>
-    <a href="{% url 'register' %}" class="tg-mob-cta-register">Get Started — Join Free</a>
-    {% endif %}
-  </div>
+ <!-- Bottom CTA -->
+ <div class="tg-mob-cta">
+ {% if user.is_authenticated %}
+ <div class="tg-mob-cta-user">
+ {% if user.safe_profile_photo_url %}
+ <div class="tg-avatar"><img src="{{ user.safe_profile_photo_url }}" onerror="this.style.display='none'"></div>
+ {% else %}
+ <div class="tg-avatar">{{ user.first_name.0|default:user.username.0|upper }}</div>
+ {% endif %}
+ <div>
+ <div style="color:#fff;font-weight:700;font-size:.9rem">{{ user.get_full_name|default:user.username }}</div>
+ <div style="color:#7a6e5f;font-size:.75rem">{{ user.unique_id }}</div>
+ </div>
+ <a href="{% url 'logout' %}" class="btn btn-sm ms-auto" style="background:rgba(255,255,255,.06);color:#c9a84c;border:1px solid rgba(201,168,76,.2);border-radius:8px;font-size:.8rem">Log out</a>
+ </div>
+ {% else %}
+ <a href="{% url 'login' %}" class="tg-mob-cta-login">Sign In</a>
+ <a href="{% url 'register' %}" class="tg-mob-cta-register">Get Started — Join Free</a>
+ {% endif %}
+ </div>
 
 </div><!-- /tg-mob-overlay -->
 
 <!-- Messages -->
 {% if messages %}
 <div style="position:fixed;top:80px;right:1.5rem;z-index:9999;min-width:320px;max-width:420px">
-  {% for msg in messages %}
-  <div class="alert alert-{{ msg.tags|default:'info' }} auto-dismiss alert-dismissible fade show shadow mb-2" role="alert">
-    <i class="fas fa-{% if msg.tags == 'success' %}check-circle{% elif msg.tags == 'error' or msg.tags == 'danger' %}exclamation-circle{% else %}info-circle{% endif %} me-2"></i>
-    {{ msg }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-  </div>
-  {% endfor %}
+ {% for msg in messages %}
+ <div class="alert alert-{{ msg.tags|default:'info' }} auto-dismiss alert-dismissible fade show shadow mb-2" role="alert">
+ <i class="fas fa-{% if msg.tags == 'success' %}check-circle{% elif msg.tags == 'error' or msg.tags == 'danger' %}exclamation-circle{% else %}info-circle{% endif %} me-2"></i>
+ {{ msg }}
+ <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+ </div>
+ {% endfor %}
 </div>
 {% endif %}
 
@@ -704,101 +704,98 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 
 <!-- Footer -->
 <footer class="footer">
-  <div class="container">
-    <div class="row g-5">
-      <div class="col-lg-4">
-        <div class="mb-3">
-          <img src="{% static 'images/logo.jpg' %}" alt="T&TG Trade Corp"
-               style="width:72px;height:72px;object-fit:contain;background:#fff;border-radius:12px;padding:4px">
-        </div>
-        <div class="footer-logo">T&TG Trade Corp</div>
-        <div class="text-gold mb-2" style="font-size:.72rem;letter-spacing:2px;text-transform:uppercase">{% t "footer_tagline" %}</div>
-        <p class="footer-desc">Trade & e-Commerce platform facilitating seamless domestic and international commerce across Canada, Uganda and Kenya. Import & Export (RM) registered corporation.</p>
-        <div class="mt-3 d-flex gap-2 flex-wrap">
-          <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-          <a href="#" class="social-link" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
-          <a href="#" class="social-link" title="TikTok"><i class="fab fa-tiktok"></i></a>
-          <a href="#" class="social-link" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-        </div>
-        <!-- Download / Install App -->
-        <div class="mt-3">
-          <button id="footer-install-btn" class="btn btn-sm d-none"
-                  style="background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);color:#c9a84c;border-radius:20px;padding:6px 16px;font-size:.78rem;font-weight:600">
-            <i class="fas fa-download me-2"></i>Install Shopping App
-          </button>
-          <div class="mt-2 small text-muted" style="font-size:.72rem">
-            <i class="fas fa-mobile-alt me-1 text-gold"></i>Add to Home Screen on iOS/Android for the full app experience
-          </div>
-        </div>
-        <div class="mt-3 small text-muted">
-          <i class="fas fa-phone me-2 text-gold"></i>+1 (416) 832 3512<br>
-          <i class="fas fa-envelope me-2 text-gold"></i>tom.grouptrade@gmail.com<br>
-          <i class="fas fa-map-marker-alt me-2 text-gold"></i>Toronto, ON M1G 1L8, Canada
-        </div>
-      </div>
+ <div class="container">
+ <div class="row g-5">
+ <div class="col-lg-4">
+ <div class="mb-3">
+ <img src="{% static 'images/logo.jpg' %}" alt="T&TG Trade Corp"
+ style="width:72px;height:72px;object-fit:contain;background:#fff;border-radius:12px;padding:4px">
+ </div>
+ <div class="footer-logo">T&TG Trade Corp</div>
+ <div class="text-gold mb-2" style="font-size:.72rem;letter-spacing:2px;text-transform:uppercase">{% t "footer_tagline" %}</div>
+ <p class="footer-desc">Trade & e-Commerce platform facilitating seamless domestic and international commerce across Canada, Uganda and Kenya. Import & Export (RM) registered corporation.</p>
+ <div class="mt-3 d-flex gap-2 flex-wrap">
+ <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+ <a href="#" class="social-link" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+ <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
+ <a href="#" class="social-link" title="TikTok"><i class="fab fa-tiktok"></i></a>
+ <a href="#" class="social-link" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+ </div>
+ <!-- Download / Install App -->
+ <div class="mt-3">
+ <button id="footer-install-btn" class="btn btn-sm d-none"
+ style="background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);color:#c9a84c;border-radius:20px;padding:6px 16px;font-size:.78rem;font-weight:600">
+ <i class="fas fa-download me-2"></i>Install Shopping App
+ </button>
+ <div class="mt-2 small text-muted" style="font-size:.72rem">
+ <i class="fas fa-mobile-alt me-1 text-gold"></i>Add to Home Screen on iOS/Android for the full app experience
+ </div>
+ </div>
+ <div class="mt-3 small text-muted">
+ <i class="fas fa-phone me-2 text-gold"></i>+1 (416) 832 3512<br>
+ <i class="fas fa-envelope me-2 text-gold"></i>tom.grouptrade@gmail.com<br>
+ <i class="fas fa-map-marker-alt me-2 text-gold"></i>Toronto, ON M1G 1L8, Canada
+ </div>
+ </div>
 
-      <div class="col-6 col-lg-2">
-        <div class="footer-title">T&TG Coffee Shop</div>
-        <a href="{% url 'product_list' %}"                                        class="footer-link">☕ All Coffee</a>
-        <a href="{% url 'product_list' %}?category=coffee&name=arabica"           class="footer-link">🌱 Arabica Green Coffee</a>
-        <a href="{% url 'product_list' %}?category=coffee&name=robusta"           class="footer-link">🫘 Robusta Green Coffee</a>
-        <a href="{% url 'product_list' %}?category=coffee&name=artisanal"         class="footer-link">✨ Artisanal Goods</a>
-        <a href="{% url 'cart' %}"                                                 class="footer-link">🛒 My Cart</a>
-        <a href="{% url 'wishlist' %}"                                             class="footer-link">❤️ My Wishlist</a>
-      </div>
+ <div class="col-6 col-lg-2">
+ <div class="footer-title">T&TG Coffee Shop</div>
+ <a href="{% url 'product_list' %}" class="footer-link"> All Coffee</a>
+ <a href="{% url 'product_list' %}?category=coffee&name=arabica" class="footer-link"> Arabica Green Coffee</a>
+ <a href="{% url 'product_list' %}?category=coffee&name=robusta" class="footer-link"> Robusta Green Coffee</a>
+ <a href="{% url 'product_list' %}?category=coffee&name=artisanal" class="footer-link"> Artisanal Goods</a>
+ <a href="{% url 'cart' %}" class="footer-link"> My Cart</a>
+ <a href="{% url 'wishlist' %}" class="footer-link">️ My Wishlist</a>
+ </div>
 
-      <div class="col-6 col-lg-2">
-        <div class="footer-title">T&TG Loyalty Platform</div>
-        <a href="{% url 'loyalty_info' %}"        class="footer-link"><i class="fas fa-coins me-1 text-gold"></i>Earn Points</a>
-        <a href="{% url 'loyalty_info' %}#referral" class="footer-link"><i class="fas fa-users me-1 text-gold"></i>Referral Programme</a>
-        <a href="{% url 'loyalty_info' %}#reward"   class="footer-link"><i class="fas fa-wallet me-1 text-gold"></i>Withdraw Funds</a>
-        <a href="{% url 'forex' %}"               class="footer-link"><i class="fas fa-chart-line me-1 text-gold"></i>Live Exchange Rates</a>
-      </div>
+ <div class="col-6 col-lg-2">
+ <div class="footer-title">T&TG Loyalty Platform</div>
+ <a href="{% url 'loyalty_info' %}" class="footer-link"><i class="fas fa-coins me-1 text-gold"></i>Earn Points</a>
+ <a href="{% url 'loyalty_info' %}#referral" class="footer-link"><i class="fas fa-users me-1 text-gold"></i>Referral Programme</a>
+ <a href="{% url 'loyalty_info' %}#reward" class="footer-link"><i class="fas fa-wallet me-1 text-gold"></i>Withdraw Funds</a>
+ <a href="{% url 'forex' %}" class="footer-link"><i class="fas fa-chart-line me-1 text-gold"></i>Live Exchange Rates</a>
+ </div>
 
-      <div class="col-6 col-lg-2">
-        <div class="footer-title">Company</div>
-        <a href="{% url 'about' %}"        class="footer-link">About Us</a>
-        <a href="{% url 'blog_list' %}"    class="footer-link">Blog & News</a>
-        <a href="{% url 'trade_ecommerce' %}" class="footer-link">Trade & e-Commerce</a>
-        <a href="{% url 'training_home' %}" class="footer-link">Training</a>
-        <a href="{% url 'tv_programs' %}"  class="footer-link">TV Programs</a>
-        <a href="{% url 'contact' %}"       class="footer-link">Contact</a>
-        <a href="{% url 'faq' %}"           class="footer-link">❓ FAQ</a>
-        <a href="{% url 'privacy_policy' %}" class="footer-link">Privacy Policy</a>
-        <a href="{% url 'terms' %}"          class="footer-link">Terms & Conditions</a>
-      </div>
+ <div class="col-6 col-lg-2">
+ <div class="footer-title">Company</div>
+ <a href="{% url 'about' %}" class="footer-link">About Us</a>
+ <a href="{% url 'blog_list' %}" class="footer-link">Blog & News</a>
+ <a href="{% url 'trade_ecommerce' %}" class="footer-link">Trade & e-Commerce</a>
+ <a href="{% url 'training_home' %}" class="footer-link">Training</a>
+ <a href="{% url 'tv_programs' %}" class="footer-link">TV Programs</a>
+ <a href="{% url 'contact' %}" class="footer-link">Contact</a>
+ <a href="{% url 'faq' %}" class="footer-link"> FAQ</a>
+ <a href="{% url 'privacy_policy' %}" class="footer-link">Privacy Policy</a>
+ <a href="{% url 'terms' %}" class="footer-link">Terms & Conditions</a>
+ </div>
 
-      <div class="col-6 col-lg-2">
-        <div class="footer-title">Operations</div>
-        <div class="footer-link">🇨🇦 Canada — HQ</div>
-        <div class="footer-link">🇺🇸 USA — Ohio</div>
-        <div class="footer-link">🇺🇬 Uganda</div>
-        <div class="footer-link">🇰🇪 Kenya</div>
-        <div class="mt-3 footer-title">Exchange Routes</div>
-        <a href="{% url 'forex' %}" class="footer-link" style="font-size:.75rem">CAD/USD</a>
-        <a href="{% url 'forex' %}" class="footer-link" style="font-size:.75rem">CAD/UGX</a>
-        <a href="{% url 'forex' %}" class="footer-link" style="font-size:.75rem">CAD/KES</a>
-        <a href="{% url 'forex' %}" class="footer-link" style="font-size:.75rem">USD/UGX</a>
-        <a href="{% url 'forex' %}" class="footer-link" style="font-size:.75rem">USD/KES</a>
-      </div>
-    </div>
+ <div class="col-6 col-lg-2">
+ <div class="footer-title">Operations</div>
+ <div class="footer-link"> Canada — HQ</div>
+ <div class="footer-link"> USA — Ohio</div>
+ <div class="footer-link"> Uganda</div>
+ <div class="footer-link"> Kenya</div>
+ <div class="mt-3 footer-title">Exchange Routes</div>
+ <a href="{% url 'forex' %}" class="footer-link" style="font-size:.75rem">CAD/USD</a>
+ <a href="{% url 'forex' %}" class="footer-link" style="font-size:.75rem">CAD/UGX</a>
+ <a href="{% url 'forex' %}" class="footer-link" style="font-size:.75rem">CAD/KES</a>
+ <a href="{% url 'forex' %}" class="footer-link" style="font-size:.75rem">USD/UGX</a>
+ <a href="{% url 'forex' %}" class="footer-link" style="font-size:.75rem">USD/KES</a>
+ </div>
+ </div>
 
-    <div class="footer-bottom d-flex flex-wrap justify-content-between align-items-center gap-3">
-      <div class="small text-muted">© 2026 T&TG Trade Corporation. All rights reserved.</div>
-      <div class="small text-muted">Founder: <span class="text-gold">Tom Ssembiito</span> &nbsp;|&nbsp; Toronto, ON, Canada</div>
-    </div>
-  </div>
-  <div style="background:#040d1c;border-top:1px solid rgba(201,168,76,.1);padding:16px 0">
-    <div class="container d-flex flex-wrap justify-content-between align-items-center gap-2" style="font-size:.75rem;color:rgba(244,239,228,.45)">
-      <span>© 2026 T&TG Trade Corporation. All rights reserved. Registered in Toronto, ON, Canada.</span>
-      <div class="d-flex gap-3 flex-wrap">
-        <a href="{% url 'privacy_policy' %}" style="color:rgba(201,168,76,.7);text-decoration:none">Privacy Policy (PIPEDA)</a>
-        <a href="{% url 'terms' %}"          style="color:rgba(201,168,76,.7);text-decoration:none">Terms & Conditions</a>
-        <span>Governed by Ontario Law</span>
-      </div>
-    </div>
-  </div>
+
+ </div>
+ <div style="background:#040d1c;border-top:1px solid rgba(201,168,76,.1);padding:16px 0">
+ <div class="container d-flex flex-wrap justify-content-between align-items-center gap-2" style="font-size:.75rem;color:rgba(244,239,228,.45)">
+ <span>© 2026 T&TG Trade Corporation. All rights reserved. Registered in Toronto, ON, Canada.</span>
+ <div class="d-flex gap-3 flex-wrap">
+ <a href="{% url 'privacy_policy' %}" style="color:rgba(201,168,76,.7);text-decoration:none">Privacy Policy (PIPEDA)</a>
+ <a href="{% url 'terms' %}" style="color:rgba(201,168,76,.7);text-decoration:none">Terms & Conditions</a>
+ <span>Governed by Ontario Law</span>
+ </div>
+ </div>
+ </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -808,15 +805,15 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 {% if user.is_authenticated and user.is_staff %}
 <script>
 (function pollNotifCount(){
-  function update(){
-    fetch('/notifications/count/')
-      .then(r=>r.json())
-      .then(d=>{
-        const badge = document.getElementById('notif-count-badge');
-        if(badge){ badge.textContent = d.count > 99 ? '99+' : d.count; badge.style.display = d.count > 0 ? 'flex' : 'none'; }
-      }).catch(()=>{});
-  }
-  update(); setInterval(update, 30000);
+ function update(){
+ fetch('/notifications/count/')
+ .then(r=>r.json())
+ .then(d=>{
+ const badge = document.getElementById('notif-count-badge');
+ if(badge){ badge.textContent = d.count > 99 ? '99+' : d.count; badge.style.display = d.count > 0 ? 'flex' : 'none'; }
+ }).catch(()=>{});
+ }
+ update(); setInterval(update, 30000);
 })();
 </script>
 {% endif %}
@@ -824,37 +821,37 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 <!-- PWA Install Prompt -->
 <script>
 (function(){
-  let deferredPrompt = null;
-  const installBtns = [document.getElementById('install-btn'), document.getElementById('footer-install-btn')];
+ let deferredPrompt = null;
+ const installBtns = [document.getElementById('install-btn'), document.getElementById('footer-install-btn')];
 
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    installBtns.forEach(b => { if(b){ b.classList.remove('d-none'); b.closest('li')?.classList.remove('d-none'); } });
-    const li = document.getElementById('install-app-li');
-    if(li) li.classList.remove('d-none');
-  });
+ window.addEventListener('beforeinstallprompt', (e) => {
+ e.preventDefault();
+ deferredPrompt = e;
+ installBtns.forEach(b => { if(b){ b.classList.remove('d-none'); b.closest('li')?.classList.remove('d-none'); } });
+ const li = document.getElementById('install-app-li');
+ if(li) li.classList.remove('d-none');
+ });
 
-  installBtns.forEach(btn => {
-    if(!btn) return;
-    btn.addEventListener('click', async () => {
-      if(!deferredPrompt) return;
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if(outcome === 'accepted') installBtns.forEach(b => b && b.classList.add('d-none'));
-      deferredPrompt = null;
-    });
-  });
+ installBtns.forEach(btn => {
+ if(!btn) return;
+ btn.addEventListener('click', async () => {
+ if(!deferredPrompt) return;
+ deferredPrompt.prompt();
+ const { outcome } = await deferredPrompt.userChoice;
+ if(outcome === 'accepted') installBtns.forEach(b => b && b.classList.add('d-none'));
+ deferredPrompt = null;
+ });
+ });
 
-  window.addEventListener('appinstalled', () => {
-    installBtns.forEach(b => b && b.classList.add('d-none'));
-    deferredPrompt = null;
-  });
+ window.addEventListener('appinstalled', () => {
+ installBtns.forEach(b => b && b.classList.add('d-none'));
+ deferredPrompt = null;
+ });
 
-  // Register service worker
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('/static/sw.js').catch(()=>{});
-  }
+ // Register service worker
+ if('serviceWorker' in navigator){
+ navigator.serviceWorker.register('/static/sw.js').catch(()=>{});
+ }
 })();
 </script>
 
@@ -862,47 +859,47 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 
 <!-- ═══ WHATSAPP CLICK-TO-CHAT ═══ -->
 <a href="https://wa.me/14168323512?text=Hi%20T%26TG%2C%20I%27d%20like%20to%20know%20more%20about%20your%20products"
-   id="whatsapp-btn" target="_blank" rel="noopener" title="Chat with us on WhatsApp">
-  <i class="fab fa-whatsapp"></i>
+ id="whatsapp-btn" target="_blank" rel="noopener" title="Chat with us on WhatsApp">
+ <i class="fab fa-whatsapp"></i>
 </a>
 
 <!-- ═══ TARA CHATBOT WIDGET ═══ -->
 <div id="chat-widget">
-  <button id="chat-toggle" title="Chat with TARA — T&TG AI Assistant">
-    <span id="chat-icon-open"><i class="fas fa-comments"></i></span>
-    <span id="chat-icon-close" style="display:none"><i class="fas fa-times"></i></span>
-    <span id="chat-notif-dot"></span>
-  </button>
-  <div id="chat-window" style="display:none">
-    <div id="chat-header">
-      <div style="display:flex;align-items:center;gap:10px">
-        <div id="chat-avatar">T</div>
-        <div>
-          <div style="font-weight:800;font-size:.9rem;color:#fff">TARA</div>
-          <div style="font-size:.7rem;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:5px">
-            <span id="chat-status-dot"></span>T&TG AI Assistant
-          </div>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px">
-        <button id="chat-clear" title="Clear chat" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:6px;padding:4px 8px;font-size:.75rem;cursor:pointer"><i class="fas fa-trash-alt"></i></button>
-        <button id="chat-minimize" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:6px;padding:4px 8px;font-size:.75rem;cursor:pointer"><i class="fas fa-minus"></i></button>
-      </div>
-    </div>
-    <div id="chat-messages"></div>
-    <div id="chat-quick">
-      <button class="quick-btn" data-msg="How do T&TG Loyalty Points work?">💰 Loyalty Points</button>
-      <button class="quick-btn" data-msg="How do I refer someone and earn?">🤝 Referral</button>
-      <button class="quick-btn" data-msg="How do I withdraw my loyalty points?">💸 Withdraw Funds</button>
-      <button class="quick-btn" data-msg="Tell me about the marketplace">🛒 Marketplace</button>
-      <button class="quick-btn" data-msg="What are the live exchange rates?">💱 Exchange Rates</button>
-      <button class="quick-btn" data-msg="How do I register?">👤 Register</button>
-    </div>
-    <div id="chat-input-wrap">
-      <input id="chat-input" type="text" placeholder="Ask TARA anything about T&TG…" maxlength="500" autocomplete="off">
-      <button id="chat-send"><i class="fas fa-paper-plane"></i></button>
-    </div>
-  </div>
+ <button id="chat-toggle" title="Chat with TARA — T&TG AI Assistant">
+ <span id="chat-icon-open"><i class="fas fa-comments"></i></span>
+ <span id="chat-icon-close" style="display:none"><i class="fas fa-times"></i></span>
+ <span id="chat-notif-dot"></span>
+ </button>
+ <div id="chat-window" style="display:none">
+ <div id="chat-header">
+ <div style="display:flex;align-items:center;gap:10px">
+ <div id="chat-avatar">T</div>
+ <div>
+ <div style="font-weight:800;font-size:.9rem;color:#fff">TARA</div>
+ <div style="font-size:.7rem;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:5px">
+ <span id="chat-status-dot"></span>T&TG AI Assistant
+ </div>
+ </div>
+ </div>
+ <div style="display:flex;gap:8px">
+ <button id="chat-clear" title="Clear chat" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:6px;padding:4px 8px;font-size:.75rem;cursor:pointer"><i class="fas fa-trash-alt"></i></button>
+ <button id="chat-minimize" style="background:rgba(255,255,255,.15);border:none;color:#fff;border-radius:6px;padding:4px 8px;font-size:.75rem;cursor:pointer"><i class="fas fa-minus"></i></button>
+ </div>
+ </div>
+ <div id="chat-messages"></div>
+ <div id="chat-quick">
+ <button class="quick-btn" data-msg="How do T&TG Loyalty Points work?"> Loyalty Points</button>
+ <button class="quick-btn" data-msg="How do I refer someone and earn?"> Referral</button>
+ <button class="quick-btn" data-msg="How do I withdraw my loyalty points?"> Withdraw Funds</button>
+ <button class="quick-btn" data-msg="Tell me about the marketplace"> Marketplace</button>
+ <button class="quick-btn" data-msg="What are the live exchange rates?"> Exchange Rates</button>
+ <button class="quick-btn" data-msg="How do I register?"> Register</button>
+ </div>
+ <div id="chat-input-wrap">
+ <input id="chat-input" type="text" placeholder="Ask TARA anything about T&TG…" maxlength="500" autocomplete="off">
+ <button id="chat-send"><i class="fas fa-paper-plane"></i></button>
+ </div>
+ </div>
 </div>
 
 <style>
@@ -945,254 +942,254 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 
 <script>
 (function(){
-  const CSRF=document.cookie.match(/csrftoken=([^;]+)/)?.[1]||'';
-  let history=[],isOpen=false,hasGreeted=false;
-  const toggle=document.getElementById('chat-toggle'),
-        win=document.getElementById('chat-window'),
-        iconOpen=document.getElementById('chat-icon-open'),
-        iconClose=document.getElementById('chat-icon-close'),
-        msgs=document.getElementById('chat-messages'),
-        input=document.getElementById('chat-input'),
-        sendBtn=document.getElementById('chat-send'),
-        clearBtn=document.getElementById('chat-clear'),
-        minBtn=document.getElementById('chat-minimize'),
-        notifDot=document.getElementById('chat-notif-dot'),
-        quickBar=document.getElementById('chat-quick');
+ const CSRF=document.cookie.match(/csrftoken=([^;]+)/)?.[1]||'';
+ let history=[],isOpen=false,hasGreeted=false;
+ const toggle=document.getElementById('chat-toggle'),
+ win=document.getElementById('chat-window'),
+ iconOpen=document.getElementById('chat-icon-open'),
+ iconClose=document.getElementById('chat-icon-close'),
+ msgs=document.getElementById('chat-messages'),
+ input=document.getElementById('chat-input'),
+ sendBtn=document.getElementById('chat-send'),
+ clearBtn=document.getElementById('chat-clear'),
+ minBtn=document.getElementById('chat-minimize'),
+ notifDot=document.getElementById('chat-notif-dot'),
+ quickBar=document.getElementById('chat-quick');
 
-  setTimeout(()=>{ if(!isOpen) notifDot.style.display='block'; },3000);
+ setTimeout(()=>{ if(!isOpen) notifDot.style.display='block'; },3000);
 
-  function now(){ return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); }
+ function now(){ return new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); }
 
-  function addMessage(text,role){
-    if(role==='user'&&quickBar) quickBar.style.display='none';
-    const div=document.createElement('div');
-    div.className='chat-msg '+role;
-    let html=text
-      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-      .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-      .replace(/\*(.+?)\*/g,'<em>$1</em>')
-      .replace(/`(.+?)`/g,'<code style="background:rgba(0,0,0,.3);padding:1px 5px;border-radius:4px">$1</code>')
-      .replace(/\/([a-z\-\/]+)\//g,'<a href="/$1/" style="color:#00a8e8">/$1/</a>')
-      .replace(/\n•\s/g,'<br>• ').replace(/\n-\s/g,'<br>• ').replace(/\n/g,'<br>');
-    div.innerHTML=html;
-    msgs.appendChild(div);
-    msgs.scrollTop=msgs.scrollHeight;
-  }
+ function addMessage(text,role){
+ if(role==='user'&&quickBar) quickBar.style.display='none';
+ const div=document.createElement('div');
+ div.className='chat-msg '+role;
+ let html=text
+ .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+ .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+ .replace(/\*(.+?)\*/g,'<em>$1</em>')
+ .replace(/`(.+?)`/g,'<code style="background:rgba(0,0,0,.3);padding:1px 5px;border-radius:4px">$1</code>')
+ .replace(/\/([a-z\-\/]+)\//g,'<a href="/$1/" style="color:#00a8e8">/$1/</a>')
+ .replace(/\n•\s/g,'<br>• ').replace(/\n-\s/g,'<br>• ').replace(/\n/g,'<br>');
+ div.innerHTML=html;
+ msgs.appendChild(div);
+ msgs.scrollTop=msgs.scrollHeight;
+ }
 
-  function addTime(label){ const t=document.createElement('div'); t.className='chat-time'; t.textContent=label; msgs.appendChild(t); }
-  function showTyping(){ const d=document.createElement('div'); d.className='typing-indicator'; d.id='typing'; d.innerHTML='<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>'; msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight; }
-  function removeTyping(){ const t=document.getElementById('typing'); if(t) t.remove(); }
+ function addTime(label){ const t=document.createElement('div'); t.className='chat-time'; t.textContent=label; msgs.appendChild(t); }
+ function showTyping(){ const d=document.createElement('div'); d.className='typing-indicator'; d.id='typing'; d.innerHTML='<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>'; msgs.appendChild(d); msgs.scrollTop=msgs.scrollHeight; }
+ function removeTyping(){ const t=document.getElementById('typing'); if(t) t.remove(); }
 
-  async function sendMessage(text){
-    if(!text.trim()) return;
-    input.value=''; sendBtn.disabled=true;
-    addMessage(text,'user');
-    history.push({role:'user',content:text});
-    showTyping();
-    try{
-      const res=await fetch('/chat/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':CSRF},body:JSON.stringify({messages:history})});
-      const data=await res.json();
-      removeTyping();
-      const reply=data.reply||'Sorry, I could not get a response. Please try again.';
-      addMessage(reply,'bot');
-      history.push({role:'assistant',content:reply});
-      addTime(now());
-    }catch(e){
-      removeTyping();
-      addMessage("I'm having trouble connecting. Please call us at +1 (416) 832 3512.",'bot');
-    }
-    sendBtn.disabled=false; input.focus();
-  }
+ async function sendMessage(text){
+ if(!text.trim()) return;
+ input.value=''; sendBtn.disabled=true;
+ addMessage(text,'user');
+ history.push({role:'user',content:text});
+ showTyping();
+ try{
+ const res=await fetch('/chat/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':CSRF},body:JSON.stringify({messages:history})});
+ const data=await res.json();
+ removeTyping();
+ const reply=data.reply||'Sorry, I could not get a response. Please try again.';
+ addMessage(reply,'bot');
+ history.push({role:'assistant',content:reply});
+ addTime(now());
+ }catch(e){
+ removeTyping();
+ addMessage("I'm having trouble connecting. Please call us at +1 (416) 832 3512.",'bot');
+ }
+ sendBtn.disabled=false; input.focus();
+ }
 
-  toggle.addEventListener('click',()=>{
-    isOpen=!isOpen;
-    win.style.display=isOpen?'flex':'none';
-    iconOpen.style.display=isOpen?'none':'flex';
-    iconClose.style.display=isOpen?'flex':'none';
-    notifDot.style.display='none';
-    if(isOpen&&!hasGreeted){
-      hasGreeted=true; addTime('Today '+now());
-      setTimeout(()=>{ addMessage(`👋 Hello! I'm **TARA**, T&TG Trade Corporation's AI assistant.\n\nI can help you with our online shopping platform, T&TG Loyalty Points, live exchange rates (CAD/UGX · CAD/KES · UGX/KES), training programs and more.\n\nWhat would you like to know?`,'bot'); },400);
-    }
-    if(isOpen) input.focus();
-  });
+ toggle.addEventListener('click',()=>{
+ isOpen=!isOpen;
+ win.style.display=isOpen?'flex':'none';
+ iconOpen.style.display=isOpen?'none':'flex';
+ iconClose.style.display=isOpen?'flex':'none';
+ notifDot.style.display='none';
+ if(isOpen&&!hasGreeted){
+ hasGreeted=true; addTime('Today '+now());
+ setTimeout(()=>{ addMessage(` Hello! I'm **TARA**, T&TG Trade Corporation's AI assistant.\n\nI can help you with our online shopping platform, T&TG Loyalty Points, live exchange rates (CAD/UGX · CAD/KES · UGX/KES), training programs and more.\n\nWhat would you like to know?`,'bot'); },400);
+ }
+ if(isOpen) input.focus();
+ });
 
-  sendBtn.addEventListener('click',()=>sendMessage(input.value));
-  input.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey) sendMessage(input.value); });
-  document.querySelectorAll('.quick-btn').forEach(btn=>btn.addEventListener('click',()=>sendMessage(btn.dataset.msg)));
-  clearBtn.addEventListener('click',()=>{ msgs.innerHTML=''; history=[]; hasGreeted=false; if(quickBar) quickBar.style.display='flex'; addTime('Chat cleared · '+now()); addMessage("👋 Hello again! How can I help you?",'bot'); });
-  minBtn.addEventListener('click',()=>{ isOpen=false; win.style.display='none'; iconOpen.style.display='flex'; iconClose.style.display='none'; });
+ sendBtn.addEventListener('click',()=>sendMessage(input.value));
+ input.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey) sendMessage(input.value); });
+ document.querySelectorAll('.quick-btn').forEach(btn=>btn.addEventListener('click',()=>sendMessage(btn.dataset.msg)));
+ clearBtn.addEventListener('click',()=>{ msgs.innerHTML=''; history=[]; hasGreeted=false; if(quickBar) quickBar.style.display='flex'; addTime('Chat cleared · '+now()); addMessage(" Hello again! How can I help you?",'bot'); });
+ minBtn.addEventListener('click',()=>{ isOpen=false; win.style.display='none'; iconOpen.style.display='flex'; iconClose.style.display='none'; });
 
-  // Load forex ticker
-  (function loadTicker(){
-    fetch('/services/forex/')
-      .then(r => r.text())
-      .then(html => {
-        // Rates are in the page; try to grab from DB via a data endpoint if available
-        // For now just show placeholder — real rates come from ForexRate model
-      }).catch(()=>{});
-  })();
+ // Load forex ticker
+ (function loadTicker(){
+ fetch('/services/forex/')
+ .then(r => r.text())
+ .then(html => {
+ // Rates are in the page; try to grab from DB via a data endpoint if available
+ // For now just show placeholder — real rates come from ForexRate model
+ }).catch(()=>{});
+ })();
 })();
 </script>
 
 <script>
 // Navbar scroll effect
 (function(){
-  const nav = document.getElementById('tgNavbar');
-  window.addEventListener('scroll', function(){
-    nav && (nav.classList.toggle('scrolled', window.scrollY > 40));
-  }, {passive: true});
+ const nav = document.getElementById('tgNavbar');
+ window.addEventListener('scroll', function(){
+ nav && (nav.classList.toggle('scrolled', window.scrollY > 40));
+ }, {passive: true});
 
-  // Search bar toggle
-  var searchWrap = document.getElementById('tgSearchWrap');
-  var searchBtn  = document.getElementById('tgSearchBtn');
-  var searchInput = document.getElementById('tgSearchInput');
-  if (searchBtn && searchWrap) {
-    searchBtn.addEventListener('click', function(e){
-      e.preventDefault();
-      searchWrap.classList.add('tg-search-open');
-      setTimeout(function(){ searchInput && searchInput.focus(); }, 150);
-    });
-    document.addEventListener('click', function(e){
-      if (!searchWrap.contains(e.target)) {
-        searchWrap.classList.remove('tg-search-open');
-      }
-    });
-    document.addEventListener('keydown', function(e){
-      if (e.key === 'Escape') searchWrap.classList.remove('tg-search-open');
-    });
-  }
+ // Search bar toggle
+ var searchWrap = document.getElementById('tgSearchWrap');
+ var searchBtn = document.getElementById('tgSearchBtn');
+ var searchInput = document.getElementById('tgSearchInput');
+ if (searchBtn && searchWrap) {
+ searchBtn.addEventListener('click', function(e){
+ e.preventDefault();
+ searchWrap.classList.add('tg-search-open');
+ setTimeout(function(){ searchInput && searchInput.focus(); }, 150);
+ });
+ document.addEventListener('click', function(e){
+ if (!searchWrap.contains(e.target)) {
+ searchWrap.classList.remove('tg-search-open');
+ }
+ });
+ document.addEventListener('keydown', function(e){
+ if (e.key === 'Escape') searchWrap.classList.remove('tg-search-open');
+ });
+ }
 
-  // Mobile dropdown toggles
-  document.querySelectorAll('.tg-has-drop').forEach(function(el){
-    el.addEventListener('click', function(e){
-      if(window.innerWidth < 992){
-        e.preventDefault();
-        var wrap = el.closest('.tg-dropdown-wrap');
-        wrap && wrap.classList.toggle('open');
-      }
-    });
-  });
+ // Mobile dropdown toggles
+ document.querySelectorAll('.tg-has-drop').forEach(function(el){
+ el.addEventListener('click', function(e){
+ if(window.innerWidth < 992){
+ e.preventDefault();
+ var wrap = el.closest('.tg-dropdown-wrap');
+ wrap && wrap.classList.toggle('open');
+ }
+ });
+ });
 })();
 </script>
 
 <script>
 /* ── Navbar: scroll, hamburger, mobile dropdowns ── */
 (function(){
-  var nav  = document.getElementById('tgNavbar');
-  var menu = document.getElementById('tgNavMenu');
-  var ham  = document.getElementById('tgHamburger');
+ var nav = document.getElementById('tgNavbar');
+ var menu = document.getElementById('tgNavMenu');
+ var ham = document.getElementById('tgHamburger');
 
-  /* scroll tint */
-  window.addEventListener('scroll', function(){
-    nav && nav.classList.toggle('scrolled', window.scrollY > 40);
-  }, {passive:true});
+ /* scroll tint */
+ window.addEventListener('scroll', function(){
+ nav && nav.classList.toggle('scrolled', window.scrollY > 40);
+ }, {passive:true});
 
-  /* hamburger → toggles standalone full-screen overlay */
-  var overlay = document.getElementById('tgMobOverlay');
-  function openOverlay(){
-    overlay.classList.add('open');
-    overlay.setAttribute('aria-hidden','false');
-    ham.classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeOverlay(){
-    overlay.classList.remove('open');
-    overlay.setAttribute('aria-hidden','true');
-    ham.classList.remove('open');
-    document.body.style.overflow = '';
-  }
-  ham && ham.addEventListener('click', function(){
-    overlay.classList.contains('open') ? closeOverlay() : openOverlay();
-  });
+ /* hamburger → toggles standalone full-screen overlay */
+ var overlay = document.getElementById('tgMobOverlay');
+ function openOverlay(){
+ overlay.classList.add('open');
+ overlay.setAttribute('aria-hidden','false');
+ ham.classList.add('open');
+ document.body.style.overflow = 'hidden';
+ }
+ function closeOverlay(){
+ overlay.classList.remove('open');
+ overlay.setAttribute('aria-hidden','true');
+ ham.classList.remove('open');
+ document.body.style.overflow = '';
+ }
+ ham && ham.addEventListener('click', function(){
+ overlay.classList.contains('open') ? closeOverlay() : openOverlay();
+ });
 
-  /* close button */
-  var mobClose = document.getElementById('tgMobClose');
-  mobClose && mobClose.addEventListener('click', closeOverlay);
+ /* close button */
+ var mobClose = document.getElementById('tgMobClose');
+ mobClose && mobClose.addEventListener('click', closeOverlay);
 
-  /* close on direct link tap */
-  overlay && overlay.querySelectorAll('a.tg-mob-link, .tg-mob-sub-item, .tg-mob-cta a, #tgMobLogoLink').forEach(function(a){
-    a.addEventListener('click', closeOverlay);
-  });
+ /* close on direct link tap */
+ overlay && overlay.querySelectorAll('a.tg-mob-link, .tg-mob-sub-item, .tg-mob-cta a, #tgMobLogoLink').forEach(function(a){
+ a.addEventListener('click', closeOverlay);
+ });
 
-  /* accordion toggles inside overlay */
-  overlay && overlay.querySelectorAll('.tg-mob-toggle').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      var li = btn.closest('.tg-mob-li');
-      li && li.classList.toggle('mob-open');
-    });
-  });
+ /* accordion toggles inside overlay */
+ overlay && overlay.querySelectorAll('.tg-mob-toggle').forEach(function(btn){
+ btn.addEventListener('click', function(){
+ var li = btn.closest('.tg-mob-li');
+ li && li.classList.toggle('mob-open');
+ });
+ });
 
-  /* mobile dropdown toggles (desktop nav — unchanged) */
-  document.querySelectorAll('.tg-nl').forEach(function(el){
-    if(el.tagName !== 'BUTTON') return;
-    el.addEventListener('click', function(){
-      if(window.innerWidth >= 992) return;
-      var li = el.closest('li');
-      li && li.classList.toggle('mob-open');
-    });
-  });
+ /* mobile dropdown toggles (desktop nav — unchanged) */
+ document.querySelectorAll('.tg-nl').forEach(function(el){
+ if(el.tagName !== 'BUTTON') return;
+ el.addEventListener('click', function(){
+ if(window.innerWidth >= 992) return;
+ var li = el.closest('li');
+ li && li.classList.toggle('mob-open');
+ });
+ });
 
-  /* PWA install */
-  var deferredPrompt = null;
-  var installBtn = document.getElementById('install-btn');
-  window.addEventListener('beforeinstallprompt', function(e){
-    e.preventDefault(); deferredPrompt = e;
-    installBtn && installBtn.classList.remove('d-none');
-  });
-  installBtn && installBtn.addEventListener('click', async function(){
-    if(!deferredPrompt) return;
-    deferredPrompt.prompt();
-    var r = await deferredPrompt.userChoice;
-    if(r.outcome==='accepted') installBtn.classList.add('d-none');
-    deferredPrompt = null;
-  });
-  window.addEventListener('appinstalled', function(){
-    installBtn && installBtn.classList.add('d-none');
-  });
+ /* PWA install */
+ var deferredPrompt = null;
+ var installBtn = document.getElementById('install-btn');
+ window.addEventListener('beforeinstallprompt', function(e){
+ e.preventDefault(); deferredPrompt = e;
+ installBtn && installBtn.classList.remove('d-none');
+ });
+ installBtn && installBtn.addEventListener('click', async function(){
+ if(!deferredPrompt) return;
+ deferredPrompt.prompt();
+ var r = await deferredPrompt.userChoice;
+ if(r.outcome==='accepted') installBtn.classList.add('d-none');
+ deferredPrompt = null;
+ });
+ window.addEventListener('appinstalled', function(){
+ installBtn && installBtn.classList.add('d-none');
+ });
 
-  /* service worker */
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('/static/sw.js').catch(function(){});
-  }
+ /* service worker */
+ if('serviceWorker' in navigator){
+ navigator.serviceWorker.register('/static/sw.js').catch(function(){});
+ }
 })();
 
 /* ── Scroll-reveal: fade/rise sections into view as they enter viewport ── */
 (function(){
-  if (!('IntersectionObserver' in window)) return; // safe no-op fallback — content stays visible
-  document.documentElement.classList.add('tg-reveal-ready');
-  var targets = document.querySelectorAll('.tg-reveal');
-  if (!targets.length) return;
-  var io = new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      if (entry.isIntersecting) {
-        entry.target.classList.add('tg-revealed');
-        io.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-  targets.forEach(function(el){ io.observe(el); });
+ if (!('IntersectionObserver' in window)) return; // safe no-op fallback — content stays visible
+ document.documentElement.classList.add('tg-reveal-ready');
+ var targets = document.querySelectorAll('.tg-reveal');
+ if (!targets.length) return;
+ var io = new IntersectionObserver(function(entries){
+ entries.forEach(function(entry){
+ if (entry.isIntersecting) {
+ entry.target.classList.add('tg-revealed');
+ io.unobserve(entry.target);
+ }
+ });
+ }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+ targets.forEach(function(el){ io.observe(el); });
 })();
 </script>
 
 <div id="cookie-consent" style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(6,15,30,.97);border-top:1px solid rgba(201,168,76,.3);padding:14px 20px;display:none">
-  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-    <p style="color:#e0d5c0;font-size:.82rem;margin:0">
-      🍪 T&TG uses essential session cookies to enable login and secure transactions, in compliance with PIPEDA (Canada). No advertising or tracking cookies are used.
-      <a href="{% url 'privacy_policy' %}" style="color:#c9a84c;text-decoration:none"> Learn more</a>
-    </p>
-    <button onclick="acceptCookies()" style="background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#1a0a00;border:none;border-radius:8px;padding:8px 20px;font-weight:700;cursor:pointer;font-size:.82rem;flex-shrink:0">Accept & Continue</button>
-  </div>
+ <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+ <p style="color:#e0d5c0;font-size:.82rem;margin:0">
+ T&TG uses essential session cookies to enable login and secure transactions, in compliance with PIPEDA (Canada). No advertising or tracking cookies are used.
+ <a href="{% url 'privacy_policy' %}" style="color:#c9a84c;text-decoration:none"> Learn more</a>
+ </p>
+ <button onclick="acceptCookies()" style="background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#1a0a00;border:none;border-radius:8px;padding:8px 20px;font-weight:700;cursor:pointer;font-size:.82rem;flex-shrink:0">Accept & Continue</button>
+ </div>
 </div>
 <script>
 function acceptCookies(){
-  localStorage.setItem('tntg_cookies_accepted','1');
-  document.getElementById('cookie-consent').style.display='none';
+ localStorage.setItem('tntg_cookies_accepted','1');
+ document.getElementById('cookie-consent').style.display='none';
 }
 (function(){
-  if(!localStorage.getItem('tntg_cookies_accepted')){
-    setTimeout(function(){ document.getElementById('cookie-consent').style.display='block'; }, 800);
-  }
+ if(!localStorage.getItem('tntg_cookies_accepted')){
+ setTimeout(function(){ document.getElementById('cookie-consent').style.display='block'; }, 800);
+ }
 })();
 </script>
 

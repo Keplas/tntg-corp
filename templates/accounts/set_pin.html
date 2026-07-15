@@ -2,52 +2,52 @@
 {% block title %}Set Withdrawal PIN — T&TG Trade Corp{% endblock %}
 {% block content %}
 <section style="background:#0a0a0a;min-height:80vh;display:flex;align-items:center;padding:60px 0">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-md-5">
-        <div style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.2);border-radius:20px;padding:40px">
-          <div class="text-center mb-4">
-            <div style="width:60px;height:60px;border-radius:50%;background:rgba(201,168,76,.12);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1.6rem">🔐</div>
-            <h2 style="color:#fff;font-weight:900">{% if user.withdrawal_pin_set %}Change{% else %}Set{% endif %} Withdrawal PIN</h2>
-            <p style="color:#7a6e5f;font-size:.9rem">A 4-digit PIN is required for all loyalty point withdrawals</p>
-          </div>
-          {% if messages %}{% for m in messages %}<div class="alert mb-3" style="border-radius:10px;font-size:.85rem;background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3)">{{ m }}</div>{% endfor %}{% endif %}
-          <form method="POST">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="set_pin">
-            {% if user.withdrawal_pin_set %}
-            <div class="mb-3">
-              <label style="color:#7a6e5f;font-size:.8rem;display:block;margin-bottom:6px">Current PIN</label>
-              <input type="password" name="current_pin" class="form-control" style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);color:#e0d5c0;border-radius:10px;padding:12px;letter-spacing:8px;text-align:center;font-size:1.2rem" maxlength="4" placeholder="••••" inputmode="numeric" required>
-            </div>
-            {% endif %}
-            <div class="mb-3">
-              <label style="color:#7a6e5f;font-size:.8rem;display:block;margin-bottom:6px">New 4-Digit PIN</label>
-              <input type="password" name="pin" id="pinInput" class="form-control" style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);color:#e0d5c0;border-radius:10px;padding:12px;letter-spacing:8px;text-align:center;font-size:1.4rem" maxlength="4" placeholder="••••" inputmode="numeric" required>
-            </div>
-            <div class="mb-4">
-              <label style="color:#7a6e5f;font-size:.8rem;display:block;margin-bottom:6px">Confirm PIN</label>
-              <input type="password" name="pin2" class="form-control" style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);color:#e0d5c0;border-radius:10px;padding:12px;letter-spacing:8px;text-align:center;font-size:1.4rem" maxlength="4" placeholder="••••" inputmode="numeric" required>
-            </div>
-            <div style="background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:12px;margin-bottom:20px;font-size:.78rem;color:#7a6e5f">
-              <i class="fas fa-shield-alt" style="color:#c9a84c;margin-right:6px"></i>
-              Your PIN is encrypted and never stored in plain text. Keep it private — do not share it with anyone.
-            </div>
-            <button type="submit" class="btn btn-gold w-100 py-3 fw-700">
-              <i class="fas fa-lock me-2"></i>{% if user.withdrawal_pin_set %}Update PIN{% else %}Set PIN{% endif %}
-            </button>
-          </form>
-          <div class="text-center mt-4">
-            <a href="{% url 'dashboard' %}#loyalty" style="color:#7a6e5f;font-size:.85rem;text-decoration:none">← Back to Dashboard</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+ <div class="container">
+ <div class="row justify-content-center">
+ <div class="col-md-5">
+ <div style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.2);border-radius:20px;padding:40px">
+ <div class="text-center mb-4">
+ <div style="width:60px;height:60px;border-radius:50%;background:rgba(201,168,76,.12);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:1.6rem"></div>
+ <h2 style="color:#fff;font-weight:900">{% if user.withdrawal_pin_set %}Change{% else %}Set{% endif %} Withdrawal PIN</h2>
+ <p style="color:#7a6e5f;font-size:.9rem">A 4-digit PIN is required for all loyalty point withdrawals</p>
+ </div>
+ {% if messages %}{% for m in messages %}<div class="alert mb-3" style="border-radius:10px;font-size:.85rem;background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3)">{{ m }}</div>{% endfor %}{% endif %}
+ <form method="POST">
+ {% csrf_token %}
+ <input type="hidden" name="action" value="set_pin">
+ {% if user.withdrawal_pin_set %}
+ <div class="mb-3">
+ <label style="color:#7a6e5f;font-size:.8rem;display:block;margin-bottom:6px">Current PIN</label>
+ <input type="password" name="current_pin" class="form-control" style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);color:#e0d5c0;border-radius:10px;padding:12px;letter-spacing:8px;text-align:center;font-size:1.2rem" maxlength="4" placeholder="••••" inputmode="numeric" required>
+ </div>
+ {% endif %}
+ <div class="mb-3">
+ <label style="color:#7a6e5f;font-size:.8rem;display:block;margin-bottom:6px">New 4-Digit PIN</label>
+ <input type="password" name="pin" id="pinInput" class="form-control" style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);color:#e0d5c0;border-radius:10px;padding:12px;letter-spacing:8px;text-align:center;font-size:1.4rem" maxlength="4" placeholder="••••" inputmode="numeric" required>
+ </div>
+ <div class="mb-4">
+ <label style="color:#7a6e5f;font-size:.8rem;display:block;margin-bottom:6px">Confirm PIN</label>
+ <input type="password" name="pin2" class="form-control" style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);color:#e0d5c0;border-radius:10px;padding:12px;letter-spacing:8px;text-align:center;font-size:1.4rem" maxlength="4" placeholder="••••" inputmode="numeric" required>
+ </div>
+ <div style="background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:12px;margin-bottom:20px;font-size:.78rem;color:#7a6e5f">
+ <i class="fas fa-shield-alt" style="color:#c9a84c;margin-right:6px"></i>
+ Your PIN is encrypted and never stored in plain text. Keep it private — do not share it with anyone.
+ </div>
+ <button type="submit" class="btn btn-gold w-100 py-3 fw-700">
+ <i class="fas fa-lock me-2"></i>{% if user.withdrawal_pin_set %}Update PIN{% else %}Set PIN{% endif %}
+ </button>
+ </form>
+ <div class="text-center mt-4">
+ <a href="{% url 'dashboard' %}#loyalty" style="color:#7a6e5f;font-size:.85rem;text-decoration:none">← Back to Dashboard</a>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
 </section>
 <script>
 document.getElementById('pinInput').addEventListener('input', function(){
-  this.value = this.value.replace(/\D/g,'').slice(0,4);
+ this.value = this.value.replace(/\D/g,'').slice(0,4);
 });
 </script>
 {% endblock %}

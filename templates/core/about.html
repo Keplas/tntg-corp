@@ -5,164 +5,164 @@
 {% block content %}
 <!-- Hero -->
 <section style="padding:5rem 0;background:linear-gradient(135deg,#0a2540,#1a3a5c)">
-  <div class="container">
-    <div class="row align-items-center g-5">
-      <div class="col-lg-6">
-        <div class="text-center mb-4">
-          <img src="{% static 'images/tg_logo.jpeg' %}" alt="T&TG Trade Corp Logo"
-               style="width:140px;height:140px;object-fit:contain;background:#fff;border-radius:20px;padding:8px;box-shadow:0 8px 32px rgba(201,168,76,.25)">
-        </div>
-        <div class="section-label">About T&TG</div>
-        <h2>Tom & The Group <span class="text-gold">Trade Corporation</span></h2>
-        <div class="divider-gold" style="margin:1rem 0"></div>
-        <p class="text-muted" style="line-height:1.8">
-          Founded on <strong class="text-gold">August 26, 2026</strong>, T&TG Trade Corporation operates a
-          Trade & e-Commerce platform designed to facilitate seamless domestic and international commerce.
-        </p>
-        <p class="text-muted mt-3" style="line-height:1.8">
-          Our Toronto-based corporation operates globally, providing services across
-          <strong class="text-gold">Canada, Uganda, Kenya and USA (Ohio)</strong>. From our headquarters in Toronto,
-          Ontario, Canada, we coordinate international operations that support cross-border collaboration,
-          market development and service delivery.
-        </p>
-        <p class="text-muted mt-3" style="line-height:1.8">
-          T&TG Trade Corp is a registered Import & Export (RM) corporation, bringing quality textiles,
-          clothing, shoes, watches and coffee to buyers across our three operating countries.
-        </p>
-        <div class="row g-3 mt-3">
-          {% for country in countries %}
-          <div class="col-4">
-            <div class="glass-card p-3 text-center">
-              <div style="font-size:1.6rem;margin-bottom:.4rem">{{ country.flag }}</div>
-              <div class="text-gold fw-bold" style="font-size:.8rem">{{ country.name }}</div>
-            </div>
-          </div>
-          {% endfor %}
-        </div>
-      </div>
+ <div class="container">
+ <div class="row align-items-center g-5">
+ <div class="col-lg-6">
+ <div class="text-center mb-4">
+ <img src="{% static 'images/tg_logo.jpeg' %}" alt="T&TG Trade Corp Logo"
+ style="width:140px;height:140px;object-fit:contain;background:#fff;border-radius:20px;padding:8px;box-shadow:0 8px 32px rgba(201,168,76,.25)">
+ </div>
+ <div class="section-label">About T&TG</div>
+ <h2>Tom & The Group <span class="text-gold">Trade Corporation</span></h2>
+ <div class="divider-gold" style="margin:1rem 0"></div>
+ <p class="text-muted" style="line-height:1.8">
+ Founded on <strong class="text-gold">August 26, 2026</strong>, T&TG Trade Corporation operates a
+ Trade & e-Commerce platform designed to facilitate seamless domestic and international commerce.
+ </p>
+ <p class="text-muted mt-3" style="line-height:1.8">
+ Our Toronto-based corporation operates globally, providing services across
+ <strong class="text-gold">Canada, Uganda, Kenya and USA (Ohio)</strong>. From our headquarters in Toronto,
+ Ontario, Canada, we coordinate international operations that support cross-border collaboration,
+ market development and service delivery.
+ </p>
+ <p class="text-muted mt-3" style="line-height:1.8">
+ T&TG Trade Corp is a registered Import & Export (RM) corporation, bringing quality textiles,
+ clothing, shoes, watches and coffee to buyers across our three operating countries.
+ </p>
+ <div class="row g-3 mt-3">
+ {% for country in countries %}
+ <div class="col-4">
+ <div class="glass-card p-3 text-center">
+ <div style="font-size:1.6rem;margin-bottom:.4rem">{{ country.flag }}</div>
+ <div class="text-gold fw-bold" style="font-size:.8rem">{{ country.name }}</div>
+ </div>
+ </div>
+ {% endfor %}
+ </div>
+ </div>
 
-      <div class="col-lg-6">
-        <div class="glass-card p-4">
-          <h5 class="text-gold mb-4">Our Leadership</h5>
-          <div class="d-flex align-items-center gap-3 mb-3 p-3" style="background:rgba(0,0,0,.2);border-radius:10px">
-            <div style="width:90px;height:110px;border-radius:8px;background:linear-gradient(135deg,#c9a84c,#e8c96a);position:relative;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:900;color:#0a2540;font-size:1.8rem;border:3px solid #c9a84c">
-              <span id="founder-initials">TS</span>
-              <img src="{% static 'images/founder_Tom.jpeg' %}" alt="Tom Ssembiito"
-                   style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;display:none"
-                   onload="this.style.display='block';document.getElementById('founder-initials').style.display='none';"
-                   onerror="this.style.display='none';">
-            </div>
-            <div>
-              <div class="fw-bold">Tom Ssembiito</div>
-              <div class="text-gold" style="font-size:.75rem">Founder & Operations Manager</div>
-            </div>
-          </div>
-          <div class="d-flex align-items-center gap-3 mb-3 p-3" style="background:rgba(0,0,0,.2);border-radius:10px">
-            <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#0d6efd,#0077cc);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;flex-shrink:0">EK</div>
-            <div>
-              <div class="fw-bold">Edgar Kitayimbwa</div>
-              <div class="text-gold" style="font-size:.75rem">Shareholder & Software Engineer</div>
-            </div>
-          </div>
-          <div class="d-flex align-items-center gap-3 p-3" style="background:rgba(0,0,0,.2);border-radius:10px">
-            <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#198754,#009966);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;flex-shrink:0">MF</div>
-            <div>
-              <div class="fw-bold">Musana Francis</div>
-              <div class="text-gold" style="font-size:.75rem">Shareholder</div>
-            </div>
-          </div>
-          <div class="mt-4 small text-muted">
-            <i class="fas fa-phone me-2 text-gold"></i>+1 (416) 832 3512<br>
-            <i class="fas fa-envelope me-2 text-gold"></i>tom.grouptrade@gmail.com<br>
-            <i class="fas fa-map-marker-alt me-2 text-gold"></i>Toronto, ON M1G 1L8, Canada
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+ <div class="col-lg-6">
+ <div class="glass-card p-4">
+ <h5 class="text-gold mb-4">Our Leadership</h5>
+ <div class="d-flex align-items-center gap-3 mb-3 p-3" style="background:rgba(0,0,0,.2);border-radius:10px">
+ <div style="width:90px;height:110px;border-radius:8px;background:linear-gradient(135deg,#c9a84c,#e8c96a);position:relative;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:900;color:#0a2540;font-size:1.8rem;border:3px solid #c9a84c">
+ <span id="founder-initials">TS</span>
+ <img src="{% static 'images/founder_Tom.jpeg' %}" alt="Tom Ssembiito"
+ style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;display:none"
+ onload="this.style.display='block';document.getElementById('founder-initials').style.display='none';"
+ onerror="this.style.display='none';">
+ </div>
+ <div>
+ <div class="fw-bold">Tom Ssembiito</div>
+ <div class="text-gold" style="font-size:.75rem">Founder & Operations Manager</div>
+ </div>
+ </div>
+ <div class="d-flex align-items-center gap-3 mb-3 p-3" style="background:rgba(0,0,0,.2);border-radius:10px">
+ <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#0d6efd,#0077cc);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;flex-shrink:0">EK</div>
+ <div>
+ <div class="fw-bold">Edgar Kitayimbwa</div>
+ <div class="text-gold" style="font-size:.75rem">Shareholder & Software Engineer</div>
+ </div>
+ </div>
+ <div class="d-flex align-items-center gap-3 p-3" style="background:rgba(0,0,0,.2);border-radius:10px">
+ <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#198754,#009966);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;flex-shrink:0">MF</div>
+ <div>
+ <div class="fw-bold">Musana Francis</div>
+ <div class="text-gold" style="font-size:.75rem">Shareholder</div>
+ </div>
+ </div>
+ <div class="mt-4 small text-muted">
+ <i class="fas fa-phone me-2 text-gold"></i>+1 (416) 832 3512<br>
+ <i class="fas fa-envelope me-2 text-gold"></i>tom.grouptrade@gmail.com<br>
+ <i class="fas fa-map-marker-alt me-2 text-gold"></i>Toronto, ON M1G 1L8, Canada
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
 </section>
 
 <!-- What We Do -->
 <section class="py-5 bg-white">
-  <div class="container">
-    <div class="text-center mb-5">
-      <div class="section-label">What We Do</div>
-      <h2>Trade & e-Commerce <span class="text-gold">Platform</span></h2>
-      <div class="divider-gold mx-auto"></div>
-    </div>
-    <div class="row g-4">
-      <div class="col-md-4">
-        <div class="service-card text-center">
-          <div class="service-icon">☕</div>
-          <h5 class="text-gold">T&TG Shopping Platform</h5>
-          <p class="text-muted small">Premium T&TG Arabica and Robusta Green Coffee, sourced from Uganda and exported to buyers across Canada, Uganda, Kenya and USA (Ohio).</p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="service-card text-center">
-          <div class="service-icon">💰</div>
-          <h5 class="text-gold">T&TG Trade Loyalty Platform</h5>
-          <p class="text-muted small">Earn loyalty points on every purchase. Refer other buyers and earn more. Withdraw your funds on Day 45. Four pillars: Points, Promotions, Referral, Reward.</p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="service-card text-center">
-          <div class="service-icon">💱</div>
-          <h5 class="text-gold">Live Exchange Rates</h5>
-          <p class="text-muted small">Real-time rates for our trade routes — CAD/UGX, CAD/KES and UGX/KES — supporting commerce between Canada, Uganda, Kenya and USA (Ohio).</p>
-        </div>
-      </div>
-    </div>
-  </div>
+ <div class="container">
+ <div class="text-center mb-5">
+ <div class="section-label">What We Do</div>
+ <h2>Trade & e-Commerce <span class="text-gold">Platform</span></h2>
+ <div class="divider-gold mx-auto"></div>
+ </div>
+ <div class="row g-4">
+ <div class="col-md-4">
+ <div class="service-card text-center">
+ <div class="service-icon"></div>
+ <h5 class="text-gold">T&TG Shopping Platform</h5>
+ <p class="text-muted small">Premium T&TG Arabica and Robusta Green Coffee, sourced from Uganda and exported to buyers across Canada, Uganda, Kenya and USA (Ohio).</p>
+ </div>
+ </div>
+ <div class="col-md-4">
+ <div class="service-card text-center">
+ <div class="service-icon"></div>
+ <h5 class="text-gold">T&TG Trade Loyalty Platform</h5>
+ <p class="text-muted small">Earn loyalty points on every purchase. Refer other buyers and earn more. Withdraw your funds on Day 45. Four pillars: Points, Promotions, Referral, Reward.</p>
+ </div>
+ </div>
+ <div class="col-md-4">
+ <div class="service-card text-center">
+ <div class="service-icon"></div>
+ <h5 class="text-gold">Live Exchange Rates</h5>
+ <p class="text-muted small">Real-time rates for our trade routes — CAD/UGX, CAD/KES and UGX/KES — supporting commerce between Canada, Uganda, Kenya and USA (Ohio).</p>
+ </div>
+ </div>
+ </div>
+ </div>
 </section>
 
 <!-- Trade Routes -->
 <section class="py-5" style="background:#f8f9fa">
-  <div class="container">
-    <div class="text-center mb-5">
-      <div class="section-label">Operations</div>
-      <h2>Our Trade Routes</h2>
-      <div class="divider-gold mx-auto"></div>
-      <p class="text-muted">Canada · Uganda · Kenya · USA — connected by commerce</p>
-    </div>
-    <div class="row g-4 justify-content-center">
-      <div class="col-md-4">
-        <div class="card border-0 shadow-sm p-4 text-center h-100" style="border-radius:16px">
-          <div style="font-size:3rem">🇨🇦</div>
-          <h5 class="fw-700 mt-3 mb-2" style="color:#0a2540">Canada</h5>
-          <div class="text-gold fw-600 small mb-2">Headquarters</div>
-          <p class="text-muted small">Toronto, Ontario — the hub of our North American operations, import/export coordination and corporate administration.</p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card border-0 shadow-sm p-4 text-center h-100" style="border-radius:16px">
-          <div style="font-size:3rem">🇺🇬</div>
-          <h5 class="fw-700 mt-3 mb-2" style="color:#0a2540">Uganda</h5>
-          <div class="text-gold fw-600 small mb-2">East African Hub</div>
-          <p class="text-muted small">Kampala — primary coffee origin. T&TG sources Arabica and Robusta green coffee directly from Uganda for export to North America.</p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card border-0 shadow-sm p-4 text-center h-100" style="border-radius:16px">
-          <div style="font-size:3rem">🇰🇪</div>
-          <h5 class="fw-700 mt-3 mb-2" style="color:#0a2540">Kenya</h5>
-          <div class="text-gold fw-600 small mb-2">East African Gateway</div>
-          <p class="text-muted small">Nairobi — regional commerce gateway supporting our trade routes, product sourcing and distribution across East Africa.</p>
-        </div>
-      </div>
-    </div>
+ <div class="container">
+ <div class="text-center mb-5">
+ <div class="section-label">Operations</div>
+ <h2>Our Trade Routes</h2>
+ <div class="divider-gold mx-auto"></div>
+ <p class="text-muted">Canada · Uganda · Kenya · USA — connected by commerce</p>
+ </div>
+ <div class="row g-4 justify-content-center">
+ <div class="col-md-4">
+ <div class="card border-0 shadow-sm p-4 text-center h-100" style="border-radius:16px">
+ <div style="font-size:3rem"></div>
+ <h5 class="fw-700 mt-3 mb-2" style="color:#0a2540">Canada</h5>
+ <div class="text-gold fw-600 small mb-2">Headquarters</div>
+ <p class="text-muted small">Toronto, Ontario — the hub of our North American operations, import/export coordination and corporate administration.</p>
+ </div>
+ </div>
+ <div class="col-md-4">
+ <div class="card border-0 shadow-sm p-4 text-center h-100" style="border-radius:16px">
+ <div style="font-size:3rem"></div>
+ <h5 class="fw-700 mt-3 mb-2" style="color:#0a2540">Uganda</h5>
+ <div class="text-gold fw-600 small mb-2">East African Hub</div>
+ <p class="text-muted small">Kampala — primary coffee origin. T&TG sources Arabica and Robusta green coffee directly from Uganda for export to North America.</p>
+ </div>
+ </div>
+ <div class="col-md-4">
+ <div class="card border-0 shadow-sm p-4 text-center h-100" style="border-radius:16px">
+ <div style="font-size:3rem"></div>
+ <h5 class="fw-700 mt-3 mb-2" style="color:#0a2540">Kenya</h5>
+ <div class="text-gold fw-600 small mb-2">East African Gateway</div>
+ <p class="text-muted small">Nairobi — regional commerce gateway supporting our trade routes, product sourcing and distribution across East Africa.</p>
+ </div>
+ </div>
+ </div>
 
-    <!-- USA card -->
-    <div class="row g-4 justify-content-center mt-2">
-      <div class="col-md-4">
-        <div class="card border-0 shadow-sm p-4 text-center h-100" style="border-radius:16px;border-top:3px solid #c9a84c !important">
-          <div style="font-size:3rem">🇺🇸</div>
-          <h5 class="fw-700 mt-3 mb-2" style="color:#0a2540">USA — Ohio</h5>
-          <div class="text-gold fw-600 small mb-2">Midwest Distribution Hub</div>
-          <p class="text-muted small">Ohio — T&TG's US Midwest gateway for importing premium Arabica and Robusta green coffee from East Africa to American roasters and distributors.</p>
-        </div>
-      </div>
-    </div>
-  </div>
+ <!-- USA card -->
+ <div class="row g-4 justify-content-center mt-2">
+ <div class="col-md-4">
+ <div class="card border-0 shadow-sm p-4 text-center h-100" style="border-radius:16px;border-top:3px solid #c9a84c !important">
+ <div style="font-size:3rem"></div>
+ <h5 class="fw-700 mt-3 mb-2" style="color:#0a2540">USA — Ohio</h5>
+ <div class="text-gold fw-600 small mb-2">Midwest Distribution Hub</div>
+ <p class="text-muted small">Ohio — T&TG's US Midwest gateway for importing premium Arabica and Robusta green coffee from East Africa to American roasters and distributors.</p>
+ </div>
+ </div>
+ </div>
+ </div>
 </section>
 {% endblock %}

@@ -4,60 +4,60 @@
 
 {% block content %}
 <style>
-  .ud-bg    { background:#0a0a0a; }
-  .ud-card  { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.15); border-radius:16px; }
-  .ud-gold  { color:#c9a84c; }
-  .ud-muted { color:#7a6e5f; }
-  .ud-text  { color:#e0d5c0; }
+ .ud-bg { background:#0a0a0a; }
+ .ud-card { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.15); border-radius:16px; }
+ .ud-gold { color:#c9a84c; }
+ .ud-muted { color:#7a6e5f; }
+ .ud-text { color:#e0d5c0; }
 
-  /* Sticky anchor nav */
-  .ud-nav { position:sticky; top:64px; z-index:200; background:rgba(6,15,30,.95); backdrop-filter:blur(12px); border-bottom:1px solid rgba(201,168,76,.15); }
-  .ud-nav-inner { display:flex; gap:0; overflow-x:auto; scrollbar-width:none; }
-  .ud-nav-inner::-webkit-scrollbar { display:none; }
-  .ud-nav-link { padding:14px 20px; font-size:.82rem; font-weight:700; color:#7a6e5f; text-decoration:none; border-bottom:2px solid transparent; white-space:nowrap; letter-spacing:.3px; transition:color .2s, border-color .2s; }
-  .ud-nav-link:hover, .ud-nav-link.active { color:#c9a84c; border-bottom-color:#c9a84c; }
+ /* Sticky anchor nav */
+ .ud-nav { position:sticky; top:64px; z-index:200; background:rgba(6,15,30,.95); backdrop-filter:blur(12px); border-bottom:1px solid rgba(201,168,76,.15); }
+ .ud-nav-inner { display:flex; gap:0; overflow-x:auto; scrollbar-width:none; }
+ .ud-nav-inner::-webkit-scrollbar { display:none; }
+ .ud-nav-link { padding:14px 20px; font-size:.82rem; font-weight:700; color:#7a6e5f; text-decoration:none; border-bottom:2px solid transparent; white-space:nowrap; letter-spacing:.3px; transition:color .2s, border-color .2s; }
+ .ud-nav-link:hover, .ud-nav-link.active { color:#c9a84c; border-bottom-color:#c9a84c; }
 
-  /* Membership card */
-  .mem-card { background:linear-gradient(135deg,#c9a84c,#e8c96a 40%,#a07820); border-radius:20px; padding:28px; position:relative; overflow:hidden; box-shadow:0 20px 60px rgba(201,168,76,.3); }
-  .mem-card::before { content:''; position:absolute; top:-40px; right:-40px; width:180px; height:180px; border-radius:50%; background:rgba(255,255,255,.08); }
-  .mem-card::after  { content:''; position:absolute; bottom:-60px; right:40px; width:240px; height:240px; border-radius:50%; background:rgba(255,255,255,.05); }
+ /* Membership card */
+ .mem-card { background:linear-gradient(135deg,#c9a84c,#e8c96a 40%,#a07820); border-radius:20px; padding:28px; position:relative; overflow:hidden; box-shadow:0 20px 60px rgba(201,168,76,.3); }
+ .mem-card::before { content:''; position:absolute; top:-40px; right:-40px; width:180px; height:180px; border-radius:50%; background:rgba(255,255,255,.08); }
+ .mem-card::after { content:''; position:absolute; bottom:-60px; right:40px; width:240px; height:240px; border-radius:50%; background:rgba(255,255,255,.05); }
 
-  /* Form inputs */
-  .ud-input { background:rgba(255,255,255,.05)!important; border:1px solid rgba(201,168,76,.2)!important; color:#e0d5c0!important; border-radius:10px; }
-  .ud-input:focus { border-color:rgba(201,168,76,.5)!important; box-shadow:0 0 0 3px rgba(201,168,76,.1)!important; }
+ /* Form inputs */
+ .ud-input { background:rgba(255,255,255,.05)!important; border:1px solid rgba(201,168,76,.2)!important; color:#e0d5c0!important; border-radius:10px; }
+ .ud-input:focus { border-color:rgba(201,168,76,.5)!important; box-shadow:0 0 0 3px rgba(201,168,76,.1)!important; }
 
-  /* Loyalty tabs */
-  .ld-tabs { border-bottom:1px solid rgba(201,168,76,.2); margin-bottom:28px; }
-  .ld-tabs .nav-link { color:#7a6e5f; border:none; border-bottom:2px solid transparent; padding:12px 20px; font-weight:700; font-size:.85rem; background:none; border-radius:0; }
-  .ld-tabs .nav-link:hover  { color:#c9a84c; }
-  .ld-tabs .nav-link.active { color:#c9a84c; border-bottom-color:#c9a84c; }
+ /* Loyalty tabs */
+ .ld-tabs { border-bottom:1px solid rgba(201,168,76,.2); margin-bottom:28px; }
+ .ld-tabs .nav-link { color:#7a6e5f; border:none; border-bottom:2px solid transparent; padding:12px 20px; font-weight:700; font-size:.85rem; background:none; border-radius:0; }
+ .ld-tabs .nav-link:hover { color:#c9a84c; }
+ .ld-tabs .nav-link.active { color:#c9a84c; border-bottom-color:#c9a84c; }
 
-  /* Tables */
-  .ud-table { width:100%; border-collapse:collapse; font-size:.85rem; }
-  .ud-table thead th { color:#7a6e5f; font-size:.72rem; letter-spacing:1px; text-transform:uppercase; padding:10px 12px; border-bottom:1px solid rgba(201,168,76,.15); }
-  .ud-table tbody td { padding:12px; border-bottom:1px solid rgba(255,255,255,.04); color:#e0d5c0; vertical-align:middle; }
-  .ud-table tbody tr:hover td { background:rgba(201,168,76,.04); }
+ /* Tables */
+ .ud-table { width:100%; border-collapse:collapse; font-size:.85rem; }
+ .ud-table thead th { color:#7a6e5f; font-size:.72rem; letter-spacing:1px; text-transform:uppercase; padding:10px 12px; border-bottom:1px solid rgba(201,168,76,.15); }
+ .ud-table tbody td { padding:12px; border-bottom:1px solid rgba(255,255,255,.04); color:#e0d5c0; vertical-align:middle; }
+ .ud-table tbody tr:hover td { background:rgba(201,168,76,.04); }
 
-  /* Sections */
-  .ud-section { padding:60px 0; border-top:1px solid rgba(201,168,76,.08); scroll-margin-top:110px; }
-  .ud-section:first-of-type { border-top:none; }
-  .ud-section-title { color:#fff; font-weight:900; font-size:1.5rem; margin-bottom:4px; }
-  .ud-section-sub   { color:#7a6e5f; font-size:.85rem; margin-bottom:32px; }
+ /* Sections */
+ .ud-section { padding:60px 0; border-top:1px solid rgba(201,168,76,.08); scroll-margin-top:110px; }
+ .ud-section:first-of-type { border-top:none; }
+ .ud-section-title { color:#fff; font-weight:900; font-size:1.5rem; margin-bottom:4px; }
+ .ud-section-sub { color:#7a6e5f; font-size:.85rem; margin-bottom:32px; }
 </style>
 
 <!-- ══ STICKY ANCHOR NAV ════════════════════════════════════════════════ -->
 <div class="ud-nav">
-  <div class="container">
-    <div class="ud-nav-inner">
-      <a href="#overview"       class="ud-nav-link active"><i class="fas fa-th-large me-2"></i>Overview</a>
-      <a href="#profile"        class="ud-nav-link"><i class="fas fa-user me-2"></i>My Profile</a>
-      <a href="#loyalty"        class="ud-nav-link"><i class="fas fa-coins me-2"></i>Loyalty Points</a>
-      {% if is_staff_view %}
-      <a href="#analytics"      class="ud-nav-link"><i class="fas fa-chart-bar me-2"></i>Analytics</a>
-      {% endif %}
-      <a href="#notifications"  class="ud-nav-link"><i class="fas fa-bell me-2"></i>Notifications{% if unread_count %} <span style="background:#e03030;color:#fff;font-size:.6rem;padding:2px 6px;border-radius:100px;margin-left:4px">{{ unread_count }}</span>{% endif %}</a>
-    </div>
-  </div>
+ <div class="container">
+ <div class="ud-nav-inner">
+ <a href="#overview" class="ud-nav-link active"><i class="fas fa-th-large me-2"></i>Overview</a>
+ <a href="#profile" class="ud-nav-link"><i class="fas fa-user me-2"></i>My Profile</a>
+ <a href="#loyalty" class="ud-nav-link"><i class="fas fa-coins me-2"></i>Loyalty Points</a>
+ {% if is_staff_view %}
+ <a href="#analytics" class="ud-nav-link"><i class="fas fa-chart-bar me-2"></i>Analytics</a>
+ {% endif %}
+ <a href="#notifications" class="ud-nav-link"><i class="fas fa-bell me-2"></i>Notifications{% if unread_count %} <span style="background:#e03030;color:#fff;font-size:.6rem;padding:2px 6px;border-radius:100px;margin-left:4px">{{ unread_count }}</span>{% endif %}</a>
+ </div>
+ </div>
 </div>
 
 <div class="ud-bg" style="padding-bottom:80px">
@@ -65,283 +65,283 @@
 
 <!-- ══ SECTION 1: OVERVIEW ══════════════════════════════════════════════ -->
 <section class="ud-section" id="overview">
-  <div class="row align-items-center g-5 mb-5">
-    <div class="col-lg-5">
-      <div class="ud-muted mb-1">Welcome back,</div>
-      <h1 style="color:#fff;font-weight:900;font-size:2rem;margin-bottom:4px">{{ user.get_full_name|default:user.username }}</h1>
-      <div class="ud-muted">{{ user.unique_id }} · {{ user.get_country_display }}</div>
-    </div>
-    <div class="col-lg-7">
-      <div class="mem-card">
-        <div style="position:relative;z-index:2">
-          <div class="d-flex justify-content-between align-items-start mb-3">
-            <div>
-              <div style="font-size:.65rem;font-weight:800;letter-spacing:2px;color:rgba(26,10,0,.7)">GOLD MEMBER 👑</div>
-              <div style="font-size:2.4rem;font-weight:900;color:#1a0a00;line-height:1">{{ user.avon_points|floatformat:2 }}</div>
-              <div style="font-size:.7rem;font-weight:700;color:rgba(26,10,0,.6);letter-spacing:1px">LOYALTY POINTS</div>
-            </div>
-            <div style="font-size:2rem;font-weight:900;color:rgba(26,10,0,.15);font-style:italic">T&TG</div>
-          </div>
-          <div style="height:4px;background:rgba(26,10,0,.15);border-radius:4px;margin-bottom:8px">
-            <div style="height:100%;width:70%;background:rgba(26,10,0,.35);border-radius:4px"></div>
-          </div>
-          <div class="d-flex justify-content-between">
-            <div style="font-size:.72rem;color:rgba(26,10,0,.6)">≈ ${{ user.avon_points|floatformat:2 }} USD</div>
-            <div style="font-size:.65rem;color:rgba(26,10,0,.5)">{{ user.unique_id }}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+ <div class="row align-items-center g-5 mb-5">
+ <div class="col-lg-5">
+ <div class="ud-muted mb-1">Welcome back,</div>
+ <h1 style="color:#fff;font-weight:900;font-size:2rem;margin-bottom:4px">{{ user.get_full_name|default:user.username }}</h1>
+ <div class="ud-muted">{{ user.unique_id }} · {{ user.get_country_display }}</div>
+ </div>
+ <div class="col-lg-7">
+ <div class="mem-card">
+ <div style="position:relative;z-index:2">
+ <div class="d-flex justify-content-between align-items-start mb-3">
+ <div>
+ <div style="font-size:.65rem;font-weight:800;letter-spacing:2px;color:rgba(26,10,0,.7)">GOLD MEMBER </div>
+ <div style="font-size:2.4rem;font-weight:900;color:#1a0a00;line-height:1">{{ user.avon_points|floatformat:2 }}</div>
+ <div style="font-size:.7rem;font-weight:700;color:rgba(26,10,0,.6);letter-spacing:1px">LOYALTY POINTS</div>
+ </div>
+ <div style="font-size:2rem;font-weight:900;color:rgba(26,10,0,.15);font-style:italic">T&TG</div>
+ </div>
+ <div style="height:4px;background:rgba(26,10,0,.15);border-radius:4px;margin-bottom:8px">
+ <div style="height:100%;width:70%;background:rgba(26,10,0,.35);border-radius:4px"></div>
+ </div>
+ <div class="d-flex justify-content-between">
+ <div style="font-size:.72rem;color:rgba(26,10,0,.6)">≈ ${{ user.avon_points|floatformat:2 }} USD</div>
+ <div style="font-size:.65rem;color:rgba(26,10,0,.5)">{{ user.unique_id }}</div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
 
-  <!-- Stats row -->
-  <div class="row g-3 mb-4">
-    <div class="col-6 col-lg-3"><div class="ud-card p-4 text-center"><div style="font-size:1.8rem;margin-bottom:8px">💰</div><div class="ud-gold fw-900 fs-5">{{ user.avon_points|floatformat:0 }}</div><div class="ud-muted" style="font-size:.75rem">Loyalty Points</div></div></div>
-    <div class="col-6 col-lg-3"><div class="ud-card p-4 text-center"><div style="font-size:1.8rem;margin-bottom:8px">📦</div><div class="ud-gold fw-900 fs-5">{{ total_orders }}</div><div class="ud-muted" style="font-size:.75rem">Total Orders</div></div></div>
-    <div class="col-6 col-lg-3"><div class="ud-card p-4 text-center"><div style="font-size:1.8rem;margin-bottom:8px">⏳</div><div class="ud-gold fw-900 fs-5">{{ pending_orders }}</div><div class="ud-muted" style="font-size:.75rem">Pending Orders</div></div></div>
-    <div class="col-6 col-lg-3"><div class="ud-card p-4 text-center"><div style="font-size:1.8rem;margin-bottom:8px">🌍</div><div class="ud-gold fw-900" style="font-size:1rem">{{ user.get_market_type_display|default:"—" }}</div><div class="ud-muted" style="font-size:.75rem">Market Type</div></div></div>
-  </div>
+ <!-- Stats row -->
+ <div class="row g-3 mb-4">
+ <div class="col-6 col-lg-3"><div class="ud-card p-4 text-center"><div style="font-size:1.8rem;margin-bottom:8px"></div><div class="ud-gold fw-900 fs-5">{{ user.avon_points|floatformat:0 }}</div><div class="ud-muted" style="font-size:.75rem">Loyalty Points</div></div></div>
+ <div class="col-6 col-lg-3"><div class="ud-card p-4 text-center"><div style="font-size:1.8rem;margin-bottom:8px"></div><div class="ud-gold fw-900 fs-5">{{ total_orders }}</div><div class="ud-muted" style="font-size:.75rem">Total Orders</div></div></div>
+ <div class="col-6 col-lg-3"><div class="ud-card p-4 text-center"><div style="font-size:1.8rem;margin-bottom:8px">⏳</div><div class="ud-gold fw-900 fs-5">{{ pending_orders }}</div><div class="ud-muted" style="font-size:.75rem">Pending Orders</div></div></div>
+ <div class="col-6 col-lg-3"><div class="ud-card p-4 text-center"><div style="font-size:1.8rem;margin-bottom:8px"></div><div class="ud-gold fw-900" style="font-size:1rem">{{ user.get_market_type_display|default:"—" }}</div><div class="ud-muted" style="font-size:.75rem">Market Type</div></div></div>
+ </div>
 
-  <!-- Recent orders + Quick actions -->
-  <div class="row g-4">
-    <div class="col-lg-8">
-      <div class="ud-card p-0">
-        <div class="d-flex align-items-center justify-content-between p-3" style="border-bottom:1px solid rgba(201,168,76,.12)">
-          <h6 class="ud-gold mb-0"><i class="fas fa-box me-2"></i>Recent Orders</h6>
-          <a href="{% url 'my_orders' %}" class="btn btn-sm" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:none;border-radius:8px">View All</a>
-        </div>
-        {% if recent_orders %}
-        <div style="overflow-x:auto">
-          <table class="ud-table">
-            <thead><tr><th>Product</th><th>Qty</th><th>Total</th><th>Status</th></tr></thead>
-            <tbody>
-            {% for o in recent_orders %}
-            <tr>
-              <td><div class="fw-bold" style="font-size:.85rem">{{ o.product.name|truncatechars:24 }}</div><div class="ud-muted" style="font-size:.72rem">{{ o.created_at|date:"d M Y" }}</div></td>
-              <td>{{ o.quantity }}</td>
-              <td class="ud-gold fw-700">${{ o.total_price }}</td>
-              <td><span style="padding:3px 10px;border-radius:100px;font-size:.68rem;font-weight:700;{% if o.status == 'accepted' %}background:rgba(34,197,94,.15);color:#4ade80{% elif o.status == 'pending' %}background:rgba(251,191,36,.15);color:#fbbf24{% else %}background:rgba(239,68,68,.15);color:#f87171{% endif %}">{{ o.get_status_display }}</span></td>
-            </tr>
-            {% endfor %}
-            </tbody>
-          </table>
-        </div>
-        {% else %}
-        <div class="p-5 text-center"><div style="font-size:3rem;opacity:.2">📦</div><p class="ud-muted mt-2">No orders yet. <a href="{% url 'marketplace' %}" class="ud-gold">Start shopping</a></p></div>
-        {% endif %}
-      </div>
-    </div>
-    <div class="col-lg-4">
-      <div class="ud-card p-4">
-        <h6 class="ud-gold mb-3"><i class="fas fa-bolt me-2"></i>Quick Actions</h6>
-        <div class="d-grid gap-2">
-          <a href="{% url 'marketplace' %}"    class="btn btn-gold py-2"><i class="fas fa-shopping-bag me-2"></i>Browse Products</a>
-          <a href="{% url 'my_orders' %}"      class="btn py-2" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:none;border-radius:10px"><i class="fas fa-box me-2"></i>My Orders</a>
-          <a href="{% url 'forex' %}"          class="btn py-2" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:none;border-radius:10px"><i class="fas fa-chart-line me-2"></i>Live Rates</a>
-          <a href="{% url 'training_home' %}"  class="btn py-2" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:none;border-radius:10px"><i class="fas fa-graduation-cap me-2"></i>Training</a>
-          <a href="#loyalty"                   class="btn py-2" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:none;border-radius:10px"><i class="fas fa-users me-2"></i>Refer & Earn</a>
-        </div>
-      </div>
-    </div>
-  </div>
+ <!-- Recent orders + Quick actions -->
+ <div class="row g-4">
+ <div class="col-lg-8">
+ <div class="ud-card p-0">
+ <div class="d-flex align-items-center justify-content-between p-3" style="border-bottom:1px solid rgba(201,168,76,.12)">
+ <h6 class="ud-gold mb-0"><i class="fas fa-box me-2"></i>Recent Orders</h6>
+ <a href="{% url 'my_orders' %}" class="btn btn-sm" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:none;border-radius:8px">View All</a>
+ </div>
+ {% if recent_orders %}
+ <div style="overflow-x:auto">
+ <table class="ud-table">
+ <thead><tr><th>Product</th><th>Qty</th><th>Total</th><th>Status</th></tr></thead>
+ <tbody>
+ {% for o in recent_orders %}
+ <tr>
+ <td><div class="fw-bold" style="font-size:.85rem">{{ o.product.name|truncatechars:24 }}</div><div class="ud-muted" style="font-size:.72rem">{{ o.created_at|date:"d M Y" }}</div></td>
+ <td>{{ o.quantity }}</td>
+ <td class="ud-gold fw-700">${{ o.total_price }}</td>
+ <td><span style="padding:3px 10px;border-radius:100px;font-size:.68rem;font-weight:700;{% if o.status == 'accepted' %}background:rgba(34,197,94,.15);color:#4ade80{% elif o.status == 'pending' %}background:rgba(251,191,36,.15);color:#fbbf24{% else %}background:rgba(239,68,68,.15);color:#f87171{% endif %}">{{ o.get_status_display }}</span></td>
+ </tr>
+ {% endfor %}
+ </tbody>
+ </table>
+ </div>
+ {% else %}
+ <div class="p-5 text-center"><div style="font-size:3rem;opacity:.2"></div><p class="ud-muted mt-2">No orders yet. <a href="{% url 'marketplace' %}" class="ud-gold">Start shopping</a></p></div>
+ {% endif %}
+ </div>
+ </div>
+ <div class="col-lg-4">
+ <div class="ud-card p-4">
+ <h6 class="ud-gold mb-3"><i class="fas fa-bolt me-2"></i>Quick Actions</h6>
+ <div class="d-grid gap-2">
+ <a href="{% url 'marketplace' %}" class="btn btn-gold py-2"><i class="fas fa-shopping-bag me-2"></i>Browse Products</a>
+ <a href="{% url 'my_orders' %}" class="btn py-2" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:none;border-radius:10px"><i class="fas fa-box me-2"></i>My Orders</a>
+ <a href="{% url 'forex' %}" class="btn py-2" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:none;border-radius:10px"><i class="fas fa-chart-line me-2"></i>Live Rates</a>
+ <a href="{% url 'training_home' %}" class="btn py-2" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:none;border-radius:10px"><i class="fas fa-graduation-cap me-2"></i>Training</a>
+ <a href="#loyalty" class="btn py-2" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:none;border-radius:10px"><i class="fas fa-users me-2"></i>Refer & Earn</a>
+ </div>
+ </div>
+ </div>
+ </div>
 </section>
 
 <!-- ══ SECTION 2: MY PROFILE ════════════════════════════════════════════ -->
 <section class="ud-section" id="profile">
-  <div class="ud-section-title">My Profile</div>
-  <div class="ud-section-sub">Update your personal information and account settings</div>
-  <div class="row g-4">
-    <!-- Avatar + account info -->
-    <div class="col-lg-4">
-      <div class="ud-card p-4 text-center mb-4">
-        {% if user.safe_profile_photo_url %}
-        <img src="{{ user.safe_profile_photo_url }}" style="width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid #c9a84c;margin-bottom:1rem" onerror="this.style.display='none'">
-        {% else %}
-        <div style="width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c96a);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:2.5rem;color:#1a0a00;margin:0 auto 1rem">{{ user.first_name.0|default:user.username.0|upper }}</div>
-        {% endif %}
-        <h5 style="color:#fff;font-weight:800">{{ user.get_full_name|default:user.username }}</h5>
-        <div class="ud-gold mb-2" style="font-size:.85rem">{{ user.unique_id }}</div>
-        {% if user.is_verified %}<span style="background:rgba(34,197,94,.15);color:#4ade80;padding:4px 12px;border-radius:100px;font-size:.7rem;font-weight:700"><i class="fas fa-check-circle me-1"></i>Verified</span>
-        {% else %}<span style="background:rgba(251,191,36,.15);color:#fbbf24;padding:4px 12px;border-radius:100px;font-size:.7rem;font-weight:700"><i class="fas fa-clock me-1"></i>Pending</span>{% endif %}
-      </div>
-      <div class="ud-card p-4">
-        <h6 class="ud-gold mb-3"><i class="fas fa-id-card me-2"></i>Account Info</h6>
-        {% for label, val in info_items|default:"" %}{% endfor %}
-        <div class="row g-2" style="font-size:.82rem">
-          <div class="col-6"><div class="ud-muted" style="font-size:.68rem;letter-spacing:1px;text-transform:uppercase">Country</div><div class="ud-text mt-1">{{ user.get_country_display|default:"—" }}</div></div>
-          <div class="col-6"><div class="ud-muted" style="font-size:.68rem;letter-spacing:1px;text-transform:uppercase">Market</div><div class="ud-text mt-1">{{ user.get_market_type_display }}</div></div>
-          <div class="col-6"><div class="ud-muted" style="font-size:.68rem;letter-spacing:1px;text-transform:uppercase">Role</div><div class="ud-text mt-1">{{ user.get_user_role_display }}</div></div>
-          <div class="col-6"><div class="ud-muted" style="font-size:.68rem;letter-spacing:1px;text-transform:uppercase">Partner</div><div class="ud-text mt-1">{% if user.is_partner %}<span style="color:#4ade80">✓ Yes</span>{% else %}No{% endif %}</div></div>
-          <div class="col-12"><div class="ud-muted" style="font-size:.68rem;letter-spacing:1px;text-transform:uppercase">Member Since</div><div class="ud-text mt-1">{{ user.joined_date|date:"d F Y" }}</div></div>
-        </div>
-      </div>
-    </div>
-    <!-- Edit form -->
-    <div class="col-lg-8">
-      <div class="ud-card p-4">
-        <h6 class="ud-gold mb-4"><i class="fas fa-edit me-2"></i>Edit Profile</h6>
-        <form method="POST" enctype="multipart/form-data">
-          {% csrf_token %}
-          <input type="hidden" name="action" value="profile">
-          <div class="row g-3">
-            <div class="col-md-6"><label class="ud-muted mb-1 d-block" style="font-size:.8rem">First Name</label><input type="text" name="first_name" class="form-control ud-input" value="{{ user.first_name }}"></div>
-            <div class="col-md-6"><label class="ud-muted mb-1 d-block" style="font-size:.8rem">Last Name</label><input type="text" name="last_name" class="form-control ud-input" value="{{ user.last_name }}"></div>
-            <div class="col-md-6"><label class="ud-muted mb-1 d-block" style="font-size:.8rem">Phone</label><input type="tel" name="phone" class="form-control ud-input" value="{{ user.phone }}"></div>
-            <div class="col-md-6"><label class="ud-muted mb-1 d-block" style="font-size:.8rem">City</label><input type="text" name="city" class="form-control ud-input" value="{{ user.city }}"></div>
-            <div class="col-12"><label class="ud-muted mb-1 d-block" style="font-size:.8rem">Address</label><input type="text" name="address" class="form-control ud-input" value="{{ user.address }}"></div>
-            <div class="col-md-6"><label class="ud-muted mb-1 d-block" style="font-size:.8rem">Website</label><input type="url" name="website" class="form-control ud-input" value="{{ user.website }}" placeholder="https://"></div>
-            <div class="col-12"><label class="ud-muted mb-1 d-block" style="font-size:.8rem">Bio</label><textarea name="bio" class="form-control ud-input" rows="3">{{ user.bio }}</textarea></div>
-            <div class="col-12">
-              <label class="ud-muted mb-1 d-block" style="font-size:.8rem">Profile Photo</label>
-              <input type="file" name="profile_photo" class="form-control ud-input" accept="image/*">
-              <div class="ud-muted mt-1" style="font-size:.72rem">Upload your own photo — takes priority over Image URL below.</div>
-            </div>
-          </div>
-          <button type="submit" class="btn btn-gold mt-4 px-5 py-2"><i class="fas fa-save me-2"></i>Save Changes</button>
-        </form>
-      </div>
-    </div>
-  </div>
+ <div class="ud-section-title">My Profile</div>
+ <div class="ud-section-sub">Update your personal information and account settings</div>
+ <div class="row g-4">
+ <!-- Avatar + account info -->
+ <div class="col-lg-4">
+ <div class="ud-card p-4 text-center mb-4">
+ {% if user.safe_profile_photo_url %}
+ <img src="{{ user.safe_profile_photo_url }}" style="width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid #c9a84c;margin-bottom:1rem" onerror="this.style.display='none'">
+ {% else %}
+ <div style="width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c96a);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:2.5rem;color:#1a0a00;margin:0 auto 1rem">{{ user.first_name.0|default:user.username.0|upper }}</div>
+ {% endif %}
+ <h5 style="color:#fff;font-weight:800">{{ user.get_full_name|default:user.username }}</h5>
+ <div class="ud-gold mb-2" style="font-size:.85rem">{{ user.unique_id }}</div>
+ {% if user.is_verified %}<span style="background:rgba(34,197,94,.15);color:#4ade80;padding:4px 12px;border-radius:100px;font-size:.7rem;font-weight:700"><i class="fas fa-check-circle me-1"></i>Verified</span>
+ {% else %}<span style="background:rgba(251,191,36,.15);color:#fbbf24;padding:4px 12px;border-radius:100px;font-size:.7rem;font-weight:700"><i class="fas fa-clock me-1"></i>Pending</span>{% endif %}
+ </div>
+ <div class="ud-card p-4">
+ <h6 class="ud-gold mb-3"><i class="fas fa-id-card me-2"></i>Account Info</h6>
+ {% for label, val in info_items|default:"" %}{% endfor %}
+ <div class="row g-2" style="font-size:.82rem">
+ <div class="col-6"><div class="ud-muted" style="font-size:.68rem;letter-spacing:1px;text-transform:uppercase">Country</div><div class="ud-text mt-1">{{ user.get_country_display|default:"—" }}</div></div>
+ <div class="col-6"><div class="ud-muted" style="font-size:.68rem;letter-spacing:1px;text-transform:uppercase">Market</div><div class="ud-text mt-1">{{ user.get_market_type_display }}</div></div>
+ <div class="col-6"><div class="ud-muted" style="font-size:.68rem;letter-spacing:1px;text-transform:uppercase">Role</div><div class="ud-text mt-1">{{ user.get_user_role_display }}</div></div>
+ <div class="col-6"><div class="ud-muted" style="font-size:.68rem;letter-spacing:1px;text-transform:uppercase">Partner</div><div class="ud-text mt-1">{% if user.is_partner %}<span style="color:#4ade80"> Yes</span>{% else %}No{% endif %}</div></div>
+ <div class="col-12"><div class="ud-muted" style="font-size:.68rem;letter-spacing:1px;text-transform:uppercase">Member Since</div><div class="ud-text mt-1">{{ user.joined_date|date:"d F Y" }}</div></div>
+ </div>
+ </div>
+ </div>
+ <!-- Edit form -->
+ <div class="col-lg-8">
+ <div class="ud-card p-4">
+ <h6 class="ud-gold mb-4"><i class="fas fa-edit me-2"></i>Edit Profile</h6>
+ <form method="POST" enctype="multipart/form-data">
+ {% csrf_token %}
+ <input type="hidden" name="action" value="profile">
+ <div class="row g-3">
+ <div class="col-md-6"><label class="ud-muted mb-1 d-block" style="font-size:.8rem">First Name</label><input type="text" name="first_name" class="form-control ud-input" value="{{ user.first_name }}"></div>
+ <div class="col-md-6"><label class="ud-muted mb-1 d-block" style="font-size:.8rem">Last Name</label><input type="text" name="last_name" class="form-control ud-input" value="{{ user.last_name }}"></div>
+ <div class="col-md-6"><label class="ud-muted mb-1 d-block" style="font-size:.8rem">Phone</label><input type="tel" name="phone" class="form-control ud-input" value="{{ user.phone }}"></div>
+ <div class="col-md-6"><label class="ud-muted mb-1 d-block" style="font-size:.8rem">City</label><input type="text" name="city" class="form-control ud-input" value="{{ user.city }}"></div>
+ <div class="col-12"><label class="ud-muted mb-1 d-block" style="font-size:.8rem">Address</label><input type="text" name="address" class="form-control ud-input" value="{{ user.address }}"></div>
+ <div class="col-md-6"><label class="ud-muted mb-1 d-block" style="font-size:.8rem">Website</label><input type="url" name="website" class="form-control ud-input" value="{{ user.website }}" placeholder="https://"></div>
+ <div class="col-12"><label class="ud-muted mb-1 d-block" style="font-size:.8rem">Bio</label><textarea name="bio" class="form-control ud-input" rows="3">{{ user.bio }}</textarea></div>
+ <div class="col-12">
+ <label class="ud-muted mb-1 d-block" style="font-size:.8rem">Profile Photo</label>
+ <input type="file" name="profile_photo" class="form-control ud-input" accept="image/*">
+ <div class="ud-muted mt-1" style="font-size:.72rem">Upload your own photo — takes priority over Image URL below.</div>
+ </div>
+ </div>
+ <button type="submit" class="btn btn-gold mt-4 px-5 py-2"><i class="fas fa-save me-2"></i>Save Changes</button>
+ </form>
+ </div>
+ </div>
+ </div>
 </section>
 
 <!-- ══ SECTION 3: LOYALTY POINTS ════════════════════════════════════════ -->
 <section class="ud-section" id="loyalty">
-  <div class="ud-section-title">T&TG Loyalty Points</div>
-  <div class="ud-section-sub">Earn, refer, and withdraw your loyalty rewards</div>
+ <div class="ud-section-title">T&TG Loyalty Points</div>
+ <div class="ud-section-sub">Earn, refer, and withdraw your loyalty rewards</div>
 
-  <!-- Rates -->
-  <div class="row g-3 mb-4">
-    <div class="col-4"><div class="ud-card p-3 text-center"><div class="ud-gold fw-800 fs-5">{{ settings.consumer_rate|floatformat:0 }}%</div><div class="ud-muted" style="font-size:.72rem">Earn Rate</div></div></div>
-    <div class="col-4"><div class="ud-card p-3 text-center"><div class="ud-gold fw-800 fs-5">{{ settings.referral_rate|floatformat:1 }}%</div><div class="ud-muted" style="font-size:.72rem">Referral Rate</div></div></div>
-    <div class="col-4"><div class="ud-card p-3 text-center"><div class="ud-gold fw-800 fs-5">Day {{ settings.payment_days }}</div><div class="ud-muted" style="font-size:.72rem">Payment Day</div></div></div>
-  </div>
+ <!-- Rates -->
+ <div class="row g-3 mb-4">
+ <div class="col-4"><div class="ud-card p-3 text-center"><div class="ud-gold fw-800 fs-5">{{ settings.consumer_rate|floatformat:0 }}%</div><div class="ud-muted" style="font-size:.72rem">Earn Rate</div></div></div>
+ <div class="col-4"><div class="ud-card p-3 text-center"><div class="ud-gold fw-800 fs-5">{{ settings.referral_rate|floatformat:1 }}%</div><div class="ud-muted" style="font-size:.72rem">Referral Rate</div></div></div>
+ <div class="col-4"><div class="ud-card p-3 text-center"><div class="ud-gold fw-800 fs-5">Day {{ settings.payment_days }}</div><div class="ud-muted" style="font-size:.72rem">Payment Day</div></div></div>
+ </div>
 
-  {% include 'accounts/_loyalty_content.html' %}
+ {% include 'accounts/_loyalty_content.html' %}
 </section>
 
 {% if is_staff_view %}
 <!-- ══ SECTION 4: ANALYTICS ══════════════════════════════════════════════ -->
 <section class="ud-section" id="analytics">
-  <div class="ud-section-title">T&TG Analytics Dashboard</div>
-  <div class="ud-section-sub">Sales trends, revenue and platform performance</div>
+ <div class="ud-section-title">T&TG Analytics Dashboard</div>
+ <div class="ud-section-sub">Sales trends, revenue and platform performance</div>
 
-  <!-- KPIs -->
-  <div class="row g-3 mb-4">
-    {% for icon, label, val in analytics_kpis|default:"" %}{% endfor %}
-    <div class="col-6 col-lg-2"><div class="ud-card p-3 text-center"><div style="font-size:1.4rem;margin-bottom:6px">💵</div><div class="ud-gold fw-800" style="font-size:1.1rem">${{ total_revenue|floatformat:0 }}</div><div class="ud-muted" style="font-size:.68rem">Total Revenue</div></div></div>
-    <div class="col-6 col-lg-2"><div class="ud-card p-3 text-center"><div style="font-size:1.4rem;margin-bottom:6px">🛒</div><div class="ud-gold fw-800" style="font-size:1.1rem">{{ total_orders_all }}</div><div class="ud-muted" style="font-size:.68rem">Total Orders</div></div></div>
-    <div class="col-6 col-lg-2"><div class="ud-card p-3 text-center"><div style="font-size:1.4rem;margin-bottom:6px">📊</div><div class="ud-gold fw-800" style="font-size:1.1rem">${{ avg_order_value|floatformat:0 }}</div><div class="ud-muted" style="font-size:.68rem">Avg Order</div></div></div>
-    <div class="col-6 col-lg-2"><div class="ud-card p-3 text-center"><div style="font-size:1.4rem;margin-bottom:6px">👥</div><div class="ud-gold fw-800" style="font-size:1.1rem">{{ total_customers }}</div><div class="ud-muted" style="font-size:.68rem">Customers</div></div></div>
-    <div class="col-6 col-lg-2"><div class="ud-card p-3 text-center"><div style="font-size:1.4rem;margin-bottom:6px">🏷️</div><div class="ud-gold fw-800" style="font-size:1.1rem">{{ total_products_active }}</div><div class="ud-muted" style="font-size:.68rem">Products</div></div></div>
-    <div class="col-6 col-lg-2"><div class="ud-card p-3 text-center"><div style="font-size:1.4rem;margin-bottom:6px">⏳</div><div class="ud-gold fw-800" style="font-size:1.1rem">${{ pending_payouts|floatformat:0 }}</div><div class="ud-muted" style="font-size:.68rem">Pending Payouts</div></div></div>
-  </div>
+ <!-- KPIs -->
+ <div class="row g-3 mb-4">
+ {% for icon, label, val in analytics_kpis|default:"" %}{% endfor %}
+ <div class="col-6 col-lg-2"><div class="ud-card p-3 text-center"><div style="font-size:1.4rem;margin-bottom:6px"></div><div class="ud-gold fw-800" style="font-size:1.1rem">${{ total_revenue|floatformat:0 }}</div><div class="ud-muted" style="font-size:.68rem">Total Revenue</div></div></div>
+ <div class="col-6 col-lg-2"><div class="ud-card p-3 text-center"><div style="font-size:1.4rem;margin-bottom:6px"></div><div class="ud-gold fw-800" style="font-size:1.1rem">{{ total_orders_all }}</div><div class="ud-muted" style="font-size:.68rem">Total Orders</div></div></div>
+ <div class="col-6 col-lg-2"><div class="ud-card p-3 text-center"><div style="font-size:1.4rem;margin-bottom:6px"></div><div class="ud-gold fw-800" style="font-size:1.1rem">${{ avg_order_value|floatformat:0 }}</div><div class="ud-muted" style="font-size:.68rem">Avg Order</div></div></div>
+ <div class="col-6 col-lg-2"><div class="ud-card p-3 text-center"><div style="font-size:1.4rem;margin-bottom:6px"></div><div class="ud-gold fw-800" style="font-size:1.1rem">{{ total_customers }}</div><div class="ud-muted" style="font-size:.68rem">Customers</div></div></div>
+ <div class="col-6 col-lg-2"><div class="ud-card p-3 text-center"><div style="font-size:1.4rem;margin-bottom:6px">️</div><div class="ud-gold fw-800" style="font-size:1.1rem">{{ total_products_active }}</div><div class="ud-muted" style="font-size:.68rem">Products</div></div></div>
+ <div class="col-6 col-lg-2"><div class="ud-card p-3 text-center"><div style="font-size:1.4rem;margin-bottom:6px">⏳</div><div class="ud-gold fw-800" style="font-size:1.1rem">${{ pending_payouts|floatformat:0 }}</div><div class="ud-muted" style="font-size:.68rem">Pending Payouts</div></div></div>
+ </div>
 
-  <!-- Charts -->
-  <div class="row g-4 mb-4">
-    <div class="col-lg-8">
-      <div class="ud-card p-4">
-        <h6 class="ud-gold mb-3"><i class="fas fa-chart-area me-2"></i>Revenue — Last 30 Days</h6>
-        <canvas id="salesChart" height="120"></canvas>
-      </div>
-    </div>
-    <div class="col-lg-4">
-      <div class="ud-card p-4">
-        <h6 class="ud-gold mb-3"><i class="fas fa-circle me-2"></i>Order Status</h6>
-        <canvas id="statusChart" height="180"></canvas>
-      </div>
-    </div>
-  </div>
+ <!-- Charts -->
+ <div class="row g-4 mb-4">
+ <div class="col-lg-8">
+ <div class="ud-card p-4">
+ <h6 class="ud-gold mb-3"><i class="fas fa-chart-area me-2"></i>Revenue — Last 30 Days</h6>
+ <canvas id="salesChart" height="120"></canvas>
+ </div>
+ </div>
+ <div class="col-lg-4">
+ <div class="ud-card p-4">
+ <h6 class="ud-gold mb-3"><i class="fas fa-circle me-2"></i>Order Status</h6>
+ <canvas id="statusChart" height="180"></canvas>
+ </div>
+ </div>
+ </div>
 
-  <!-- Top products + Category -->
-  <div class="row g-4">
-    <div class="col-lg-6">
-      <div class="ud-card p-4">
-        <h6 class="ud-gold mb-3"><i class="fas fa-trophy me-2"></i>Top Products by Revenue</h6>
-        {% for p in top_products %}
-        <div class="d-flex align-items-center gap-3 mb-2">
-          <div class="ud-muted" style="font-size:.75rem;min-width:18px">{{ forloop.counter }}</div>
-          <div style="flex:1;font-size:.82rem;color:#e0d5c0">{{ p.product__name|default:"Unknown"|truncatechars:28 }}</div>
-          <div class="ud-gold fw-700" style="font-size:.82rem">${{ p.revenue|floatformat:0 }}</div>
-        </div>
-        {% empty %}<p class="ud-muted text-center py-3">No sales data yet</p>{% endfor %}
-      </div>
-    </div>
-    <div class="col-lg-6">
-      <div class="ud-card p-4">
-        <h6 class="ud-gold mb-3"><i class="fas fa-tags me-2"></i>Category Performance</h6>
-        {% for c in category_sales %}
-        <div class="d-flex align-items-center gap-3 mb-2">
-          <div style="flex:1;font-size:.82rem;color:#e0d5c0;text-transform:capitalize">{{ c.product__category|default:"Other" }}</div>
-          <div class="ud-muted" style="font-size:.75rem">{{ c.units }} units</div>
-          <div class="ud-gold fw-700" style="font-size:.82rem">${{ c.revenue|floatformat:0 }}</div>
-        </div>
-        {% empty %}<p class="ud-muted text-center py-3">No data yet</p>{% endfor %}
-      </div>
-    </div>
-  </div>
+ <!-- Top products + Category -->
+ <div class="row g-4">
+ <div class="col-lg-6">
+ <div class="ud-card p-4">
+ <h6 class="ud-gold mb-3"><i class="fas fa-trophy me-2"></i>Top Products by Revenue</h6>
+ {% for p in top_products %}
+ <div class="d-flex align-items-center gap-3 mb-2">
+ <div class="ud-muted" style="font-size:.75rem;min-width:18px">{{ forloop.counter }}</div>
+ <div style="flex:1;font-size:.82rem;color:#e0d5c0">{{ p.product__name|default:"Unknown"|truncatechars:28 }}</div>
+ <div class="ud-gold fw-700" style="font-size:.82rem">${{ p.revenue|floatformat:0 }}</div>
+ </div>
+ {% empty %}<p class="ud-muted text-center py-3">No sales data yet</p>{% endfor %}
+ </div>
+ </div>
+ <div class="col-lg-6">
+ <div class="ud-card p-4">
+ <h6 class="ud-gold mb-3"><i class="fas fa-tags me-2"></i>Category Performance</h6>
+ {% for c in category_sales %}
+ <div class="d-flex align-items-center gap-3 mb-2">
+ <div style="flex:1;font-size:.82rem;color:#e0d5c0;text-transform:capitalize">{{ c.product__category|default:"Other" }}</div>
+ <div class="ud-muted" style="font-size:.75rem">{{ c.units }} units</div>
+ <div class="ud-gold fw-700" style="font-size:.82rem">${{ c.revenue|floatformat:0 }}</div>
+ </div>
+ {% empty %}<p class="ud-muted text-center py-3">No data yet</p>{% endfor %}
+ </div>
+ </div>
+ </div>
 </section>
 {% endif %}
 
 <!-- ══ SECTION 5: NOTIFICATIONS & ACTIVITY FEED ══════════════════════════ -->
 <section class="ud-section" id="notifications">
-  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
-    <div>
-      <div class="ud-section-title">Notifications{% if unread_count %} <span style="background:#e03030;color:#fff;font-size:.6rem;padding:3px 8px;border-radius:100px;margin-left:8px;vertical-align:middle">{{ unread_count }}</span>{% endif %}</div>
-      <div class="ud-section-sub mb-0">Activity feed and platform updates</div>
-    </div>
-    {% if is_staff_view %}
-    <a href="{% url 'mark_all_read' %}" class="btn btn-sm" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:none;border-radius:10px"><i class="fas fa-check-double me-2"></i>Mark All Read</a>
-    {% endif %}
-  </div>
+ <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+ <div>
+ <div class="ud-section-title">Notifications{% if unread_count %} <span style="background:#e03030;color:#fff;font-size:.6rem;padding:3px 8px;border-radius:100px;margin-left:8px;vertical-align:middle">{{ unread_count }}</span>{% endif %}</div>
+ <div class="ud-section-sub mb-0">Activity feed and platform updates</div>
+ </div>
+ {% if is_staff_view %}
+ <a href="{% url 'mark_all_read' %}" class="btn btn-sm" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:none;border-radius:10px"><i class="fas fa-check-double me-2"></i>Mark All Read</a>
+ {% endif %}
+ </div>
 
-  {% if is_staff_view and notifs %}
-  <div class="ud-card p-0">
-    <!-- Filter tabs -->
-    <div class="p-3 d-flex align-items-center gap-2 flex-wrap" style="border-bottom:1px solid rgba(201,168,76,.12)">
-      <span class="ud-gold fw-700" style="font-size:.82rem"><i class="fas fa-stream me-2"></i>Activity Feed</span>
-      <div class="ms-auto d-flex gap-2 flex-wrap">
-        <button class="btn btn-sm notif-filter active" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:rgba(201,168,76,.1);border-radius:20px;font-size:.72rem" data-filter="all">All</button>
-        <button class="btn btn-sm notif-filter" style="border:1px solid rgba(255,255,255,.1);color:#7a6e5f;background:none;border-radius:20px;font-size:.72rem" data-filter="order_placed">Orders</button>
-        <button class="btn btn-sm notif-filter" style="border:1px solid rgba(255,255,255,.1);color:#7a6e5f;background:none;border-radius:20px;font-size:.72rem" data-filter="registration">Users</button>
-        <button class="btn btn-sm notif-filter" style="border:1px solid rgba(255,255,255,.1);color:#7a6e5f;background:none;border-radius:20px;font-size:.72rem" data-filter="sell_order">Points</button>
-      </div>
-    </div>
-    <div id="notif-list">
-      {% for notif in notifs %}
-      <div class="notif-item" data-type="{{ notif.notif_type }}"
-           style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:flex-start;gap:14px;{% if not notif.is_read %}background:rgba(201,168,76,.04){% endif %}">
-        <div style="width:42px;height:42px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.15)">
-          {% if notif.notif_type == 'order_placed' %}🛒{% elif notif.notif_type == 'registration' %}👤{% elif notif.notif_type == 'contact' %}✉️{% elif notif.notif_type == 'sell_order' %}💰{% else %}🔔{% endif %}
-        </div>
-        <div style="flex:1;min-width:0">
-          <div class="d-flex align-items-start justify-content-between gap-2">
-            <div style="font-weight:700;font-size:.875rem;color:{% if not notif.is_read %}#fff{% else %}#7a6e5f{% endif %}">
-              {{ notif.title }}
-              {% if not notif.is_read %}<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#c9a84c;margin-left:6px;vertical-align:middle"></span>{% endif %}
-            </div>
-            <div style="font-size:.7rem;color:#7a6e5f;white-space:nowrap;flex-shrink:0"><i class="fas fa-clock me-1"></i>{{ notif.created_at|timesince }} ago</div>
-          </div>
-          <div style="font-size:.8rem;color:#7a6e5f;margin-top:3px;line-height:1.5">{{ notif.message }}</div>
-          <div class="d-flex align-items-center gap-2 mt-2">
-            {% if not notif.is_read %}
-            <a href="{% url 'mark_notification_read' notif.pk %}" style="font-size:.7rem;color:#c9a84c;border:1px solid rgba(201,168,76,.3);padding:2px 8px;border-radius:6px;text-decoration:none">Mark Read</a>
-            {% else %}
-            <span style="font-size:.7rem;color:#7a6e5f"><i class="fas fa-check me-1"></i>Read</span>
-            {% endif %}
-            {% if notif.link %}<a href="{{ notif.link }}" style="font-size:.7rem;color:#60a5fa;text-decoration:none">View <i class="fas fa-arrow-right ms-1"></i></a>{% endif %}
-          </div>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-  </div>
-  {% else %}
-  <div class="ud-card p-5 text-center">
-    <div style="font-size:3rem;opacity:.2;margin-bottom:12px">🔔</div>
-    <h6 style="color:#fff">No notifications yet</h6>
-    <p class="ud-muted">Your account activity will appear here.</p>
-  </div>
-  {% endif %}
+ {% if is_staff_view and notifs %}
+ <div class="ud-card p-0">
+ <!-- Filter tabs -->
+ <div class="p-3 d-flex align-items-center gap-2 flex-wrap" style="border-bottom:1px solid rgba(201,168,76,.12)">
+ <span class="ud-gold fw-700" style="font-size:.82rem"><i class="fas fa-stream me-2"></i>Activity Feed</span>
+ <div class="ms-auto d-flex gap-2 flex-wrap">
+ <button class="btn btn-sm notif-filter active" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:rgba(201,168,76,.1);border-radius:20px;font-size:.72rem" data-filter="all">All</button>
+ <button class="btn btn-sm notif-filter" style="border:1px solid rgba(255,255,255,.1);color:#7a6e5f;background:none;border-radius:20px;font-size:.72rem" data-filter="order_placed">Orders</button>
+ <button class="btn btn-sm notif-filter" style="border:1px solid rgba(255,255,255,.1);color:#7a6e5f;background:none;border-radius:20px;font-size:.72rem" data-filter="registration">Users</button>
+ <button class="btn btn-sm notif-filter" style="border:1px solid rgba(255,255,255,.1);color:#7a6e5f;background:none;border-radius:20px;font-size:.72rem" data-filter="sell_order">Points</button>
+ </div>
+ </div>
+ <div id="notif-list">
+ {% for notif in notifs %}
+ <div class="notif-item" data-type="{{ notif.notif_type }}"
+ style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:flex-start;gap:14px;{% if not notif.is_read %}background:rgba(201,168,76,.04){% endif %}">
+ <div style="width:42px;height:42px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.15)">
+ {% if notif.notif_type == 'order_placed' %}{% elif notif.notif_type == 'registration' %}{% elif notif.notif_type == 'contact' %}️{% elif notif.notif_type == 'sell_order' %}{% else %}{% endif %}
+ </div>
+ <div style="flex:1;min-width:0">
+ <div class="d-flex align-items-start justify-content-between gap-2">
+ <div style="font-weight:700;font-size:.875rem;color:{% if not notif.is_read %}#fff{% else %}#7a6e5f{% endif %}">
+ {{ notif.title }}
+ {% if not notif.is_read %}<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#c9a84c;margin-left:6px;vertical-align:middle"></span>{% endif %}
+ </div>
+ <div style="font-size:.7rem;color:#7a6e5f;white-space:nowrap;flex-shrink:0"><i class="fas fa-clock me-1"></i>{{ notif.created_at|timesince }} ago</div>
+ </div>
+ <div style="font-size:.8rem;color:#7a6e5f;margin-top:3px;line-height:1.5">{{ notif.message }}</div>
+ <div class="d-flex align-items-center gap-2 mt-2">
+ {% if not notif.is_read %}
+ <a href="{% url 'mark_notification_read' notif.pk %}" style="font-size:.7rem;color:#c9a84c;border:1px solid rgba(201,168,76,.3);padding:2px 8px;border-radius:6px;text-decoration:none">Mark Read</a>
+ {% else %}
+ <span style="font-size:.7rem;color:#7a6e5f"><i class="fas fa-check me-1"></i>Read</span>
+ {% endif %}
+ {% if notif.link %}<a href="{{ notif.link }}" style="font-size:.7rem;color:#60a5fa;text-decoration:none">View <i class="fas fa-arrow-right ms-1"></i></a>{% endif %}
+ </div>
+ </div>
+ </div>
+ {% endfor %}
+ </div>
+ </div>
+ {% else %}
+ <div class="ud-card p-5 text-center">
+ <div style="font-size:3rem;opacity:.2;margin-bottom:12px"></div>
+ <h6 style="color:#fff">No notifications yet</h6>
+ <p class="ud-muted">Your account activity will appear here.</p>
+ </div>
+ {% endif %}
 </section>
 
 </div><!-- /container -->
@@ -352,60 +352,60 @@
 <script>
 /* ── Anchor nav highlight ──────────────────────────────────────────── */
 (function(){
-  var links   = document.querySelectorAll('.ud-nav-link');
-  var sections = Array.from(links).map(function(l){ return document.querySelector(l.getAttribute('href')); });
-  function highlight(){
-    var y = window.scrollY + 140;
-    var active = 0;
-    sections.forEach(function(s, i){ if(s && s.offsetTop <= y) active = i; });
-    links.forEach(function(l, i){ l.classList.toggle('active', i === active); });
-  }
-  window.addEventListener('scroll', highlight, {passive:true});
-  highlight();
+ var links = document.querySelectorAll('.ud-nav-link');
+ var sections = Array.from(links).map(function(l){ return document.querySelector(l.getAttribute('href')); });
+ function highlight(){
+ var y = window.scrollY + 140;
+ var active = 0;
+ sections.forEach(function(s, i){ if(s && s.offsetTop <= y) active = i; });
+ links.forEach(function(l, i){ l.classList.toggle('active', i === active); });
+ }
+ window.addEventListener('scroll', highlight, {passive:true});
+ highlight();
 })();
 
 /* ── Notification filters ─────────────────────────────────────────── */
 document.querySelectorAll('.notif-filter').forEach(function(btn){
-  btn.addEventListener('click', function(){
-    document.querySelectorAll('.notif-filter').forEach(function(b){
-      b.style.background = 'none'; b.style.color = '#7a6e5f'; b.style.borderColor = 'rgba(255,255,255,.1)';
-      b.classList.remove('active');
-    });
-    btn.style.background = 'rgba(201,168,76,.1)'; btn.style.color = '#c9a84c'; btn.style.borderColor = 'rgba(201,168,76,.3)';
-    btn.classList.add('active');
-    var f = btn.dataset.filter;
-    document.querySelectorAll('.notif-item').forEach(function(item){
-      item.style.display = (f === 'all' || item.dataset.type === f) ? 'flex' : 'none';
-    });
-  });
+ btn.addEventListener('click', function(){
+ document.querySelectorAll('.notif-filter').forEach(function(b){
+ b.style.background = 'none'; b.style.color = '#7a6e5f'; b.style.borderColor = 'rgba(255,255,255,.1)';
+ b.classList.remove('active');
+ });
+ btn.style.background = 'rgba(201,168,76,.1)'; btn.style.color = '#c9a84c'; btn.style.borderColor = 'rgba(201,168,76,.3)';
+ btn.classList.add('active');
+ var f = btn.dataset.filter;
+ document.querySelectorAll('.notif-item').forEach(function(item){
+ item.style.display = (f === 'all' || item.dataset.type === f) ? 'flex' : 'none';
+ });
+ });
 });
 
 {% if is_staff_view %}
 /* ── Charts ───────────────────────────────────────────────────────── */
 var salesCtx = document.getElementById('salesChart');
 if(salesCtx){
-  var gradient = salesCtx.getContext('2d').createLinearGradient(0, 0, 0, 300);
-  gradient.addColorStop(0, 'rgba(201,168,76,.35)');
-  gradient.addColorStop(1, 'rgba(201,168,76,.01)');
-  new Chart(salesCtx, {
-    type: 'line',
-    data: {
-      labels: {{ sales_labels|safe }},
-      datasets: [{ label:'Revenue (USD)', data: {{ sales_values|safe }}, borderColor:'#c9a84c', backgroundColor: gradient, tension:.4, fill:true, pointBackgroundColor:'#c9a84c', pointRadius:4, pointHoverRadius:6, borderWidth:2 }]
-    },
-    options: { responsive:true, plugins:{legend:{display:false}}, scales:{ x:{ticks:{color:'#7a6e5f',font:{size:10}}, grid:{color:'rgba(255,255,255,.04)'}}, y:{ticks:{color:'#7a6e5f',font:{size:10}}, grid:{color:'rgba(255,255,255,.04)'}} } }
-  });
+ var gradient = salesCtx.getContext('2d').createLinearGradient(0, 0, 0, 300);
+ gradient.addColorStop(0, 'rgba(201,168,76,.35)');
+ gradient.addColorStop(1, 'rgba(201,168,76,.01)');
+ new Chart(salesCtx, {
+ type: 'line',
+ data: {
+ labels: {{ sales_labels|safe }},
+ datasets: [{ label:'Revenue (USD)', data: {{ sales_values|safe }}, borderColor:'#c9a84c', backgroundColor: gradient, tension:.4, fill:true, pointBackgroundColor:'#c9a84c', pointRadius:4, pointHoverRadius:6, borderWidth:2 }]
+ },
+ options: { responsive:true, plugins:{legend:{display:false}}, scales:{ x:{ticks:{color:'#7a6e5f',font:{size:10}}, grid:{color:'rgba(255,255,255,.04)'}}, y:{ticks:{color:'#7a6e5f',font:{size:10}}, grid:{color:'rgba(255,255,255,.04)'}} } }
+ });
 }
 var statusCtx = document.getElementById('statusChart');
 if(statusCtx){
-  new Chart(statusCtx, {
-    type: 'doughnut',
-    data: {
-      labels: [{% for s in status_breakdown %}'{{ s.status|capfirst }}'{% if not forloop.last %},{% endif %}{% endfor %}],
-      datasets: [{ data: [{% for s in status_breakdown %}{{ s.count }}{% if not forloop.last %},{% endif %}{% endfor %}], backgroundColor:['#c9a84c','#4ade80','#f87171','#60a5fa','#a78bfa'], borderWidth:0 }]
-    },
-    options: { responsive:true, plugins:{ legend:{ position:'bottom', labels:{ color:'#7a6e5f', font:{size:11}, padding:12 } } } }
-  });
+ new Chart(statusCtx, {
+ type: 'doughnut',
+ data: {
+ labels: [{% for s in status_breakdown %}'{{ s.status|capfirst }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+ datasets: [{ data: [{% for s in status_breakdown %}{{ s.count }}{% if not forloop.last %},{% endif %}{% endfor %}], backgroundColor:['#c9a84c','#4ade80','#f87171','#60a5fa','#a78bfa'], borderWidth:0 }]
+ },
+ options: { responsive:true, plugins:{ legend:{ position:'bottom', labels:{ color:'#7a6e5f', font:{size:11}, padding:12 } } } }
+ });
 }
 {% endif %}
 </script>

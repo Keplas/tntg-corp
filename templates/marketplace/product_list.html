@@ -1,134 +1,134 @@
 {% extends 'base.html' %}
 {% block title %}
-  {% if category %}{{ category|title }}{% else %}All Products{% endif %} — T&TG Online Shopping Platform
+ {% if category %}{{ category|title }}{% else %}All Products{% endif %} — T&TG Online Shopping Platform
 {% endblock %}
 
 {% block content %}
 <div class="page-header">
-  <div class="container">
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'marketplace' %}">Marketplace</a></li>
-        <li class="breadcrumb-item active">Products</li>
-      </ol>
-    </nav>
-    <h1>
-      {% if market == 'local' %}🏠 Local{% elif market == 'international' %}✈️ International{% else %}🌍 All{% endif %}
-      {% if category %}{{ category|title }}{% else %}Products{% endif %}
-    </h1>
-  </div>
+ <div class="container">
+ <nav aria-label="breadcrumb">
+ <ol class="breadcrumb">
+ <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+ <li class="breadcrumb-item"><a href="{% url 'marketplace' %}">Marketplace</a></li>
+ <li class="breadcrumb-item active">Products</li>
+ </ol>
+ </nav>
+ <h1>
+ {% if market == 'local' %} Local{% elif market == 'international' %}️ International{% else %} All{% endif %}
+ {% if category %}{{ category|title }}{% else %}Products{% endif %}
+ </h1>
+ </div>
 </div>
 
 <section class="section" style="padding-top:2rem">
-  <div class="container">
+ <div class="container">
 
-    <!-- Filters -->
-    <form method="get" class="glass-card p-3 mb-4">
-      <div class="row g-3 align-items-end">
-        <div class="col-md-3">
-          <label class="form-label">Search</label>
-          <input type="text" name="q" class="form-control" placeholder="Search products…" value="{{ query }}">
-        </div>
-        <div class="col-md-2">
-          <label class="form-label">Category</label>
-          <select name="category" class="form-select">
-            <option value="">All Categories</option>
-            {% for val, label in categories %}
-            <option value="{{ val }}" {% if category == val %}selected{% endif %}>{{ label }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-2">
-          <label class="form-label">Shop By</label>
-          <select name="gender" class="form-select">
-            <option value="">Everyone</option>
-            {% for val, label in genders %}
-            {% if val != 'all' %}
-            <option value="{{ val }}" {% if gender == val %}selected{% endif %}>{{ label }}</option>
-            {% endif %}
-            {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-2">
-          <label class="form-label">Market</label>
-          <select name="market" class="form-select">
-            <option value="">All Markets</option>
-            <option value="local"         {% if market == 'local' %}selected{% endif %}>Canadians 🇨🇦</option>
-            <option value="international" {% if market == 'international' %}selected{% endif %}>International</option>
-          </select>
-        </div>
-        <div class="col-md-3 d-flex gap-2">
-          <button type="submit" class="btn btn-gold flex-fill"><i class="fas fa-search me-1"></i>Filter</button>
-          <a href="{% url 'product_list' %}" class="btn btn-outline-secondary">Clear</a>
-        </div>
-      </div>
-    </form>
+ <!-- Filters -->
+ <form method="get" class="glass-card p-3 mb-4">
+ <div class="row g-3 align-items-end">
+ <div class="col-md-3">
+ <label class="form-label">Search</label>
+ <input type="text" name="q" class="form-control" placeholder="Search products…" value="{{ query }}">
+ </div>
+ <div class="col-md-2">
+ <label class="form-label">Category</label>
+ <select name="category" class="form-select">
+ <option value="">All Categories</option>
+ {% for val, label in categories %}
+ <option value="{{ val }}" {% if category == val %}selected{% endif %}>{{ label }}</option>
+ {% endfor %}
+ </select>
+ </div>
+ <div class="col-md-2">
+ <label class="form-label">Shop By</label>
+ <select name="gender" class="form-select">
+ <option value="">Everyone</option>
+ {% for val, label in genders %}
+ {% if val != 'all' %}
+ <option value="{{ val }}" {% if gender == val %}selected{% endif %}>{{ label }}</option>
+ {% endif %}
+ {% endfor %}
+ </select>
+ </div>
+ <div class="col-md-2">
+ <label class="form-label">Market</label>
+ <select name="market" class="form-select">
+ <option value="">All Markets</option>
+ <option value="local" {% if market == 'local' %}selected{% endif %}>Canadians </option>
+ <option value="international" {% if market == 'international' %}selected{% endif %}>International</option>
+ </select>
+ </div>
+ <div class="col-md-3 d-flex gap-2">
+ <button type="submit" class="btn btn-gold flex-fill"><i class="fas fa-search me-1"></i>Filter</button>
+ <a href="{% url 'product_list' %}" class="btn btn-outline-secondary">Clear</a>
+ </div>
+ </div>
+ </form>
 
-    <!-- Category quick links -->
-    <div class="d-flex gap-2 flex-wrap mb-3">
-      <a href="{% url 'product_list' %}"              class="btn btn-sm {% if not category and not gender %}btn-gold{% else %}btn-outline-gold{% endif %}">All</a>
-      <a href="?category=clothing"  class="btn btn-sm {% if category == 'clothing' %}btn-gold{% else %}btn-outline-gold{% endif %}">👔 Clothing</a>
-      <a href="?category=shoes"     class="btn btn-sm {% if category == 'shoes' %}btn-gold{% else %}btn-outline-gold{% endif %}">👟 Shoes</a>
-      <a href="?category=watches"   class="btn btn-sm {% if category == 'watches' %}btn-gold{% else %}btn-outline-gold{% endif %}">⌚ Watches</a>
-      <a href="?category=coffee"    class="btn btn-sm {% if category == 'coffee' %}btn-gold{% else %}btn-outline-gold{% endif %}">☕ Coffee</a>
-      <span class="border-start mx-1"></span>
-      <a href="?gender=men"         class="btn btn-sm {% if gender == 'men' %}btn-gold{% else %}btn-outline-gold{% endif %}">Men</a>
-      <a href="?gender=women"       class="btn btn-sm {% if gender == 'women' %}btn-gold{% else %}btn-outline-gold{% endif %}">Women</a>
-      <a href="?gender=children"    class="btn btn-sm {% if gender == 'children' %}btn-gold{% else %}btn-outline-gold{% endif %}">Children</a>
-    </div>
+ <!-- Category quick links -->
+ <div class="d-flex gap-2 flex-wrap mb-3">
+ <a href="{% url 'product_list' %}" class="btn btn-sm {% if not category and not gender %}btn-gold{% else %}btn-outline-gold{% endif %}">All</a>
+ <a href="?category=clothing" class="btn btn-sm {% if category == 'clothing' %}btn-gold{% else %}btn-outline-gold{% endif %}"> Clothing</a>
+ <a href="?category=shoes" class="btn btn-sm {% if category == 'shoes' %}btn-gold{% else %}btn-outline-gold{% endif %}"> Shoes</a>
+ <a href="?category=watches" class="btn btn-sm {% if category == 'watches' %}btn-gold{% else %}btn-outline-gold{% endif %}">⌚ Watches</a>
+ <a href="?category=coffee" class="btn btn-sm {% if category == 'coffee' %}btn-gold{% else %}btn-outline-gold{% endif %}"> Coffee</a>
+ <span class="border-start mx-1"></span>
+ <a href="?gender=men" class="btn btn-sm {% if gender == 'men' %}btn-gold{% else %}btn-outline-gold{% endif %}">Men</a>
+ <a href="?gender=women" class="btn btn-sm {% if gender == 'women' %}btn-gold{% else %}btn-outline-gold{% endif %}">Women</a>
+ <a href="?gender=children" class="btn btn-sm {% if gender == 'children' %}btn-gold{% else %}btn-outline-gold{% endif %}">Children</a>
+ </div>
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <div class="text-muted" style="font-size:.875rem">{{ products|length }} product{% if products|length != 1 %}s{% endif %} found</div>
-    </div>
+ <div class="d-flex justify-content-between align-items-center mb-3">
+ <div class="text-muted" style="font-size:.875rem">{{ products|length }} product{% if products|length != 1 %}s{% endif %} found</div>
+ </div>
 
-    <div class="row g-4">
-      {% for product in products %}
-      <div class="col-sm-6 col-lg-3 animate-on-scroll">
-        <div class="product-card">
-          <div class="product-img-wrap">
-            {% if product.safe_image_url %}
-            <img src="{{ product.safe_image_url }}" alt="{{ product.name }}"
-                 style="width:100%;height:100%;object-fit:cover"
-                 onerror="this.style.display='none';this.parentElement.querySelector('.product-placeholder').style.display='flex'">
-            {% endif %}
-            <div class="product-placeholder" {% if product.safe_image_url %}style="display:none"{% endif %}>
-              {% if product.category == 'clothing' %}👔{% elif product.category == 'shoes' %}👟{% elif product.category == 'watches' %}⌚{% elif product.category == 'coffee' %}☕{% else %}📦{% endif %}
-            </div>
-            {% if product.is_featured %}<div class="p-badge">Featured</div>{% endif %}
-            <div class="m-badge {{ product.market_type }}">{{ product.get_market_type_display }}</div>
-          </div>
-          <div class="product-body">
-            <div class="product-cat">
-              {{ product.get_category_display }}
-              {% if product.gender_target != 'all' %}
-              <span class="ms-1 text-muted" style="font-size:.7rem">· {{ product.get_gender_target_display }}</span>
-              {% endif %}
-            </div>
-            <div class="product-name">{{ product.name }}</div>
-            <div class="d-flex align-items-center gap-2 mb-2">
-              <div class="product-price">{{ product.currency }} {{ product.price }}</div>
-              <div class="text-muted" style="font-size:.75rem">/ {{ product.unit }}</div>
-            </div>
-            <div class="product-pts"><i class="fas fa-coins me-1"></i>Earn {{ product.loyalty_points_consumer }} pts</div>
-            <div class="text-muted mt-1" style="font-size:.72rem"><i class="fas fa-cubes me-1"></i>{{ product.quantity_available }} {{ product.unit }}s available</div>
-          </div>
-          <div class="product-foot">
-            <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-gold btn-sm flex-fill">View</a>
-            <a href="{% url 'place_order' product.pk %}"   class="btn btn-gold btn-sm flex-fill">Order</a>
-          </div>
-        </div>
-      </div>
-      {% empty %}
-      <div class="col-12">
-        <div class="text-center py-5">
-          <div style="font-size:4rem;opacity:.3;margin-bottom:1rem">📦</div>
-          <h4 class="text-muted">No products found</h4>
-          <p class="text-muted">Try adjusting your filters or <a href="{% url 'product_list' %}" class="text-gold">clear all filters</a></p>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-  </div>
+ <div class="row g-4">
+ {% for product in products %}
+ <div class="col-sm-6 col-lg-3 animate-on-scroll">
+ <div class="product-card">
+ <div class="product-img-wrap">
+ {% if product.safe_image_url %}
+ <img src="{{ product.safe_image_url }}" alt="{{ product.name }}"
+ style="width:100%;height:100%;object-fit:cover"
+ onerror="this.style.display='none';this.parentElement.querySelector('.product-placeholder').style.display='flex'">
+ {% endif %}
+ <div class="product-placeholder" {% if product.safe_image_url %}style="display:none"{% endif %}>
+ {% if product.category == 'clothing' %}{% elif product.category == 'shoes' %}{% elif product.category == 'watches' %}⌚{% elif product.category == 'coffee' %}{% else %}{% endif %}
+ </div>
+ {% if product.is_featured %}<div class="p-badge">Featured</div>{% endif %}
+ <div class="m-badge {{ product.market_type }}">{{ product.get_market_type_display }}</div>
+ </div>
+ <div class="product-body">
+ <div class="product-cat">
+ {{ product.get_category_display }}
+ {% if product.gender_target != 'all' %}
+ <span class="ms-1 text-muted" style="font-size:.7rem">· {{ product.get_gender_target_display }}</span>
+ {% endif %}
+ </div>
+ <div class="product-name">{{ product.name }}</div>
+ <div class="d-flex align-items-center gap-2 mb-2">
+ <div class="product-price">{{ product.currency }} {{ product.price }}</div>
+ <div class="text-muted" style="font-size:.75rem">/ {{ product.unit }}</div>
+ </div>
+ <div class="product-pts"><i class="fas fa-coins me-1"></i>Earn {{ product.loyalty_points_consumer }} pts</div>
+ <div class="text-muted mt-1" style="font-size:.72rem"><i class="fas fa-cubes me-1"></i>{{ product.quantity_available }} {{ product.unit }}s available</div>
+ </div>
+ <div class="product-foot">
+ <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-gold btn-sm flex-fill">View</a>
+ <a href="{% url 'place_order' product.pk %}" class="btn btn-gold btn-sm flex-fill">Order</a>
+ </div>
+ </div>
+ </div>
+ {% empty %}
+ <div class="col-12">
+ <div class="text-center py-5">
+ <div style="font-size:4rem;opacity:.3;margin-bottom:1rem"></div>
+ <h4 class="text-muted">No products found</h4>
+ <p class="text-muted">Try adjusting your filters or <a href="{% url 'product_list' %}" class="text-gold">clear all filters</a></p>
+ </div>
+ </div>
+ {% endfor %}
+ </div>
+ </div>
 </section>
 {% endblock %}

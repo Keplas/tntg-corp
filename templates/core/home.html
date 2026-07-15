@@ -8,740 +8,740 @@
 
 <!-- ═══ HERO — World Map Edition ═══ -->
 <section class="tg-hero" id="heroTop">
-  <!-- subtle glow overlay -->
-  <div class="tg-hero-glow"></div>
+ <!-- subtle glow overlay -->
+ <div class="tg-hero-glow"></div>
 
-  <div class="container-xl h-100">
-    <div class="row align-items-center tg-hero-row g-0">
+ <div class="container-xl h-100">
+ <div class="row align-items-center tg-hero-row g-0">
 
-      <!-- ── LEFT: Copy ── -->
-      <div class="col-lg-6 tg-hero-copy">
-        <div class="tg-hero-eyebrow">
-          <span class="pulse-dot"></span>
-          {% t "hero_eyebrow" %}
-        </div>
+ <!-- ── LEFT: Copy ── -->
+ <div class="col-lg-6 tg-hero-copy">
+ <div class="tg-hero-eyebrow">
+ <span class="pulse-dot"></span>
+ {% t "hero_eyebrow" %}
+ </div>
 
-        <h1 class="tg-hero-title">
-          <span>{% t "hero_title_1" %}</span>
-          <span class="gold-line">{% t "hero_title_2" %}</span>
-          <span class="outline-line">{% t "hero_title_3" %}</span>
-        </h1>
+ <h1 class="tg-hero-title">
+ <span>{% t "hero_title_1" %}</span>
+ <span class="gold-line">{% t "hero_title_2" %}</span>
+ <span class="outline-line">{% t "hero_title_3" %}</span>
+ </h1>
 
-        <p class="tg-hero-sub">
-          {% t "hero_sub" %}
-        </p>
+ <p class="tg-hero-sub">
+ {% t "hero_sub" %}
+ </p>
 
-        <div class="tg-hero-ctas">
-          <a href="{% url 'marketplace' %}" class="tg-cta-primary">
-            <i class="fas fa-store"></i> {% t "hero_shop_now" %}
-          </a>
-          <a href="{% url 'register' %}" class="tg-cta-secondary">
-            {% t "hero_get_started" %} <i class="fas fa-arrow-right"></i>
-          </a>
-        </div>
+ <div class="tg-hero-ctas">
+ <a href="{% url 'marketplace' %}" class="tg-cta-primary">
+ <i class="fas fa-store"></i> {% t "hero_shop_now" %}
+ </a>
+ <a href="{% url 'register' %}" class="tg-cta-secondary">
+ {% t "hero_get_started" %} <i class="fas fa-arrow-right"></i>
+ </a>
+ </div>
 
-        <div class="tg-stats-bar">
-          <div class="tg-stat-item">
-            <span class="tg-stat-val">{{ stats.products }}+</span>
-            <span class="tg-stat-lbl">{% t "hero_stat_products" %}</span>
-          </div>
-          <div class="tg-stat-item">
-            <span class="tg-stat-val">4</span>
-            <span class="tg-stat-lbl">{% t "hero_stat_countries" %}</span>
-          </div>
-          <div class="tg-stat-item">
-            <span class="tg-stat-val">{{ stats.partners }}+</span>
-            <span class="tg-stat-lbl">{% t "hero_stat_partners" %}</span>
-          </div>
-          <div class="tg-stat-item">
-            <span class="tg-stat-val">{{ stats.transactions }}+</span>
-            <span class="tg-stat-lbl">{% t "hero_stat_orders" %}</span>
-          </div>
-        </div>
-      </div>
+ <div class="tg-stats-bar">
+ <div class="tg-stat-item">
+ <span class="tg-stat-val">{{ stats.products }}+</span>
+ <span class="tg-stat-lbl">{% t "hero_stat_products" %}</span>
+ </div>
+ <div class="tg-stat-item">
+ <span class="tg-stat-val">4</span>
+ <span class="tg-stat-lbl">{% t "hero_stat_countries" %}</span>
+ </div>
+ <div class="tg-stat-item">
+ <span class="tg-stat-val">{{ stats.partners }}+</span>
+ <span class="tg-stat-lbl">{% t "hero_stat_partners" %}</span>
+ </div>
+ <div class="tg-stat-item">
+ <span class="tg-stat-val">{{ stats.transactions }}+</span>
+ <span class="tg-stat-lbl">{% t "hero_stat_orders" %}</span>
+ </div>
+ </div>
+ </div>
 
-      <!-- ── RIGHT: Live World Map ── -->
-      <div class="col-lg-6 tg-map-col">
-        <div class="tg-map-box" id="tgMapBox">
+ <!-- ── RIGHT: Live World Map ── -->
+ <div class="col-lg-6 tg-map-col">
+ <div class="tg-map-box" id="tgMapBox">
 
-          <!-- header bar -->
-          <div class="tg-map-hdr">
-            <span class="tg-map-title">
-              <i class="fas fa-route" style="color:#c9a84c;margin-right:7px"></i>T&TG Trade Routes
-            </span>
-            <span class="tg-live-ind"><span class="tg-live-dot"></span>Live</span>
-          </div>
+ <!-- header bar -->
+ <div class="tg-map-hdr">
+ <span class="tg-map-title">
+ <i class="fas fa-route" style="color:#c9a84c;margin-right:7px"></i>T&TG Trade Routes
+ </span>
+ <span class="tg-live-ind"><span class="tg-live-dot"></span>Live</span>
+ </div>
 
-          <!-- map canvas -->
-          <canvas id="worldMap"></canvas>
+ <!-- map canvas -->
+ <canvas id="worldMap"></canvas>
 
-          <!-- country badges overlaid on map -->
-          <div class="tg-cbadge tg-cb-ca">
-            <div class="tg-cb-flag">🇨🇦</div>
-            <div><div class="tg-cb-name">Canada</div><div class="tg-cb-role">Headquarters · Toronto</div></div>
-          </div>
-          <div class="tg-cbadge tg-cb-ug">
-            <div class="tg-cb-flag">🇺🇬</div>
-            <div><div class="tg-cb-name">Uganda</div><div class="tg-cb-role">East Africa Hub · Kampala</div></div>
-          </div>
-          <div class="tg-cbadge tg-cb-ke">
-            <div class="tg-cb-flag">🇰🇪</div>
-            <div><div class="tg-cb-name">Kenya</div><div class="tg-cb-role">Trade Gateway · Nairobi</div></div>
-          </div>
-          <div class="tg-cbadge tg-cb-us">
-            <div class="tg-cb-flag">🇺🇸</div>
-            <div><div class="tg-cb-name">USA</div><div class="tg-cb-role">Midwest Hub · Ohio</div></div>
-          </div>
+ <!-- country badges overlaid on map -->
+ <div class="tg-cbadge tg-cb-ca">
+ <div class="tg-cb-flag"></div>
+ <div><div class="tg-cb-name">Canada</div><div class="tg-cb-role">Headquarters · Toronto</div></div>
+ </div>
+ <div class="tg-cbadge tg-cb-ug">
+ <div class="tg-cb-flag"></div>
+ <div><div class="tg-cb-name">Uganda</div><div class="tg-cb-role">East Africa Hub · Kampala</div></div>
+ </div>
+ <div class="tg-cbadge tg-cb-ke">
+ <div class="tg-cb-flag"></div>
+ <div><div class="tg-cb-name">Kenya</div><div class="tg-cb-role">Trade Gateway · Nairobi</div></div>
+ </div>
+ <div class="tg-cbadge tg-cb-us">
+ <div class="tg-cb-flag"></div>
+ <div><div class="tg-cb-name">USA</div><div class="tg-cb-role">Midwest Hub · Ohio</div></div>
+ </div>
 
-          <!-- footer bar -->
-          <div class="tg-map-ftr">
-            <span>🇨🇦 CAD/UGX</span>
-            <span>🇺🇬 CAD/KES</span>
-            <span>🇰🇪 UGX/KES</span>
-          </div>
+ <!-- footer bar -->
+ <div class="tg-map-ftr">
+ <span> CAD/UGX</span>
+ <span> CAD/KES</span>
+ <span> UGX/KES</span>
+ </div>
 
-        </div>
-      </div>
+ </div>
+ </div>
 
-    </div>
-  </div>
+ </div>
+ </div>
 </section>
 
 <!-- ═══ WHAT WE OFFER ═══ -->
 
 <!-- ── T&TG Coffee Image Strip ─────────────────────────────────────── -->
 <div class="tg-img-strip">
-  <div class="tg-img-strip-track">
-    <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=340&h=220&fit=crop&q=70" alt="Coffee roasting">
-    <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=340&h=220&fit=crop&q=70" alt="Coffee espresso">
-    <img src="https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=340&h=220&fit=crop&q=70" alt="Shipping containers">
-    <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=340&h=220&fit=crop&q=70" alt="Coffee beans">
-    <img src="https://images.unsplash.com/photo-1590496793907-4d66e2994b4d?w=340&h=220&fit=crop&q=70" alt="Cargo port">
-    <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=340&h=220&fit=crop&q=70" alt="Forex trading">
-    <img src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=340&h=220&fit=crop&q=70" alt="Cargo ship">
-    <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?w=340&h=220&fit=crop&q=70" alt="Coffee pour">
-    <!-- duplicate for seamless loop -->
-    <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=340&h=220&fit=crop&q=70" alt="Coffee roasting">
-    <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=340&h=220&fit=crop&q=70" alt="Coffee espresso">
-    <img src="https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=340&h=220&fit=crop&q=70" alt="Shipping containers">
-    <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=340&h=220&fit=crop&q=70" alt="Coffee beans">
-    <img src="https://images.unsplash.com/photo-1590496793907-4d66e2994b4d?w=340&h=220&fit=crop&q=70" alt="Cargo port">
-    <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=340&h=220&fit=crop&q=70" alt="Forex trading">
-    <img src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=340&h=220&fit=crop&q=70" alt="Cargo ship">
-    <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?w=340&h=220&fit=crop&q=70" alt="Coffee pour">
-  </div>
+ <div class="tg-img-strip-track">
+ <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=340&h=220&fit=crop&q=70" alt="Coffee roasting">
+ <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=340&h=220&fit=crop&q=70" alt="Coffee espresso">
+ <img src="https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=340&h=220&fit=crop&q=70" alt="Shipping containers">
+ <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=340&h=220&fit=crop&q=70" alt="Coffee beans">
+ <img src="https://images.unsplash.com/photo-1590496793907-4d66e2994b4d?w=340&h=220&fit=crop&q=70" alt="Cargo port">
+ <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=340&h=220&fit=crop&q=70" alt="Forex trading">
+ <img src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=340&h=220&fit=crop&q=70" alt="Cargo ship">
+ <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?w=340&h=220&fit=crop&q=70" alt="Coffee pour">
+ <!-- duplicate for seamless loop -->
+ <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=340&h=220&fit=crop&q=70" alt="Coffee roasting">
+ <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=340&h=220&fit=crop&q=70" alt="Coffee espresso">
+ <img src="https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=340&h=220&fit=crop&q=70" alt="Shipping containers">
+ <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=340&h=220&fit=crop&q=70" alt="Coffee beans">
+ <img src="https://images.unsplash.com/photo-1590496793907-4d66e2994b4d?w=340&h=220&fit=crop&q=70" alt="Cargo port">
+ <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=340&h=220&fit=crop&q=70" alt="Forex trading">
+ <img src="https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=340&h=220&fit=crop&q=70" alt="Cargo ship">
+ <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?w=340&h=220&fit=crop&q=70" alt="Coffee pour">
+ </div>
 </div>
 <div class="tg-glow-divider"></div>
 <section class="tg-offer-section">
-  <!-- animated section canvas background -->
-  <canvas id="offerBg" class="tg-offer-bg-canvas"></canvas>
+ <!-- animated section canvas background -->
+ <canvas id="offerBg" class="tg-offer-bg-canvas"></canvas>
 
-  <div class="container" style="position:relative;z-index:2">
-    <div class="text-center mb-5 tg-reveal">
-      <div class="tg-offer-label">T&TG Shopping Platform</div>
-      <h2 class="tg-offer-heading">Trade & e-Commerce <span>Services</span></h2>
-      <div class="tg-offer-divider"></div>
-    </div>
+ <div class="container" style="position:relative;z-index:2">
+ <div class="text-center mb-5 tg-reveal">
+ <div class="tg-offer-label">T&TG Shopping Platform</div>
+ <h2 class="tg-offer-heading">Trade & e-Commerce <span>Services</span></h2>
+ <div class="tg-offer-divider"></div>
+ </div>
 
-    <div class="row g-4">
+ <div class="row g-4">
 
-      <!-- ── Card 1: T&TG Artisanal Coffee Based Goods ── -->
-      <div class="col-md-6 col-lg-3">
-        <div class="tg-card tg-reveal" id="card-shop">
-          <div class="tg-card-canvas-wrap">
-            <img class="tg-card-img" loading="lazy"
-                 src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=600&h=400&fit=crop&q=80"
-                 alt="T&TG Coffee — Arabica and Robusta green coffee"
-                 onerror="this.style.display='none';this.nextElementSibling.style.display='none';this.parentElement.querySelector('.tg-card-cv').style.opacity='1'">
-            <div class="tg-card-img-overlay"></div>
-            <canvas id="cvShop" class="tg-card-cv" style="opacity:.35"></canvas>
-            <div class="tg-card-icon-overlay">☕</div>
-          </div>
-          <div class="tg-card-body">
-            <h5 class="tg-card-title">T&TG Shopping Platform</h5>
-            <p class="tg-card-text">Base from your location to buy your preferred T&amp;TG coffee product — Artisanal, Arabica or Robusta.</p>
-            <a href="{% url 'marketplace' %}" class="tg-card-btn">
-              Shop Now <i class="fas fa-arrow-right"></i>
-            </a>
-          </div>
-        </div>
-      </div>
+ <!-- ── Card 1: T&TG Artisanal Coffee Based Goods ── -->
+ <div class="col-md-6 col-lg-3">
+ <div class="tg-card tg-reveal" id="card-shop">
+ <div class="tg-card-canvas-wrap">
+ <img class="tg-card-img" loading="lazy"
+ src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=600&h=400&fit=crop&q=80"
+ alt="T&TG Coffee — Arabica and Robusta green coffee"
+ onerror="this.style.display='none';this.nextElementSibling.style.display='none';this.parentElement.querySelector('.tg-card-cv').style.opacity='1'">
+ <div class="tg-card-img-overlay"></div>
+ <canvas id="cvShop" class="tg-card-cv" style="opacity:.35"></canvas>
+ <div class="tg-card-icon-overlay"></div>
+ </div>
+ <div class="tg-card-body">
+ <h5 class="tg-card-title">T&TG Shopping Platform</h5>
+ <p class="tg-card-text">Base from your location to buy your preferred T&amp;TG coffee product — Artisanal, Arabica or Robusta.</p>
+ <a href="{% url 'marketplace' %}" class="tg-card-btn">
+ Shop Now <i class="fas fa-arrow-right"></i>
+ </a>
+ </div>
+ </div>
+ </div>
 
-      <!-- ── Card 2: Loyalty Platform ── -->
-      <div class="col-md-6 col-lg-3">
-        <div class="tg-card tg-card-loyalty tg-reveal" id="card-loyalty" style="transition-delay:.08s">
-          <div class="tg-card-canvas-wrap">
-            <img class="tg-card-img" loading="lazy"
-                 src="https://images.unsplash.com/photo-1610375461246-83df859d849d?w=600&h=400&fit=crop&q=80"
-                 alt="T&TG Loyalty Platform — earn points and rewards"
-                 onerror="this.style.display='none';this.nextElementSibling.style.display='none';this.parentElement.querySelector('.tg-card-cv').style.opacity='1'">
-            <div class="tg-card-img-overlay"></div>
-            <canvas id="cvLoyalty" class="tg-card-cv" style="opacity:.35"></canvas>
-            <div class="tg-card-icon-overlay">💰</div>
-          </div>
-          <div class="tg-card-body">
-            <h5 class="tg-card-title">T&TG Loyalty Platform</h5>
-            <p class="tg-card-text">Earn 1% on every purchase. Refer friends and earn 2.5%. Withdraw your funds on Day 45. Points · Promotions · Referral · Reward.</p>
-            <a href="{% url 'loyalty_info' %}" class="tg-card-btn">
-              Learn More <i class="fas fa-arrow-right"></i>
-            </a>
-          </div>
-        </div>
-      </div>
+ <!-- ── Card 2: Loyalty Platform ── -->
+ <div class="col-md-6 col-lg-3">
+ <div class="tg-card tg-card-loyalty tg-reveal" id="card-loyalty" style="transition-delay:.08s">
+ <div class="tg-card-canvas-wrap">
+ <img class="tg-card-img" loading="lazy"
+ src="https://images.unsplash.com/photo-1610375461246-83df859d849d?w=600&h=400&fit=crop&q=80"
+ alt="T&TG Loyalty Platform — earn points and rewards"
+ onerror="this.style.display='none';this.nextElementSibling.style.display='none';this.parentElement.querySelector('.tg-card-cv').style.opacity='1'">
+ <div class="tg-card-img-overlay"></div>
+ <canvas id="cvLoyalty" class="tg-card-cv" style="opacity:.35"></canvas>
+ <div class="tg-card-icon-overlay"></div>
+ </div>
+ <div class="tg-card-body">
+ <h5 class="tg-card-title">T&TG Loyalty Platform</h5>
+ <p class="tg-card-text">Earn 1% on every purchase. Refer friends and earn 2.5%. Withdraw your funds on Day 45. Points · Promotions · Referral · Reward.</p>
+ <a href="{% url 'loyalty_info' %}" class="tg-card-btn">
+ Learn More <i class="fas fa-arrow-right"></i>
+ </a>
+ </div>
+ </div>
+ </div>
 
-      <!-- ── Card 3: Live Exchange Rates ── -->
-      <div class="col-md-6 col-lg-3">
-        <div class="tg-card tg-card-forex tg-reveal" id="card-forex" style="transition-delay:.16s">
-          <div class="tg-card-canvas-wrap">
-            <img class="tg-card-img" loading="lazy"
-                 src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop&q=80"
-                 alt="Live exchange rates — CAD, UGX, KES trade routes"
-                 onerror="this.style.display='none';this.nextElementSibling.style.display='none';this.parentElement.querySelector('.tg-card-cv').style.opacity='1'">
-            <div class="tg-card-img-overlay"></div>
-            <canvas id="cvForex" class="tg-card-cv" style="opacity:.35"></canvas>
-            <div class="tg-card-icon-overlay">💱</div>
-          </div>
-          <div class="tg-card-body">
-            <h5 class="tg-card-title">Live Exchange Rates</h5>
-            <p class="tg-card-text">Real-time CAD/UGX · CAD/KES · UGX/KES rates for our trade routes connecting Canada, Uganda and Kenya.</p>
-            <a href="{% url 'forex' %}" class="tg-card-btn">
-              View Rates <i class="fas fa-arrow-right"></i>
-            </a>
-          </div>
-        </div>
-      </div>
+ <!-- ── Card 3: Live Exchange Rates ── -->
+ <div class="col-md-6 col-lg-3">
+ <div class="tg-card tg-card-forex tg-reveal" id="card-forex" style="transition-delay:.16s">
+ <div class="tg-card-canvas-wrap">
+ <img class="tg-card-img" loading="lazy"
+ src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=400&fit=crop&q=80"
+ alt="Live exchange rates — CAD, UGX, KES trade routes"
+ onerror="this.style.display='none';this.nextElementSibling.style.display='none';this.parentElement.querySelector('.tg-card-cv').style.opacity='1'">
+ <div class="tg-card-img-overlay"></div>
+ <canvas id="cvForex" class="tg-card-cv" style="opacity:.35"></canvas>
+ <div class="tg-card-icon-overlay"></div>
+ </div>
+ <div class="tg-card-body">
+ <h5 class="tg-card-title">Live Exchange Rates</h5>
+ <p class="tg-card-text">Real-time CAD/UGX · CAD/KES · UGX/KES rates for our trade routes connecting Canada, Uganda and Kenya.</p>
+ <a href="{% url 'forex' %}" class="tg-card-btn">
+ View Rates <i class="fas fa-arrow-right"></i>
+ </a>
+ </div>
+ </div>
+ </div>
 
-      <!-- ── Card 4: Training ── -->
-      <div class="col-md-6 col-lg-3">
-        <div class="tg-card tg-card-train tg-reveal" id="card-train" style="transition-delay:.24s">
-          <div class="tg-card-canvas-wrap">
-            <img class="tg-card-img" loading="lazy"
-                 src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&h=400&fit=crop&q=80"
-                 alt="Training programs — farming, trade and e-commerce"
-                 onerror="this.style.display='none';this.nextElementSibling.style.display='none';this.parentElement.querySelector('.tg-card-cv').style.opacity='1'">
-            <div class="tg-card-img-overlay"></div>
-            <canvas id="cvTrain" class="tg-card-cv" style="opacity:.35"></canvas>
-            <div class="tg-card-icon-overlay">🎓</div>
-          </div>
-          <div class="tg-card-body">
-            <h5 class="tg-card-title">Onboarding Program</h5>
-            <p class="tg-card-text">Import &amp; Export Operations, E-Commerce Business Setup &amp; Management. Free enrollment — certificates from $500.</p>
-            <a href="{% url 'training_home' %}" class="tg-card-btn">
-              Start Learning <i class="fas fa-arrow-right"></i>
-            </a>
-          </div>
-        </div>
-      </div>
+ <!-- ── Card 4: Training ── -->
+ <div class="col-md-6 col-lg-3">
+ <div class="tg-card tg-card-train tg-reveal" id="card-train" style="transition-delay:.24s">
+ <div class="tg-card-canvas-wrap">
+ <img class="tg-card-img" loading="lazy"
+ src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&h=400&fit=crop&q=80"
+ alt="Training programs — farming, trade and e-commerce"
+ onerror="this.style.display='none';this.nextElementSibling.style.display='none';this.parentElement.querySelector('.tg-card-cv').style.opacity='1'">
+ <div class="tg-card-img-overlay"></div>
+ <canvas id="cvTrain" class="tg-card-cv" style="opacity:.35"></canvas>
+ <div class="tg-card-icon-overlay"></div>
+ </div>
+ <div class="tg-card-body">
+ <h5 class="tg-card-title">Onboarding Program</h5>
+ <p class="tg-card-text">Import &amp; Export Operations, E-Commerce Business Setup &amp; Management. Free enrollment — certificates from $500.</p>
+ <a href="{% url 'training_home' %}" class="tg-card-btn">
+ Start Learning <i class="fas fa-arrow-right"></i>
+ </a>
+ </div>
+ </div>
+ </div>
 
-    </div>
-  </div>
+ </div>
+ </div>
 </section>
 
 
 <script>
 /* ═══ SECTION BACKGROUND CANVAS ════════════════════════════ */
 (function(){
-  var cv  = document.getElementById('offerBg');
-  if(!cv) return;
-  var ctx = cv.getContext('2d');
-  var W, H, pts = [], RAF;
-  var N = 70;
+ var cv = document.getElementById('offerBg');
+ if(!cv) return;
+ var ctx = cv.getContext('2d');
+ var W, H, pts = [], RAF;
+ var N = 70;
 
-  function resize(){
-    W = cv.width  = cv.offsetWidth;
-    H = cv.height = cv.offsetHeight;
-  }
-  function mkPt(){
-    return { x:Math.random()*W, y:Math.random()*H,
-             vx:(Math.random()-.5)*.3, vy:(Math.random()-.5)*.3,
-             r:Math.random()*1.5+.4, a:Math.random()*.3+.1 };
-  }
-  function frame(){
-    ctx.clearRect(0,0,W,H);
-    for(var i=0;i<pts.length;i++){
-      var p=pts[i];
-      p.x+=p.vx; p.y+=p.vy;
-      if(p.x<0||p.x>W) p.vx*=-1;
-      if(p.y<0||p.y>H) p.vy*=-1;
-      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle='rgba(201,168,76,'+p.a+')'; ctx.fill();
-      for(var j=i+1;j<pts.length;j++){
-        var q=pts[j];
-        var dx=p.x-q.x, dy=p.y-q.y, d=Math.sqrt(dx*dx+dy*dy);
-        if(d<120){
-          ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y);
-          ctx.strokeStyle='rgba(201,168,76,'+((.12)*(1-d/120))+')';
-          ctx.lineWidth=.5; ctx.stroke();
-        }
-      }
-    }
-    RAF=requestAnimationFrame(frame);
-  }
-  function start(){ resize(); pts=[]; for(var i=0;i<N;i++) pts.push(mkPt()); frame(); }
-  window.addEventListener('resize',function(){ cancelAnimationFrame(RAF); start(); },{passive:true});
-  start();
+ function resize(){
+ W = cv.width = cv.offsetWidth;
+ H = cv.height = cv.offsetHeight;
+ }
+ function mkPt(){
+ return { x:Math.random()*W, y:Math.random()*H,
+ vx:(Math.random()-.5)*.3, vy:(Math.random()-.5)*.3,
+ r:Math.random()*1.5+.4, a:Math.random()*.3+.1 };
+ }
+ function frame(){
+ ctx.clearRect(0,0,W,H);
+ for(var i=0;i<pts.length;i++){
+ var p=pts[i];
+ p.x+=p.vx; p.y+=p.vy;
+ if(p.x<0||p.x>W) p.vx*=-1;
+ if(p.y<0||p.y>H) p.vy*=-1;
+ ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+ ctx.fillStyle='rgba(201,168,76,'+p.a+')'; ctx.fill();
+ for(var j=i+1;j<pts.length;j++){
+ var q=pts[j];
+ var dx=p.x-q.x, dy=p.y-q.y, d=Math.sqrt(dx*dx+dy*dy);
+ if(d<120){
+ ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y);
+ ctx.strokeStyle='rgba(201,168,76,'+((.12)*(1-d/120))+')';
+ ctx.lineWidth=.5; ctx.stroke();
+ }
+ }
+ }
+ RAF=requestAnimationFrame(frame);
+ }
+ function start(){ resize(); pts=[]; for(var i=0;i<N;i++) pts.push(mkPt()); frame(); }
+ window.addEventListener('resize',function(){ cancelAnimationFrame(RAF); start(); },{passive:true});
+ start();
 })();
 
 /* ═══ CARD CANVAS ANIMATIONS ═══════════════════════════════ */
 
 /* ── Card 1: Shopping — floating product icons ── */
 (function(){
-  var cv=document.getElementById('cvShop'); if(!cv) return;
-  var ctx=cv.getContext('2d');
-  var items=['👔','👟','⌚','☕','👗','🧣'];
-  var particles=[];
-  function resize(){ cv.width=cv.offsetWidth; cv.height=cv.offsetHeight; }
-  function mk(){
-    return { x:Math.random()*cv.width, y:cv.height+20,
-             icon:items[Math.floor(Math.random()*items.length)],
-             size:Math.random()*14+12, speed:Math.random()*.8+.3,
-             alpha:Math.random()*.7+.4, wobble:Math.random()*Math.PI*2,
-             wobbleSpeed:Math.random()*.03+.01 };
-  }
-  for(var i=0;i<8;i++){ var p=mk(); p.y=Math.random()*cv.height; particles.push(p); }
-  function frame(){
-    ctx.clearRect(0,0,cv.width,cv.height);
-    ctx.fillStyle='rgba(13,30,60,.0)'; ctx.fillRect(0,0,cv.width,cv.height);
-    particles.forEach(function(p){
-      p.y-=p.speed; p.wobble+=p.wobbleSpeed;
-      p.x+=Math.sin(p.wobble)*0.7;
-      ctx.globalAlpha=p.alpha*(p.y/cv.height);
-      ctx.font=p.size+'px serif';
-      ctx.textAlign='center';
-      ctx.fillText(p.icon, p.x, p.y);
-      if(p.y<-20){ var n=mk(); Object.assign(p,n); }
-    });
-    ctx.globalAlpha=1;
-    requestAnimationFrame(frame);
-  }
-  resize(); frame();
+ var cv=document.getElementById('cvShop'); if(!cv) return;
+ var ctx=cv.getContext('2d');
+ var items=['','','⌚','','',''];
+ var particles=[];
+ function resize(){ cv.width=cv.offsetWidth; cv.height=cv.offsetHeight; }
+ function mk(){
+ return { x:Math.random()*cv.width, y:cv.height+20,
+ icon:items[Math.floor(Math.random()*items.length)],
+ size:Math.random()*14+12, speed:Math.random()*.8+.3,
+ alpha:Math.random()*.7+.4, wobble:Math.random()*Math.PI*2,
+ wobbleSpeed:Math.random()*.03+.01 };
+ }
+ for(var i=0;i<8;i++){ var p=mk(); p.y=Math.random()*cv.height; particles.push(p); }
+ function frame(){
+ ctx.clearRect(0,0,cv.width,cv.height);
+ ctx.fillStyle='rgba(13,30,60,.0)'; ctx.fillRect(0,0,cv.width,cv.height);
+ particles.forEach(function(p){
+ p.y-=p.speed; p.wobble+=p.wobbleSpeed;
+ p.x+=Math.sin(p.wobble)*0.7;
+ ctx.globalAlpha=p.alpha*(p.y/cv.height);
+ ctx.font=p.size+'px serif';
+ ctx.textAlign='center';
+ ctx.fillText(p.icon, p.x, p.y);
+ if(p.y<-20){ var n=mk(); Object.assign(p,n); }
+ });
+ ctx.globalAlpha=1;
+ requestAnimationFrame(frame);
+ }
+ resize(); frame();
 })();
 
 /* ── Card 2: Loyalty — gold coin burst & sparkles ── */
 (function(){
-  var cv=document.getElementById('cvLoyalty'); if(!cv) return;
-  var ctx=cv.getContext('2d');
-  var sparks=[];
-  function resize(){ cv.width=cv.offsetWidth; cv.height=cv.offsetHeight; }
+ var cv=document.getElementById('cvLoyalty'); if(!cv) return;
+ var ctx=cv.getContext('2d');
+ var sparks=[];
+ function resize(){ cv.width=cv.offsetWidth; cv.height=cv.offsetHeight; }
 
-  function addBurst(){
-    var cx=cv.width/2, cy=cv.height*.4;
-    for(var i=0;i<16;i++){
-      var ang=Math.random()*Math.PI*2;
-      var spd=Math.random()*3+1;
-      sparks.push({ x:cx, y:cy,
-        vx:Math.cos(ang)*spd, vy:Math.sin(ang)*spd,
-        life:1, decay:Math.random()*.025+.015,
-        r:Math.random()*4+2,
-        color:Math.random()>.5?'#c9a84c':'#e8c96a' });
-    }
-  }
-  function frame(){
-    ctx.clearRect(0,0,cv.width,cv.height);
-    /* grid shimmer */
-    ctx.strokeStyle='rgba(201,168,76,.07)'; ctx.lineWidth=.5;
-    for(var gx=0;gx<cv.width;gx+=20){
-      ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,cv.height); ctx.stroke();
-    }
-    for(var gy=0;gy<cv.height;gy+=20){
-      ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(cv.width,gy); ctx.stroke();
-    }
-    /* central glow */
-    var g=ctx.createRadialGradient(cv.width/2,cv.height*.35,0,cv.width/2,cv.height*.35,40);
-    g.addColorStop(0,'rgba(201,168,76,.2)'); g.addColorStop(1,'rgba(201,168,76,0)');
-    ctx.fillStyle=g; ctx.fillRect(0,0,cv.width,cv.height);
+ function addBurst(){
+ var cx=cv.width/2, cy=cv.height*.4;
+ for(var i=0;i<16;i++){
+ var ang=Math.random()*Math.PI*2;
+ var spd=Math.random()*3+1;
+ sparks.push({ x:cx, y:cy,
+ vx:Math.cos(ang)*spd, vy:Math.sin(ang)*spd,
+ life:1, decay:Math.random()*.025+.015,
+ r:Math.random()*4+2,
+ color:Math.random()>.5?'#c9a84c':'#e8c96a' });
+ }
+ }
+ function frame(){
+ ctx.clearRect(0,0,cv.width,cv.height);
+ /* grid shimmer */
+ ctx.strokeStyle='rgba(201,168,76,.07)'; ctx.lineWidth=.5;
+ for(var gx=0;gx<cv.width;gx+=20){
+ ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,cv.height); ctx.stroke();
+ }
+ for(var gy=0;gy<cv.height;gy+=20){
+ ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(cv.width,gy); ctx.stroke();
+ }
+ /* central glow */
+ var g=ctx.createRadialGradient(cv.width/2,cv.height*.35,0,cv.width/2,cv.height*.35,40);
+ g.addColorStop(0,'rgba(201,168,76,.2)'); g.addColorStop(1,'rgba(201,168,76,0)');
+ ctx.fillStyle=g; ctx.fillRect(0,0,cv.width,cv.height);
 
-    sparks.forEach(function(s,i){
-      s.x+=s.vx; s.y+=s.vy; s.vy+=.06; s.life-=s.decay;
-      if(s.life<=0){ sparks.splice(i,1); return; }
-      ctx.globalAlpha=s.life;
-      ctx.beginPath(); ctx.arc(s.x,s.y,s.r*s.life,0,Math.PI*2);
-      ctx.fillStyle=s.color; ctx.fill();
-    });
-    ctx.globalAlpha=1;
-    if(sparks.length<60 && Math.random()<.04) addBurst();
-    requestAnimationFrame(frame);
-  }
-  resize(); addBurst(); frame();
+ sparks.forEach(function(s,i){
+ s.x+=s.vx; s.y+=s.vy; s.vy+=.06; s.life-=s.decay;
+ if(s.life<=0){ sparks.splice(i,1); return; }
+ ctx.globalAlpha=s.life;
+ ctx.beginPath(); ctx.arc(s.x,s.y,s.r*s.life,0,Math.PI*2);
+ ctx.fillStyle=s.color; ctx.fill();
+ });
+ ctx.globalAlpha=1;
+ if(sparks.length<60 && Math.random()<.04) addBurst();
+ requestAnimationFrame(frame);
+ }
+ resize(); addBurst(); frame();
 })();
 
 /* ── Card 3: Forex — animated trading chart line ── */
 (function(){
-  var cv=document.getElementById('cvForex'); if(!cv) return;
-  var ctx=cv.getContext('2d');
-  var t=0, pts=[], history=[];
-  function resize(){
-    cv.width=cv.offsetWidth; cv.height=cv.offsetHeight;
-    pts=[];
-    var steps=cv.width/4;
-    for(var i=0;i<=steps;i++) pts.push(cv.height*.5+Math.sin(i*.18)*18+Math.random()*10-5);
-  }
-  function frame(){
-    ctx.clearRect(0,0,cv.width,cv.height);
-    t+=.025;
+ var cv=document.getElementById('cvForex'); if(!cv) return;
+ var ctx=cv.getContext('2d');
+ var t=0, pts=[], history=[];
+ function resize(){
+ cv.width=cv.offsetWidth; cv.height=cv.offsetHeight;
+ pts=[];
+ var steps=cv.width/4;
+ for(var i=0;i<=steps;i++) pts.push(cv.height*.5+Math.sin(i*.18)*18+Math.random()*10-5);
+ }
+ function frame(){
+ ctx.clearRect(0,0,cv.width,cv.height);
+ t+=.025;
 
-    /* grid */
-    ctx.strokeStyle='rgba(201,168,76,.06)'; ctx.lineWidth=.5;
-    for(var gy=cv.height*.2;gy<cv.height*.9;gy+=cv.height*.17){
-      ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(cv.width,gy); ctx.stroke();
-    }
-    for(var gx=0;gx<cv.width;gx+=cv.width/6){
-      ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,cv.height); ctx.stroke();
-    }
+ /* grid */
+ ctx.strokeStyle='rgba(201,168,76,.06)'; ctx.lineWidth=.5;
+ for(var gy=cv.height*.2;gy<cv.height*.9;gy+=cv.height*.17){
+ ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(cv.width,gy); ctx.stroke();
+ }
+ for(var gx=0;gx<cv.width;gx+=cv.width/6){
+ ctx.beginPath(); ctx.moveTo(gx,0); ctx.lineTo(gx,cv.height); ctx.stroke();
+ }
 
-    /* animated price line */
-    var padding=12;
-    ctx.beginPath();
-    for(var i=0;i<=cv.width;i+=4){
-      var x=i;
-      var y=cv.height*.42+Math.sin((i*.04)+t)*20+Math.sin((i*.08)+t*1.3)*10+Math.sin(t*.5)*8;
-      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-    }
-    ctx.strokeStyle='rgba(201,168,76,.9)'; ctx.lineWidth=2;
-    ctx.shadowColor='#c9a84c'; ctx.shadowBlur=8;
-    ctx.stroke(); ctx.shadowBlur=0;
+ /* animated price line */
+ var padding=12;
+ ctx.beginPath();
+ for(var i=0;i<=cv.width;i+=4){
+ var x=i;
+ var y=cv.height*.42+Math.sin((i*.04)+t)*20+Math.sin((i*.08)+t*1.3)*10+Math.sin(t*.5)*8;
+ if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+ }
+ ctx.strokeStyle='rgba(201,168,76,.9)'; ctx.lineWidth=2;
+ ctx.shadowColor='#c9a84c'; ctx.shadowBlur=8;
+ ctx.stroke(); ctx.shadowBlur=0;
 
-    /* fill under line */
-    ctx.lineTo(cv.width,cv.height); ctx.lineTo(0,cv.height); ctx.closePath();
-    var grad=ctx.createLinearGradient(0,0,0,cv.height);
-    grad.addColorStop(0,'rgba(201,168,76,.18)');
-    grad.addColorStop(1,'rgba(201,168,76,0)');
-    ctx.fillStyle=grad; ctx.fill();
+ /* fill under line */
+ ctx.lineTo(cv.width,cv.height); ctx.lineTo(0,cv.height); ctx.closePath();
+ var grad=ctx.createLinearGradient(0,0,0,cv.height);
+ grad.addColorStop(0,'rgba(201,168,76,.18)');
+ grad.addColorStop(1,'rgba(201,168,76,0)');
+ ctx.fillStyle=grad; ctx.fill();
 
-    /* moving dot on line */
-    var dotX=cv.width*.75;
-    var dotY=cv.height*.42+Math.sin((dotX*.04)+t)*20+Math.sin((dotX*.08)+t*1.3)*10+Math.sin(t*.5)*8;
-    var dg=ctx.createRadialGradient(dotX,dotY,0,dotX,dotY,12);
-    dg.addColorStop(0,'rgba(201,168,76,.5)'); dg.addColorStop(1,'rgba(201,168,76,0)');
-    ctx.fillStyle=dg; ctx.beginPath(); ctx.arc(dotX,dotY,12,0,Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(dotX,dotY,4,0,Math.PI*2);
-    ctx.fillStyle='#e8c96a'; ctx.fill();
+ /* moving dot on line */
+ var dotX=cv.width*.75;
+ var dotY=cv.height*.42+Math.sin((dotX*.04)+t)*20+Math.sin((dotX*.08)+t*1.3)*10+Math.sin(t*.5)*8;
+ var dg=ctx.createRadialGradient(dotX,dotY,0,dotX,dotY,12);
+ dg.addColorStop(0,'rgba(201,168,76,.5)'); dg.addColorStop(1,'rgba(201,168,76,0)');
+ ctx.fillStyle=dg; ctx.beginPath(); ctx.arc(dotX,dotY,12,0,Math.PI*2); ctx.fill();
+ ctx.beginPath(); ctx.arc(dotX,dotY,4,0,Math.PI*2);
+ ctx.fillStyle='#e8c96a'; ctx.fill();
 
-    requestAnimationFrame(frame);
-  }
-  resize(); frame();
+ requestAnimationFrame(frame);
+ }
+ resize(); frame();
 })();
 
 /* ── Card 4: Training — constellation / orbital ── */
 (function(){
-  var cv=document.getElementById('cvTrain'); if(!cv) return;
-  var ctx=cv.getContext('2d');
-  var angle=0;
-  var nodes=[
-    {ox:0,  oy:-42, r:4},
-    {ox:42, oy:0,   r:3},
-    {ox:0,  oy:42,  r:4},
-    {ox:-42,oy:0,   r:3},
-    {ox:28, oy:-28, r:2.5},
-    {ox:-28,oy:28,  r:2.5},
-    {ox:28, oy:28,  r:2.5},
-    {ox:-28,oy:-28, r:2.5},
-  ];
-  function resize(){ cv.width=cv.offsetWidth; cv.height=cv.offsetHeight; }
-  function frame(){
-    ctx.clearRect(0,0,cv.width,cv.height);
-    angle+=.008;
-    var cx=cv.width/2, cy=cv.height*.44;
+ var cv=document.getElementById('cvTrain'); if(!cv) return;
+ var ctx=cv.getContext('2d');
+ var angle=0;
+ var nodes=[
+ {ox:0, oy:-42, r:4},
+ {ox:42, oy:0, r:3},
+ {ox:0, oy:42, r:4},
+ {ox:-42,oy:0, r:3},
+ {ox:28, oy:-28, r:2.5},
+ {ox:-28,oy:28, r:2.5},
+ {ox:28, oy:28, r:2.5},
+ {ox:-28,oy:-28, r:2.5},
+ ];
+ function resize(){ cv.width=cv.offsetWidth; cv.height=cv.offsetHeight; }
+ function frame(){
+ ctx.clearRect(0,0,cv.width,cv.height);
+ angle+=.008;
+ var cx=cv.width/2, cy=cv.height*.44;
 
-    /* outer ring */
-    ctx.beginPath(); ctx.arc(cx,cy,56,0,Math.PI*2);
-    ctx.strokeStyle='rgba(201,168,76,.12)'; ctx.lineWidth=1; ctx.stroke();
-    ctx.beginPath(); ctx.arc(cx,cy,34,0,Math.PI*2);
-    ctx.strokeStyle='rgba(201,168,76,.08)'; ctx.stroke();
+ /* outer ring */
+ ctx.beginPath(); ctx.arc(cx,cy,56,0,Math.PI*2);
+ ctx.strokeStyle='rgba(201,168,76,.12)'; ctx.lineWidth=1; ctx.stroke();
+ ctx.beginPath(); ctx.arc(cx,cy,34,0,Math.PI*2);
+ ctx.strokeStyle='rgba(201,168,76,.08)'; ctx.stroke();
 
-    /* rotating constellation */
-    var worldPts=nodes.map(function(n){
-      var cos=Math.cos(angle), sin=Math.sin(angle);
-      return { x:cx+n.ox*cos-n.oy*sin, y:cy+n.ox*sin+n.oy*cos, r:n.r };
-    });
+ /* rotating constellation */
+ var worldPts=nodes.map(function(n){
+ var cos=Math.cos(angle), sin=Math.sin(angle);
+ return { x:cx+n.ox*cos-n.oy*sin, y:cy+n.ox*sin+n.oy*cos, r:n.r };
+ });
 
-    /* lines between all nodes */
-    for(var i=0;i<worldPts.length;i++){
-      for(var j=i+1;j<worldPts.length;j++){
-        var a=worldPts[i], b=worldPts[j];
-        var dx=a.x-b.x, dy=a.y-b.y, d=Math.sqrt(dx*dx+dy*dy);
-        if(d<80){
-          ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
-          ctx.strokeStyle='rgba(201,168,76,'+(0.25*(1-d/80))+')';
-          ctx.lineWidth=.8; ctx.stroke();
-        }
-      }
-    }
+ /* lines between all nodes */
+ for(var i=0;i<worldPts.length;i++){
+ for(var j=i+1;j<worldPts.length;j++){
+ var a=worldPts[i], b=worldPts[j];
+ var dx=a.x-b.x, dy=a.y-b.y, d=Math.sqrt(dx*dx+dy*dy);
+ if(d<80){
+ ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
+ ctx.strokeStyle='rgba(201,168,76,'+(0.25*(1-d/80))+')';
+ ctx.lineWidth=.8; ctx.stroke();
+ }
+ }
+ }
 
-    /* nodes */
-    worldPts.forEach(function(p){
-      var g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*3);
-      g.addColorStop(0,'rgba(201,168,76,.5)'); g.addColorStop(1,'rgba(201,168,76,0)');
-      ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.x,p.y,p.r*3,0,Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle='#e8c96a'; ctx.fill();
-    });
+ /* nodes */
+ worldPts.forEach(function(p){
+ var g=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*3);
+ g.addColorStop(0,'rgba(201,168,76,.5)'); g.addColorStop(1,'rgba(201,168,76,0)');
+ ctx.fillStyle=g; ctx.beginPath(); ctx.arc(p.x,p.y,p.r*3,0,Math.PI*2); ctx.fill();
+ ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+ ctx.fillStyle='#e8c96a'; ctx.fill();
+ });
 
-    /* center core */
-    var cg=ctx.createRadialGradient(cx,cy,0,cx,cy,14);
-    cg.addColorStop(0,'rgba(201,168,76,.55)'); cg.addColorStop(1,'rgba(201,168,76,0)');
-    ctx.fillStyle=cg; ctx.beginPath(); ctx.arc(cx,cy,14,0,Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.arc(cx,cy,5,0,Math.PI*2);
-    ctx.fillStyle='#fff'; ctx.fill();
+ /* center core */
+ var cg=ctx.createRadialGradient(cx,cy,0,cx,cy,14);
+ cg.addColorStop(0,'rgba(201,168,76,.55)'); cg.addColorStop(1,'rgba(201,168,76,0)');
+ ctx.fillStyle=cg; ctx.beginPath(); ctx.arc(cx,cy,14,0,Math.PI*2); ctx.fill();
+ ctx.beginPath(); ctx.arc(cx,cy,5,0,Math.PI*2);
+ ctx.fillStyle='#fff'; ctx.fill();
 
-    requestAnimationFrame(frame);
-  }
-  resize(); frame();
+ requestAnimationFrame(frame);
+ }
+ resize(); frame();
 })();
 </script>
 
 <!-- ═══ FEATURED PRODUCTS ═══ -->
 {% if featured_products %}
 <section class="section" style="background:rgba(255,255,255,.02)">
-  <div class="container">
-    <div class="section-header tg-reveal">
-      <div class="section-label">T&TG Artisanal Coffee Based Goods Platform</div>
-      <h2>Featured <span class="text-gold">Products</span></h2>
-      <div class="divider-gold"></div>
-    </div>
+ <div class="container">
+ <div class="section-header tg-reveal">
+ <div class="section-label">T&TG Artisanal Coffee Based Goods Platform</div>
+ <h2>Featured <span class="text-gold">Products</span></h2>
+ <div class="divider-gold"></div>
+ </div>
 
-    <!-- Category quick links -->
-    <div class="d-flex gap-2 flex-wrap justify-content-center mb-4">
-      <a href="{% url 'product_list' %}?category=coffee" class="btn btn-sm btn-outline-gold">☕ All Coffee</a>
-      <a href="{% url 'product_list' %}?category=coffee&name=arabica" class="btn btn-sm btn-outline-gold">🌱 Arabica</a>
-      <a href="{% url 'product_list' %}?category=coffee&name=robusta" class="btn btn-sm btn-outline-gold">🫘 Robusta</a>
-    </div>
+ <!-- Category quick links -->
+ <div class="d-flex gap-2 flex-wrap justify-content-center mb-4">
+ <a href="{% url 'product_list' %}?category=coffee" class="btn btn-sm btn-outline-gold"> All Coffee</a>
+ <a href="{% url 'product_list' %}?category=coffee&name=arabica" class="btn btn-sm btn-outline-gold"> Arabica</a>
+ <a href="{% url 'product_list' %}?category=coffee&name=robusta" class="btn btn-sm btn-outline-gold"> Robusta</a>
+ </div>
 
-    <div class="row g-4">
-      {% for product in featured_products %}
-      <div class="col-sm-6 col-lg-4 animate-on-scroll">
-        <div class="product-card">
-          <div class="product-img-wrap">
-            {% if product.safe_image_url %}
-            <img src="{{ product.safe_image_url }}" alt="{{ product.name }}"
-                 style="width:100%;height:100%;object-fit:cover"
-                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            {% else %}
-            <div class="product-placeholder">
-              {% if product.category == 'clothing' %}👔{% elif product.category == 'shoes' %}👟{% elif product.category == 'watches' %}⌚{% elif product.category == 'coffee' %}☕{% else %}📦{% endif %}
-            </div>
-            {% endif %}
-            <div class="p-badge">Featured</div>
-            <div class="m-badge {{ product.market_type }}">{{ product.get_market_type_display }}</div>
-          </div>
-          <div class="product-body">
-            <div class="product-cat">
-              {{ product.get_category_display }}
-              {% if product.gender_target != 'all' %}<span class="text-muted"> · {{ product.get_gender_target_display }}</span>{% endif %}
-            </div>
-            <div class="product-name">{{ product.name }}</div>
-            <div class="product-price">{{ product.currency }} {{ product.price }}</div>
-            <div class="product-pts"><i class="fas fa-coins me-1"></i>Earn {{ product.loyalty_points_consumer }} pts</div>
-          </div>
-          <div class="product-foot">
-            <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-gold btn-sm flex-fill">Details</a>
-            <a href="{% url 'place_order' product.pk %}"    class="btn btn-gold btn-sm flex-fill">Buy Now</a>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-    <div class="text-center mt-4">
-      <a href="{% url 'product_list' %}" class="btn btn-gold btn-lg">
-        View All Products <i class="fas fa-arrow-right ms-2"></i>
-      </a>
-    </div>
-  </div>
+ <div class="row g-4">
+ {% for product in featured_products %}
+ <div class="col-sm-6 col-lg-4 animate-on-scroll">
+ <div class="product-card">
+ <div class="product-img-wrap">
+ {% if product.safe_image_url %}
+ <img src="{{ product.safe_image_url }}" alt="{{ product.name }}"
+ style="width:100%;height:100%;object-fit:cover"
+ onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+ {% else %}
+ <div class="product-placeholder">
+ {% if product.category == 'clothing' %}{% elif product.category == 'shoes' %}{% elif product.category == 'watches' %}⌚{% elif product.category == 'coffee' %}{% else %}{% endif %}
+ </div>
+ {% endif %}
+ <div class="p-badge">Featured</div>
+ <div class="m-badge {{ product.market_type }}">{{ product.get_market_type_display }}</div>
+ </div>
+ <div class="product-body">
+ <div class="product-cat">
+ {{ product.get_category_display }}
+ {% if product.gender_target != 'all' %}<span class="text-muted"> · {{ product.get_gender_target_display }}</span>{% endif %}
+ </div>
+ <div class="product-name">{{ product.name }}</div>
+ <div class="product-price">{{ product.currency }} {{ product.price }}</div>
+ <div class="product-pts"><i class="fas fa-coins me-1"></i>Earn {{ product.loyalty_points_consumer }} pts</div>
+ </div>
+ <div class="product-foot">
+ <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-gold btn-sm flex-fill">Details</a>
+ <a href="{% url 'place_order' product.pk %}" class="btn btn-gold btn-sm flex-fill">Buy Now</a>
+ </div>
+ </div>
+ </div>
+ {% endfor %}
+ </div>
+ <div class="text-center mt-4">
+ <a href="{% url 'product_list' %}" class="btn btn-gold btn-lg">
+ View All Products <i class="fas fa-arrow-right ms-2"></i>
+ </a>
+ </div>
+ </div>
 </section>
 {% endif %}
 
 <!-- ═══ LOYALTY PLATFORM PROMO ═══ -->
 <section class="section" style="background:linear-gradient(135deg,#0a2540,#1a3a5c)">
-  <div class="container">
-    <div class="row g-5 align-items-center">
-      <div class="col-lg-6">
-        <div class="section-label">T&TG Trade Loyalty Platform</div>
-        <h2 class="text-white">Earn Points. <span class="text-gold">Refer. Withdraw.</span></h2>
-        <div class="divider-gold"></div>
-        <p class="text-muted">Every purchase earns you T&TG Loyalty Points automatically. Refer friends and earn even more. Withdraw your funds on Day 45.</p>
-        <div class="row g-3 mt-3">
-          <div class="col-6">
-            <div class="glass-card p-3 text-center">
-              <div class="text-gold fw-900" style="font-size:1.8rem">1%</div>
-              <div class="text-muted small">Consumer Earn Rate</div>
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="glass-card p-3 text-center">
-              <div class="text-gold fw-900" style="font-size:1.8rem">2.5%</div>
-              <div class="text-muted small">Referral Earn Rate</div>
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="glass-card p-3 text-center">
-              <div class="text-gold fw-900" style="font-size:1.8rem">Day 45</div>
-              <div class="text-muted small">Reward Payment</div>
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="glass-card p-3 text-center">
-              <div class="text-gold fw-900" style="font-size:1.2rem">4 Pillars</div>
-              <div class="text-muted small">Points · Promo · Referral · Reward</div>
-            </div>
-          </div>
-        </div>
-        {% if user.is_authenticated %}
-        <a href="{% url 'loyalty_dashboard' %}" class="btn btn-gold mt-4">
-          <i class="fas fa-coins me-2"></i>Manage My Loyalty Points
-        </a>
-        {% else %}
-        <a href="{% url 'register' %}" class="btn btn-gold mt-4">
-          <i class="fas fa-user-plus me-2"></i>Join & Start Earning
-        </a>
-        {% endif %}
-      </div>
-      <div class="col-lg-6">
-        <div class="glass-card p-4">
-          <h5 class="text-gold mb-4"><i class="fas fa-calculator me-2"></i>Loyalty Points Example</h5>
-          <div class="d-flex justify-content-between py-2 border-bottom border-secondary">
-            <span class="text-muted">Product Purchase</span>
-            <span class="text-white fw-600">$200 USD</span>
-          </div>
-          <div class="d-flex justify-content-between py-2 border-bottom border-secondary">
-            <span class="text-muted">Your Points (1% consumer)</span>
-            <span class="text-gold fw-700">$2.00</span>
-          </div>
-          <div class="d-flex justify-content-between py-2 border-bottom border-secondary">
-            <span class="text-muted">Referrer Earns (2.5%)</span>
-            <span class="text-gold fw-700">$5.00</span>
-          </div>
-          <div class="d-flex justify-content-between py-2">
-            <span class="text-muted">Payment Processed</span>
-            <span style="color:#00c896;font-weight:700">Day 45 after purchase</span>
-          </div>
-          <div class="p-3 mt-3 rounded-3" style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);font-size:.8rem;color:#c9a84c">
-            <i class="fas fa-info-circle me-1"></i>Rates applied on net price after all expenses and taxes.
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+ <div class="container">
+ <div class="row g-5 align-items-center">
+ <div class="col-lg-6">
+ <div class="section-label">T&TG Trade Loyalty Platform</div>
+ <h2 class="text-white">Earn Points. <span class="text-gold">Refer. Withdraw.</span></h2>
+ <div class="divider-gold"></div>
+ <p class="text-muted">Every purchase earns you T&TG Loyalty Points automatically. Refer friends and earn even more. Withdraw your funds on Day 45.</p>
+ <div class="row g-3 mt-3">
+ <div class="col-6">
+ <div class="glass-card p-3 text-center">
+ <div class="text-gold fw-900" style="font-size:1.8rem">1%</div>
+ <div class="text-muted small">Consumer Earn Rate</div>
+ </div>
+ </div>
+ <div class="col-6">
+ <div class="glass-card p-3 text-center">
+ <div class="text-gold fw-900" style="font-size:1.8rem">2.5%</div>
+ <div class="text-muted small">Referral Earn Rate</div>
+ </div>
+ </div>
+ <div class="col-6">
+ <div class="glass-card p-3 text-center">
+ <div class="text-gold fw-900" style="font-size:1.8rem">Day 45</div>
+ <div class="text-muted small">Reward Payment</div>
+ </div>
+ </div>
+ <div class="col-6">
+ <div class="glass-card p-3 text-center">
+ <div class="text-gold fw-900" style="font-size:1.2rem">4 Pillars</div>
+ <div class="text-muted small">Points · Promo · Referral · Reward</div>
+ </div>
+ </div>
+ </div>
+ {% if user.is_authenticated %}
+ <a href="{% url 'loyalty_dashboard' %}" class="btn btn-gold mt-4">
+ <i class="fas fa-coins me-2"></i>Manage My Loyalty Points
+ </a>
+ {% else %}
+ <a href="{% url 'register' %}" class="btn btn-gold mt-4">
+ <i class="fas fa-user-plus me-2"></i>Join & Start Earning
+ </a>
+ {% endif %}
+ </div>
+ <div class="col-lg-6">
+ <div class="glass-card p-4">
+ <h5 class="text-gold mb-4"><i class="fas fa-calculator me-2"></i>Loyalty Points Example</h5>
+ <div class="d-flex justify-content-between py-2 border-bottom border-secondary">
+ <span class="text-muted">Product Purchase</span>
+ <span class="text-white fw-600">$200 USD</span>
+ </div>
+ <div class="d-flex justify-content-between py-2 border-bottom border-secondary">
+ <span class="text-muted">Your Points (1% consumer)</span>
+ <span class="text-gold fw-700">$2.00</span>
+ </div>
+ <div class="d-flex justify-content-between py-2 border-bottom border-secondary">
+ <span class="text-muted">Referrer Earns (2.5%)</span>
+ <span class="text-gold fw-700">$5.00</span>
+ </div>
+ <div class="d-flex justify-content-between py-2">
+ <span class="text-muted">Payment Processed</span>
+ <span style="color:#00c896;font-weight:700">Day 45 after purchase</span>
+ </div>
+ <div class="p-3 mt-3 rounded-3" style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);font-size:.8rem;color:#c9a84c">
+ <i class="fas fa-info-circle me-1"></i>Rates applied on net price after all expenses and taxes.
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
 </section>
 
 <!-- ═══ LATEST PRODUCTS ═══ -->
 {% if latest_products %}
 <section class="section">
-  <div class="container">
-    <div class="section-header tg-reveal">
-      <div class="section-label">New Arrivals</div>
-      <h2>Latest <span class="text-gold">Products</span></h2>
-      <div class="divider-gold"></div>
-    </div>
-    <div class="row g-4">
-      {% for product in latest_products %}
-      <div class="col-sm-6 col-lg-3 animate-on-scroll">
-        <div class="product-card">
-          <div class="product-img-wrap">
-            {% if product.safe_image_url %}
-            <img src="{{ product.safe_image_url }}" alt="{{ product.name }}"
-                 style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            {% else %}
-            <div class="product-placeholder">
-              {% if product.category == 'clothing' %}👔{% elif product.category == 'shoes' %}👟{% elif product.category == 'watches' %}⌚{% elif product.category == 'coffee' %}☕{% else %}📦{% endif %}
-            </div>
-            {% endif %}
-            <div class="m-badge {{ product.market_type }}">{{ product.get_market_type_display }}</div>
-          </div>
-          <div class="product-body">
-            <div class="product-cat">{{ product.get_category_display }}</div>
-            <div class="product-name">{{ product.name }}</div>
-            <div class="product-price">{{ product.currency }} {{ product.price }}</div>
-            <div class="product-pts"><i class="fas fa-coins me-1"></i>Earn {{ product.loyalty_points_consumer }} pts</div>
-          </div>
-          <div class="product-foot">
-            <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-gold btn-sm flex-fill">Details</a>
-            <a href="{% url 'place_order' product.pk %}"    class="btn btn-gold btn-sm flex-fill">Order</a>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-    <div class="text-center mt-4">
-      <a href="{% url 'product_list' %}" class="btn btn-gold btn-lg">
-        View All Products <i class="fas fa-arrow-right ms-2"></i>
-      </a>
-    </div>
-  </div>
+ <div class="container">
+ <div class="section-header tg-reveal">
+ <div class="section-label">New Arrivals</div>
+ <h2>Latest <span class="text-gold">Products</span></h2>
+ <div class="divider-gold"></div>
+ </div>
+ <div class="row g-4">
+ {% for product in latest_products %}
+ <div class="col-sm-6 col-lg-3 animate-on-scroll">
+ <div class="product-card">
+ <div class="product-img-wrap">
+ {% if product.safe_image_url %}
+ <img src="{{ product.safe_image_url }}" alt="{{ product.name }}"
+ style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+ {% else %}
+ <div class="product-placeholder">
+ {% if product.category == 'clothing' %}{% elif product.category == 'shoes' %}{% elif product.category == 'watches' %}⌚{% elif product.category == 'coffee' %}{% else %}{% endif %}
+ </div>
+ {% endif %}
+ <div class="m-badge {{ product.market_type }}">{{ product.get_market_type_display }}</div>
+ </div>
+ <div class="product-body">
+ <div class="product-cat">{{ product.get_category_display }}</div>
+ <div class="product-name">{{ product.name }}</div>
+ <div class="product-price">{{ product.currency }} {{ product.price }}</div>
+ <div class="product-pts"><i class="fas fa-coins me-1"></i>Earn {{ product.loyalty_points_consumer }} pts</div>
+ </div>
+ <div class="product-foot">
+ <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-gold btn-sm flex-fill">Details</a>
+ <a href="{% url 'place_order' product.pk %}" class="btn btn-gold btn-sm flex-fill">Order</a>
+ </div>
+ </div>
+ </div>
+ {% endfor %}
+ </div>
+ <div class="text-center mt-4">
+ <a href="{% url 'product_list' %}" class="btn btn-gold btn-lg">
+ View All Products <i class="fas fa-arrow-right ms-2"></i>
+ </a>
+ </div>
+ </div>
 </section>
 {% endif %}
 
 <!-- ═══ OPERATIONS ═══ -->
 <section class="section" style="background:rgba(255,255,255,.02)">
-  <div class="container">
-    <div class="section-header tg-reveal">
-      <div class="section-label">Where We Operate</div>
-      <h2>Our Trade <span class="text-gold">Routes</span></h2>
-      <div class="divider-gold"></div>
-    </div>
-    <div class="row g-4 justify-content-center">
-      {% for country in countries %}
-      <div class="col-md-4">
-        <div class="glass-card p-4 text-center">
-          <div style="font-size:3.5rem">{{ country.flag }}</div>
-          <h5 class="text-gold mt-3 mb-1">{{ country.name }}</h5>
-          {% if country.code == 'CA' %}<div class="text-muted small">Headquarters · Toronto, Ontario</div>{% endif %}
-          {% if country.code == 'UG' %}<div class="text-muted small">East African Hub · Coffee Origin</div>{% endif %}
-          {% if country.code == 'KE' %}<div class="text-muted small">East African Gateway · Trade Route</div>{% endif %}
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-  </div>
+ <div class="container">
+ <div class="section-header tg-reveal">
+ <div class="section-label">Where We Operate</div>
+ <h2>Our Trade <span class="text-gold">Routes</span></h2>
+ <div class="divider-gold"></div>
+ </div>
+ <div class="row g-4 justify-content-center">
+ {% for country in countries %}
+ <div class="col-md-4">
+ <div class="glass-card p-4 text-center">
+ <div style="font-size:3.5rem">{{ country.flag }}</div>
+ <h5 class="text-gold mt-3 mb-1">{{ country.name }}</h5>
+ {% if country.code == 'CA' %}<div class="text-muted small">Headquarters · Toronto, Ontario</div>{% endif %}
+ {% if country.code == 'UG' %}<div class="text-muted small">East African Hub · Coffee Origin</div>{% endif %}
+ {% if country.code == 'KE' %}<div class="text-muted small">East African Gateway · Trade Route</div>{% endif %}
+ </div>
+ </div>
+ {% endfor %}
+ </div>
+ </div>
 </section>
 
 <!-- ═══ TRAINING ═══ -->
 {% if training_programs %}
 <section class="section">
-  <div class="container">
-    <div class="section-header tg-reveal">
-      <div class="section-label">Training & Development</div>
-      <h2>Training <span class="text-gold">Programs</span></h2>
-      <div class="divider-gold"></div>
-    </div>
-    <div class="row g-4">
-      {% for prog in training_programs %}
-      <div class="col-md-4">
-        <div class="glass-card p-4 h-100">
-          <div class="d-flex align-items-center gap-3 mb-3">
-            <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c96a);display:flex;align-items:center;justify-content:center;font-size:1.2rem">🎓</div>
-            <div>
-              <div class="text-gold fw-700" style="font-size:.85rem">{{ prog.get_category_display }}</div>
-              <div class="text-muted" style="font-size:.72rem">{{ prog.duration_hours }}h · Cert ${{ prog.certificate_fee }}</div>
-            </div>
-          </div>
-          <h6 class="text-light fw-700 mb-2">{{ prog.title }}</h6>
-          <p class="text-muted small mb-3">{{ prog.description|truncatechars:100 }}</p>
-          <a href="{% url 'program_detail' prog.pk %}" class="btn btn-outline-gold btn-sm">Learn More</a>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-    <div class="text-center mt-4">
-      <a href="{% url 'training_home' %}" class="btn btn-gold">
-        All Programs <i class="fas fa-arrow-right ms-2"></i>
-      </a>
-    </div>
-  </div>
+ <div class="container">
+ <div class="section-header tg-reveal">
+ <div class="section-label">Training & Development</div>
+ <h2>Training <span class="text-gold">Programs</span></h2>
+ <div class="divider-gold"></div>
+ </div>
+ <div class="row g-4">
+ {% for prog in training_programs %}
+ <div class="col-md-4">
+ <div class="glass-card p-4 h-100">
+ <div class="d-flex align-items-center gap-3 mb-3">
+ <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c96a);display:flex;align-items:center;justify-content:center;font-size:1.2rem"></div>
+ <div>
+ <div class="text-gold fw-700" style="font-size:.85rem">{{ prog.get_category_display }}</div>
+ <div class="text-muted" style="font-size:.72rem">{{ prog.duration_hours }}h · Cert ${{ prog.certificate_fee }}</div>
+ </div>
+ </div>
+ <h6 class="text-light fw-700 mb-2">{{ prog.title }}</h6>
+ <p class="text-muted small mb-3">{{ prog.description|truncatechars:100 }}</p>
+ <a href="{% url 'program_detail' prog.pk %}" class="btn btn-outline-gold btn-sm">Learn More</a>
+ </div>
+ </div>
+ {% endfor %}
+ </div>
+ <div class="text-center mt-4">
+ <a href="{% url 'training_home' %}" class="btn btn-gold">
+ All Programs <i class="fas fa-arrow-right ms-2"></i>
+ </a>
+ </div>
+ </div>
 </section>
 {% endif %}
 
 <!-- ═══ CTA ═══ -->
 <section style="background:linear-gradient(135deg,#0a2540,#1a3a5c);padding:80px 0">
-  <div class="container text-center">
-    <h2 class="text-white fw-800 mb-3">Ready to Join T&TG Trade Corp?</h2>
-    <p class="text-muted mb-4">Import · Export · Shop · Earn — Canada 🇨🇦 · Uganda 🇺🇬 · Kenya 🇰🇪</p>
-    <a href="{% url 'register' %}" class="btn btn-gold btn-lg me-3">
-      <i class="fas fa-rocket me-2"></i>Create Free Account
-    </a>
-    <a href="{% url 'contact' %}" class="btn btn-outline-gold btn-lg">
-      <i class="fas fa-envelope me-2"></i>Contact Us
-    </a>
-  </div>
+ <div class="container text-center">
+ <h2 class="text-white fw-800 mb-3">Ready to Join T&TG Trade Corp?</h2>
+ <p class="text-muted mb-4">Import · Export · Shop · Earn — Canada · Uganda · Kenya </p>
+ <a href="{% url 'register' %}" class="btn btn-gold btn-lg me-3">
+ <i class="fas fa-rocket me-2"></i>Create Free Account
+ </a>
+ <a href="{% url 'contact' %}" class="btn btn-outline-gold btn-lg">
+ <i class="fas fa-envelope me-2"></i>Contact Us
+ </a>
+ </div>
 </section>
 
 {% block extra_js %}
@@ -751,179 +751,179 @@
 /* ═══ LIVE WORLD MAP — D3 + TopoJSON ═══════════════════════ */
 (function(){
 
-  var GOLD        = '#c9a84c';
-  var GOLD_BRIGHT = '#e8c96a';
-  var HIGHLIGHTED = { '124': true, '800': true, '404': true, '840': true }; // Canada, Uganda, Kenya, USA
-  var CITIES = {
-    toronto: [-79.38, 43.65],
-    ohio:    [-82.99, 39.96],
-    kampala: [ 32.58,  0.35],
-    nairobi: [ 36.82, -1.29]
-  };
-  // Routes: Canada HQ → USA (left) → Uganda (right) → Kenya (down)
-  var ROUTES = [
-    { from: CITIES.toronto, to: CITIES.ohio    },  // Canada → USA
-    { from: CITIES.toronto, to: CITIES.kampala },  // Canada → Uganda
-    { from: CITIES.kampala, to: CITIES.nairobi },  // Uganda → Kenya
-  ];
+ var GOLD = '#c9a84c';
+ var GOLD_BRIGHT = '#e8c96a';
+ var HIGHLIGHTED = { '124': true, '800': true, '404': true, '840': true }; // Canada, Uganda, Kenya, USA
+ var CITIES = {
+ toronto: [-79.38, 43.65],
+ ohio: [-82.99, 39.96],
+ kampala: [ 32.58, 0.35],
+ nairobi: [ 36.82, -1.29]
+ };
+ // Routes: Canada HQ → USA (left) → Uganda (right) → Kenya (down)
+ var ROUTES = [
+ { from: CITIES.toronto, to: CITIES.ohio }, // Canada → USA
+ { from: CITIES.toronto, to: CITIES.kampala }, // Canada → Uganda
+ { from: CITIES.kampala, to: CITIES.nairobi }, // Uganda → Kenya
+ ];
 
-  var canvas, ctx, projection, pathGen, W, H;
-  var countries, borders, sphere;
-  var dashOffset = 0, animRaf;
+ var canvas, ctx, projection, pathGen, W, H;
+ var countries, borders, sphere;
+ var dashOffset = 0, animRaf;
 
-  function setup() {
-    var box = document.getElementById('tgMapBox');
-    canvas  = document.getElementById('worldMap');
-    if (!canvas || !box) return;
+ function setup() {
+ var box = document.getElementById('tgMapBox');
+ canvas = document.getElementById('worldMap');
+ if (!canvas || !box) return;
 
-    W = box.clientWidth;
-    H = Math.round(W * 0.58);          // 58% aspect ratio
-    canvas.width  = W;
-    canvas.height = H;
-    canvas.style.height = H + 'px';
-    ctx = canvas.getContext('2d');
+ W = box.clientWidth;
+ H = Math.round(W * 0.58); // 58% aspect ratio
+ canvas.width = W;
+ canvas.height = H;
+ canvas.style.height = H + 'px';
+ ctx = canvas.getContext('2d');
 
-    projection = d3.geoNaturalEarth1()
-      .scale(W / 6.0)
-      .translate([W / 2, H / 2 + H * 0.04]);
+ projection = d3.geoNaturalEarth1()
+ .scale(W / 6.0)
+ .translate([W / 2, H / 2 + H * 0.04]);
 
-    pathGen = d3.geoPath().projection(projection).context(ctx);
-  }
+ pathGen = d3.geoPath().projection(projection).context(ctx);
+ }
 
-  function drawBase() {
-    /* background */
-    ctx.fillStyle = '#040d1c';
-    ctx.fillRect(0, 0, W, H);
+ function drawBase() {
+ /* background */
+ ctx.fillStyle = '#040d1c';
+ ctx.fillRect(0, 0, W, H);
 
-    /* graticule */
-    var grat = d3.geoGraticule()();
-    ctx.beginPath(); pathGen(grat);
-    ctx.strokeStyle = 'rgba(255,255,255,.035)';
-    ctx.lineWidth = .5; ctx.stroke();
+ /* graticule */
+ var grat = d3.geoGraticule()();
+ ctx.beginPath(); pathGen(grat);
+ ctx.strokeStyle = 'rgba(255,255,255,.035)';
+ ctx.lineWidth = .5; ctx.stroke();
 
-    /* sphere outline */
-    ctx.beginPath(); pathGen(sphere);
-    ctx.strokeStyle = 'rgba(201,168,76,.18)';
-    ctx.lineWidth = 1; ctx.stroke();
+ /* sphere outline */
+ ctx.beginPath(); pathGen(sphere);
+ ctx.strokeStyle = 'rgba(201,168,76,.18)';
+ ctx.lineWidth = 1; ctx.stroke();
 
-    /* countries */
-    countries.features.forEach(function(f) {
-      var id  = String(f.id);
-      var hi  = !!HIGHLIGHTED[id];
-      ctx.beginPath(); pathGen(f);
-      ctx.fillStyle   = hi ? GOLD : '#0c1e38';
-      ctx.fill();
-      ctx.strokeStyle = hi ? GOLD_BRIGHT : '#102040';
-      ctx.lineWidth   = hi ? 1.2 : 0.35;
-      ctx.stroke();
-    });
+ /* countries */
+ countries.features.forEach(function(f) {
+ var id = String(f.id);
+ var hi = !!HIGHLIGHTED[id];
+ ctx.beginPath(); pathGen(f);
+ ctx.fillStyle = hi ? GOLD : '#0c1e38';
+ ctx.fill();
+ ctx.strokeStyle = hi ? GOLD_BRIGHT : '#102040';
+ ctx.lineWidth = hi ? 1.2 : 0.35;
+ ctx.stroke();
+ });
 
-    /* borders */
-    ctx.beginPath(); pathGen(borders);
-    ctx.strokeStyle = 'rgba(201,168,76,.12)';
-    ctx.lineWidth = .3; ctx.stroke();
-  }
+ /* borders */
+ ctx.beginPath(); pathGen(borders);
+ ctx.strokeStyle = 'rgba(201,168,76,.12)';
+ ctx.lineWidth = .3; ctx.stroke();
+ }
 
-  function drawAnimated() {
-    drawBase();
-    dashOffset = (dashOffset + 0.55) % 20;
+ function drawAnimated() {
+ drawBase();
+ dashOffset = (dashOffset + 0.55) % 20;
 
-    /* trade routes with directional arrows */
-    ROUTES.forEach(function(route) {
-      /* animated dashed line */
-      var line = { type: 'Feature', geometry: { type: 'LineString', coordinates: [route.from, route.to] } };
-      ctx.save();
-      ctx.beginPath(); pathGen(line);
-      ctx.setLineDash([7, 5]);
-      ctx.lineDashOffset = -dashOffset;
-      ctx.strokeStyle = 'rgba(201,168,76,.65)';
-      ctx.lineWidth = 1.8;
-      ctx.shadowColor = GOLD;
-      ctx.shadowBlur  = 6;
-      ctx.stroke();
-      ctx.restore();
+ /* trade routes with directional arrows */
+ ROUTES.forEach(function(route) {
+ /* animated dashed line */
+ var line = { type: 'Feature', geometry: { type: 'LineString', coordinates: [route.from, route.to] } };
+ ctx.save();
+ ctx.beginPath(); pathGen(line);
+ ctx.setLineDash([7, 5]);
+ ctx.lineDashOffset = -dashOffset;
+ ctx.strokeStyle = 'rgba(201,168,76,.65)';
+ ctx.lineWidth = 1.8;
+ ctx.shadowColor = GOLD;
+ ctx.shadowBlur = 6;
+ ctx.stroke();
+ ctx.restore();
 
 
-    });
+ });
 
-    /* city dots + glow */
-    Object.values(CITIES).forEach(function(city) {
-      var p = projection(city);
-      if (!p) return;
-      var x = p[0], y = p[1];
+ /* city dots + glow */
+ Object.values(CITIES).forEach(function(city) {
+ var p = projection(city);
+ if (!p) return;
+ var x = p[0], y = p[1];
 
-      /* outer glow */
-      var g = ctx.createRadialGradient(x, y, 0, x, y, 16);
-      g.addColorStop(0, 'rgba(201,168,76,.45)');
-      g.addColorStop(1, 'rgba(201,168,76,0)');
-      ctx.beginPath(); ctx.arc(x, y, 16, 0, Math.PI*2);
-      ctx.fillStyle = g; ctx.fill();
+ /* outer glow */
+ var g = ctx.createRadialGradient(x, y, 0, x, y, 16);
+ g.addColorStop(0, 'rgba(201,168,76,.45)');
+ g.addColorStop(1, 'rgba(201,168,76,0)');
+ ctx.beginPath(); ctx.arc(x, y, 16, 0, Math.PI*2);
+ ctx.fillStyle = g; ctx.fill();
 
-      /* inner dot */
-      ctx.beginPath(); ctx.arc(x, y, 4.5, 0, Math.PI*2);
-      ctx.fillStyle   = GOLD_BRIGHT; ctx.fill();
-      ctx.strokeStyle = '#040d1c'; ctx.lineWidth = 1.5; ctx.stroke();
-    });
+ /* inner dot */
+ ctx.beginPath(); ctx.arc(x, y, 4.5, 0, Math.PI*2);
+ ctx.fillStyle = GOLD_BRIGHT; ctx.fill();
+ ctx.strokeStyle = '#040d1c'; ctx.lineWidth = 1.5; ctx.stroke();
+ });
 
-    animRaf = requestAnimationFrame(drawAnimated);
-  }
+ animRaf = requestAnimationFrame(drawAnimated);
+ }
 
-  function removeLoading() {
-    var el = document.getElementById('mapLoading');
-    if (el) el.remove();
-  }
+ function removeLoading() {
+ var el = document.getElementById('mapLoading');
+ if (el) el.remove();
+ }
 
-  function loadMap() {
-    /* show spinner */
-    var box = document.getElementById('tgMapBox');
-    if (!box) return;
-    var loader = document.createElement('div');
-    loader.id        = 'mapLoading';
-    loader.className = 'tg-map-loading';
-    loader.innerHTML = '<div class="tg-map-spinner"></div><div style="color:rgba(201,168,76,.6);font-size:.72rem;letter-spacing:1px">LOADING MAP…</div>';
-    box.appendChild(loader);
+ function loadMap() {
+ /* show spinner */
+ var box = document.getElementById('tgMapBox');
+ if (!box) return;
+ var loader = document.createElement('div');
+ loader.id = 'mapLoading';
+ loader.className = 'tg-map-loading';
+ loader.innerHTML = '<div class="tg-map-spinner"></div><div style="color:rgba(201,168,76,.6);font-size:.72rem;letter-spacing:1px">LOADING MAP…</div>';
+ box.appendChild(loader);
 
-    setup();
+ setup();
 
-    d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
-      .then(function(world) {
-        countries = topojson.feature(world, world.objects.countries);
-        borders   = topojson.mesh(world, world.objects.countries, function(a,b){ return a!==b; });
-        sphere    = { type: 'Sphere' };
-        removeLoading();
-        if (animRaf) cancelAnimationFrame(animRaf);
-        drawAnimated();
-      })
-      .catch(function() {
-        removeLoading();
-        /* fallback */
-        ctx.fillStyle = '#040d1c'; ctx.fillRect(0,0,W,H);
-        ctx.fillStyle = 'rgba(201,168,76,.4)';
-        ctx.font = 'bold 15px Inter,sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('T&TG Trade Routes', W/2, H/2 - 14);
-        ctx.fillStyle = 'rgba(201,168,76,.2)';
-        ctx.font = '12px Inter,sans-serif';
-        ctx.fillText('Canada · Uganda · Kenya', W/2, H/2 + 14);
-      });
+ d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+ .then(function(world) {
+ countries = topojson.feature(world, world.objects.countries);
+ borders = topojson.mesh(world, world.objects.countries, function(a,b){ return a!==b; });
+ sphere = { type: 'Sphere' };
+ removeLoading();
+ if (animRaf) cancelAnimationFrame(animRaf);
+ drawAnimated();
+ })
+ .catch(function() {
+ removeLoading();
+ /* fallback */
+ ctx.fillStyle = '#040d1c'; ctx.fillRect(0,0,W,H);
+ ctx.fillStyle = 'rgba(201,168,76,.4)';
+ ctx.font = 'bold 15px Inter,sans-serif';
+ ctx.textAlign = 'center';
+ ctx.fillText('T&TG Trade Routes', W/2, H/2 - 14);
+ ctx.fillStyle = 'rgba(201,168,76,.2)';
+ ctx.font = '12px Inter,sans-serif';
+ ctx.fillText('Canada · Uganda · Kenya', W/2, H/2 + 14);
+ });
 
-    /* resize */
-    var resTO;
-    window.addEventListener('resize', function(){
-      clearTimeout(resTO);
-      cancelAnimationFrame(animRaf);
-      resTO = setTimeout(function(){
-        if(countries){ setup(); drawAnimated(); }
-      }, 220);
-    }, {passive:true});
-  }
+ /* resize */
+ var resTO;
+ window.addEventListener('resize', function(){
+ clearTimeout(resTO);
+ cancelAnimationFrame(animRaf);
+ resTO = setTimeout(function(){
+ if(countries){ setup(); drawAnimated(); }
+ }, 220);
+ }, {passive:true});
+ }
 
-  /* start after page load so D3 scripts are ready */
-  if (document.readyState === 'complete') {
-    loadMap();
-  } else {
-    window.addEventListener('load', loadMap);
-  }
+ /* start after page load so D3 scripts are ready */
+ if (document.readyState === 'complete') {
+ loadMap();
+ } else {
+ window.addEventListener('load', loadMap);
+ }
 
 })();
 </script>
