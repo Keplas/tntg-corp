@@ -715,11 +715,11 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  <div class="text-gold mb-2" style="font-size:.72rem;letter-spacing:2px;text-transform:uppercase">{% t "footer_tagline" %}</div>
  <p class="footer-desc">Trade & e-Commerce platform facilitating seamless domestic and international commerce across Canada, Uganda and Kenya. Import & Export (RM) registered corporation.</p>
  <div class="mt-3 d-flex gap-2 flex-wrap">
- <a href="#" class="social-link" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
- <a href="#" class="social-link" title="Facebook"><i class="fab fa-facebook-f"></i></a>
- <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
- <a href="#" class="social-link" title="TikTok"><i class="fab fa-tiktok"></i></a>
- <a href="https://wa.me/14168323512" target="_blank" rel="noopener" class="social-link" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+ <a href="{% if SOCIAL_LINKEDIN %}{{ SOCIAL_LINKEDIN }}{% else %}#{% endif %}" {% if SOCIAL_LINKEDIN %}target="_blank" rel="noopener"{% endif %} class="social-link {% if not SOCIAL_LINKEDIN %}social-inactive{% endif %}" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+ <a href="{% if SOCIAL_FACEBOOK %}{{ SOCIAL_FACEBOOK }}{% else %}#{% endif %}" {% if SOCIAL_FACEBOOK %}target="_blank" rel="noopener"{% endif %} class="social-link {% if not SOCIAL_FACEBOOK %}social-inactive{% endif %}" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+ <a href="{% if SOCIAL_INSTAGRAM %}{{ SOCIAL_INSTAGRAM }}{% else %}#{% endif %}" {% if SOCIAL_INSTAGRAM %}target="_blank" rel="noopener"{% endif %} class="social-link {% if not SOCIAL_INSTAGRAM %}social-inactive{% endif %}" title="Instagram"><i class="fab fa-instagram"></i></a>
+ <a href="{% if SOCIAL_TIKTOK %}{{ SOCIAL_TIKTOK }}{% else %}#{% endif %}" {% if SOCIAL_TIKTOK %}target="_blank" rel="noopener"{% endif %} class="social-link {% if not SOCIAL_TIKTOK %}social-inactive{% endif %}" title="TikTok"><i class="fab fa-tiktok"></i></a>
+ <a href="{{ SOCIAL_WHATSAPP }}" target="_blank" rel="noopener" class="social-link" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
  </div>
  <!-- Download / Install App -->
  <div class="mt-3">

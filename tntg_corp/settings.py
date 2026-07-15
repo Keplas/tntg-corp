@@ -54,6 +54,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'core.context_processors.cloudinary_status',
+                'core.context_processors.social_links',
             ],
         },
     },
@@ -141,3 +142,11 @@ CSRF_TRUSTED_ORIGINS = [
     'https://tntgcorp.com',
     'https://*.onrender.com',
 ]
+
+# ── Social Media Links (set these on Render when ready) ─────────────────────
+# Add these as Environment Variables on Render dashboard to activate each icon
+SOCIAL_LINKEDIN  = os.environ.get('SOCIAL_LINKEDIN',  '')
+SOCIAL_FACEBOOK  = os.environ.get('SOCIAL_FACEBOOK',  '')
+SOCIAL_INSTAGRAM = os.environ.get('SOCIAL_INSTAGRAM', '')
+SOCIAL_TIKTOK    = os.environ.get('SOCIAL_TIKTOK',    '')
+SOCIAL_WHATSAPP  = os.environ.get('SOCIAL_WHATSAPP',  'https://wa.me/14168323512')
