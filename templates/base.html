@@ -772,6 +772,16 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
       <div class="small text-muted">Founder: <span class="text-gold">Tom Ssembiito</span></div>
     </div>
   </div>
+  <div style="background:#040d1c;border-top:1px solid rgba(201,168,76,.1);padding:16px 0">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center gap-2" style="font-size:.75rem;color:rgba(244,239,228,.45)">
+      <span>© 2026 T&TG Trade Corporation. All rights reserved. Registered in Toronto, ON, Canada.</span>
+      <div class="d-flex gap-3 flex-wrap">
+        <a href="{% url 'privacy_policy' %}" style="color:rgba(201,168,76,.7);text-decoration:none">Privacy Policy (PIPEDA)</a>
+        <a href="{% url 'terms' %}"          style="color:rgba(201,168,76,.7);text-decoration:none">Terms & Conditions</a>
+        <span>Governed by Ontario Law</span>
+      </div>
+    </div>
+  </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -1147,5 +1157,27 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
   targets.forEach(function(el){ io.observe(el); });
 })();
 </script>
+
+<div id="cookie-consent" style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(6,15,30,.97);border-top:1px solid rgba(201,168,76,.3);padding:14px 20px;display:none">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+    <p style="color:#e0d5c0;font-size:.82rem;margin:0">
+      🍪 T&TG uses essential session cookies to enable login and secure transactions, in compliance with PIPEDA (Canada). No advertising or tracking cookies are used.
+      <a href="{% url 'privacy_policy' %}" style="color:#c9a84c;text-decoration:none"> Learn more</a>
+    </p>
+    <button onclick="acceptCookies()" style="background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#1a0a00;border:none;border-radius:8px;padding:8px 20px;font-weight:700;cursor:pointer;font-size:.82rem;flex-shrink:0">Accept & Continue</button>
+  </div>
+</div>
+<script>
+function acceptCookies(){
+  localStorage.setItem('tntg_cookies_accepted','1');
+  document.getElementById('cookie-consent').style.display='none';
+}
+(function(){
+  if(!localStorage.getItem('tntg_cookies_accepted')){
+    setTimeout(function(){ document.getElementById('cookie-consent').style.display='block'; }, 800);
+  }
+})();
+</script>
+
 </body>
 </html>

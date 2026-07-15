@@ -342,3 +342,10 @@ def blog_detail(request, slug):
         is_published=True, category=post.category
     ).exclude(pk=post.pk)[:3]
     return render(request, 'core/blog_detail.html', {'post': post, 'related': related})
+
+
+def privacy_policy(request):
+    return render(request, 'core/privacy_policy.html')
+
+def terms(request):
+    return render(request, 'core/terms.html')

@@ -20,6 +20,8 @@ urlpatterns = [
     # SEO
     path('sitemap.xml',   views.sitemap_xml,         name='sitemap_xml'),
     path('robots.txt',    views.robots_txt,          name='robots_txt'),
+    path('privacy-policy/',   views.privacy_policy,      name='privacy_policy'),
+    path('terms/',            views.terms,               name='terms'),
     # Analytics (staff only)
     path('analytics/',    views.analytics_dashboard, name='analytics_dashboard'),
     # Language toggle
