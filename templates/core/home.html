@@ -824,33 +824,12 @@
     ctx.lineWidth = .3; ctx.stroke();
   }
 
-  function drawArrow(x1, y1, x2, y2) {
-    /* draw a filled arrowhead at the destination */
-    var angle  = Math.atan2(y2 - y1, x2 - x1);
-    var size   = 9;
-    ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(x2, y2);
-    ctx.lineTo(x2 - size * Math.cos(angle - Math.PI/6), y2 - size * Math.sin(angle - Math.PI/6));
-    ctx.lineTo(x2 - size * Math.cos(angle + Math.PI/6), y2 - size * Math.sin(angle + Math.PI/6));
-    ctx.closePath();
-    ctx.fillStyle   = 'rgba(232,201,106,.95)';
-    ctx.shadowColor = GOLD;
-    ctx.shadowBlur  = 8;
-    ctx.fill();
-    ctx.restore();
-  }
-
   function drawAnimated() {
     drawBase();
     dashOffset = (dashOffset + 0.55) % 20;
 
     /* trade routes with directional arrows */
     ROUTES.forEach(function(route) {
-      var fromPt = projection(route.from);
-      var toPt   = projection(route.to);
-      if (!fromPt || !toPt) return;
-
       /* animated dashed line */
       var line = { type: 'Feature', geometry: { type: 'LineString', coordinates: [route.from, route.to] } };
       ctx.save();
@@ -864,8 +843,7 @@
       ctx.stroke();
       ctx.restore();
 
-      /* arrowhead at destination */
-      drawArrow(fromPt[0], fromPt[1], toPt[0], toPt[1]);
+
     });
 
     /* city dots + glow */
