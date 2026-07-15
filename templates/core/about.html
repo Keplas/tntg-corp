@@ -45,7 +45,13 @@
         <div class="glass-card p-4">
           <h5 class="text-gold mb-4">Our Leadership</h5>
           <div class="d-flex align-items-center gap-3 mb-3 p-3" style="background:rgba(0,0,0,.2);border-radius:10px">
-            <div style="width:90px;height:110px;border-radius:8px;background:linear-gradient(135deg,#c9a84c,#e8c96a);display:flex;align-items:center;justify-content:center;font-weight:900;color:#0a2540;font-size:1.8rem;flex-shrink:0;border:3px solid #c9a84c">TS</div>
+            <div style="width:90px;height:110px;border-radius:8px;background:linear-gradient(135deg,#c9a84c,#e8c96a);position:relative;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:900;color:#0a2540;font-size:1.8rem;border:3px solid #c9a84c">
+              <span id="founder-initials">TS</span>
+              <img src="{% static 'images/founder_Tom.jpeg' %}" alt="Tom Ssembiito"
+                   style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;display:none"
+                   onload="this.style.display='block';document.getElementById('founder-initials').style.display='none';"
+                   onerror="this.style.display='none';">
+            </div>
             <div>
               <div class="fw-bold">Tom Ssembiito</div>
               <div class="text-gold" style="font-size:.75rem">Founder & Operations Manager</div>
