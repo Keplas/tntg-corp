@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}T&TG Trade Corp — Trade & e-Commerce Platform{% endblock %}</title>
-  <meta name="description" content="{% block meta_description %}T&TG Trade Corporation — Trade & e-Commerce platform serving Canada, Uganda and Kenya. Shop textiles, clothing, shoes, watches and coffee. Earn T&TG Loyalty Points on every purchase.{% endblock %}">
+  <meta name="description" content="{% block meta_description %}T&TG Trade Corporation — Premium coffee shopping platform. Shop Arabica &amp; Robusta green coffee. Canada · USA · Uganda · Kenya. Earn T&TG Loyalty Points on every purchase.{% endblock %}">
   <link rel="canonical" href="{% block canonical_url %}https://tntgcorp.com{{ request.path }}{% endblock %}">
   <meta name="robots" content="index, follow">
 
@@ -21,7 +21,7 @@
   <!-- Open Graph (for social sharing) -->
   <meta property="og:type"        content="{% block og_type %}website{% endblock %}">
   <meta property="og:title"       content="{% block og_title %}T&TG Trade Corp — Trade & e-Commerce{% endblock %}">
-  <meta property="og:description" content="{% block og_description %}Shop textiles, shoes, watches and coffee. Earn loyalty points. Canada · Uganda · Kenya.{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}Shop T&TG Artisanal Coffee Based Goods, Arabica &amp; Robusta green coffee. Earn loyalty points. Canada · USA · Uganda · Kenya.{% endblock %}">
   <meta property="og:url"         content="{% block og_url %}https://tntgcorp.com{{ request.path }}{% endblock %}">
   <meta property="og:image"       content="{% block og_image %}https://tntgcorp.com{% static 'images/logo.jpg' %}{% endblock %}">
   <meta name="twitter:card"       content="summary_large_image">
@@ -608,12 +608,14 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
         <div class="tg-mob-sub-label">Markets</div>
         <a href="{% url 'marketplace' %}"                      class="tg-mob-sub-item"><span class="tg-dd-ico">☕</span>All Coffee Products</a>
         <a href="{% url 'product_list' %}?market=local"         class="tg-mob-sub-item"><span class="tg-dd-ico">🇨🇦</span>Canadians</a>
-        <a href="{% url 'product_list' %}?market=international" class="tg-mob-sub-item"><span class="tg-dd-ico">✈️</span>International</a>
+        <a href="{% url 'product_list' %}?market=international" class="tg-mob-sub-item"><span class="tg-dd-ico">🌐</span>Global Clients</a>
         <div class="tg-mob-sub-label" style="margin-top:8px">Categories</div>
         <a href="{% url 'product_list' %}?category=coffee"               class="tg-mob-sub-item"><span class="tg-dd-ico">☕</span>All Coffee</a>
         <a href="{% url 'product_list' %}?category=coffee&name=arabica"   class="tg-mob-sub-item"><span class="tg-dd-ico">🌱</span>Arabica</a>
         <a href="{% url 'product_list' %}?category=coffee&name=robusta"   class="tg-mob-sub-item"><span class="tg-dd-ico">🫘</span>Robusta</a>
         <a href="{% url 'product_list' %}?category=coffee&name=artisanal" class="tg-mob-sub-item"><span class="tg-dd-ico">✨</span>Artisanal</a>
+        <a href="{% url 'cart' %}" class="tg-mob-sub-item"><span class="tg-dd-ico">🛒</span>My Cart</a>
+        <a href="{% url 'wishlist' %}" class="tg-mob-sub-item"><span class="tg-dd-ico">❤️</span>My Wishlist</a>
       </div>
     </li>
 
@@ -737,14 +739,13 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
       </div>
 
       <div class="col-6 col-lg-2">
-        <div class="footer-title">Online Shop</div>
-        <a href="{% url 'product_list' %}?market=local"          class="footer-link">Canadians 🇨🇦</a>
-        <a href="{% url 'product_list' %}?market=international"  class="footer-link">Global Clients</a>
-        <a href="{% url 'product_list' %}?category=clothing"     class="footer-link">Clothing</a>
-        <a href="{% url 'product_list' %}?category=shoes"        class="footer-link">Shoes</a>
-        <a href="{% url 'product_list' %}?category=watches"      class="footer-link">Watches</a>
-        <a href="{% url 'product_list' %}?category=coffee"       class="footer-link">Coffee</a>
-        <a href="{% url 'my_orders' %}"                          class="footer-link">My Orders</a>
+        <div class="footer-title">T&TG Coffee Shop</div>
+        <a href="{% url 'product_list' %}"                                        class="footer-link">☕ All Coffee</a>
+        <a href="{% url 'product_list' %}?category=coffee&name=arabica"           class="footer-link">🌱 Arabica Green Coffee</a>
+        <a href="{% url 'product_list' %}?category=coffee&name=robusta"           class="footer-link">🫘 Robusta Green Coffee</a>
+        <a href="{% url 'product_list' %}?category=coffee&name=artisanal"         class="footer-link">✨ Artisanal Goods</a>
+        <a href="{% url 'cart' %}"                                                 class="footer-link">🛒 My Cart</a>
+        <a href="{% url 'wishlist' %}"                                             class="footer-link">❤️ My Wishlist</a>
       </div>
 
       <div class="col-6 col-lg-2">
@@ -762,24 +763,30 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
         <a href="{% url 'trade_ecommerce' %}" class="footer-link">Trade & e-Commerce</a>
         <a href="{% url 'training_home' %}" class="footer-link">Training</a>
         <a href="{% url 'tv_programs' %}"  class="footer-link">TV Programs</a>
-        <a href="{% url 'contact' %}"      class="footer-link">Contact</a>
+        <a href="{% url 'contact' %}"       class="footer-link">Contact</a>
+        <a href="{% url 'faq' %}"           class="footer-link">❓ FAQ</a>
+        <a href="{% url 'privacy_policy' %}" class="footer-link">Privacy Policy</a>
+        <a href="{% url 'terms' %}"          class="footer-link">Terms & Conditions</a>
       </div>
 
       <div class="col-6 col-lg-2">
         <div class="footer-title">Operations</div>
-        <div class="footer-link">🇨🇦 Canada</div>
+        <div class="footer-link">🇨🇦 Canada — HQ</div>
+        <div class="footer-link">🇺🇸 USA — Ohio</div>
         <div class="footer-link">🇺🇬 Uganda</div>
         <div class="footer-link">🇰🇪 Kenya</div>
         <div class="mt-3 footer-title">Exchange Routes</div>
-        <div class="footer-link" style="font-size:.75rem">CAD/UGX</div>
-        <div class="footer-link" style="font-size:.75rem">CAD/KES</div>
-        <div class="footer-link" style="font-size:.75rem">UGX/KES</div>
+        <a href="{% url 'forex' %}" class="footer-link" style="font-size:.75rem">CAD/USD</a>
+        <a href="{% url 'forex' %}" class="footer-link" style="font-size:.75rem">CAD/UGX</a>
+        <a href="{% url 'forex' %}" class="footer-link" style="font-size:.75rem">CAD/KES</a>
+        <a href="{% url 'forex' %}" class="footer-link" style="font-size:.75rem">USD/UGX</a>
+        <a href="{% url 'forex' %}" class="footer-link" style="font-size:.75rem">USD/KES</a>
       </div>
     </div>
 
     <div class="footer-bottom d-flex flex-wrap justify-content-between align-items-center gap-3">
-      <div class="small text-muted">© 2026 T&TG Trade Corporation. {% t "footer_rights" %} {% t "footer_tagline" %}</div>
-      <div class="small text-muted">Founder: <span class="text-gold">Tom Ssembiito</span></div>
+      <div class="small text-muted">© 2026 T&TG Trade Corporation. All rights reserved.</div>
+      <div class="small text-muted">Founder: <span class="text-gold">Tom Ssembiito</span> &nbsp;|&nbsp; Toronto, ON, Canada</div>
     </div>
   </div>
   <div style="background:#040d1c;border-top:1px solid rgba(201,168,76,.1);padding:16px 0">
