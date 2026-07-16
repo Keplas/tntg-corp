@@ -79,7 +79,75 @@
 <!-- Rate cards -->
 <section style="background:#060f1e; padding:60px 0">
   <div class="container">
-    <div class="row g-4 mb-5" id="rateCards">
+    
+<!-- ── Legal Disclaimer (Ontario Consumer Protection Act) ─────────────── -->
+<div style="background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:16px;padding:28px 32px;margin-bottom:48px">
+  <div style="display:flex;align-items:flex-start;gap:14px">
+    <div style="flex-shrink:0;width:36px;height:36px;border-radius:8px;background:rgba(201,168,76,.15);display:flex;align-items:center;justify-content:center">
+      <i class="fas fa-balance-scale" style="color:#c9a84c;font-size:.9rem"></i>
+    </div>
+    <div>
+      <div style="color:#c9a84c;font-weight:800;font-size:.85rem;letter-spacing:.5px;margin-bottom:12px">
+        LEGAL DISCLAIMER — FOR INFORMATIONAL PURPOSES ONLY
+      </div>
+      <div style="color:#e0d5c0;font-size:.82rem;line-height:1.8">
+        The exchange rates displayed on this page are provided <strong>for viewing and informational purposes only</strong>.
+        They are sourced from the Open Exchange Rates API and are updated periodically. These rates are
+        <strong>approximate estimates</strong> and do not represent the final rate that will be applied to your transaction.
+      </div>
+      <div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px">
+
+        <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:16px">
+          <div style="color:#c9a84c;font-size:.72rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">
+            (A) Consumer Protection Act — Ontario
+          </div>
+          <div style="color:#b0a898;font-size:.78rem;line-height:1.7">
+            Under the <em>Ontario Consumer Protection Act, 2002, S.O. 2002, c. 30, Sched. A</em>,
+            all final charges and fees applied to your purchase will be <strong>transparently displayed
+            before your transaction is completed</strong> at checkout. The price you confirm is the
+            price you pay.
+          </div>
+        </div>
+
+        <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:16px">
+          <div style="color:#c9a84c;font-size:.72rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">
+            Final Rate Disclaimer
+          </div>
+          <div style="color:#b0a898;font-size:.78rem;line-height:1.7">
+            Example: <em>"0 USD is an approximate rate."</em> The actual exchange rate applied
+            to your purchase is determined solely by your <strong>credit card issuer or payment
+            processor</strong> (Stripe / Flutterwave) at the time of the transaction.
+            T&TG Trade Corp is not responsible for rate differences applied by your financial institution.
+          </div>
+        </div>
+
+        <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:16px">
+          <div style="color:#c9a84c;font-size:.72rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">
+            CRA Accounting — Bank of Canada Rate
+          </div>
+          <div style="color:#b0a898;font-size:.78rem;line-height:1.7">
+            For Canadian tax and accounting purposes, all T&TG revenue is converted to
+            <strong>Canadian Dollars (CAD)</strong> using the official rate from the
+            <a href="https://www.bankofcanada.ca/rates/exchange/daily-exchange-rates/"
+               target="_blank" rel="noopener"
+               style="color:#c9a84c;text-decoration:none">Bank of Canada Daily Exchange Rates Lookup Tool</a>,
+            as required by the <em>Canada Revenue Agency (CRA)</em> for GST/HST and income
+            tax reporting.
+          </div>
+        </div>
+
+      </div>
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.06);color:#7a6e5f;font-size:.72rem">
+        T&TG Trade Corporation &nbsp;|&nbsp; Toronto, ON M1G 1L8, Canada &nbsp;|&nbsp;
+        Registered Import & Export (RM) Corporation &nbsp;|&nbsp;
+        Governed by the laws of Ontario and Canada &nbsp;|&nbsp;
+        <a href="/privacy-policy/" style="color:rgba(201,168,76,.6);text-decoration:none">Privacy Policy</a> &nbsp;|&nbsp;
+        <a href="/terms/" style="color:rgba(201,168,76,.6);text-decoration:none">Terms & Conditions</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row g-4 mb-5" id="rateCards">
       {% for p in pairs %}
       <div class="col-md-6 col-lg-4">
         <div class="fx-card" data-pair="{{ p.pair }}">
