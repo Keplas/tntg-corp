@@ -69,9 +69,7 @@
  <!-- Category quick links -->
  <div class="d-flex gap-2 flex-wrap mb-3">
  <a href="{% url 'product_list' %}" class="btn btn-sm {% if not category and not gender %}btn-gold{% else %}btn-outline-gold{% endif %}">All</a>
- <a href="?category=clothing" class="btn btn-sm {% if category == 'clothing' %}btn-gold{% else %}btn-outline-gold{% endif %}"> Clothing</a>
- <a href="?category=shoes" class="btn btn-sm {% if category == 'shoes' %}btn-gold{% else %}btn-outline-gold{% endif %}"> Shoes</a>
- <a href="?category=watches" class="btn btn-sm {% if category == 'watches' %}btn-gold{% else %}btn-outline-gold{% endif %}">⌚ Watches</a>
+ <a href="?category=coffee" class="btn btn-sm {% if category == 'coffee' %}btn-gold{% else %}btn-outline-gold{% endif %}">All Coffee</a>
  <a href="?category=coffee" class="btn btn-sm {% if category == 'coffee' %}btn-gold{% else %}btn-outline-gold{% endif %}"> Coffee</a>
  <span class="border-start mx-1"></span>
  <a href="?gender=men" class="btn btn-sm {% if gender == 'men' %}btn-gold{% else %}btn-outline-gold{% endif %}">Men</a>

@@ -22,7 +22,7 @@ ABOUT US:
 Founded on October 14 2026, T&TG Trade Corporation operates a Trade & e-Commerce platform designed to facilitate seamless domestic and international commerce. Our Toronto-based corporation operates globally, providing services across Canada, Uganda and Kenya. From our headquarters in Toronto, Ontario, Canada, we coordinate international operations that support cross-border collaboration, market development and service delivery.
 
 SERVICES:
-[A] Online Shopping Platform — Local & International marketplace for textiles, clothing, shoes, watches and coffee.
+[A] T&TG Shopping Platform — Premium coffee marketplace. T&TG Arabica Green Coffee ($35/kg) and T&TG Robusta Green Coffee ($28/kg), sourced from Uganda. Available to Canadians and Global Clients.
 [B] T&TG Trade Loyalty Platform — Earn loyalty points on every purchase and refer friends to earn more.
 [C] Live Exchange Rates — CAD/UGX, CAD/KES, UGX/KES — the currencies of our trade routes.
 [D] Training Programs — Trade, farming and enterprise programs with certificates.
@@ -82,10 +82,10 @@ PAGES ON WEBSITE:
 - Home: /
 - Marketplace: /marketplace/
 - Products: /marketplace/products/
-- Textiles / Clothing: /marketplace/products/?category=clothing
-- Shoes: /marketplace/products/?category=shoes
-- Watches: /marketplace/products/?category=watches
-- Coffee: /marketplace/products/?category=coffee
+- All Coffee: /marketplace/products/?category=coffee
+- Arabica Green Coffee: /marketplace/products/?category=coffee&name=arabica
+- Robusta Green Coffee: /marketplace/products/?category=coffee&name=robusta
+- Artisanal Coffee Goods: /marketplace/products/?category=coffee&name=artisanal
 - Forex / Exchange Rates: /services/forex/
 - Trade & E-Commerce: /services/
 - T&TG Loyalty Platform: /loyalty/
@@ -173,7 +173,7 @@ def get_offline_reply(messages):
                 "Enrollment is free — certificates cost from $500. Visit **/training/**.")
     if any(w in last for w in ['market', 'buy', 'sell', 'product', 'order', 'shop']):
         return ("🛒 Our marketplace has Local and International markets. "
-                "Browse textiles, shoes, watches and coffee at **/marketplace/**. "
+                "Browse T&TG Arabica and Robusta green coffee at **/marketplace/**. "
                 "Choose Express ⚡ or Ordinary 🚢 delivery. Earn T&TG Loyalty Points on every order.")
     if any(w in last for w in ['contact', 'phone', 'email', 'address']):
         return ("📞 **T&TG Trade Corp** — +1 (416) 832 3512 | tom.grouptrade@gmail.com | "
