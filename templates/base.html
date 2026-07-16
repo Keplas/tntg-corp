@@ -511,7 +511,7 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  <li>
  <div class="tg-user-pill tg-nl" style="padding:4px 10px 4px 4px">
  {% if user.safe_profile_photo_url %}
- <div class="tg-avatar"><img src="{{ user.safe_profile_photo_url }}" onerror="this.style.display='none'"></div>
+ <div class="tg-avatar"><img alt="" src="{{ user.safe_profile_photo_url }}" onerror="this.style.display='none'"></div>
  {% else %}
  <div class="tg-avatar">{{ user.first_name.0|default:user.username.0|upper }}</div>
  {% endif %}
@@ -675,7 +675,7 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  {% if user.is_authenticated %}
  <div class="tg-mob-cta-user">
  {% if user.safe_profile_photo_url %}
- <div class="tg-avatar"><img src="{{ user.safe_profile_photo_url }}" onerror="this.style.display='none'"></div>
+ <div class="tg-avatar"><img alt="" src="{{ user.safe_profile_photo_url }}" onerror="this.style.display='none'"></div>
  {% else %}
  <div class="tg-avatar">{{ user.first_name.0|default:user.username.0|upper }}</div>
  {% endif %}
