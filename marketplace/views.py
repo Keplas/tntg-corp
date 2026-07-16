@@ -142,10 +142,19 @@ def place_order(request, pk):
         )
         return redirect('payment_select', pk=order.pk)
 
+    # Detect market type from query param, session or user profile
+    market = (request.GET.get('market')
+              or request.session.get('market_type')
+              or getattr(request.user, 'market_type', 'local'))
+    if market not in ('local','international'):
+        market = 'local'
+    request.session['market_type'] = market  # remember for session
+
     return render(request, 'marketplace/place_order.html', {
-        'product':  product,
-        'settings': settings,
+        'product':          product,
+        'settings':         settings,
         'session_referral': session_referral,
+        'market':           market,
     })
 
 

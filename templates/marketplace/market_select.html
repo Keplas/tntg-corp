@@ -1,51 +1,123 @@
 {% extends 'base.html' %}
-{% block title %}Marketplace — T&TG Trade Corp{% endblock %}
+{% block title %}T&TG Shopping Platform — Choose Your Experience{% endblock %}
 {% block content %}
-<div class="page-header">
- <div class="container">
- <h1><i class="fas fa-store me-3"></i>T&TG Shopping Platform</h1>
- <p class="text-muted mt-2">Choose your shopping experience</p>
- </div>
+
+<style>
+  .ms-hero { background:linear-gradient(135deg,#060f1e,#0d1f3c); padding:56px 0 40px; border-bottom:1px solid rgba(201,168,76,.15); }
+  .ms-card {
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(201,168,76,.18);
+    border-radius:22px;
+    padding:44px 36px;
+    height:100%;
+    transition:border-color .3s, transform .25s, box-shadow .3s;
+    display:flex; flex-direction:column; align-items:center; text-align:center;
+  }
+  .ms-card:hover { border-color:rgba(201,168,76,.5); transform:translateY(-4px); box-shadow:0 24px 60px rgba(0,0,0,.3); }
+  .ms-icon { width:80px; height:80px; border-radius:20px; background:rgba(201,168,76,.12); border:1px solid rgba(201,168,76,.25); display:flex; align-items:center; justify-content:center; margin:0 auto 24px; }
+  .ms-badge-green  { background:rgba(34,197,94,.15); color:#4ade80; border:1px solid rgba(34,197,94,.25); padding:4px 14px; border-radius:100px; font-size:.72rem; font-weight:700; display:inline-block; }
+  .ms-badge-blue   { background:rgba(96,165,250,.12); color:#60a5fa; border:1px solid rgba(96,165,250,.25); padding:4px 14px; border-radius:100px; font-size:.72rem; font-weight:700; display:inline-block; }
+  .ms-feature { display:flex; align-items:center; gap:8px; color:rgba(244,239,228,.6); font-size:.8rem; margin-bottom:8px; }
+  .ms-feature i { color:#c9a84c; width:14px; }
+  .ms-divider { width:1px; background:rgba(201,168,76,.15); }
+  @media(max-width:767px){ .ms-divider { width:100%; height:1px; } }
+</style>
+
+<!-- Hero -->
+<section class="ms-hero">
+  <div class="container text-center">
+    <div style="font-size:.68rem;font-weight:800;letter-spacing:3px;color:#c9a84c;text-transform:uppercase;margin-bottom:12px">T&TG Trade Corp</div>
+    <h1 style="color:#fff;font-weight:900;font-size:clamp(1.6rem,4vw,2.4rem);margin-bottom:10px">T&TG Shopping Platform</h1>
+    <p style="color:#7a6e5f;font-size:.95rem">Select your shopping experience below</p>
+  </div>
+</section>
+
+<section style="background:#060f1e; padding:64px 0">
+<div class="container">
+
+  <!-- Two balanced cards -->
+  <div class="row g-0 justify-content-center align-items-stretch">
+
+    <!-- CANADIANS card -->
+    <div class="col-md-5">
+      <div class="ms-card">
+        <div class="ms-icon">
+          <i class="fas fa-map-marker-alt" style="color:#c9a84c;font-size:1.6rem"></i>
+        </div>
+        <span class="ms-badge-green mb-3">Open to All</span>
+        <h3 style="color:#c9a84c;font-weight:900;font-size:1.5rem;margin-bottom:14px">Canadians</h3>
+        <p style="color:rgba(244,239,228,.65);font-size:.88rem;line-height:1.7;margin-bottom:24px">
+          Shop T&TG premium coffee products from Canada. Open to all Canadian residents and businesses. Delivery defaults to Canada.
+        </p>
+        <div style="width:100%;margin-bottom:28px">
+          <div class="ms-feature"><i class="fas fa-check"></i> Canadian residents</div>
+          <div class="ms-feature"><i class="fas fa-check"></i> Local businesses</div>
+          <div class="ms-feature"><i class="fas fa-check"></i> Partner companies</div>
+          <div class="ms-feature"><i class="fas fa-check"></i> Delivery destination: Canada (default)</div>
+        </div>
+        <a href="{% url 'product_list' %}?market=local" class="btn btn-gold w-100 py-3 mt-auto" style="font-weight:700">
+          Shop as Canadian <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="col-md-1 d-flex align-items-center justify-content-center py-4">
+      <div class="ms-divider">
+        <div style="position:absolute;transform:translate(-50%,-50%);background:#060f1e;padding:8px;border:1px solid rgba(201,168,76,.2);border-radius:50%;color:#c9a84c;font-size:.72rem;font-weight:800">OR</div>
+      </div>
+    </div>
+
+    <!-- GLOBAL CLIENTS card -->
+    <div class="col-md-5">
+      <div class="ms-card">
+        <div class="ms-icon">
+          <i class="fas fa-globe" style="color:#60a5fa;font-size:1.6rem"></i>
+        </div>
+        <span class="ms-badge-blue mb-3">Partner Companies</span>
+        <h3 style="color:#c9a84c;font-weight:900;font-size:1.5rem;margin-bottom:14px">Global Clients</h3>
+        <p style="color:rgba(244,239,228,.65);font-size:.88rem;line-height:1.7;margin-bottom:24px">
+          Cross-border coffee trade across Canada, Uganda, Kenya and USA (Ohio). Select your destination country at checkout.
+        </p>
+        <div style="width:100%;margin-bottom:28px">
+          <div class="ms-feature"><i class="fas fa-check"></i> Global businesses</div>
+          <div class="ms-feature"><i class="fas fa-check"></i> Coffee importers</div>
+          <div class="ms-feature"><i class="fas fa-check"></i> Trade partners</div>
+          <div class="ms-feature"><i class="fas fa-check"></i> Choose destination: Uganda, Kenya, USA or Canada</div>
+        </div>
+        <a href="{% url 'product_list' %}?market=international" class="btn py-3 w-100 mt-auto" style="background:linear-gradient(135deg,#1a3a6c,#2a5299);color:#fff;border:1px solid rgba(96,165,250,.3);border-radius:12px;font-weight:700">
+          Shop as Global Client <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom stats bar — equal 3 columns -->
+  <div class="row g-4 mt-5">
+    <div class="col-md-4">
+      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.12);border-radius:14px;padding:24px;text-align:center">
+        <i class="fas fa-list-ul" style="color:#c9a84c;font-size:1.4rem;margin-bottom:10px"></i>
+        <div style="color:#c9a84c;font-weight:800;margin-bottom:6px">Browse & Buy</div>
+        <div style="color:#7a6e5f;font-size:.82rem">Explore T&TG coffee products and place orders with ease</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.12);border-radius:14px;padding:24px;text-align:center">
+        <i class="fas fa-coins" style="color:#c9a84c;font-size:1.4rem;margin-bottom:10px"></i>
+        <div style="color:#c9a84c;font-weight:800;margin-bottom:6px">Earn Loyalty Points</div>
+        <div style="color:#7a6e5f;font-size:.82rem">0.5% as consumer · 1% via referral on every transaction</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.12);border-radius:14px;padding:24px;text-align:center">
+        <i class="fas fa-shipping-fast" style="color:#c9a84c;font-size:1.4rem;margin-bottom:10px"></i>
+        <div style="color:#c9a84c;font-weight:800;margin-bottom:6px">Express or Ordinary</div>
+        <div style="color:#7a6e5f;font-size:.82rem">Choose your delivery speed and set your desired arrival date</div>
+      </div>
+    </div>
+  </div>
+
 </div>
-<section class="section">
- <div class="container">
- <div class="row justify-content-center g-4">
- <div class="col-md-5">
- <a href="{% url 'product_list' %}?market=local" style="text-decoration:none">
- <div class="service-card h-100 text-center" style="padding:3rem 2rem">
- <div style="font-size:4rem;margin-bottom:1.5rem"></div>
- <h3 class="text-gold">Canadians </h3>
- <p class="text-muted mt-3">Shop T&TG premium coffee products from Canada. Open to all Canadian residents and businesses.</p>
- <div class="mt-4">
- <div class="badge badge-green mb-2">Open to All</div>
- <p class="small text-muted mt-2">Canadian residents · Local businesses · Partner companies</p>
- </div>
- <div class="btn btn-gold mt-4 w-100">Shop as Canadian <i class="fas fa-arrow-right ms-2"></i></div>
- </div>
- </a>
- </div>
- <div class="col-md-5">
- <a href="{% url 'product_list' %}?market=international" style="text-decoration:none">
- <div class="service-card h-100 text-center" style="padding:3rem 2rem">
- <div style="font-size:4rem;margin-bottom:1.5rem">️</div>
- <h3 class="text-gold">Global Clients </h3>
- <p class="text-muted mt-3">Cross-border coffee trade across Canada, Uganda, Kenya and USA (Ohio).</p>
- <div class="mt-4">
- <div class="badge badge-accent mb-2">Partner Companies</div>
- <p class="small text-muted mt-2">Global businesses · Coffee importers · Trade partners</p>
- </div>
- <div class="btn btn-gold mt-4 w-100">Shop as Global Client <i class="fas fa-arrow-right ms-2"></i></div>
- </div>
- </a>
- </div>
- </div>
- <div class="glass-card p-4 mt-5">
- <div class="row g-4 text-center">
- <div class="col-md-4"><div class="stat-icon"></div><div class="fw-bold text-gold">List & Sell</div><div class="small text-muted">Post your goods on our platform and reach buyers globally</div></div>
- <div class="col-md-4"><div class="stat-icon"></div><div class="fw-bold text-gold">Earn Points</div><div class="small text-muted">0.5% as consumer · 1% via referral on every transaction</div></div>
- <div class="col-md-4"><div class="stat-icon"></div><div class="fw-bold text-gold">Express or Ordinary</div><div class="small text-muted">Choose your delivery speed and set your arrival date</div></div>
- </div>
- </div>
- </div>
 </section>
 {% endblock %}
