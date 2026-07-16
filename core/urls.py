@@ -22,6 +22,7 @@ urlpatterns = [
     path('robots.txt',    views.robots_txt,          name='robots_txt'),
     path('privacy-policy/',   views.privacy_policy,      name='privacy_policy'),
     path('faq/',               views.faq,                  name='faq'),
+    path('api/rates/',          views.exchange_rates_api,   name='exchange_rates_api'),
     path('newsletter/',        views.newsletter_subscribe, name='newsletter_subscribe'),
     path('terms/',            views.terms,               name='terms'),
     # Analytics (staff only)

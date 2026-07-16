@@ -132,6 +132,42 @@
  </div>
 </div>
 <div class="tg-glow-divider"></div>
+
+<!-- Live exchange rates mini-strip -->
+<div id="homeFxStrip" style="background:#040d1c;border-top:1px solid rgba(201,168,76,.12);padding:8px 0;overflow:hidden">
+  <div style="display:flex;gap:40px;white-space:nowrap;animation:tickerRoll 30s linear infinite;width:max-content" id="homeFxTrack">
+    <span style="font-size:.75rem;font-weight:700;color:#c9a84c">CAD/UGX <span id="hfx-CADUCX" style="color:rgba(244,239,228,.5);font-weight:400">Loading...</span></span>
+    <span style="font-size:.75rem;font-weight:700;color:#c9a84c">CAD/KES <span id="hfx-CADKES" style="color:rgba(244,239,228,.5);font-weight:400">Loading...</span></span>
+    <span style="font-size:.75rem;font-weight:700;color:#c9a84c">USD/CAD <span id="hfx-USDCAD" style="color:rgba(244,239,228,.5);font-weight:400">Loading...</span></span>
+    <span style="font-size:.75rem;font-weight:700;color:#c9a84c">USD/UGX <span id="hfx-USDUGX" style="color:rgba(244,239,228,.5);font-weight:400">Loading...</span></span>
+    <span style="font-size:.75rem;font-weight:700;color:#c9a84c">USD/KES <span id="hfx-USDKES" style="color:rgba(244,239,228,.5);font-weight:400">Loading...</span></span>
+    <span style="font-size:.75rem;font-weight:600;color:#7a6e5f">Live via Open Exchange Rates</span>
+    <!-- duplicate for loop -->
+    <span style="font-size:.75rem;font-weight:700;color:#c9a84c">CAD/UGX <span style="color:rgba(244,239,228,.5);font-weight:400" class="hfx-CADUCX">-</span></span>
+    <span style="font-size:.75rem;font-weight:700;color:#c9a84c">CAD/KES <span style="color:rgba(244,239,228,.5);font-weight:400" class="hfx-CADKES">-</span></span>
+    <span style="font-size:.75rem;font-weight:700;color:#c9a84c">USD/CAD <span style="color:rgba(244,239,228,.5);font-weight:400" class="hfx-USDCAD">-</span></span>
+    <span style="font-size:.75rem;font-weight:700;color:#c9a84c">USD/UGX <span style="color:rgba(244,239,228,.5);font-weight:400" class="hfx-USDUGX">-</span></span>
+    <span style="font-size:.75rem;font-weight:700;color:#c9a84c">USD/KES <span style="color:rgba(244,239,228,.5);font-weight:400" class="hfx-USDKES">-</span></span>
+    <span style="font-size:.75rem;font-weight:600;color:#7a6e5f">Live via Open Exchange Rates</span>
+  </div>
+</div>
+<script>
+(function loadFxRates(){
+  fetch('/api/rates/')
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(!data.pairs) return;
+      data.pairs.forEach(function(p){
+        var id = 'hfx-' + p.from_code + p.to_code;
+        var el = document.getElementById(id);
+        if(el) el.textContent = p.display;
+        document.querySelectorAll('.' + id).forEach(function(e){ e.textContent = p.display; });
+      });
+    }).catch(function(){});
+  setTimeout(loadFxRates, 300000);
+})();
+</script>
+
 <section class="tg-offer-section">
  <!-- animated section canvas background -->
  <canvas id="offerBg" class="tg-offer-bg-canvas"></canvas>

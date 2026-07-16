@@ -417,3 +417,17 @@ def newsletter_subscribe(request):
             else:
                 messages.info(request, 'You are already subscribed to T&TG updates.')
     return redirect(request.META.get('HTTP_REFERER', reverse('home')))
+
+
+def exchange_rates_api(request):
+    """JSON endpoint — frontend polls this every 5 minutes for live rates."""
+    from django.http import JsonResponse
+    from django.utils import timezone
+    from .exchange_rates import fetch_live_rates, build_pairs
+    raw   = fetch_live_rates()
+    pairs = build_pairs(raw)
+    return JsonResponse({
+        'pairs':     [{k: str(v) if hasattr(v,'__round__') else v for k, v in p.items()} for p in pairs],
+        'has_live':  bool(raw),
+        'timestamp': timezone.now().isoformat(),
+    })

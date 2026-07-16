@@ -1,160 +1,227 @@
 {% extends 'base.html' %}
-{% block title %}Live Exchange Rates — CAD/UGX · CAD/KES · UGX/KES — T&TG Trade Corp{% endblock %}
+{% load static %}
+{% block title %}Live Exchange Rates — T&TG Trade Corp{% endblock %}
+
 {% block content %}
 
-<div style="background:linear-gradient(135deg,#0a2540,#1a3a5c);padding:60px 0 50px">
-  <div class="container text-center">
-    <div class="d-inline-flex align-items-center gap-2 mb-3 px-3 py-1 rounded-pill" style="background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.25)">
-      <i class="fas fa-chart-line text-gold"></i>
-      <span style="color:#c9a84c;font-size:.8rem;font-weight:600;letter-spacing:1px">LIVE EXCHANGE RATES</span>
-    </div>
-    <h1 class="display-5 fw-800 text-white mb-2">Trade Route Currencies</h1>
-    <p class="text-muted">Real-time rates for T&TG's three operating countries</p>
-    <div class="d-flex gap-3 justify-content-center mt-3 flex-wrap">
-      <span class="badge px-3 py-2" style="background:rgba(201,168,76,.15);color:#c9a84c;font-size:.85rem">🇨🇦 CAD</span>
-      <span class="text-muted">—</span>
-      <span class="badge px-3 py-2" style="background:rgba(201,168,76,.15);color:#c9a84c;font-size:.85rem">🇺🇬 UGX</span>
-      <span class="text-muted">—</span>
-      <span class="badge px-3 py-2" style="background:rgba(201,168,76,.15);color:#c9a84c;font-size:.85rem">🇰🇪 KES</span>
-    </div>
-  </div>
-</div>
+<style>
+  .fx-hero { background:linear-gradient(135deg,#060f1e,#0d1f3c); padding:60px 0 40px; border-bottom:1px solid rgba(201,168,76,.15); }
+  .fx-card  { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.18); border-radius:18px; padding:28px 24px; position:relative; overflow:hidden; transition:border-color .3s, transform .25s; }
+  .fx-card:hover { border-color:rgba(201,168,76,.5); transform:translateY(-3px); }
+  .fx-pair  { font-size:.75rem; font-weight:800; letter-spacing:2px; color:#7a6e5f; text-transform:uppercase; margin-bottom:6px; }
+  .fx-rate  { font-family:'Manrope','Inter',sans-serif; font-size:2rem; font-weight:900; color:#c9a84c; line-height:1; }
+  .fx-sub   { font-size:.75rem; color:#7a6e5f; margin-top:6px; }
+  .fx-badge-live { background:rgba(34,197,94,.15); color:#4ade80; border:1px solid rgba(34,197,94,.25); padding:3px 10px; border-radius:100px; font-size:.68rem; font-weight:700; }
+  .fx-badge-cached { background:rgba(251,191,36,.1); color:#fbbf24; border:1px solid rgba(251,191,36,.2); padding:3px 10px; border-radius:100px; font-size:.68rem; font-weight:700; }
+  .fx-change-up   { color:#4ade80; font-size:.72rem; font-weight:700; }
+  .fx-change-down { color:#f87171; font-size:.72rem; font-weight:700; }
+  .pulse { animation: pulseDot 1.8s ease-in-out infinite; }
+  @keyframes pulseDot { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-<section class="py-5">
+  /* Live ticker strip */
+  .fx-ticker { background:#040d1c; border-top:1px solid rgba(201,168,76,.12); border-bottom:1px solid rgba(201,168,76,.12); overflow:hidden; padding:10px 0; }
+  .fx-ticker-track { display:flex; gap:48px; white-space:nowrap; animation:tickerRoll 30s linear infinite; width:max-content; }
+  .fx-ticker-track:hover { animation-play-state:paused; }
+  .fx-ticker-item { font-size:.78rem; font-weight:700; color:#c9a84c; display:flex; align-items:center; gap:8px; }
+  .fx-ticker-item span { color:rgba(244,239,228,.45); font-weight:400; }
+  @keyframes tickerRoll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  /* Converter widget */
+  .fx-input { background:rgba(255,255,255,.05); border:1px solid rgba(201,168,76,.25); color:#e0d5c0; border-radius:10px; padding:12px 16px; font-size:1rem; font-weight:700; width:100%; }
+  .fx-input:focus { border-color:rgba(201,168,76,.6); outline:none; }
+  .fx-select { background:rgba(255,255,255,.05); border:1px solid rgba(201,168,76,.25); color:#e0d5c0; border-radius:10px; padding:12px; width:100%; cursor:pointer; }
+</style>
+
+<!-- Hero -->
+<section class="fx-hero">
   <div class="container">
-    <div class="row g-5">
-
-      <!-- Converter -->
-      <div class="col-lg-5">
-        <div class="card border-0 shadow p-4" style="border-radius:20px;background:linear-gradient(135deg,#0a2540,#1a3a5c)">
-          <h5 class="text-gold mb-4"><i class="fas fa-calculator me-2"></i>Currency Converter</h5>
-          <div class="mb-3">
-            <label class="form-label text-white-50 small">Amount</label>
-            <input type="number" class="form-control" id="fx-amount" placeholder="1000" value="1000"
-                   style="background:rgba(255,255,255,.07);border:1px solid rgba(201,168,76,.2);color:#fff;border-radius:10px">
-          </div>
-          <div class="mb-3">
-            <label class="form-label text-white-50 small">From</label>
-            <select class="form-select" id="fx-from"
-                    style="background:rgba(255,255,255,.07);border:1px solid rgba(201,168,76,.2);color:#fff;border-radius:10px">
-              <option value="CAD" data-rate="1">🇨🇦 CAD — Canadian Dollar</option>
-              <option value="UGX" data-rate="{% for r in rates %}{% if r.from_currency == 'CAD' and r.to_currency == 'UGX' %}{{ r.rate }}{% endif %}{% endfor %}">🇺🇬 UGX — Ugandan Shilling</option>
-              <option value="KES" data-rate="{% for r in rates %}{% if r.from_currency == 'CAD' and r.to_currency == 'KES' %}{{ r.rate }}{% endif %}{% endfor %}">🇰🇪 KES — Kenyan Shilling</option>
-            </select>
-          </div>
-          <div class="mb-4">
-            <label class="form-label text-white-50 small">To</label>
-            <select class="form-select" id="fx-to"
-                    style="background:rgba(255,255,255,.07);border:1px solid rgba(201,168,76,.2);color:#fff;border-radius:10px">
-              <option value="UGX">🇺🇬 UGX — Ugandan Shilling</option>
-              <option value="KES">🇰🇪 KES — Kenyan Shilling</option>
-              <option value="CAD">🇨🇦 CAD — Canadian Dollar</option>
-            </select>
-          </div>
-          <div class="p-3 rounded-3 text-center mb-4" style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2)">
-            <div class="text-white-50 small mb-1">Converted Amount</div>
-            <div class="text-gold fw-900" style="font-size:2rem" id="fx-result">—</div>
-            <div class="text-white-50 small" id="fx-label"></div>
-          </div>
-          <a href="{% url 'contact' %}" class="btn btn-gold w-100">
-            <i class="fas fa-envelope me-2"></i>Enquire About Exchange
-          </a>
-        </div>
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
+      <div>
+        <div style="font-size:.68rem;font-weight:800;letter-spacing:3px;color:#c9a84c;text-transform:uppercase;margin-bottom:8px">T&TG Trade Corp</div>
+        <h1 style="color:#fff;font-weight:900;font-size:clamp(1.6rem,4vw,2.4rem);margin:0">Live Exchange Rates</h1>
+        <p style="color:#7a6e5f;margin-top:8px;font-size:.9rem">Real-time currency rates for T&TG trade corridors — Canada · USA · Uganda · Kenya</p>
       </div>
-
-      <!-- Rates table -->
-      <div class="col-lg-7">
-        <h4 class="fw-700 mb-4" style="color:#0a2540">
-          <i class="fas fa-route text-gold me-2"></i>T&TG Trade Route Rates
-        </h4>
-
-        <!-- 3 big rate cards -->
-        <div class="row g-3 mb-4">
-          {% for rate in rates %}
-          <div class="col-sm-4">
-            <div class="card border-0 shadow-sm p-3 text-center" style="border-radius:14px">
-              <div class="text-gold fw-800" style="font-size:1rem">{{ rate.from_currency }}/{{ rate.to_currency }}</div>
-              <div class="fw-900 mt-1" style="font-size:1.4rem;color:#0a2540">{{ rate.rate|floatformat:2 }}</div>
-              <div class="text-muted" style="font-size:.7rem">Updated {{ rate.updated_at|date:"d M Y" }}</div>
-            </div>
-          </div>
-          {% empty %}
-          <!-- Default placeholder rates if none set in DB yet -->
-          <div class="col-sm-4"><div class="card border-0 shadow-sm p-3 text-center" style="border-radius:14px"><div class="text-gold fw-800">CAD/UGX</div><div class="fw-900 mt-1" style="font-size:1.4rem;color:#0a2540">2,693.00</div><div class="text-muted" style="font-size:.7rem">Set in admin</div></div></div>
-          <div class="col-sm-4"><div class="card border-0 shadow-sm p-3 text-center" style="border-radius:14px"><div class="text-gold fw-800">CAD/KES</div><div class="fw-900 mt-1" style="font-size:1.4rem;color:#0a2540">93.70</div><div class="text-muted" style="font-size:.7rem">Set in admin</div></div></div>
-          <div class="col-sm-4"><div class="card border-0 shadow-sm p-3 text-center" style="border-radius:14px"><div class="text-gold fw-800">UGX/KES</div><div class="fw-900 mt-1" style="font-size:1.4rem;color:#0a2540">0.035</div><div class="text-muted" style="font-size:.7rem">Set in admin</div></div></div>
-          {% endfor %}
-        </div>
-
-        <div class="card border-0 shadow-sm p-4" style="border-radius:16px">
-          <div class="table-responsive">
-            <table class="table align-middle mb-0">
-              <thead style="background:#f8f9fa">
-                <tr>
-                  <th>From</th><th>To</th><th class="text-end">Rate</th><th>Updated</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for rate in rates %}
-                <tr>
-                  <td><span class="fw-700 text-gold">{{ rate.from_currency }}</span></td>
-                  <td><span class="fw-700" style="color:#0a2540">{{ rate.to_currency }}</span></td>
-                  <td class="text-end fw-600">{{ rate.rate|floatformat:6 }}</td>
-                  <td class="text-muted small">{{ rate.updated_at|date:"d M Y, H:i" }}</td>
-                </tr>
-                {% empty %}
-                <tr><td colspan="4" class="text-center text-muted py-4">Rates are updated by admin. Check back soon.</td></tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-          <div class="alert mb-0 mt-3 p-2" style="background:rgba(201,168,76,.08);border-left:3px solid #c9a84c;border-radius:8px;font-size:.8rem">
-            <i class="fas fa-info-circle text-gold me-2"></i>
-            Rates are indicative. Contact T&TG Trade Corp for live transaction rates on bulk exchanges.
-          </div>
-        </div>
+      <div class="text-end">
+        {% if has_live %}
+        <span class="fx-badge-live"><span class="pulse" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#4ade80;margin-right:5px"></span>Live via Open Exchange Rates</span>
+        {% else %}
+        <span class="fx-badge-cached">Stored rates — add API key to go live</span>
+        {% endif %}
+        <div id="lastUpdated" style="color:#7a6e5f;font-size:.7rem;margin-top:6px">Updating every 5 minutes</div>
       </div>
     </div>
   </div>
 </section>
+
+<!-- Live ticker strip -->
+<div class="fx-ticker">
+  <div class="fx-ticker-track" id="tickerTrack">
+    {% for p in pairs %}
+    <div class="fx-ticker-item">{{ p.pair }} <span>{{ p.display }}</span></div>
+    {% empty %}
+    <div class="fx-ticker-item">CAD/UGX <span>–</span></div>
+    <div class="fx-ticker-item">CAD/KES <span>–</span></div>
+    <div class="fx-ticker-item">USD/UGX <span>–</span></div>
+    <div class="fx-ticker-item">USD/KES <span>–</span></div>
+    {% endfor %}
+    <!-- duplicate for seamless loop -->
+    {% for p in pairs %}
+    <div class="fx-ticker-item">{{ p.pair }} <span>{{ p.display }}</span></div>
+    {% empty %}
+    <div class="fx-ticker-item">CAD/UGX <span>–</span></div>
+    <div class="fx-ticker-item">CAD/KES <span>–</span></div>
+    <div class="fx-ticker-item">USD/UGX <span>–</span></div>
+    <div class="fx-ticker-item">USD/KES <span>–</span></div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Rate cards -->
+<section style="background:#060f1e; padding:60px 0">
+  <div class="container">
+    <div class="row g-4 mb-5" id="rateCards">
+      {% for p in pairs %}
+      <div class="col-md-6 col-lg-4">
+        <div class="fx-card" data-pair="{{ p.pair }}">
+          <div class="fx-pair">{{ p.from_code }} / {{ p.to_code }}</div>
+          <div class="fx-rate" id="rate-{{ p.from_code }}-{{ p.to_code }}">{{ p.display }}</div>
+          <div class="fx-sub">1 {{ p.from_label }} = <span id="rate-label-{{ p.from_code }}-{{ p.to_code }}">{{ p.display }}</span> {{ p.to_label }}</div>
+          <div style="margin-top:12px;font-size:.72rem;color:#7a6e5f">{{ p.from_code }} → {{ p.to_code }}</div>
+          <div style="position:absolute;top:16px;right:16px;font-size:1.8rem;opacity:.06;font-weight:900">{{ p.pair }}</div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12 text-center py-5">
+        <div style="color:#7a6e5f;font-size:1rem">
+          Add <strong style="color:#c9a84c">EXCHANGE_RATES_API_KEY</strong> to Render environment variables to enable live rates.
+          <br><br>
+          <a href="https://openexchangerates.org" target="_blank" class="btn btn-gold px-4 mt-2">Get Free API Key</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Currency Converter Widget -->
+    <div style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.2);border-radius:20px;padding:36px;max-width:580px;margin:0 auto">
+      <h4 style="color:#c9a84c;font-weight:800;margin-bottom:24px;text-align:center">Currency Converter</h4>
+      <div class="row g-3 align-items-center">
+        <div class="col-12">
+          <label style="color:#7a6e5f;font-size:.78rem;display:block;margin-bottom:6px">Amount</label>
+          <input type="number" id="convAmount" class="fx-input" value="1" min="0" step="any">
+        </div>
+        <div class="col-5">
+          <label style="color:#7a6e5f;font-size:.78rem;display:block;margin-bottom:6px">From</label>
+          <select id="convFrom" class="fx-select">
+            <option value="USD">USD — US Dollar</option>
+            <option value="CAD" selected>CAD — Canadian Dollar</option>
+            <option value="UGX">UGX — Ugandan Shilling</option>
+            <option value="KES">KES — Kenyan Shilling</option>
+          </select>
+        </div>
+        <div class="col-2 text-center">
+          <button id="swapBtn" style="background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);color:#c9a84c;border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:1rem;margin-top:22px">⇄</button>
+        </div>
+        <div class="col-5">
+          <label style="color:#7a6e5f;font-size:.78rem;display:block;margin-bottom:6px">To</label>
+          <select id="convTo" class="fx-select">
+            <option value="USD" selected>USD — US Dollar</option>
+            <option value="CAD">CAD — Canadian Dollar</option>
+            <option value="UGX">UGX — Ugandan Shilling</option>
+            <option value="KES">KES — Kenyan Shilling</option>
+          </select>
+        </div>
+        <div class="col-12">
+          <div style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:18px;text-align:center;margin-top:8px">
+            <div id="convResult" style="color:#c9a84c;font-weight:900;font-size:1.6rem">–</div>
+            <div id="convDetail" style="color:#7a6e5f;font-size:.78rem;margin-top:4px">Enter amount above</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- API info box -->
+    <div style="text-align:center;margin-top:48px;color:#7a6e5f;font-size:.75rem">
+      Powered by <a href="https://openexchangerates.org" target="_blank" style="color:rgba(201,168,76,.6);text-decoration:none">Open Exchange Rates</a> &nbsp;·&nbsp;
+      Rates update every hour &nbsp;·&nbsp; Base currency: USD
+    </div>
+  </div>
+</section>
+
 {% endblock %}
+
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function(){
-  // Build a rate map from what's rendered in the cards
-  const rateData = {};
-  {% for rate in rates %}
-  rateData['{{ rate.from_currency }}/{{ rate.to_currency }}'] = {{ rate.rate }};
-  {% empty %}
-  rateData['CAD/UGX'] = 2693; rateData['CAD/KES'] = 93.7; rateData['UGX/KES'] = 0.035;
-  {% endfor %}
+// ── Store rates from server render ─────────────────────────────────────────
+var RATES = {};
+{% for p in pairs %}
+RATES['{{ p.from_code }}'] = RATES['{{ p.from_code }}'] || {};
+RATES['{{ p.from_code }}']['{{ p.to_code }}'] = {{ p.rate }};
+{% endfor %}
 
-  function getRate(from, to){
-    if(from === to) return 1;
-    if(rateData[from+'/'+to]) return rateData[from+'/'+to];
-    if(rateData[to+'/'+from]) return 1/rateData[to+'/'+from];
-    return null;
+// ── Currency converter ─────────────────────────────────────────────────────
+function convert() {
+  var amt  = parseFloat(document.getElementById('convAmount').value) || 0;
+  var from = document.getElementById('convFrom').value;
+  var to   = document.getElementById('convTo').value;
+  var res  = document.getElementById('convResult');
+  var det  = document.getElementById('convDetail');
+
+  if (from === to) {
+    res.textContent = amt.toLocaleString(undefined, {maximumFractionDigits:4});
+    det.textContent = '1 ' + from + ' = 1 ' + to;
+    return;
   }
 
-  function calc(){
-    const amt  = parseFloat(document.getElementById('fx-amount').value)||0;
-    const from = document.getElementById('fx-from').value;
-    const to   = document.getElementById('fx-to').value;
-    const rate = getRate(from, to);
-    const resultEl = document.getElementById('fx-result');
-    const labelEl  = document.getElementById('fx-label');
-    if(rate){
-      const res = amt * rate;
-      resultEl.textContent = res.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-      labelEl.textContent  = from + ' → ' + to + ' @ ' + rate.toFixed(4);
-    } else {
-      resultEl.textContent = '—';
-      labelEl.textContent  = 'Rate not available';
-    }
+  var rate = (RATES[from] && RATES[from][to]) ? RATES[from][to] :
+             (RATES[to] && RATES[to][from]) ? 1/RATES[to][from] : null;
+
+  if (rate) {
+    var result = amt * rate;
+    res.textContent = result.toLocaleString(undefined, {maximumFractionDigits: result > 100 ? 2 : 4}) + ' ' + to;
+    det.textContent = '1 ' + from + ' = ' + rate.toLocaleString(undefined, {maximumFractionDigits: rate > 100 ? 2 : 6}) + ' ' + to;
+  } else {
+    res.textContent = '–';
+    det.textContent = 'Rate not available';
   }
-  ['fx-amount','fx-from','fx-to'].forEach(id => document.getElementById(id).addEventListener('change', calc));
-  document.getElementById('fx-amount').addEventListener('input', calc);
-  calc();
+}
+
+document.getElementById('convAmount').addEventListener('input', convert);
+document.getElementById('convFrom').addEventListener('change', convert);
+document.getElementById('convTo').addEventListener('change', convert);
+document.getElementById('swapBtn').addEventListener('click', function(){
+  var f = document.getElementById('convFrom');
+  var t = document.getElementById('convTo');
+  var tmp = f.value; f.value = t.value; t.value = tmp;
+  convert();
 });
+convert();
+
+// ── Live refresh every 5 minutes ──────────────────────────────────────────
+function refreshRates() {
+  fetch('{% url "exchange_rates_api" %}')
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      if (!data.pairs || !data.pairs.length) return;
+      // Update rate cards
+      data.pairs.forEach(function(p) {
+        var el = document.getElementById('rate-' + p.from_code + '-' + p.to_code);
+        var el2 = document.getElementById('rate-label-' + p.from_code + '-' + p.to_code);
+        if (el)  { el.textContent  = p.display; el.style.color = '#c9a84c'; }
+        if (el2) { el2.textContent = p.display; }
+        // Update local RATES for converter
+        RATES[p.from_code] = RATES[p.from_code] || {};
+        RATES[p.from_code][p.to_code] = parseFloat(p.rate);
+      });
+      convert();
+      var ts = new Date(data.timestamp);
+      var el = document.getElementById('lastUpdated');
+      if (el) el.textContent = 'Last updated: ' + ts.toLocaleTimeString();
+    })
+    .catch(function(){});
+}
+
+// Refresh on load and every 5 minutes
+refreshRates();
+setInterval(refreshRates, 300000);
 </script>
 {% endblock %}

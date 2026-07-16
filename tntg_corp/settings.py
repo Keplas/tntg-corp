@@ -150,3 +150,16 @@ SOCIAL_FACEBOOK  = os.environ.get('SOCIAL_FACEBOOK',  '')
 SOCIAL_INSTAGRAM = os.environ.get('SOCIAL_INSTAGRAM', '')
 SOCIAL_TIKTOK    = os.environ.get('SOCIAL_TIKTOK',    '')
 SOCIAL_WHATSAPP  = os.environ.get('SOCIAL_WHATSAPP',  'https://wa.me/14168323512')
+
+# ── Open Exchange Rates API ──────────────────────────────────────────────────
+# Sign up free at https://openexchangerates.org — add key to Render env vars
+EXCHANGE_RATES_API_KEY = os.environ.get('EXCHANGE_RATES_API_KEY', '')
+
+# ── Cache (1-hour in-memory — reduces API calls to ~24/day) ─────────────────
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'tntg-cache',
+        'TIMEOUT': 3600,  # 1 hour
+    }
+}
