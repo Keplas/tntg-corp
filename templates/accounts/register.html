@@ -62,11 +62,42 @@
  </div>
  <div class="col-md-6">
  <label class="form-label">Password *</label>
- <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+ <input type="password" name="password" class="form-control" id="regPassword" oninput="checkPwStrength(this.value)" placeholder="••••••••" required>
  </div>
  <div class="col-12">
  <label class="form-label">Confirm Password *</label>
- <input type="password" name="confirm_password" class="form-control" placeholder="••••••••" required>
+ <input type="password" 
+              <div id="pwStrength" style="margin-top:8px;display:none">
+                <div style="height:4px;border-radius:100px;background:rgba(255,255,255,.08);margin-bottom:6px">
+                  <div id="pwStrengthBar" style="height:100%;border-radius:100px;transition:width .3s,background .3s;width:0"></div>
+                </div>
+                <div id="pwStrengthLabel" style="font-size:.72rem;color:#7a6e5f"></div>
+              </div>
+              <script>
+              function checkPwStrength(pw){
+                var bar=document.getElementById('pwStrengthBar');
+                var lbl=document.getElementById('pwStrengthLabel');
+                var wrap=document.getElementById('pwStrength');
+                if(!pw){wrap.style.display='none';return;}
+                wrap.style.display='block';
+                var score=0;
+                if(pw.length>=8) score++;
+                if(pw.length>=12) score++;
+                if(/[A-Z]/.test(pw)) score++;
+                if(/[0-9]/.test(pw)) score++;
+                if(/[^A-Za-z0-9]/.test(pw)) score++;
+                var levels=[
+                  {w:'20%',c:'#f87171',t:'Weak — too short'},
+                  {w:'40%',c:'#fb923c',t:'Fair — add uppercase or numbers'},
+                  {w:'60%',c:'#fbbf24',t:'Good — add special characters'},
+                  {w:'80%',c:'#a3e635',t:'Strong'},
+                  {w:'100%',c:'#4ade80',t:'Very strong'},
+                ];
+                var l=levels[Math.max(0,score-1)];
+                bar.style.width=l.w; bar.style.background=l.c; lbl.textContent=l.t; lbl.style.color=l.c;
+              }
+              </script>
+              <input type="password" name="confirm_password" class="form-control" placeholder="••••••••" required>
  </div>
  </div>
  <div class="d-flex justify-content-end mt-4">

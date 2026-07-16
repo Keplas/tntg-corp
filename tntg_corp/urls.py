@@ -11,3 +11,7 @@ urlpatterns = [
     path('services/', include('services.urls')),
     path('training/', include('training.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+from core import views as core_views
+handler404 = 'core.views.error_404'
+handler500 = 'core.views.error_500'

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Page Not Found — T&TG Trade Corp{% endblock %}
+{% block content %}
+<section style="background:#060f1e;min-height:70vh;display:flex;align-items:center;text-align:center;padding:60px 0">
+  <div class="container">
+    <div style="font-size:5rem;font-weight:900;color:rgba(201,168,76,.15);line-height:1">404</div>
+    <h2 style="color:#fff;font-weight:800;margin-top:16px">Page Not Found</h2>
+    <p style="color:#7a6e5f;max-width:420px;margin:16px auto">The page you are looking for does not exist or has been moved.</p>
+    <div class="d-flex gap-3 justify-content-center mt-4">
+      <a href="/" class="btn btn-gold px-5">Back to Home</a>
+      <a href="{% url 'product_list' %}" class="btn px-5" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:none;border-radius:12px">Browse Coffee</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

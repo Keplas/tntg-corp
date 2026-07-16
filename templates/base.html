@@ -1200,5 +1200,37 @@ function acceptCookies(){
 })();
 </script>
 
+
+<script>
+/* ── Form submit loading state ──────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('form').forEach(function(form){
+    form.addEventListener('submit', function(){
+      var btn = form.querySelector('button[type="submit"]');
+      if(btn && !btn.dataset.noLoad){
+        var orig = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Please wait...';
+        btn.disabled = true;
+        setTimeout(function(){ btn.innerHTML = orig; btn.disabled = false; }, 10000);
+      }
+    });
+  });
+});
+
+/* ── Back to top button ─────────────────────────────────────────── */
+var topBtn = document.createElement('button');
+topBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
+topBtn.id = 'backToTop';
+topBtn.setAttribute('aria-label','Back to top');
+topBtn.style.cssText = 'position:fixed;bottom:90px;left:20px;width:40px;height:40px;border-radius:50%;background:rgba(201,168,76,.9);color:#1a0a00;border:none;cursor:pointer;font-size:.85rem;display:none;z-index:998;box-shadow:0 4px 12px rgba(0,0,0,.3);transition:opacity .2s';
+document.body.appendChild(topBtn);
+window.addEventListener('scroll', function(){
+  topBtn.style.display = window.scrollY > 400 ? 'block' : 'none';
+}, {passive:true});
+topBtn.addEventListener('click', function(){
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+</script>
+
 </body>
 </html>

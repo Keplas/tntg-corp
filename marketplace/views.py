@@ -62,6 +62,10 @@ def product_detail(request, pk):
 @login_required
 def place_order(request, pk):
     product  = get_object_or_404(Product, pk=pk, is_active=True)
+    # Out of stock check
+    if product.quantity_available is not None and product.quantity_available <= 0:
+        messages.error(request, f'{product.name} is currently out of stock. Please check back soon.')
+        return redirect('product_detail', pk=pk)
     settings = LoyaltySettings.get_settings()
     session_referral = request.session.get('referred_by', '')
 
@@ -167,7 +171,19 @@ def my_orders(request):
 @login_required
 def order_detail(request, pk):
     order = get_object_or_404(Order, pk=pk, buyer=request.user)
-    return render(request, 'marketplace/order_detail.html', {'order': order})
+    
+    STEPS = [
+        ('pending',      'Order Placed',     'clock'),
+        ('processing',   'Processing',       'cog'),
+        ('accepted',     'Confirmed',        'check'),
+        ('shipped',      'Shipped',          'truck'),
+        ('delivered',    'Delivered',        'box-open'),
+    ]
+    step_keys = [s[0] for s in STEPS]
+    current_step = step_keys.index(order.status) + 1 if order.status in step_keys else 1
+    return render(request, 'marketplace/order_detail.html', {
+        'order': order, 'steps': STEPS, 'current_step': current_step
+    })
 
 
 def market_select(request):

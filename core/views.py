@@ -431,3 +431,10 @@ def exchange_rates_api(request):
         'has_live':  bool(raw),
         'timestamp': timezone.now().isoformat(),
     })
+
+
+def error_404(request, exception=None):
+    return render(request, '404.html', status=404)
+
+def error_500(request):
+    return render(request, '500.html', status=500)
