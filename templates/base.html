@@ -463,6 +463,10 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  <a href="{% url 'contact' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'contact' %}tg-active{% endif %}"><span class="tg-dd-ico">️</span>Contact Us</a>
  <a href="{% url 'faq' %}" class="tg-dd-item "><span class="tg-dd-ico"></span>FAQ</a>
  <a href="{% url 'blog_list' %}" class="tg-dd-item {% if 'blog' in request.resolver_match.url_name %}tg-active{% endif %}"><span class="tg-dd-ico"></span>Blog & News</a>
+              <div class="tg-dd-divider"></div>
+              <a href="{% url 'faq' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'faq' %}tg-active{% endif %}"><span class="tg-dd-ico"><i class="fas fa-question-circle"></i></span>FAQ</a>
+              <a href="{% url 'privacy_policy' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'privacy_policy' %}tg-active{% endif %}"><span class="tg-dd-ico"><i class="fas fa-shield-alt"></i></span>Privacy Policy</a>
+              <a href="{% url 'terms' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'terms' %}tg-active{% endif %}"><span class="tg-dd-ico"><i class="fas fa-file-contract"></i></span>Terms & Conditions</a>
  </div>
  </li>
  </ul>
@@ -658,6 +662,9 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  <a href="{% url 'about' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>About Us</a>
  <a href="{% url 'contact' %}" class="tg-mob-sub-item"><span class="tg-dd-ico">️</span>Contact Us</a>
  <a href="{% url 'blog_list' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Blog & News</a>
+        <a href="{% url 'faq' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"><i class="fas fa-question-circle"></i></span>FAQ</a>
+        <a href="{% url 'privacy_policy' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"><i class="fas fa-shield-alt"></i></span>Privacy Policy</a>
+        <a href="{% url 'terms' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"><i class="fas fa-file-contract"></i></span>Terms & Conditions</a>
  </div>
  </li>
 
