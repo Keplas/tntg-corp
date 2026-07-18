@@ -683,7 +683,7 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  <div style="color:#fff;font-weight:700;font-size:.9rem">{{ user.get_full_name|default:user.username }}</div>
  <div style="color:#7a6e5f;font-size:.75rem">{{ user.unique_id }}</div>
  </div>
- <a href="{% url 'logout' %}" class="btn btn-sm ms-auto" style="background:rgba(255,255,255,.06);color:#c9a84c;border:1px solid rgba(201,168,76,.2);border-radius:8px;font-size:.8rem">Log out</a>
+ <a href="{% url 'logout' %}" class="btn btn-sm ms-auto" style="background:rgba(255,255,255,.06);color:#c9a84c;border:1px solid rgba(201,168,76,.2);border-radius:8px;font-size:.8rem;padding:8px 16px">Log out</a>
  </div>
  {% else %}
  <a href="{% url 'login' %}" class="tg-mob-cta-login">Sign In</a>
