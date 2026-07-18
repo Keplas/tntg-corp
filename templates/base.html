@@ -910,6 +910,14 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 </div>
 
 <style>
+
+/* Hide chatbot when mobile nav overlay is open */
+body.mob-nav-open #chat-widget,
+body.mob-nav-open #whatsapp-btn {
+  visibility: hidden !important;
+  pointer-events: none;
+}
+
 #chat-widget{position:fixed;bottom:28px;right:28px;z-index:99999;font-family:'Inter','Segoe UI',sans-serif}
 #chat-toggle{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c96a);border:none;cursor:pointer;font-size:1.4rem;color:#0a2540;box-shadow:0 6px 24px rgba(201,168,76,.5);transition:all .3s cubic-bezier(.4,0,.2,1);position:relative;display:flex;align-items:center;justify-content:center}
 #chat-toggle:hover{transform:scale(1.08);box-shadow:0 8px 30px rgba(201,168,76,.65)}
