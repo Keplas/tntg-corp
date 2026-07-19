@@ -177,7 +177,7 @@ def get_offline_reply(messages):
                 "Choose Express ⚡ or Ordinary 🚢 delivery. Earn T&TG Loyalty Points on every order.")
     if any(w in last for w in ['contact', 'phone', 'email', 'address']):
         return ("📞 **T&TG Trade Corp** — +1 (416) 832 3512 | tom.grouptrade@gmail.com | "
-                "9 Summerbridge Road, Scarborough, M1G 1L8, Toronto, ON, Canada. "
+                "9 Summerbridge Road, Scarborough, 9 Summerbridge Rd, Toronto, ON M1G 1L8, Canada, Canada. "
                 "Or visit **/contact/**.")
     if any(w in last for w in ['hello', 'hi', 'hey', 'help', 'start']):
         return ("👋 Hello! I'm **TARA**, T&TG's AI assistant. I can help you with:\n"
