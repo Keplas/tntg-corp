@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+{% block title %}Trade Inquiry — T&TG Trade Corporation{% endblock %}
+{% block content %}
+
+<style>
+  .ta-hero   { background:linear-gradient(135deg,#060f1e,#0d1f3c); padding:60px 0 40px; border-bottom:1px solid rgba(201,168,76,.15); }
+  .ta-card   { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.18); border-radius:18px; padding:32px; }
+  .ta-label  { font-size:.72rem; font-weight:800; letter-spacing:2px; color:#c9a84c; text-transform:uppercase; margin-bottom:6px; display:block; }
+  .ta-input  { background:rgba(255,255,255,.05)!important; border:1px solid rgba(201,168,76,.2)!important; color:#e0d5c0!important; border-radius:10px; padding:12px 16px; width:100%; }
+  .ta-input:focus  { border-color:rgba(201,168,76,.5)!important; box-shadow:0 0 0 3px rgba(201,168,76,.1)!important; outline:none; }
+  .ta-select { background:rgba(255,255,255,.05); border:1px solid rgba(201,168,76,.2); color:#e0d5c0; border-radius:10px; padding:12px; width:100%; }
+  .ta-select option { background:#0d1f3c; }
+  .dir-card  { border:2px solid rgba(201,168,76,.15); border-radius:14px; padding:20px; cursor:pointer; transition:all .25s; }
+  .dir-card:hover, .dir-card.active { border-color:#c9a84c; background:rgba(201,168,76,.08); }
+  .dir-card input[type=radio] { display:none; }
+  .step-dot  { width:32px; height:32px; border-radius:50%; background:rgba(201,168,76,.15); border:2px solid rgba(201,168,76,.3); display:flex; align-items:center; justify-content:center; font-size:.75rem; font-weight:800; color:#c9a84c; flex-shrink:0; }
+</style>
+
+<section class="ta-hero">
+  <div class="container">
+    <div class="d-flex align-items-center gap-3 mb-3">
+      <span style="font-size:.72rem;font-weight:800;letter-spacing:3px;color:#c9a84c;text-transform:uppercase">T&TG Trade Corp</span>
+    </div>
+    <h1 style="color:#fff;font-weight:900;font-size:clamp(1.6rem,4vw,2.4rem);margin-bottom:10px">Trade Inquiry Form</h1>
+    <p style="color:#7a6e5f;max-width:540px;line-height:1.7">For companies, organisations and individuals who wish to import coffee from T&TG or export green coffee to T&TG Trade Corporation.</p>
+  </div>
+</section>
+
+<section style="background:#060f1e;padding:60px 0">
+<div class="container">
+
+  {% if messages %}{% for m in messages %}
+  <div class="alert mb-4" style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#4ade80;border-radius:12px;padding:16px 20px">
+    <i class="fas fa-check-circle me-2"></i>{{ m }}
+  </div>
+  {% endfor %}{% endif %}
+
+  <div class="row g-5">
+
+    <!-- FORM -->
+    <div class="col-lg-8">
+      <form method="POST" id="tradeForm">
+        {% csrf_token %}
+
+        <!-- Step 1: Trade Direction -->
+        <div class="ta-card mb-4">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+            <div class="step-dot">1</div>
+            <h5 style="color:#fff;font-weight:800;margin:0">Trade Direction</h5>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="dir-card active" id="dir-import">
+                <input type="radio" name="direction" value="import" checked>
+                <div style="font-size:1.8rem;margin-bottom:10px">
+                  <i class="fas fa-arrow-down" style="color:#c9a84c"></i>
+                </div>
+                <div style="color:#fff;font-weight:800;margin-bottom:6px">Import from T&TG</div>
+                <div style="color:#7a6e5f;font-size:.82rem">I want to buy and import T&TG coffee products into my country</div>
+              </label>
+            </div>
+            <div class="col-md-6">
+              <label class="dir-card" id="dir-export">
+                <input type="radio" name="direction" value="export">
+                <div style="font-size:1.8rem;margin-bottom:10px">
+                  <i class="fas fa-arrow-up" style="color:#c9a84c"></i>
+                </div>
+                <div style="color:#fff;font-weight:800;margin-bottom:6px">Export to T&TG</div>
+                <div style="color:#7a6e5f;font-size:.82rem">I want to sell and export green coffee to T&TG Trade Corp</div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Client Details -->
+        <div class="ta-card mb-4">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+            <div class="step-dot">2</div>
+            <h5 style="color:#fff;font-weight:800;margin:0">Your Details</h5>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="ta-label">Full Name *</label>
+              <input type="text" name="full_name" class="ta-input" placeholder="Your full name" required>
+            </div>
+            <div class="col-md-6">
+              <label class="ta-label">Company / Organisation Name</label>
+              <input type="text" name="company_name" class="ta-input" placeholder="Leave blank if individual">
+            </div>
+            <div class="col-md-6">
+              <label class="ta-label">Business Type *</label>
+              <select name="business_type" class="ta-select" required>
+                <option value="registered_company">Registered Company</option>
+                <option value="small_business">Small Business / Shop</option>
+                <option value="individual">Individual</option>
+                <option value="organisation">Organisation / NGO</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="ta-label">Country *</label>
+              <input type="text" name="country" class="ta-input" placeholder="Your country of residence" required>
+            </div>
+            <div class="col-md-6">
+              <label class="ta-label">Email Address *</label>
+              <input type="email" name="email" class="ta-input" placeholder="your@email.com" required>
+            </div>
+            <div class="col-md-6">
+              <label class="ta-label">Phone / WhatsApp</label>
+              <input type="tel" name="phone" class="ta-input" placeholder="+1 (416) 000 0000">
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Trade Details -->
+        <div class="ta-card mb-4">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+            <div class="step-dot">3</div>
+            <h5 style="color:#fff;font-weight:800;margin:0">Trade Details</h5>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="ta-label">Origin Country *</label>
+              <input type="text" name="origin_country" class="ta-input" placeholder="Where the coffee comes from" required>
+            </div>
+            <div class="col-md-6">
+              <label class="ta-label">Destination Country *</label>
+              <input type="text" name="destination_country" class="ta-input" placeholder="Where it will be delivered" required>
+            </div>
+            <div class="col-md-6">
+              <label class="ta-label">Coffee / Product Type *</label>
+              <select name="coffee_type" class="ta-select" required>
+                <option value="arabica">Arabica Green Coffee</option>
+                <option value="robusta">Robusta Green Coffee</option>
+                <option value="both">Both Arabica & Robusta</option>
+                <option value="artisanal">Artisanal Coffee Goods</option>
+                <option value="instant">Instant Coffee</option>
+                <option value="soap">Coffee-Based Soaps</option>
+                <option value="mixed">Mixed / Other</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="ta-label">Estimated Quantity (kg) *</label>
+              <input type="number" name="quantity_kg" class="ta-input" placeholder="e.g. 500" min="1" step="0.01" required>
+            </div>
+            <div class="col-12">
+              <label class="ta-label">Frequency *</label>
+              <div class="row g-2">
+                {% for val, label in freq_choices %}
+                <div class="col-6 col-md-3">
+                  <label style="border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:10px;cursor:pointer;display:block;text-align:center;font-size:.8rem;color:#7a6e5f;transition:all .2s">
+                    <input type="radio" name="frequency" value="{{ val }}" style="display:none" {% if val == 'one_time' %}checked{% endif %}>
+                    {{ label }}
+                  </label>
+                </div>
+                {% empty %}
+                {% for v, l in freqs %}<div class="col-6 col-md-3"><label style="border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:10px;cursor:pointer;display:block;text-align:center;font-size:.8rem;color:#7a6e5f"><input type="radio" name="frequency" value="{{ v }}" style="display:none">{{ l }}</label></div>{% endfor %}
+                {% endfor %}
+              </div>
+            </div>
+            <div class="col-12">
+              <label class="ta-label">Additional Notes</label>
+              <textarea name="notes" class="ta-input" rows="4" placeholder="Any specific requirements, certifications needed, preferred shipping terms (FOB, CIF), etc."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Consent & Submit -->
+        <div class="ta-card mb-4">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+            <div class="step-dot">4</div>
+            <h5 style="color:#fff;font-weight:800;margin:0">Consent & Submit</h5>
+          </div>
+
+          <!-- Document checklist info -->
+          <div style="background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:18px;margin-bottom:20px">
+            <div style="color:#c9a84c;font-weight:800;font-size:.8rem;margin-bottom:10px">WHAT HAPPENS NEXT</div>
+            <div style="display:grid;gap:8px">
+              <div style="display:flex;gap:10px;color:#b0a898;font-size:.82rem"><i class="fas fa-check-circle" style="color:#4ade80;margin-top:2px;flex-shrink:0"></i> You receive a confirmation email with your reference number within minutes</div>
+              <div style="display:flex;gap:10px;color:#b0a898;font-size:.82rem"><i class="fas fa-check-circle" style="color:#4ade80;margin-top:2px;flex-shrink:0"></i> Our team reviews your inquiry within 2 business days</div>
+              <div style="display:flex;gap:10px;color:#b0a898;font-size:.82rem"><i class="fas fa-check-circle" style="color:#4ade80;margin-top:2px;flex-shrink:0"></i> We send you the required document checklist for your trade direction</div>
+              <div style="display:flex;gap:10px;color:#b0a898;font-size:.82rem"><i class="fas fa-check-circle" style="color:#4ade80;margin-top:2px;flex-shrink:0"></i> A trade agreement is issued once all documents are verified</div>
+            </div>
+          </div>
+
+          <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:20px">
+            <input type="checkbox" name="casl_consent" required style="margin-top:3px;flex-shrink:0">
+            <span style="color:#7a6e5f;font-size:.82rem;line-height:1.6">I consent to T&TG Trade Corporation contacting me regarding this inquiry in compliance with Canada's Anti-Spam Legislation (CASL). I have read and agree to the <a href="/terms/" style="color:#c9a84c;text-decoration:none">Terms & Conditions</a> and <a href="/privacy-policy/" style="color:#c9a84c;text-decoration:none">Privacy Policy</a>.</span>
+          </label>
+
+          <button type="submit" class="btn btn-gold w-100 py-3" style="font-size:1rem;font-weight:800">
+            <i class="fas fa-paper-plane me-2"></i>Submit Trade Inquiry
+          </button>
+          <div style="color:#7a6e5f;font-size:.72rem;text-align:center;margin-top:12px">Your inquiry will be sent to tom.grouptrade@gmail.com</div>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- SIDEBAR INFO -->
+    <div class="col-lg-4">
+      <div style="position:sticky;top:80px">
+        <div class="ta-card mb-4">
+          <h6 style="color:#c9a84c;font-weight:800;margin-bottom:16px">T&TG Trade Corporation</h6>
+          <div style="font-size:.82rem;color:#7a6e5f;line-height:1.8">
+            <div><strong style="color:#e0d5c0">Address:</strong><br>9 Summerbridge Rd,<br>Toronto, ON M1G 1L8, Canada</div>
+            <div class="mt-3"><strong style="color:#e0d5c0">Email:</strong><br>tom.grouptrade@gmail.com</div>
+            <div class="mt-3"><strong style="color:#e0d5c0">Phone / WhatsApp:</strong><br>+1 (416) 832 3512</div>
+            <div class="mt-3"><strong style="color:#e0d5c0">Coverage:</strong><br>Canada · USA (Ohio) · Uganda · Kenya · Africa · Japan</div>
+          </div>
+        </div>
+        <div class="ta-card mb-4">
+          <h6 style="color:#c9a84c;font-weight:800;margin-bottom:14px">Required Documents</h6>
+          <div id="doc-import" style="font-size:.78rem;color:#7a6e5f;line-height:1.8">
+            <div style="color:#e0d5c0;font-weight:700;margin-bottom:8px">Importing from T&TG:</div>
+            <div><i class="fas fa-file-alt" style="color:#c9a84c;margin-right:6px"></i>Commercial Invoice</div>
+            <div><i class="fas fa-file-alt" style="color:#c9a84c;margin-right:6px"></i>Bill of Lading</div>
+            <div><i class="fas fa-file-alt" style="color:#c9a84c;margin-right:6px"></i>Import Declaration</div>
+            <div><i class="fas fa-file-alt" style="color:#c9a84c;margin-right:6px"></i>Certificate of Origin (Form A)</div>
+          </div>
+          <div id="doc-export" style="font-size:.78rem;color:#7a6e5f;line-height:1.8;display:none">
+            <div style="color:#e0d5c0;font-weight:700;margin-bottom:8px">Exporting to T&TG:</div>
+            <div><i class="fas fa-file-alt" style="color:#c9a84c;margin-right:6px"></i>Phytosanitary Certificate</div>
+            <div><i class="fas fa-file-alt" style="color:#c9a84c;margin-right:6px"></i>Certificate of Origin</div>
+            <div><i class="fas fa-file-alt" style="color:#c9a84c;margin-right:6px"></i>Export Permit (UCDA)</div>
+            <div><i class="fas fa-file-alt" style="color:#c9a84c;margin-right:6px"></i>Bill of Lading</div>
+            <div><i class="fas fa-file-alt" style="color:#c9a84c;margin-right:6px"></i>Seller Agreement (signed)</div>
+          </div>
+        </div>
+        <div class="ta-card">
+          <h6 style="color:#c9a84c;font-weight:800;margin-bottom:12px">Response Time</h6>
+          <div style="font-size:.82rem;color:#7a6e5f;line-height:1.7">Our team responds to all trade inquiries within <strong style="color:#e0d5c0">2 business days</strong>. For urgent inquiries contact us directly on WhatsApp.</div>
+          <a href="https://wa.me/14168323512" target="_blank" class="btn btn-gold w-100 mt-3 py-2" style="font-size:.85rem">WhatsApp Tom directly</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<script>
+// Direction toggle
+document.querySelectorAll('input[name="direction"]').forEach(function(r){
+  r.addEventListener('change', function(){
+    document.getElementById('dir-import').classList.toggle('active', this.value==='import');
+    document.getElementById('dir-export').classList.toggle('active', this.value==='export');
+    document.getElementById('doc-import').style.display = this.value==='import' ? 'block':'none';
+    document.getElementById('doc-export').style.display = this.value==='export' ? 'block':'none';
+  });
+});
+// Frequency radio visual
+document.querySelectorAll('input[name="frequency"]').forEach(function(r){
+  r.addEventListener('change', function(){
+    document.querySelectorAll('input[name="frequency"]').forEach(function(x){
+      x.parentElement.style.borderColor = 'rgba(201,168,76,.2)';
+      x.parentElement.style.color = '#7a6e5f';
+      x.parentElement.style.background = 'transparent';
+    });
+    this.parentElement.style.borderColor = '#c9a84c';
+    this.parentElement.style.color = '#c9a84c';
+    this.parentElement.style.background = 'rgba(201,168,76,.08)';
+  });
+  // Set default
+  if(r.checked){ r.parentElement.style.borderColor='#c9a84c'; r.parentElement.style.color='#c9a84c'; r.parentElement.style.background='rgba(201,168,76,.08)'; }
+});
+</script>
+{% endblock %}

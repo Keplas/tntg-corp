@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% block title %}Trade Dashboard — T&TG Admin{% endblock %}
+{% block content %}
+<style>
+  .td-bg   { background:#060f1e; min-height:100vh; padding:40px 0; }
+  .td-card { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.15); border-radius:14px; }
+  .td-stat { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.12); border-radius:12px; padding:20px; text-align:center; }
+  .badge-pending   { background:rgba(251,191,36,.15); color:#fbbf24; }
+  .badge-reviewing { background:rgba(96,165,250,.15);  color:#60a5fa; }
+  .badge-approved  { background:rgba(34,197,94,.15);  color:#4ade80; }
+  .badge-rejected  { background:rgba(239,68,68,.15);  color:#f87171; }
+  .badge-completed { background:rgba(168,85,247,.15); color:#a855f7; }
+</style>
+<div class="td-bg">
+<div class="container-fluid px-4">
+
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-5">
+    <div>
+      <div style="color:#c9a84c;font-size:.72rem;font-weight:800;letter-spacing:2px;margin-bottom:6px">ADMIN ONLY</div>
+      <h1 style="color:#fff;font-weight:900;margin:0">Trade Inquiry Dashboard</h1>
+    </div>
+    <a href="{% url 'trade_apply' %}" class="btn btn-gold px-4">View Public Form</a>
+  </div>
+
+  <!-- Stats -->
+  <div class="row g-3 mb-5">
+    <div class="col-6 col-md-2"><div class="td-stat"><div style="color:#c9a84c;font-weight:900;font-size:1.8rem">{{ counts.total }}</div><div style="color:#7a6e5f;font-size:.75rem">Total</div></div></div>
+    <div class="col-6 col-md-2"><div class="td-stat"><div style="color:#fbbf24;font-weight:900;font-size:1.8rem">{{ counts.pending }}</div><div style="color:#7a6e5f;font-size:.75rem">Pending</div></div></div>
+    <div class="col-6 col-md-2"><div class="td-stat"><div style="color:#60a5fa;font-weight:900;font-size:1.8rem">{{ counts.reviewing }}</div><div style="color:#7a6e5f;font-size:.75rem">Reviewing</div></div></div>
+    <div class="col-6 col-md-2"><div class="td-stat"><div style="color:#4ade80;font-weight:900;font-size:1.8rem">{{ counts.approved }}</div><div style="color:#7a6e5f;font-size:.75rem">Approved</div></div></div>
+    <div class="col-6 col-md-2"><div class="td-stat"><div style="color:#f87171;font-weight:900;font-size:1.8rem">{{ counts.rejected }}</div><div style="color:#7a6e5f;font-size:.75rem">Rejected</div></div></div>
+  </div>
+
+  <!-- Filters -->
+  <div class="d-flex gap-3 flex-wrap mb-4">
+    <a href="?" class="btn btn-sm {% if not status_filter %}btn-gold{% else %}btn-outline-secondary{% endif %}" style="border-radius:100px">All</a>
+    {% for val, label in status_options %}
+    <a href="?status={{ val }}" class="btn btn-sm" style="border-radius:100px;border:1px solid rgba(201,168,76,.3);color:{% if status_filter == val %}#1a0a00{% else %}#c9a84c{% endif %};background:{% if status_filter == val %}#c9a84c{% else %}transparent{% endif %}">{{ label }}</a>
+    {% empty %}
+    <a href="?status=pending"   class="btn btn-sm" style="border-radius:100px;border:1px solid rgba(251,191,36,.3);color:#fbbf24;background:{% if status_filter == 'pending' %}rgba(251,191,36,.2){% else %}transparent{% endif %}">Pending</a>
+    <a href="?status=reviewing" class="btn btn-sm" style="border-radius:100px;border:1px solid rgba(96,165,250,.3);color:#60a5fa;background:transparent">Reviewing</a>
+    <a href="?status=approved"  class="btn btn-sm" style="border-radius:100px;border:1px solid rgba(34,197,94,.3);color:#4ade80;background:transparent">Approved</a>
+    <a href="?status=rejected"  class="btn btn-sm" style="border-radius:100px;border:1px solid rgba(239,68,68,.3);color:#f87171;background:transparent">Rejected</a>
+    {% endfor %}
+    <span style="color:rgba(201,168,76,.3)">|</span>
+    <a href="?direction=import" class="btn btn-sm" style="border-radius:100px;border:1px solid rgba(201,168,76,.2);color:#c9a84c;background:transparent">Imports</a>
+    <a href="?direction=export" class="btn btn-sm" style="border-radius:100px;border:1px solid rgba(201,168,76,.2);color:#c9a84c;background:transparent">Exports</a>
+  </div>
+
+  <!-- Table -->
+  <div class="td-card" style="overflow:hidden">
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:.83rem;min-width:900px">
+        <thead>
+          <tr style="border-bottom:1px solid rgba(201,168,76,.15)">
+            <th style="color:#c9a84c;padding:14px 16px;font-size:.7rem;letter-spacing:1px;text-transform:uppercase;text-align:left">#</th>
+            <th style="color:#c9a84c;padding:14px 16px;font-size:.7rem;letter-spacing:1px;text-transform:uppercase;text-align:left">Client</th>
+            <th style="color:#c9a84c;padding:14px 16px;font-size:.7rem;letter-spacing:1px;text-transform:uppercase;text-align:left">Direction</th>
+            <th style="color:#c9a84c;padding:14px 16px;font-size:.7rem;letter-spacing:1px;text-transform:uppercase;text-align:left">Route</th>
+            <th style="color:#c9a84c;padding:14px 16px;font-size:.7rem;letter-spacing:1px;text-transform:uppercase;text-align:left">Coffee</th>
+            <th style="color:#c9a84c;padding:14px 16px;font-size:.7rem;letter-spacing:1px;text-transform:uppercase;text-align:left">Qty (kg)</th>
+            <th style="color:#c9a84c;padding:14px 16px;font-size:.7rem;letter-spacing:1px;text-transform:uppercase;text-align:left">Date</th>
+            <th style="color:#c9a84c;padding:14px 16px;font-size:.7rem;letter-spacing:1px;text-transform:uppercase;text-align:left">Status</th>
+            <th style="color:#c9a84c;padding:14px 16px;font-size:.7rem;letter-spacing:1px;text-transform:uppercase;text-align:left">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for inq in inquiries %}
+          <tr style="border-bottom:1px solid rgba(255,255,255,.04)" id="row-{{ inq.pk }}">
+            <td style="padding:14px 16px;color:#7a6e5f;font-size:.75rem">TI-{{ inq.pk|stringformat:"04d" }}</td>
+            <td style="padding:14px 16px">
+              <div style="color:#fff;font-weight:700">{{ inq.full_name }}</div>
+              <div style="color:#7a6e5f;font-size:.72rem">{{ inq.company_name|default:inq.get_business_type_display }}</div>
+              <div style="color:#7a6e5f;font-size:.7rem">{{ inq.email }}</div>
+            </td>
+            <td style="padding:14px 16px">
+              <span style="font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:100px;{% if inq.direction == 'import' %}background:rgba(34,197,94,.1);color:#4ade80{% else %}background:rgba(251,191,36,.1);color:#fbbf24{% endif %}">
+                {{ inq.get_direction_display|truncatechars:15 }}
+              </span>
+            </td>
+            <td style="padding:14px 16px;color:#7a6e5f;font-size:.8rem">
+              {{ inq.origin_country }} <span style="color:#c9a84c">→</span> {{ inq.destination_country }}
+            </td>
+            <td style="padding:14px 16px;color:#e0d5c0;font-size:.8rem">{{ inq.get_coffee_type_display }}</td>
+            <td style="padding:14px 16px;color:#c9a84c;font-weight:700">{{ inq.quantity_kg|floatformat:0 }}</td>
+            <td style="padding:14px 16px;color:#7a6e5f;font-size:.78rem">{{ inq.created_at|date:"d M Y" }}</td>
+            <td style="padding:14px 16px">
+              <span class="badge-{{ inq.status }}" style="font-size:.68rem;font-weight:700;padding:3px 10px;border-radius:100px">{{ inq.get_status_display }}</span>
+            </td>
+            <td style="padding:14px 16px">
+              <button onclick="openModal({{ inq.pk }},'{{ inq.status }}','{{ inq.admin_notes|escapejs }}')" class="btn btn-sm" style="background:rgba(201,168,76,.12);color:#c9a84c;border:1px solid rgba(201,168,76,.25);border-radius:8px;font-size:.72rem">
+                Update
+              </button>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="9" style="padding:60px;text-align:center;color:#7a6e5f">No inquiries found</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- Update Modal -->
+<div id="updateModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:#0d1f3c;border:1px solid rgba(201,168,76,.3);border-radius:18px;padding:32px;width:90%;max-width:480px">
+    <h5 style="color:#c9a84c;font-weight:800;margin-bottom:20px">Update Trade Inquiry</h5>
+    <form method="POST" id="updateForm">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label style="color:#7a6e5f;font-size:.8rem;display:block;margin-bottom:6px">New Status</label>
+        <select name="status" id="modalStatus" style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);color:#e0d5c0;border-radius:10px;padding:12px;width:100%">
+          <option value="pending">Pending Review</option>
+          <option value="reviewing">Under Review</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+          <option value="completed">Completed</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label style="color:#7a6e5f;font-size:.8rem;display:block;margin-bottom:6px">Admin Notes (sent to client on rejection)</label>
+        <textarea name="admin_notes" id="modalNotes" rows="3" style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);color:#e0d5c0;border-radius:10px;padding:12px;width:100%"></textarea>
+      </div>
+      <div class="d-flex gap-3">
+        <button type="submit" class="btn btn-gold flex-fill py-2">Save Update</button>
+        <button type="button" onclick="closeModal()" class="btn flex-fill py-2" style="border:1px solid rgba(255,255,255,.2);color:#7a6e5f;background:none;border-radius:10px">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function openModal(pk, status, notes){
+  document.getElementById('updateForm').action = '/services/trade/' + pk + '/status/';
+  document.getElementById('modalStatus').value  = status;
+  document.getElementById('modalNotes').value   = notes;
+  document.getElementById('updateModal').style.display = 'flex';
+}
+function closeModal(){
+  document.getElementById('updateModal').style.display = 'none';
+}
+</script>
+{% endblock %}

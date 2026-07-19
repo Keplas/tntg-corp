@@ -61,3 +61,75 @@ class ContactInquiry(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.subject}"
+
+
+class TradeInquiry(models.Model):
+
+    DIRECTION_CHOICES = [
+        ('import', 'Import from T&TG — Buy our coffee'),
+        ('export', 'Export to T&TG — Sell coffee to us'),
+    ]
+    STATUS_CHOICES = [
+        ('pending',   'Pending Review'),
+        ('reviewing', 'Under Review'),
+        ('approved',  'Approved'),
+        ('rejected',  'Rejected'),
+        ('completed', 'Completed'),
+    ]
+    BUSINESS_TYPE_CHOICES = [
+        ('registered_company', 'Registered Company'),
+        ('small_business',     'Small Business / Shop'),
+        ('individual',         'Individual'),
+        ('organisation',       'Organisation / NGO'),
+    ]
+    FREQUENCY_CHOICES = [
+        ('one_time',   'One-Time Shipment'),
+        ('monthly',    'Monthly'),
+        ('quarterly',  'Quarterly'),
+        ('annually',   'Annually'),
+    ]
+    COFFEE_CHOICES = [
+        ('arabica',   'Arabica Green Coffee'),
+        ('robusta',   'Robusta Green Coffee'),
+        ('both',      'Both Arabica & Robusta'),
+        ('artisanal', 'Artisanal Coffee Goods'),
+        ('instant',   'Instant Coffee'),
+        ('soap',      'Coffee-Based Soaps'),
+        ('mixed',     'Mixed / Other'),
+    ]
+
+    # Client info
+    full_name      = models.CharField(max_length=200)
+    company_name   = models.CharField(max_length=200, blank=True)
+    business_type  = models.CharField(max_length=30, choices=BUSINESS_TYPE_CHOICES)
+    email          = models.EmailField()
+    phone          = models.CharField(max_length=30, blank=True)
+    country        = models.CharField(max_length=100)
+
+    # Trade details
+    direction           = models.CharField(max_length=10, choices=DIRECTION_CHOICES)
+    origin_country      = models.CharField(max_length=100)
+    destination_country = models.CharField(max_length=100)
+    coffee_type         = models.CharField(max_length=20, choices=COFFEE_CHOICES)
+    quantity_kg         = models.DecimalField(max_digits=10, decimal_places=2)
+    frequency           = models.CharField(max_length=20, choices=FREQUENCY_CHOICES)
+    notes               = models.TextField(blank=True)
+    casl_consent        = models.BooleanField(default=False)
+
+    # Admin
+    status       = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    admin_notes  = models.TextField(blank=True)
+    created_at   = models.DateTimeField(auto_now_add=True)
+    updated_at   = models.DateTimeField(auto_now=True)
+    user         = models.ForeignKey(
+        'accounts.CustomUser', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='trade_inquiries'
+    )
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name        = 'Trade Inquiry'
+        verbose_name_plural = 'Trade Inquiries'
+
+    def __str__(self):
+        return f"{self.full_name} — {self.get_direction_display()} — {self.status}"
