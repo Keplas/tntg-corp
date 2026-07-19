@@ -10,7 +10,7 @@ SYSTEM_PROMPT = """You are TARA (T&TG Automated Response Assistant), the officia
 
 COMPANY INFO:
 - Full name: Tom & The Group Trade Corporation (T&TG Trade Corp)
-- Headquarters: 9 Summerbridge Road, Scarborough, M1G 1L8, Toronto, Ontario, Canada
+- Headquarters: 9 Summerbridge Rd, Toronto, ON M1G 1L8, Canada
 - Phone: +1 (416) 832 3512
 - Email: tom.grouptrade@gmail.com
 - Founded: October 14, 2026
@@ -177,7 +177,7 @@ def get_offline_reply(messages):
                 "Choose Express ⚡ or Ordinary 🚢 delivery. Earn T&TG Loyalty Points on every order.")
     if any(w in last for w in ['contact', 'phone', 'email', 'address']):
         return ("📞 **T&TG Trade Corp** — +1 (416) 832 3512 | tom.grouptrade@gmail.com | "
-                "9 Summerbridge Road, Scarborough, 9 Summerbridge Rd, Toronto, ON M1G 1L8, Canada, Canada. "
+                "9 Summerbridge Rd, Toronto, ON M1G 1L8, Canada. "
                 "Or visit **/contact/**.")
     if any(w in last for w in ['hello', 'hi', 'hey', 'help', 'start']):
         return ("👋 Hello! I'm **TARA**, T&TG's AI assistant. I can help you with:\n"
