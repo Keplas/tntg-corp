@@ -462,7 +462,6 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  <a href="{% url 'trade_apply' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-exchange-alt"></i></span>Trade Inquiry</a>
               <a href="{% url 'about' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'about' %}tg-active{% endif %}"><span class="tg-dd-ico"></span>About Us</a>
  <a href="{% url 'contact' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'contact' %}tg-active{% endif %}"><span class="tg-dd-ico">️</span>Contact Us</a>
- <a href="{% url 'faq' %}" class="tg-dd-item "><span class="tg-dd-ico"></span>FAQ</a>
  <a href="{% url 'blog_list' %}" class="tg-dd-item {% if 'blog' in request.resolver_match.url_name %}tg-active{% endif %}"><span class="tg-dd-ico"></span>Blog & News</a>
               <div class="tg-dd-divider"></div>
               <a href="{% url 'faq' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'faq' %}tg-active{% endif %}"><span class="tg-dd-ico"><i class="fas fa-question-circle"></i></span>FAQ</a>
