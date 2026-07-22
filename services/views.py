@@ -207,3 +207,22 @@ def trade_update_status(request, pk):
 
         messages.success(request, f'Inquiry #TI-{pk:04d} updated to {new_status}.')
     return redirect('trade_dashboard')
+
+
+@login_required
+def my_trade_inquiries(request):
+    """Client view — see their own trade inquiry history and status."""
+    from .models import TradeInquiry
+    inquiries = TradeInquiry.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'services/my_trade_inquiries.html', {'inquiries': inquiries})
+
+
+def trade_inquiry_detail(request, pk):
+    """Client + admin — full detail view of a single trade inquiry."""
+    from .models import TradeInquiry
+    inquiry = get_object_or_404(TradeInquiry, pk=pk)
+    # Only allow owner or staff
+    if not request.user.is_staff and inquiry.user != request.user:
+        messages.error(request, 'Access denied.')
+        return redirect('home')
+    return render(request, 'services/trade_inquiry_detail.html', {'inquiry': inquiry})

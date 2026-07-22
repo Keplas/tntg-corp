@@ -11,4 +11,6 @@ urlpatterns = [
     path('trade/apply/',            views.trade_apply,         name='trade_apply'),
     path('trade/dashboard/',        views.trade_dashboard,     name='trade_dashboard'),
     path('trade/<int:pk>/status/',  views.trade_update_status, name='trade_update_status'),
+    path('trade/my-inquiries/',        views.my_trade_inquiries,  name='my_trade_inquiries'),
+    path('trade/<int:pk>/detail/',     views.trade_inquiry_detail, name='trade_inquiry_detail'),
 ]

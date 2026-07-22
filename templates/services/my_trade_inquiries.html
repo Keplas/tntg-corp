@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}My Trade Inquiries — T&TG Trade Corp{% endblock %}
+{% block content %}
+<section style="background:#060f1e;min-height:80vh;padding:60px 0">
+<div class="container">
+
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-5">
+    <div>
+      <div style="font-size:.68rem;font-weight:800;letter-spacing:3px;color:#c9a84c;text-transform:uppercase;margin-bottom:8px">My Account</div>
+      <h2 style="color:#fff;font-weight:900;margin:0">My Trade Inquiries</h2>
+    </div>
+    <a href="{% url 'trade_apply' %}" class="btn btn-gold px-4">New Inquiry</a>
+  </div>
+
+  {% if messages %}{% for m in messages %}
+  <div class="alert mb-4" style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);color:#c9a84c;border-radius:12px;padding:16px">{{ m }}</div>
+  {% endfor %}{% endif %}
+
+  {% if inquiries %}
+  <div style="display:grid;gap:16px">
+    {% for inq in inquiries %}
+    <div style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.15);border-radius:16px;padding:24px">
+      <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
+        <div>
+          <div class="d-flex align-items-center gap-3 mb-2 flex-wrap">
+            <span style="color:#c9a84c;font-weight:900;font-size:1rem">#TI-{{ inq.pk|stringformat:"04d" }}</span>
+            <span style="font-size:.72rem;font-weight:700;padding:3px 12px;border-radius:100px;
+              {% if inq.status == 'pending' %}background:rgba(251,191,36,.15);color:#fbbf24
+              {% elif inq.status == 'reviewing' %}background:rgba(96,165,250,.15);color:#60a5fa
+              {% elif inq.status == 'approved' %}background:rgba(34,197,94,.15);color:#4ade80
+              {% elif inq.status == 'rejected' %}background:rgba(239,68,68,.15);color:#f87171
+              {% else %}background:rgba(168,85,247,.15);color:#a855f7{% endif %}">
+              {{ inq.get_status_display }}
+            </span>
+            <span style="font-size:.72rem;padding:3px 10px;border-radius:100px;
+              {% if inq.direction == 'import' %}background:rgba(34,197,94,.1);color:#4ade80
+              {% else %}background:rgba(251,191,36,.1);color:#fbbf24{% endif %}">
+              {{ inq.get_direction_display|truncatechars:20 }}
+            </span>
+          </div>
+          <div style="color:#e0d5c0;font-weight:700;margin-bottom:6px">{{ inq.get_coffee_type_display }} — {{ inq.quantity_kg|floatformat:0 }} kg</div>
+          <div style="color:#7a6e5f;font-size:.82rem">{{ inq.origin_country }} <span style="color:#c9a84c">→</span> {{ inq.destination_country }} &nbsp;·&nbsp; {{ inq.get_frequency_display }}</div>
+        </div>
+        <div class="text-end">
+          <div style="color:#7a6e5f;font-size:.75rem;margin-bottom:8px">{{ inq.created_at|date:"d M Y" }}</div>
+          <a href="{% url 'trade_inquiry_detail' inq.pk %}" class="btn btn-sm" style="background:rgba(201,168,76,.12);color:#c9a84c;border:1px solid rgba(201,168,76,.25);border-radius:8px;font-size:.78rem">View Details</a>
+        </div>
+      </div>
+
+      <!-- Status progress bar -->
+      {% with steps="pending,reviewing,approved,completed" %}
+      <div class="mt-4 d-flex align-items-center gap-0" style="position:relative">
+        {% for step in "PRCA" %}
+        {% with i=forloop.counter %}
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1">
+          <div style="width:22px;height:22px;border-radius:50%;font-size:.6rem;font-weight:800;display:flex;align-items:center;justify-content:center;
+            {% if inq.status == 'pending' and i == 1 %}background:#c9a84c;color:#1a0a00
+            {% elif inq.status == 'reviewing' and i <= 2 %}background:#60a5fa;color:#fff
+            {% elif inq.status == 'approved' and i <= 3 %}background:#4ade80;color:#000
+            {% elif inq.status == 'rejected' %}background:#f87171;color:#fff
+            {% elif inq.status == 'completed' %}background:#a855f7;color:#fff
+            {% else %}background:rgba(255,255,255,.1);color:#7a6e5f{% endif %}">
+            {{ i }}
+          </div>
+          <div style="font-size:.6rem;color:#7a6e5f;margin-top:4px;text-align:center">
+            {% if i == 1 %}Submitted{% elif i == 2 %}Reviewing{% elif i == 3 %}Approved{% else %}Complete{% endif %}
+          </div>
+        </div>
+        {% if not forloop.last %}
+        <div style="flex:1;height:2px;margin-top:-12px;background:rgba(255,255,255,.06)"></div>
+        {% endif %}
+        {% endwith %}
+        {% endfor %}
+      </div>
+      {% endwith %}
+
+      {% if inq.admin_notes %}
+      <div class="mt-3" style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);border-radius:10px;padding:12px;font-size:.8rem;color:#f87171">
+        <strong>Note from T&TG:</strong> {{ inq.admin_notes }}
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div style="text-align:center;padding:80px 20px">
+    <i class="fas fa-exchange-alt" style="font-size:3rem;color:rgba(201,168,76,.2);margin-bottom:20px"></i>
+    <h4 style="color:#fff;margin-bottom:8px">No Trade Inquiries Yet</h4>
+    <p style="color:#7a6e5f;max-width:380px;margin:0 auto 24px">Submit a trade inquiry to import T&TG coffee or export green coffee to us.</p>
+    <a href="{% url 'trade_apply' %}" class="btn btn-gold px-5">Submit Trade Inquiry</a>
+  </div>
+  {% endif %}
+
+</div>
+</section>
+{% endblock %}
