@@ -66,15 +66,21 @@ def trade_apply(request):
             frequency           = d.get('frequency','one_time'),
             notes               = d.get('notes','').strip(),
             casl_consent        = d.get('casl_consent') == 'on',
+            location_address    = d.get('location_address','').strip(),
             user                = request.user if request.user.is_authenticated else None,
         )
+        # Handle file upload
+        doc = request.FILES.get('agreement_document')
+        if doc:
+            inquiry.agreement_document = doc
+            inquiry.save(update_fields=['agreement_document'])
 
         # Email Tom
         try:
             send_mail(
-                subject=f'New Trade Inquiry #{inquiry.pk} — {inquiry.get_direction_display()} — {inquiry.full_name}',
+                subject=f'New Trade Application #TI-{inquiry.pk:04d} — {inquiry.get_direction_display()} — {inquiry.full_name}',
                 message=(
-                    f'New trade inquiry received:\n\n'
+                    f'New trade APPLICATION received:\n\n'
                     f'Name:        {inquiry.full_name}\n'
                     f'Company:     {inquiry.company_name or "N/A"}\n'
                     f'Type:        {inquiry.get_business_type_display()}\n'
@@ -100,10 +106,10 @@ def trade_apply(request):
         # Confirmation to client
         try:
             send_mail(
-                subject='Trade Inquiry Received — T&TG Trade Corporation',
+                subject='Trade Application Received — T&TG Trade Corporation',
                 message=(
                     f'Dear {inquiry.full_name},\n\n'
-                    f'Thank you for your trade inquiry with T&TG Trade Corporation.\n\n'
+                    f'Thank you for your trade application with T&TG Trade Corporation.\n\n'
                     f'Your inquiry reference number is: #TI-{inquiry.pk:04d}\n\n'
                     f'Details submitted:\n'
                     f'  Direction:  {inquiry.get_direction_display()}\n'
@@ -124,7 +130,7 @@ def trade_apply(request):
             pass
 
         messages.success(request,
-            f'Thank you! Your trade inquiry #TI-{inquiry.pk:04d} has been received. '
+            f'Thank you! Your trade application #TI-{inquiry.pk:04d} has been received. '
             f'We will respond within 2 business days.')
         return redirect('trade_apply')
 
@@ -181,16 +187,16 @@ def trade_update_status(request, pk):
 
         # Email client about status change
         status_messages = {
-            'reviewing': 'Your trade inquiry is now under review by our team.',
-            'approved':  'Your trade inquiry has been APPROVED. Our team will contact you shortly to finalise the agreement.',
-            'rejected':  f'After review, we are unable to proceed with your trade inquiry at this time.\n\nReason: {admin_notes or "Please contact us for details."}',
+            'reviewing': 'Your trade application is now under review by our team.',
+            'approved':  'Your trade application has been APPROVED. Our team will contact you shortly to finalise the agreement.',
+            'rejected':  f'After review, we are unable to proceed with your trade application at this time.\n\nReason: {admin_notes or "Please contact us for details."}',
             'completed': 'Your trade agreement has been completed successfully. Thank you for trading with T&TG!',
         }
         msg = status_messages.get(new_status)
         if msg:
             try:
                 send_mail(
-                    subject=f'Trade Inquiry #TI-{inquiry.pk:04d} Update — T&TG Trade Corp',
+                    subject=f'Trade Application #TI-{inquiry.pk:04d} Update — T&TG Trade Corp',
                     message=(
                         f'Dear {inquiry.full_name},\n\n{msg}\n\n'
                         f'Reference: #TI-{inquiry.pk:04d}\n\n'

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Trade Inquiry — T&TG Trade Corporation{% endblock %}
+{% block title %}Trade Application — T&TG Trade Corporation{% endblock %}
 {% block content %}
 
 <style>
@@ -21,7 +21,7 @@
     <div class="d-flex align-items-center gap-3 mb-3">
       <span style="font-size:.72rem;font-weight:800;letter-spacing:3px;color:#c9a84c;text-transform:uppercase">T&TG Trade Corp</span>
     </div>
-    <h1 style="color:#fff;font-weight:900;font-size:clamp(1.6rem,4vw,2.4rem);margin-bottom:10px">Trade Inquiry Form</h1>
+    <h1 style="color:#fff;font-weight:900;font-size:clamp(1.6rem,4vw,2.4rem);margin-bottom:10px">Trade Application Form</h1>
     <p style="color:#7a6e5f;max-width:540px;line-height:1.7">For companies, organisations and individuals who wish to import coffee from T&TG or export green coffee to T&TG Trade Corporation.</p>
   </div>
 </section>
@@ -39,7 +39,7 @@
 
     <!-- FORM -->
     <div class="col-lg-8">
-      <form method="POST" id="tradeForm">
+      <form method="POST" id="tradeForm" enctype="multipart/form-data">
         {% csrf_token %}
 
         <!-- Step 1: Trade Direction -->
@@ -107,6 +107,15 @@
             <div class="col-md-6">
               <label class="ta-label">Phone / WhatsApp</label>
               <input type="tel" name="phone" class="ta-input" placeholder="+1 (416) 000 0000">
+            </div>
+            <div class="col-12">
+              <label class="ta-label">Location Address *</label>
+              <textarea name="location_address" class="ta-input" rows="3"
+                placeholder="Full physical address — Street, City, Region/State, Country, Postal Code" required></textarea>
+              <div style="color:#7a6e5f;font-size:.72rem;margin-top:6px">
+                <i class="fas fa-info-circle me-1" style="color:#c9a84c"></i>
+                Required for trade documentation, agreements and shipping arrangements.
+              </div>
             </div>
           </div>
         </div>
@@ -182,13 +191,31 @@
             </div>
           </div>
 
+          <!-- Document upload -->
+          <div style="margin-bottom:20px">
+            <label class="ta-label">Upload Signed Agreement / Supporting Document</label>
+            <div style="border:2px dashed rgba(201,168,76,.3);border-radius:12px;padding:24px;text-align:center;background:rgba(201,168,76,.03);position:relative;cursor:pointer" onclick="document.getElementById('docUpload').click()">
+              <i class="fas fa-cloud-upload-alt" style="font-size:2rem;color:rgba(201,168,76,.4);margin-bottom:10px"></i>
+              <div style="color:#e0d5c0;font-weight:700;font-size:.9rem;margin-bottom:4px">Click to choose file</div>
+              <div style="color:#7a6e5f;font-size:.75rem">PDF, DOC, DOCX, JPG or PNG — max 10MB</div>
+              <input type="file" id="docUpload" name="agreement_document"
+                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                style="position:absolute;inset:0;opacity:0;cursor:pointer"
+                onchange="showFileName(this)">
+            </div>
+            <div id="fileNameDisplay" style="color:#c9a84c;font-size:.78rem;margin-top:8px;display:none">
+              <i class="fas fa-check-circle me-1"></i><span id="fileNameText"></span>
+            </div>
+            <div style="color:#7a6e5f;font-size:.72rem;margin-top:6px">Optional at this stage. You can also email documents to tom.grouptrade@gmail.com with your application reference number.</div>
+          </div>
+
           <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin-bottom:20px">
             <input type="checkbox" name="casl_consent" required style="margin-top:3px;flex-shrink:0">
             <span style="color:#7a6e5f;font-size:.82rem;line-height:1.6">I consent to T&TG Trade Corporation contacting me regarding this inquiry in compliance with Canada's Anti-Spam Legislation (CASL). I have read and agree to the <a href="/terms/" style="color:#c9a84c;text-decoration:none">Terms & Conditions</a> and <a href="/privacy-policy/" style="color:#c9a84c;text-decoration:none">Privacy Policy</a>.</span>
           </label>
 
           <button type="submit" class="btn btn-gold w-100 py-3" style="font-size:1rem;font-weight:800">
-            <i class="fas fa-paper-plane me-2"></i>Submit Trade Inquiry
+            <i class="fas fa-paper-plane me-2"></i>Submit Your Application
           </button>
           <div style="color:#7a6e5f;font-size:.72rem;text-align:center;margin-top:12px">Your inquiry will be sent to tom.grouptrade@gmail.com</div>
         </div>
@@ -285,5 +312,15 @@ document.querySelectorAll('input[name="frequency"]').forEach(function(r){
   // Set default
   if(r.checked){ r.parentElement.style.borderColor='#c9a84c'; r.parentElement.style.color='#c9a84c'; r.parentElement.style.background='rgba(201,168,76,.08)'; }
 });
+</script>
+<script>
+function showFileName(input){
+  var display = document.getElementById('fileNameDisplay');
+  var text = document.getElementById('fileNameText');
+  if(input.files && input.files[0]){
+    text.textContent = input.files[0].name;
+    display.style.display = 'block';
+  }
+}
 </script>
 {% endblock %}

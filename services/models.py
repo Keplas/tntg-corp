@@ -115,6 +115,8 @@ class TradeInquiry(models.Model):
     frequency           = models.CharField(max_length=20, choices=FREQUENCY_CHOICES)
     notes               = models.TextField(blank=True)
     casl_consent        = models.BooleanField(default=False)
+    location_address    = models.TextField(blank=True, help_text='Full physical address of the applicant')
+    agreement_document  = models.FileField(upload_to='trade_agreements/', null=True, blank=True, help_text='Signed agreement or supporting document')
 
     # Admin
     status       = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')

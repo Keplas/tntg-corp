@@ -17,7 +17,7 @@
   <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-5">
     <div>
       <div style="color:#c9a84c;font-size:.72rem;font-weight:800;letter-spacing:2px;margin-bottom:6px">ADMIN ONLY</div>
-      <h1 style="color:#fff;font-weight:900;margin:0">Trade Inquiry Dashboard</h1>
+      <h1 style="color:#fff;font-weight:900;margin:0">Trade Application Dashboard</h1>
     </div>
     <a href="{% url 'trade_apply' %}" class="btn btn-gold px-4">View Public Form</a>
   </div>
@@ -107,7 +107,7 @@
 <!-- Update Modal -->
 <div id="updateModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;align-items:center;justify-content:center">
   <div style="background:#0d1f3c;border:1px solid rgba(201,168,76,.3);border-radius:18px;padding:32px;width:90%;max-width:480px">
-    <h5 style="color:#c9a84c;font-weight:800;margin-bottom:20px">Update Trade Inquiry</h5>
+    <h5 style="color:#c9a84c;font-weight:800;margin-bottom:20px">Update Trade Application</h5>
     <form method="POST" id="updateForm">
       {% csrf_token %}
       <div class="mb-3">
