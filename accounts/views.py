@@ -68,15 +68,18 @@ def register(request):
         except Exception:
             pass
 
-        Notification.notify(
-            'registration',
-            f"New User Registered: {user.get_full_name() or user.username}",
-            (
-                f"ID: {user.unique_id} | Country: {user.get_country_display()} | "
-                f"Market: {user.get_market_type_display()} | Role: {user.get_user_role_display()}"
-            ),
-            f'/admin/accounts/customuser/{user.pk}/change/'
-        )
+        try:
+            Notification.notify(
+                'registration',
+                f"New User Registered: {user.get_full_name() or user.username}",
+                (
+                    f"ID: {user.unique_id} | Country: {user.get_country_display()} | "
+                    f"Market: {user.get_market_type_display()} | Role: {user.get_user_role_display()}"
+                ),
+                f'/admin/accounts/customuser/{user.pk}/change/'
+            )
+        except Exception:
+            pass
 
         login(request, user, backend="accounts.backends.FlexAuthBackend")
         messages.success(request, f'Welcome to T&TG Trade Corp! Your ID is {user.unique_id}. Check your email to verify your account.')
