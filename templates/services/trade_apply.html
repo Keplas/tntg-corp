@@ -42,6 +42,23 @@
       <form method="POST" id="tradeForm" enctype="multipart/form-data">
         {% csrf_token %}
 
+
+        <!-- Download printable form -->
+        <div class="ta-card mb-4" style="border-color:rgba(201,168,76,.3);background:rgba(201,168,76,.05)">
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+            <div style="width:48px;height:48px;border-radius:12px;background:rgba(201,168,76,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <i class="fas fa-file-pdf" style="color:#c9a84c;font-size:1.3rem"></i>
+            </div>
+            <div style="flex:1">
+              <div style="color:#fff;font-weight:800;margin-bottom:4px">Prefer a paper form?</div>
+              <div style="color:#7a6e5f;font-size:.82rem;line-height:1.6">Download the official T&TG Trade Application Form, print it, fill it in by hand and submit or email to tom.grouptrade@gmail.com</div>
+            </div>
+            <a href="{% url 'trade_form_download' %}" target="_blank"
+              style="background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#1a0a00;font-weight:800;font-size:.85rem;padding:12px 22px;border-radius:10px;text-decoration:none;flex-shrink:0;white-space:nowrap">
+              <i class="fas fa-download me-2"></i>Download Form
+            </a>
+          </div>
+        </div>
         <!-- Step 1: Trade Direction -->
         <div class="ta-card mb-4">
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">

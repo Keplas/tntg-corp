@@ -243,3 +243,8 @@ def trade_inquiry_detail(request, pk):
         messages.error(request, 'Access denied.')
         return redirect('home')
     return render(request, 'services/trade_inquiry_detail.html', {'inquiry': inquiry})
+
+
+def trade_form_download(request):
+    """Printable / downloadable Trade Application Form (PDF)."""
+    return render(request, 'services/trade_form_pdf.html')

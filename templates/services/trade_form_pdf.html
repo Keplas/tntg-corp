@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T&TG Trade Application Form — Import & Export</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body { font-family: Arial, sans-serif; font-size: 11px; background: #f5f5f5; color: #222; }
+
+  /* Download bar — hidden when printing */
+  .dl-bar {
+    background: #1a0a00; padding: 14px 24px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+    position: sticky; top: 0; z-index: 999;
+  }
+  .dl-bar-title { color: #c9a84c; font-weight: 700; font-size: 14px; }
+  .dl-btn {
+    background: linear-gradient(135deg,#c9a84c,#e8c96a); color: #1a0a00;
+    border: none; padding: 10px 22px; border-radius: 8px;
+    font-weight: 800; font-size: 13px; cursor: pointer; margin-left: 8px;
+  }
+  .dl-btn-outline {
+    background: none; color: #c9a84c; border: 1px solid #c9a84c;
+    padding: 10px 22px; border-radius: 8px;
+    font-weight: 700; font-size: 13px; cursor: pointer;
+  }
+
+  /* Form container */
+  #formPage {
+    max-width: 900px; margin: 20px auto; background: #fff;
+    box-shadow: 0 4px 24px rgba(0,0,0,.15);
+  }
+
+  /* Header */
+  .form-header {
+    background: #2b1500;
+    padding: 20px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 4px solid #c9a84c;
+  }
+  .form-logo { display: flex; align-items: center; gap: 14px; }
+  .form-logo img { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; }
+  .form-logo-text { color: #c9a84c; }
+  .form-logo-text .big { font-size: 22px; font-weight: 900; letter-spacing: 2px; }
+  .form-logo-text .small { font-size: 10px; letter-spacing: 4px; opacity: .7; }
+  .form-title { text-align: right; }
+  .form-title .t1 { font-size: 22px; font-weight: 900; color: #c9a84c; letter-spacing: 1px; }
+  .form-title .t2 { font-size: 13px; color: rgba(255,255,255,.7); letter-spacing: 2px; margin-top: 4px; }
+
+  /* Body padding */
+  .form-body { padding: 22px 28px; }
+
+  /* Application type */
+  .app-type-row { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 20px; }
+  .app-type-left { flex: 1; }
+  .app-type-label { font-size: 13px; font-weight: 900; text-transform: uppercase; margin-bottom: 8px; color: #2b1500; }
+  .app-type-sub   { font-size: 10px; color: #666; margin-bottom: 12px; }
+  .app-type-cards { display: flex; gap: 12px; }
+  .type-card {
+    border: 2px solid #c9a84c; border-radius: 8px;
+    padding: 12px 18px; display: flex; align-items: center; gap: 10px;
+    min-width: 160px;
+  }
+  .type-card .chk { width: 18px; height: 18px; border: 2px solid #c9a84c; border-radius: 3px; flex-shrink: 0; }
+  .type-card .lbl { font-weight: 900; font-size: 13px; color: #2b1500; }
+  .type-card .sub { font-size: 9px; color: #888; margin-top: 2px; }
+  .app-info-box {
+    border: 1px solid #ccc; border-radius: 6px; padding: 12px 16px; min-width: 220px;
+    background: #fafafa;
+  }
+  .app-info-box .title { font-weight: 900; font-size: 11px; text-transform: uppercase; margin-bottom: 10px; color: #2b1500; display: flex; align-items: center; gap: 6px; }
+  .info-row { border-bottom: 1px solid #ddd; padding: 5px 0; font-size: 10px; color: #555; }
+
+  /* Sections */
+  .form-section {
+    border: 1px solid #ddd; border-radius: 8px;
+    margin-bottom: 16px; overflow: hidden;
+  }
+  .section-head {
+    background: #2b1500; color: #fff;
+    padding: 9px 16px; font-size: 12px; font-weight: 700;
+  }
+  .section-head .sec-num { color: #c9a84c; margin-right: 6px; }
+  .section-head .sec-or  { color: rgba(255,255,255,.5); margin: 0 8px; font-size: 10px; font-weight: 400; }
+  .section-body { padding: 16px; }
+
+  /* Grid */
+  .fg { display: grid; gap: 12px 16px; margin-bottom: 12px; }
+  .fg-3 { grid-template-columns: repeat(3, 1fr); }
+  .fg-2 { grid-template-columns: repeat(2, 1fr); }
+  .fg-1 { grid-template-columns: 1fr; }
+  .fg-addr { grid-template-columns: 2fr 1fr 1fr; }
+
+  .field label { display: block; font-size: 9px; color: #888; margin-bottom: 4px; text-transform: uppercase; letter-spacing: .5px; }
+  .field .line { border: none; border-bottom: 1px solid #999; width: 100%; height: 22px; font-size: 11px; background: transparent; outline: none; }
+  .field select.line { appearance: auto; }
+  .addr-label { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #2b1500; margin: 12px 0 8px; letter-spacing: .5px; }
+
+  /* Trade details selects */
+  .td-row { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-end; flex-wrap: wrap; }
+  .td-field { flex: 1; min-width: 120px; }
+
+  /* Documents checklist */
+  .doc-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+  .doc-item { display: flex; align-items: center; gap: 8px; font-size: 10px; }
+  .doc-item .chk { width: 14px; height: 14px; border: 1px solid #999; border-radius: 2px; flex-shrink: 0; }
+  .doc-other { display: flex; align-items: center; gap: 8px; font-size: 10px; margin-top: 8px; }
+
+  /* Declaration */
+  .decl-text { font-size: 10px; color: #555; line-height: 1.6; margin-bottom: 16px; font-style: italic; }
+  .sign-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 16px; align-items: end; }
+  .sign-box { border: 1px solid #ddd; border-radius: 4px; min-height: 56px; }
+  .date-row { margin-top: 12px; display: flex; align-items: center; gap: 12px; }
+  .date-box { border: 1px solid #ccc; border-radius: 4px; padding: 6px 14px; font-size: 10px; color: #aaa; display: flex; align-items: center; gap: 8px; }
+
+  /* Official use */
+  .official-bar {
+    background: #2b1500; padding: 10px 20px;
+    display: flex; align-items: center; gap: 8px;
+    margin-top: 0;
+  }
+  .official-bar .ot { color: #c9a84c; font-weight: 700; font-size: 11px; letter-spacing: 1px; }
+  .official-body {
+    padding: 14px 20px; background: #fffdf8;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; border: 1px solid #e8d9a0; border-top: none;
+  }
+  .off-field label { font-size: 9px; color: #888; display: block; margin-bottom: 3px; }
+  .off-field .line { border-bottom: 1px solid #999; width: 100%; height: 20px; background: transparent; border-top: none; border-left: none; border-right: none; }
+  .status-row { display: flex; gap: 16px; align-items: center; }
+  .status-item { display: flex; align-items: center; gap: 5px; font-size: 10px; }
+  .status-item .chk { width: 12px; height: 12px; border: 1px solid #999; border-radius: 2px; }
+
+  /* Footer */
+  .form-footer {
+    background: #2b1500; padding: 12px 20px;
+    display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+  }
+  .footer-item { display: flex; align-items: center; gap: 6px; color: rgba(255,255,255,.7); font-size: 10px; }
+  .footer-item i { color: #c9a84c; }
+
+  /* Globe watermark */
+  .globe-bg {
+    position: absolute; right: 20px; bottom: 60px;
+    width: 200px; height: 200px; opacity: .08;
+    background: radial-gradient(circle, #c9a84c 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  @media print {
+    .dl-bar { display: none !important; }
+    body { background: #fff; }
+    #formPage { box-shadow: none; margin: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Download bar -->
+<div class="dl-bar">
+  <span class="dl-bar-title">T&TG Trade Application Form — Import & Export</span>
+  <div>
+    <button class="dl-btn-outline" onclick="window.print()">Print Form</button>
+    <button class="dl-btn" onclick="downloadPDF()">Download PDF</button>
+  </div>
+</div>
+
+<!-- The actual form -->
+<div id="formPage" style="position:relative">
+
+  <!-- Header -->
+  <div class="form-header">
+    <div class="form-logo">
+      <img src="/static/images/logo.jpg" alt="T&TG">
+      <div class="form-logo-text">
+        <div class="big">T&TG</div>
+        <div class="small">TRADE CORP.</div>
+      </div>
+    </div>
+    <div class="form-title">
+      <div class="t1">TRADE APPLICATION FORM</div>
+      <div class="t2">IMPORT &amp; EXPORT</div>
+    </div>
+  </div>
+
+  <div class="form-body">
+
+    <!-- Application Type -->
+    <div class="app-type-row">
+      <div class="app-type-left">
+        <div class="app-type-label">Application Type</div>
+        <div class="app-type-sub">Please select the type of trade you are applying for:</div>
+        <div class="app-type-cards">
+          <div class="type-card">
+            <div class="chk"></div>
+            <div>
+              <div class="lbl">IMPORT</div>
+              <div class="sub">Bringing goods into the country</div>
+            </div>
+          </div>
+          <div class="type-card">
+            <div class="chk"></div>
+            <div>
+              <div class="lbl">EXPORT</div>
+              <div class="sub">Sending goods out of the country</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="app-info-box">
+        <div class="title">Application Information</div>
+        <div class="info-row">Application No.: ___________________</div>
+        <div class="info-row">Date: ___________________________</div>
+        <div class="info-row">Application Type: _________________</div>
+      </div>
+    </div>
+
+    <!-- Section 1 -->
+    <div class="form-section">
+      <div class="section-head">
+        <span class="sec-num">1.</span>
+        BUYER / IMPORTER INFORMATION <em style="font-weight:400;font-size:10px">(For Import)</em>
+        <span class="sec-or">OR</span>
+        BUYER / RECEIVER INFORMATION <em style="font-weight:400;font-size:10px">(For Export)</em>
+      </div>
+      <div class="section-body">
+        <div class="fg fg-3">
+          <div class="field"><label>Company / Business Name</label><input class="line" type="text"></div>
+          <div class="field"><label>Contact Person</label><input class="line" type="text"></div>
+          <div class="field"><label>Email Address</label><input class="line" type="email"></div>
+        </div>
+        <div class="fg fg-3">
+          <div class="field"><label>Phone Number</label><input class="line" type="tel"></div>
+          <div class="field"><label>Website (if any)</label><input class="line" type="text"></div>
+          <div class="field"><label>Tax / ID Number</label><input class="line" type="text"></div>
+        </div>
+        <div class="addr-label">Buyer / Importer / Receiver Address</div>
+        <div class="fg fg-addr">
+          <div class="field"><label>Street Address</label><input class="line" type="text"></div>
+          <div class="field"><label>City</label><input class="line" type="text"></div>
+          <div class="field"><label>State / Province</label><input class="line" type="text"></div>
+        </div>
+        <div class="fg fg-2">
+          <div class="field"><label>Country</label><input class="line" type="text"></div>
+          <div class="field"><label>Postal / ZIP Code</label><input class="line" type="text"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2 -->
+    <div class="form-section">
+      <div class="section-head">
+        <span class="sec-num">2.</span>
+        SELLER / EXPORTER INFORMATION <em style="font-weight:400;font-size:10px">(For Import)</em>
+        <span class="sec-or">OR</span>
+        SELLER / SHIPPER INFORMATION <em style="font-weight:400;font-size:10px">(For Export)</em>
+      </div>
+      <div class="section-body">
+        <div class="fg fg-3">
+          <div class="field"><label>Company / Business Name</label><input class="line" type="text"></div>
+          <div class="field"><label>Contact Person</label><input class="line" type="text"></div>
+          <div class="field"><label>Email Address</label><input class="line" type="email"></div>
+        </div>
+        <div class="fg fg-3">
+          <div class="field"><label>Phone Number</label><input class="line" type="tel"></div>
+          <div class="field"><label>Website (if any)</label><input class="line" type="text"></div>
+          <div class="field"><label>Tax / ID Number</label><input class="line" type="text"></div>
+        </div>
+        <div class="addr-label">Seller / Exporter / Shipper Address</div>
+        <div class="fg fg-addr">
+          <div class="field"><label>Street Address</label><input class="line" type="text"></div>
+          <div class="field"><label>City</label><input class="line" type="text"></div>
+          <div class="field"><label>State / Province</label><input class="line" type="text"></div>
+        </div>
+        <div class="fg fg-2">
+          <div class="field"><label>Country</label><input class="line" type="text"></div>
+          <div class="field"><label>Postal / ZIP Code</label><input class="line" type="text"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3 -->
+    <div class="form-section">
+      <div class="section-head"><span class="sec-num">3.</span> TRADE DETAILS</div>
+      <div class="section-body">
+        <div class="fg" style="grid-template-columns:3fr 1fr;margin-bottom:12px">
+          <div class="field"><label>Product / Commodity Description</label><input class="line" type="text"></div>
+          <div class="field"><label>HS Code (if known)</label><input class="line" type="text"></div>
+        </div>
+        <div class="fg fg-3">
+          <div class="field"><label>Quantity</label><input class="line" type="text"></div>
+          <div class="field"><label>Unit of Measurement</label><input class="line" type="text"></div>
+          <div class="field"><label>Total Value (Currency)</label><input class="line" type="text"></div>
+        </div>
+        <div class="td-row">
+          <div class="td-field field">
+            <label>Currency</label>
+            <select class="line">
+              <option value="">Select Currency</option>
+              <option>USD — US Dollar</option>
+              <option>CAD — Canadian Dollar</option>
+              <option>UGX — Ugandan Shilling</option>
+              <option>KES — Kenyan Shilling</option>
+            </select>
+          </div>
+          <div class="td-field field">
+            <label>Incoterms</label>
+            <select class="line">
+              <option value="">Select Incoterms</option>
+              <option>FOB — Free On Board</option>
+              <option>CIF — Cost, Insurance & Freight</option>
+              <option>EXW — Ex Works</option>
+              <option>DDP — Delivered Duty Paid</option>
+              <option>CFR — Cost & Freight</option>
+            </select>
+          </div>
+          <div class="td-field field">
+            <label>Payment Terms</label>
+            <select class="line">
+              <option value="">Select Payment Terms</option>
+              <option>Day 45 (T&TG Standard)</option>
+              <option>Advance Payment</option>
+              <option>Letter of Credit (L/C)</option>
+              <option>Net 30</option>
+              <option>Net 60</option>
+            </select>
+          </div>
+        </div>
+        <div class="td-row">
+          <div class="td-field field">
+            <label>Mode of Transport</label>
+            <select class="line">
+              <option value="">Select Mode</option>
+              <option>Air Freight</option>
+              <option>Sea Freight</option>
+              <option>Road Transport</option>
+              <option>Rail Transport</option>
+              <option>Multimodal</option>
+            </select>
+          </div>
+          <div class="td-field field"><label>Port of Loading / Dispatch</label><input class="line" type="text"></div>
+          <div class="td-field field"><label>Port of Discharge / Destination</label><input class="line" type="text"></div>
+        </div>
+        <div class="fg" style="grid-template-columns:1fr 1fr 2fr">
+          <div class="field"><label>Expected Shipment Date</label><input class="line" type="text" placeholder="DD / MM / YYYY"></div>
+          <div class="field"><label>Expected Arrival Date</label><input class="line" type="text" placeholder="DD / MM / YYYY"></div>
+          <div class="field"><label>Purpose of Import / Export</label><input class="line" type="text"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4 -->
+    <div class="form-section">
+      <div class="section-head"><span class="sec-num">4.</span> ADDITIONAL DOCUMENTS <span style="font-weight:400;font-size:10px">(Please check attached documents)</span></div>
+      <div class="section-body">
+        <div class="doc-grid">
+          <div class="doc-item"><div class="chk"></div> Commercial Invoice</div>
+          <div class="doc-item"><div class="chk"></div> Packing List</div>
+          <div class="doc-item"><div class="chk"></div> Certificate of Origin</div>
+          <div class="doc-item"><div class="chk"></div> Bill of Lading / Airway Bill</div>
+          <div class="doc-item"><div class="chk"></div> Import / Export License</div>
+          <div class="doc-item"><div class="chk"></div> Phytosanitary Certificate</div>
+          <div class="doc-item"><div class="chk"></div> Seller's Agreement</div>
+          <div class="doc-item"><div class="chk"></div> Cargo Receipt</div>
+        </div>
+        <div class="doc-other">
+          <div class="chk"></div>
+          <span>Other (specify):</span>
+          <input type="text" style="border:none;border-bottom:1px solid #999;flex:1;font-size:10px;outline:none">
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 5 -->
+    <div class="form-section">
+      <div class="section-head"><span class="sec-num">5.</span> DECLARATION</div>
+      <div class="section-body">
+        <div class="decl-text">I/We hereby declare that the information provided in this application is true and correct to the best of my/our knowledge. I/We understand that providing false information may result in the rejection of this application and possible legal consequences.</div>
+        <div class="sign-row">
+          <div class="field"><label>Authorized Name</label><input class="line" type="text"></div>
+          <div class="field"><label>Designation</label><input class="line" type="text"></div>
+          <div class="field"><label>Signature</label><div style="border-bottom:1px solid #999;height:36px"></div></div>
+          <div>
+            <div style="font-size:9px;color:#888;margin-bottom:4px">Company Seal (if any):</div>
+            <div class="sign-box"></div>
+          </div>
+        </div>
+        <div class="date-row">
+          <span style="font-size:10px;color:#555">Date:</span>
+          <div class="date-box">DD / MM / YYYY</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end form-body -->
+
+  <!-- Official Use Only -->
+  <div class="official-bar">
+    <span style="font-size:14px">&#9733;</span>
+    <span class="ot">FOR OFFICIAL USE ONLY</span>
+  </div>
+  <div class="official-body">
+    <div>
+      <div class="fg fg-2" style="margin-bottom:10px">
+        <div class="off-field"><label>Reviewed By</label><input class="line" type="text"></div>
+        <div class="off-field"><label>Date</label><input class="line" type="text"></div>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:10px;font-weight:700;margin-bottom:8px;color:#2b1500">Status:</div>
+      <div class="status-row">
+        <div class="status-item"><div class="chk"></div> Approved</div>
+        <div class="status-item"><div class="chk"></div> Rejected</div>
+        <div class="status-item"><div class="chk"></div> Pending</div>
+      </div>
+      <div class="off-field" style="margin-top:8px"><label>Remarks</label><input class="line" type="text"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="form-footer">
+    <div class="footer-item"><i class="fas fa-phone"></i> +1 (416) 832 3512</div>
+    <div class="footer-item"><i class="fas fa-envelope"></i> tom.grouptrade@gmail.com</div>
+    <div class="footer-item"><i class="fas fa-globe"></i> tntg-corp.onrender.com</div>
+    <div class="footer-item"><i class="fas fa-map-marker-alt"></i> 9 Summerbridge Rd, Toronto, ON M1G 1L8, Canada</div>
+  </div>
+
+  <div class="globe-bg"></div>
+</div><!-- end #formPage -->
+
+<!-- FontAwesome for footer icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<script>
+function downloadPDF() {
+  var btn = document.querySelectorAll('.dl-btn, .dl-btn-outline');
+  btn.forEach(function(b){ b.style.display='none'; });
+
+  var opt = {
+    margin:       [0, 0, 0, 0],
+    filename:     'TNTG_Trade_Application_Form.pdf',
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true, logging: false },
+    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+  html2pdf().set(opt).from(document.getElementById('formPage')).save().then(function(){
+    btn.forEach(function(b){ b.style.display=''; });
+  });
+}
+</script>
+
+</body>
+</html>
