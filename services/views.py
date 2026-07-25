@@ -51,29 +51,40 @@ def trade_apply(request):
 
     if request.method == 'POST':
         d = request.POST
-        inquiry = TradeInquiry.objects.create(
-            full_name           = d.get('full_name','').strip(),
-            company_name        = d.get('company_name','').strip(),
-            business_type       = d.get('business_type','individual'),
-            email               = d.get('email','').strip(),
-            phone               = d.get('phone','').strip(),
-            country             = d.get('country','').strip(),
-            direction           = d.get('direction','import'),
-            origin_country      = d.get('origin_country','').strip(),
-            destination_country = d.get('destination_country','').strip(),
-            coffee_type         = d.get('coffee_type','arabica'),
-            quantity_kg         = float(d.get('quantity_kg', 0) or 0),
-            frequency           = d.get('frequency','one_time'),
-            notes               = d.get('notes','').strip(),
-            casl_consent        = d.get('casl_consent') == 'on',
-            location_address    = d.get('location_address','').strip(),
-            user                = request.user if request.user.is_authenticated else None,
-        )
+        try:
+            qty = float(d.get('quantity_kg', 0) or 0)
+        except (ValueError, TypeError):
+            qty = 0
+        try:
+            inquiry = TradeInquiry.objects.create(
+                full_name           = d.get('full_name','').strip(),
+                company_name        = d.get('company_name','').strip(),
+                business_type       = d.get('business_type','individual'),
+                email               = d.get('email','').strip(),
+                phone               = d.get('phone','').strip(),
+                country             = d.get('country','').strip(),
+                direction           = d.get('direction','import'),
+                origin_country      = d.get('origin_country','').strip(),
+                destination_country = d.get('destination_country','').strip(),
+                coffee_type         = d.get('coffee_type','arabica'),
+                quantity_kg         = qty,
+                frequency           = d.get('frequency','one_time'),
+                notes               = d.get('notes','').strip(),
+                casl_consent        = d.get('casl_consent') == 'on',
+                location_address    = d.get('location_address','').strip(),
+                user                = request.user if request.user.is_authenticated else None,
+            )
+        except Exception as e:
+            messages.error(request, f'Submission failed: {e}. Please try again or contact tom.grouptrade@gmail.com.')
+            return redirect('trade_apply')
         # Handle file upload
-        doc = request.FILES.get('agreement_document')
-        if doc:
-            inquiry.agreement_document = doc
-            inquiry.save(update_fields=['agreement_document'])
+        try:
+            doc = request.FILES.get('agreement_document')
+            if doc:
+                inquiry.agreement_document = doc
+                inquiry.save(update_fields=['agreement_document'])
+        except Exception:
+            pass
 
         # Email Tom
         try:
