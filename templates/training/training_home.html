@@ -6,7 +6,8 @@
   .ob-wrap    { background:#060f1e; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:40px 20px 80px; }
   .ob-phone   { background:linear-gradient(160deg,#0d1f3c,#060f1e); border:1px solid rgba(201,168,76,.25); border-radius:36px; width:100%; max-width:380px; overflow:hidden; box-shadow:0 40px 80px rgba(0,0,0,.5); position:relative; }
   .ob-screen  { display:none; padding:40px 28px 32px; min-height:600px; flex-direction:column; }
-  .ob-screen.active { display:flex; }
+  .ob-screen.active { display:flex; animation: screenIn .4s cubic-bezier(.4,0,.2,1); }
+  @keyframes screenIn { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
   .ob-icon    { width:88px; height:88px; border-radius:24px; display:flex; align-items:center; justify-content:center; margin:0 auto 24px; font-size:2.4rem; }
   .ob-h       { color:#fff; font-weight:900; font-size:1.2rem; text-align:center; margin-bottom:12px; line-height:1.4; }
   .ob-p       { color:#7a6e5f; font-size:.85rem; text-align:center; line-height:1.7; margin-bottom:24px; }
@@ -26,8 +27,41 @@
   .ob-cta     { background:rgba(255,255,255,.04); border:1px solid rgba(201,168,76,.15); border-radius:14px; padding:16px; text-align:center; cursor:pointer; text-decoration:none; transition:border-color .2s; }
   .ob-cta:hover { border-color:rgba(201,168,76,.5); }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 
-<div class="ob-wrap">
+
+<canvas id="ob-particles" style="position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.6"></canvas>
+<script>
+/* Onboarding particle background */
+(function(){
+  var cv = document.getElementById('ob-particles');
+  if(!cv) return;
+  var ctx = cv.getContext('2d');
+  function resize(){ cv.width=window.innerWidth; cv.height=window.innerHeight; }
+  resize();
+  window.addEventListener('resize',resize,{passive:true});
+  var pts=[];
+  for(var i=0;i<40;i++) pts.push({
+    x:Math.random()*cv.width, y:Math.random()*cv.height,
+    r:Math.random()*1.8+.3, vx:Math.random()*.3-.15, vy:Math.random()*.3-.15,
+    a:Math.random()*.3+.05, da:Math.random()*.004+.002, dir:1
+  });
+  function draw(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    pts.forEach(function(p){
+      p.x+=p.vx; p.y+=p.vy; p.a+=p.da*p.dir;
+      if(p.a>.35||p.a<.05) p.dir*=-1;
+      if(p.x<0||p.x>cv.width) p.vx*=-1;
+      if(p.y<0||p.y>cv.height) p.vy*=-1;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(201,168,76,'+p.a.toFixed(2)+')'; ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+<div class="ob-wrap" style="position:relative;z-index:1">
 
   <!-- Heading above phone -->
   <div class="text-center mb-5" style="max-width:420px">

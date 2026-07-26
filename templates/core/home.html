@@ -7,7 +7,7 @@
 {% block content %}
 
 <!-- ═══ HERO — World Map Edition ═══ -->
-<section class="tg-hero" id="heroTop">
+<section class="tg-hero bg-shimmer orb-bg" id="heroTop">
  <!-- subtle glow overlay -->
  <div class="tg-hero-glow"></div>
 
@@ -21,7 +21,7 @@
  {% t "hero_eyebrow" %}
  </div>
 
- <h1 class="tg-hero-title">
+ <h1 class="tg-hero-title glow-text">
  <span>{% t "hero_title_1" %}</span>
  <span class="gold-line">{% t "hero_title_2" %}</span>
  <span class="outline-line">{% t "hero_title_3" %}</span>
@@ -73,7 +73,7 @@
  </div>
 
  <!-- map canvas -->
- <canvas id="worldMap"></canvas>
+ <canvas id="worldMap" data-parallax="0.08"></canvas>
 
  <!-- country badges overlaid on map -->
  <div class="tg-cbadge tg-cb-ca">
@@ -168,13 +168,14 @@
 })();
 </script>
 
-<section class="tg-offer-section">
+<div class="gold-pulse-line"></div>
+<section class="tg-offer-section bg-shimmer">
  <!-- animated section canvas background -->
  <canvas id="offerBg" class="tg-offer-bg-canvas"></canvas>
 
  <div class="container" style="position:relative;z-index:2">
  <div class="text-center mb-5 tg-reveal">
- <div class="tg-offer-label">T&TG Shopping Platform</div>
+ <div class="tg-offer-label reveal">T&TG Shopping Platform</div>
  <h2 class="tg-offer-heading">Trade & e-Commerce <span>Services</span></h2>
  <div class="tg-offer-divider"></div>
  </div>

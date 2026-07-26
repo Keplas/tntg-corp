@@ -1127,3 +1127,104 @@ input::placeholder, textarea::placeholder, select::placeholder {
   font-size: 1rem; animation: floatBean linear infinite;
   filter: opacity(.25);
 }
+
+
+/* ════════════════════════════════════════════════════════════════════════
+   TIER 1 — GLOBAL PREMIUM CSS EFFECTS
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Grain texture overlay — subtle noise over every page */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
+  animation: grainShift 8s steps(2) infinite;
+}
+@keyframes grainShift {
+  0%   { transform: translate(0,0); }
+  25%  { transform: translate(-2px,1px); }
+  50%  { transform: translate(1px,-2px); }
+  75%  { transform: translate(-1px,2px); }
+  100% { transform: translate(0,0); }
+}
+
+/* Animated gold shimmer gradient — apply to any section */
+.bg-shimmer {
+  background: linear-gradient(135deg, #060f1e 0%, #0d1f3c 40%, #060f1e 60%, #0a1828 100%);
+  background-size: 400% 400%;
+  animation: shimmerFlow 12s ease infinite;
+}
+@keyframes shimmerFlow {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Animated gold pulse border on cards */
+.card-glow {
+  transition: box-shadow .3s, transform .3s, border-color .3s;
+}
+.card-glow:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 48px rgba(0,0,0,.35), 0 0 0 1px rgba(201,168,76,.3);
+}
+
+/* Floating gold orb backgrounds */
+.orb-bg { position: relative; overflow: hidden; }
+.orb-bg::after {
+  content: '';
+  position: absolute;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,168,76,.06) 0%, transparent 70%);
+  top: -100px; right: -100px;
+  pointer-events: none;
+  animation: orbFloat 15s ease-in-out infinite;
+}
+@keyframes orbFloat {
+  0%,100% { transform: translate(0,0) scale(1); }
+  33%      { transform: translate(-40px,30px) scale(1.1); }
+  66%      { transform: translate(30px,-20px) scale(.9); }
+}
+
+/* Section reveal animation */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* Gold line dividers animated */
+.gold-pulse-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #c9a84c, transparent);
+  background-size: 200% 100%;
+  animation: linePulse 3s ease infinite;
+}
+@keyframes linePulse {
+  0%,100% { background-position: 200% 0; }
+  50%     { background-position: -200% 0; }
+}
+
+/* Glowing text effect for headings */
+.glow-text {
+  text-shadow: 0 0 30px rgba(201,168,76,.3), 0 0 60px rgba(201,168,76,.1);
+}
+
+/* Card image zoom on hover */
+.img-zoom-wrap { overflow: hidden; border-radius: inherit; }
+.img-zoom-wrap img { transition: transform .6s ease; }
+.img-zoom-wrap:hover img { transform: scale(1.06); }
+
+/* Floating particles canvas */
+#particles-canvas {
+  position: absolute; inset: 0;
+  pointer-events: none; z-index: 0;
+}

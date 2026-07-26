@@ -3,6 +3,44 @@
 {% block title %}My Dashboard — T&TG Trade Corp{% endblock %}
 
 {% block content %}
+
+<canvas id="mesh-bg" style="position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.35"></canvas>
+<script>
+(function(){
+  var cv=document.getElementById('mesh-bg');
+  if(!cv)return;
+  var ctx=cv.getContext('2d');
+  function resize(){cv.width=window.innerWidth;cv.height=window.innerHeight;}
+  resize(); window.addEventListener('resize',resize,{passive:true});
+  var pts=[],num=12;
+  for(var i=0;i<num;i++) pts.push({
+    x:Math.random()*cv.width,y:Math.random()*cv.height,
+    vx:Math.random()*.6-.3,vy:Math.random()*.6-.3
+  });
+  function draw(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    pts.forEach(function(p,i){
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0||p.x>cv.width)p.vx*=-1;
+      if(p.y<0||p.y>cv.height)p.vy*=-1;
+      pts.forEach(function(q,j){
+        if(j<=i)return;
+        var d=Math.hypot(p.x-q.x,p.y-q.y);
+        if(d<220){
+          ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);
+          ctx.strokeStyle='rgba(201,168,76,'+((.22)*(1-d/220)).toFixed(3)+')';
+          ctx.lineWidth=.8;ctx.stroke();
+        }
+      });
+      ctx.beginPath();ctx.arc(p.x,p.y,2,0,Math.PI*2);
+      ctx.fillStyle='rgba(201,168,76,.4)';ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+
 <style>
  .ud-bg { background:#0a0a0a; }
  .ud-card { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.15); border-radius:16px; }

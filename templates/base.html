@@ -1242,5 +1242,83 @@ topBtn.addEventListener('click', function(){
 });
 </script>
 
+
+<script>
+/* ════ TIER 1: Scroll Reveal ══════════════════════════════════════════════ */
+(function(){
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  },{threshold:.12});
+  document.querySelectorAll('.reveal,.tg-card,.tg-reveal,.glass-card,.ie-card,.ta-card').forEach(function(el){
+    el.classList.add('reveal');
+    obs.observe(el);
+  });
+})();
+
+/* ════ TIER 2: Parallax on Scroll ════════════════════════════════════════ */
+(function(){
+  var parallaxEls = document.querySelectorAll('[data-parallax]');
+  if(!parallaxEls.length) return;
+  window.addEventListener('scroll', function(){
+    var scrollY = window.scrollY;
+    parallaxEls.forEach(function(el){
+      var speed = parseFloat(el.dataset.parallax) || 0.3;
+      el.style.transform = 'translateY(' + (scrollY * speed) + 'px)';
+    });
+  },{passive:true});
+})();
+
+/* ════ TIER 2: Gold Particle System ══════════════════════════════════════ */
+(function(){
+  var canvas = document.getElementById('particles-canvas');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W, H, particles = [];
+
+  function resize(){
+    W = canvas.width  = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize, {passive:true});
+
+  function rand(min,max){ return Math.random()*(max-min)+min; }
+
+  for(var i=0;i<55;i++){
+    particles.push({
+      x: rand(0,W||1200), y: rand(0,H||600),
+      r: rand(.5,2.2),
+      vx: rand(-.25,.25), vy: rand(-.4,-.1),
+      alpha: rand(.15,.5),
+      da: rand(.002,.006), dDir: 1
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(function(p){
+      p.x += p.vx; p.y += p.vy;
+      p.alpha += p.da * p.dDir;
+      if(p.alpha >= .5 || p.alpha <= .05) p.dDir *= -1;
+      if(p.y < -5) { p.y = H+5; p.x = rand(0,W); }
+      if(p.x < -5 || p.x > W+5) p.x = rand(0,W);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(201,168,76,'+p.alpha.toFixed(2)+')';
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ════ TIER 2: Card hover ripple ═════════════════════════════════════════ */
+document.querySelectorAll('.tg-card,.glass-card,.ie-card,.ta-card').forEach(function(card){
+  card.classList.add('card-glow');
+});
+</script>
+
 </body>
 </html>
