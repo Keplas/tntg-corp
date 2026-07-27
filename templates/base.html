@@ -539,7 +539,15 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  </ul>
 
  {% else %}
- {% with cart_count=request.session.cart|length %}
+ {% if request.user.is_authenticated and request.user.is_staff %}
+          <a href="{% url 'notifications' %}" class="tg-bell" title="Notifications" style="position:relative">
+            <i class="fas fa-bell"></i>
+            {% if unread_notifications %}
+            <span style="position:absolute;top:-4px;right:-4px;background:#f87171;color:#fff;border-radius:100px;font-size:.6rem;font-weight:800;padding:1px 5px;min-width:16px;text-align:center">{{ unread_notifications }}</span>
+            {% endif %}
+          </a>
+          {% endif %}
+        {% with cart_count=request.session.cart|length %}
  {% if cart_count %}
  <a href="{% url 'cart' %}" style="position:relative;display:inline-flex;align-items:center;gap:6px;color:#c9a84c;text-decoration:none;padding:8px 12px;border:1px solid rgba(201,168,76,.3);border-radius:100px;font-size:.82rem;font-weight:700" id="cart_icon">
  <span style="background:#c9a84c;color:#1a0a00;border-radius:100px;padding:1px 7px;font-size:.7rem;font-weight:800">{{ cart_count }}</span>

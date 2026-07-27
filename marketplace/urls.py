@@ -20,4 +20,5 @@ urlpatterns = [
     path('products/<int:pk>/review/',  views.submit_review,    name='submit_review'),
     path('products/<int:pk>/wishlist/',views.wishlist_toggle,  name='wishlist_toggle'),
     path('wishlist/',                  views.wishlist_view,    name='wishlist'),
+    path('orders/<int:pk>/invoice/', views.order_invoice, name='order_invoice'),
 ]

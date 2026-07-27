@@ -16,3 +16,11 @@ def social_links(request):
         'SOCIAL_TIKTOK':    getattr(settings, 'SOCIAL_TIKTOK',    ''),
         'SOCIAL_WHATSAPP':  getattr(settings, 'SOCIAL_WHATSAPP',  'https://wa.me/14168323512'),
     }
+
+
+def notifications_ctx(request):
+    if request.user.is_authenticated and request.user.is_staff:
+        from .models import Notification
+        count = Notification.objects.filter(is_read=False).count()
+        return {'unread_notifications': count}
+    return {'unread_notifications': 0}

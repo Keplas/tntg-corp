@@ -55,6 +55,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'core.context_processors.cloudinary_status',
                 'core.context_processors.social_links',
+                'core.context_processors.notifications_ctx',
             ],
         },
     },

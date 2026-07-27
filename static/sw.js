@@ -1,44 +1,26 @@
-// T&TG Trade Corp — Service Worker v1.0
-const CACHE_NAME = 'tntg-shop-v1';
+// T&TG Service Worker — PWA offline support
+const CACHE = 'tntg-v1';
 const OFFLINE_URL = '/';
+const ASSETS = ['/', '/static/css/style.css', '/static/images/logo.jpg'];
 
-const CACHE_ASSETS = [
-  '/',
-  '/marketplace/products/',
-  '/static/css/style.css',
-  '/static/js/main.js',
-  '/static/images/logo.jpg',
-];
-
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(CACHE_ASSETS))
-  );
+self.addEventListener('install', function(e){
+  e.waitUntil(caches.open(CACHE).then(function(c){ return c.addAll(ASSETS); }));
   self.skipWaiting();
 });
 
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
-    )
-  );
+self.addEventListener('activate', function(e){
+  e.waitUntil(caches.keys().then(function(keys){
+    return Promise.all(keys.filter(function(k){ return k!==CACHE; }).map(function(k){ return caches.delete(k); }));
+  }));
   self.clients.claim();
 });
 
-self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
-  const url = new URL(event.request.url);
-  // Skip admin and API routes
-  if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/chat')) return;
-
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-        return response;
+self.addEventListener('fetch', function(e){
+  if(e.request.mode==='navigate'){
+    e.respondWith(
+      fetch(e.request).catch(function(){
+        return caches.match(OFFLINE_URL);
       })
-      .catch(() => caches.match(event.request).then((cached) => cached || caches.match(OFFLINE_URL)))
-  );
+    );
+  }
 });

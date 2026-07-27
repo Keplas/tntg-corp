@@ -368,3 +368,13 @@ def wishlist_view(request):
     from .models import Wishlist
     items = Wishlist.objects.filter(user=request.user).select_related('product')
     return render(request, 'marketplace/wishlist.html', {'items': items})
+
+
+@login_required
+def order_invoice(request, pk):
+    from marketplace.models import Order
+    order = get_object_or_404(Order, pk=pk)
+    if not request.user.is_staff and order.buyer != request.user:
+        messages.error(request, 'Access denied.')
+        return redirect('my_orders')
+    return render(request, 'marketplace/order_invoice.html', {'order': order})
