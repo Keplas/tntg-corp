@@ -6,7 +6,7 @@
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
  <title>{% block title %}T&TG Trade Corp — Trade & e-Commerce Platform{% endblock %}</title>
- <meta name="description" content="{% block meta_description %}T&TG Trade Corporation — Premium coffee shopping platform. Shop Arabica &amp; Robusta green coffee. Canada · USA · Uganda · Kenya. Earn T&TG Loyalty Points on every purchase.{% endblock %}">
+ <meta name="description" content="{% block meta_description %}T&TG Trade Corporation — Premium coffee shopping platform. Shop Arabica &amp; Robusta green coffee. Canada · USA · Uganda · Kenya · Netherlands · Japan. Earn T&TG Loyalty Points on every purchase.{% endblock %}">
  <link rel="canonical" href="{% block canonical_url %}https://tntgcorp.com{{ request.path }}{% endblock %}">
  <meta name="robots" content="index, follow">
 
@@ -21,7 +21,7 @@
  <!-- Open Graph (for social sharing) -->
  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
  <meta property="og:title" content="{% block og_title %}T&TG Trade Corp — Trade & e-Commerce{% endblock %}">
- <meta property="og:description" content="{% block og_description %}Shop T&TG Artisanal Coffee Based Goods, Arabica &amp; Robusta green coffee. Earn loyalty points. Canada · USA · Uganda · Kenya.{% endblock %}">
+ <meta property="og:description" content="{% block og_description %}Shop T&TG Artisanal Coffee Based Goods, Arabica &amp; Robusta green coffee. Earn loyalty points. Canada · USA · Uganda · Kenya · Netherlands · Japan.{% endblock %}">
  <meta property="og:url" content="{% block og_url %}https://tntgcorp.com{{ request.path }}{% endblock %}">
  <meta property="og:image" content="{% block og_image %}https://tntgcorp.com{% static 'images/logo.jpg' %}{% endblock %}">
  <meta name="twitter:card" content="summary_large_image">
@@ -721,7 +721,7 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  </div>
  <div class="footer-logo">T&TG Trade Corp</div>
  <div class="text-gold mb-2" style="font-size:.72rem;letter-spacing:2px;text-transform:uppercase">{% t "footer_tagline" %}</div>
- <p class="footer-desc">Trade & e-Commerce platform facilitating seamless domestic and international commerce across Canada, Uganda and Kenya. Import & Export (RM) registered corporation.</p>
+ <p class="footer-desc">Trade & e-Commerce platform facilitating seamless domestic and international commerce across Canada, USA, Uganda, Kenya, Netherlands and Japan. Import & Export (RM) registered corporation.</p>
  <div class="mt-3 d-flex gap-2 flex-wrap">
  <a href="{% if SOCIAL_LINKEDIN %}{{ SOCIAL_LINKEDIN }}{% else %}#{% endif %}" {% if SOCIAL_LINKEDIN %}target="_blank" rel="noopener"{% endif %} class="social-link {% if not SOCIAL_LINKEDIN %}social-inactive{% endif %}" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
  <a href="{% if SOCIAL_FACEBOOK %}{{ SOCIAL_FACEBOOK }}{% else %}#{% endif %}" {% if SOCIAL_FACEBOOK %}target="_blank" rel="noopener"{% endif %} class="social-link {% if not SOCIAL_FACEBOOK %}social-inactive{% endif %}" title="Facebook"><i class="fab fa-facebook-f"></i></a>
@@ -784,12 +784,16 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  <div class="footer-link"> USA — Ohio</div>
  <div class="footer-link"> Uganda</div>
  <div class="footer-link"> Kenya</div>
+        <div class="footer-link"> Netherlands</div>
+        <div class="footer-link"> Japan</div>
  <div class="mt-3 footer-title">Exchange Routes</div>
  <a href="{% url 'forex' %}" class="footer-link" style="font-size:.75rem">CAD/USD</a>
  <a href="{% url 'forex' %}" class="footer-link" style="font-size:.75rem">CAD/UGX</a>
  <a href="{% url 'forex' %}" class="footer-link" style="font-size:.75rem">CAD/KES</a>
  <a href="{% url 'forex' %}" class="footer-link" style="font-size:.75rem">USD/UGX</a>
  <a href="{% url 'forex' %}" class="footer-link" style="font-size:.75rem">USD/KES</a>
+        <a href="{% url 'forex' %}" class="footer-link" style="font-size:.75rem">EUR/CAD</a>
+        <a href="{% url 'forex' %}" class="footer-link" style="font-size:.75rem">JPY/CAD</a>
  </div>
  </div>
 

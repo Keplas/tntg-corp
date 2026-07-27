@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load i18n_lite %}
-{% block title %}T&TG Trade Corp — Trade & e-Commerce Platform | Canada · Uganda · Kenya{% endblock %}
+{% block title %}T&TG Trade Corp — Trade & e-Commerce Platform | Canada · Uganda · Kenya · Netherlands · Japan{% endblock %}
 
 
 {% block content %}
@@ -87,6 +87,8 @@
  <div class="tg-cbadge tg-cb-ke">
  <div class="tg-cb-flag"></div>
  <div><div class="tg-cb-name">Kenya</div><div class="tg-cb-role">Trade Gateway · Nairobi</div></div>
+              <div class="tg-cb"><div style="font-size:1.5rem">NL</div><div><div class="tg-cb-name">Netherlands</div><div class="tg-cb-role">European Hub · Amsterdam</div></div></div>
+              <div class="tg-cb"><div style="font-size:1.5rem">JP</div><div><div class="tg-cb-name">Japan</div><div class="tg-cb-role">Asia Pacific · Tokyo</div></div></div>
  </div>
  <div class="tg-cbadge tg-cb-us">
  <div class="tg-cb-flag"></div>
@@ -240,7 +242,7 @@
  </div>
  <div class="tg-card-body">
  <h5 class="tg-card-title">Live Exchange Rates</h5>
- <p class="tg-card-text">Real-time CAD/UGX · CAD/KES · UGX/KES rates for our trade routes connecting Canada, Uganda and Kenya.</p>
+ <p class="tg-card-text">Real-time CAD/UGX · CAD/KES · EUR/CAD · JPY/CAD rates for our global trade routes.</p>
  <a href="{% url 'forex' %}" class="tg-card-btn">
  View Rates <i class="fas fa-arrow-right"></i>
  </a>
@@ -771,7 +773,7 @@
 <section style="background:linear-gradient(135deg,#0a2540,#1a3a5c);padding:80px 0">
  <div class="container text-center">
  <h2 class="text-white fw-800 mb-3">Ready to Join T&TG Trade Corp?</h2>
- <p class="text-muted mb-4">Import · Export · Shop · Earn — Canada · Uganda · Kenya </p>
+ <p class="text-muted mb-4">Import · Export · Shop · Earn — Canada · USA · Uganda · Kenya · Netherlands · Japan · Netherlands · Japan </p>
  <a href="{% url 'register' %}" class="btn btn-gold btn-lg me-3">
  <i class="fas fa-rocket me-2"></i>Create Free Account
  </a>
@@ -790,8 +792,10 @@
 
  var GOLD = '#c9a84c';
  var GOLD_BRIGHT = '#e8c96a';
- var HIGHLIGHTED = { '124': true, '800': true, '404': true, '840': true }; // Canada, Uganda, Kenya, USA
+ var HIGHLIGHTED = { '124': true, '800': true, '404': true, '840': true, '528': true, '392': true }; // Canada, Uganda, Kenya, USA, Netherlands, Japan
  var CITIES = {
+    amsterdam: [4.9041, 52.3676],  // Netherlands
+    tokyo:     [139.6917, 35.6895], // Japan
  toronto: [-79.38, 43.65],
  ohio: [-82.99, 39.96],
  kampala: [ 32.58, 0.35],
@@ -941,7 +945,7 @@
  ctx.fillText('T&TG Trade Routes', W/2, H/2 - 14);
  ctx.fillStyle = 'rgba(201,168,76,.2)';
  ctx.font = '12px Inter,sans-serif';
- ctx.fillText('Canada · Uganda · Kenya', W/2, H/2 + 14);
+ ctx.fillText('Canada · Uganda · Kenya · Netherlands · Japan', W/2, H/2 + 14);
  });
 
  /* resize */

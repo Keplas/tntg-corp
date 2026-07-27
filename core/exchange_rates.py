@@ -18,7 +18,7 @@ from django.utils import timezone
 logger = logging.getLogger(__name__)
 
 # Pairs T&TG cares about (USD is OXR base, so we calculate cross-rates)
-TARGET_CURRENCIES = ['CAD', 'UGX', 'KES', 'USD']
+TARGET_CURRENCIES = ['CAD', 'UGX', 'KES', 'USD', 'EUR', 'JPY']
 
 PAIR_LABELS = {
     'CAD/UGX': ('Canadian Dollar', 'Ugandan Shilling'),
@@ -27,6 +27,10 @@ PAIR_LABELS = {
     'USD/UGX': ('US Dollar',       'Ugandan Shilling'),
     'USD/KES': ('US Dollar',       'Kenyan Shilling'),
     'UGX/KES': ('Ugandan Shilling','Kenyan Shilling'),
+    'EUR/CAD': ('Euro',            'Canadian Dollar'),
+    'JPY/CAD': ('Japanese Yen',    'Canadian Dollar'),
+    'USD/EUR': ('US Dollar',        'Euro'),
+    'USD/JPY': ('US Dollar',        'Japanese Yen'),
 }
 
 CACHE_KEY = 'oxr_rates_v2'
