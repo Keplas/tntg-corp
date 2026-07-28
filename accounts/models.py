@@ -127,3 +127,97 @@ class AvonPointTransaction(models.Model):
 
     def __str__(self):
         return f"{self.user.username} — {self.transaction_type} — {self.points} pts"
+
+
+class Wallet(models.Model):
+    """Multi-currency wallet — one per user."""
+    user        = models.OneToOneField('CustomUser', on_delete=models.CASCADE, related_name='wallet')
+    cad_balance = models.DecimalField(max_digits=14, decimal_places=4, default=0)
+    usd_balance = models.DecimalField(max_digits=14, decimal_places=4, default=0)
+    ugx_balance = models.DecimalField(max_digits=18, decimal_places=2, default=0)
+    kes_balance = models.DecimalField(max_digits=14, decimal_places=4, default=0)
+    eur_balance = models.DecimalField(max_digits=14, decimal_places=4, default=0)
+    jpy_balance = models.DecimalField(max_digits=14, decimal_places=2, default=0)
+    created_at  = models.DateTimeField(auto_now_add=True)
+    updated_at  = models.DateTimeField(auto_now=True)
+
+    SUPPORTED = [
+        ('CAD', 'Canadian Dollar',  'CA$'),
+        ('USD', 'US Dollar',        'US$'),
+        ('UGX', 'Ugandan Shilling', 'UGX'),
+        ('KES', 'Kenyan Shilling',  'KES'),
+        ('EUR', 'Euro',             'EUR'),
+        ('JPY', 'Japanese Yen',     'JPY'),
+    ]
+
+    def get_balance(self, currency):
+        mapping = {
+            'CAD': self.cad_balance, 'USD': self.usd_balance,
+            'UGX': self.ugx_balance, 'KES': self.kes_balance,
+            'EUR': self.eur_balance, 'JPY': self.jpy_balance,
+        }
+        return mapping.get(currency.upper(), 0)
+
+    def set_balance(self, currency, amount):
+        field = currency.lower() + '_balance'
+        setattr(self, field, amount)
+        self.save(update_fields=[field, 'updated_at'])
+
+    def credit(self, currency, amount, ref='', note='', created_by=None):
+        from decimal import Decimal
+        amount = Decimal(str(amount))
+        field  = currency.lower() + '_balance'
+        current = self.get_balance(currency)
+        self.set_balance(currency, current + amount)
+        WalletTransaction.objects.create(
+            wallet=self, currency=currency.upper(), amount=amount,
+            transaction_type='credit', reference=ref, note=note,
+            created_by=created_by
+        )
+
+    def debit(self, currency, amount, ref='', note='', created_by=None):
+        from decimal import Decimal
+        amount = Decimal(str(amount))
+        current = self.get_balance(currency)
+        if current < amount:
+            raise ValueError(f'Insufficient {currency} balance. Available: {current}')
+        self.set_balance(currency, current - amount)
+        WalletTransaction.objects.create(
+            wallet=self, currency=currency.upper(), amount=amount,
+            transaction_type='debit', reference=ref, note=note,
+            created_by=created_by
+        )
+
+    def __str__(self):
+        return f"Wallet — {self.user.username} (CAD:{self.cad_balance} USD:{self.usd_balance})"
+
+
+class WalletTransaction(models.Model):
+    TYPE_CHOICES = [
+        ('credit',     'Credit'),
+        ('debit',      'Debit'),
+        ('conversion', 'Currency Conversion'),
+        ('withdrawal', 'Withdrawal Request'),
+        ('refund',     'Refund'),
+        ('loyalty',    'Loyalty Points Conversion'),
+        ('order',      'Order Payment'),
+        ('admin',      'Admin Adjustment'),
+    ]
+
+    wallet           = models.ForeignKey(Wallet, on_delete=models.CASCADE, related_name='transactions')
+    currency         = models.CharField(max_length=3)
+    amount           = models.DecimalField(max_digits=18, decimal_places=4)
+    transaction_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+    reference        = models.CharField(max_length=300, blank=True)
+    note             = models.TextField(blank=True)
+    created_at       = models.DateTimeField(auto_now_add=True)
+    created_by       = models.ForeignKey(
+        'CustomUser', on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='wallet_transactions_made'
+    )
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.get_transaction_type_display()} {self.currency} {self.amount}"

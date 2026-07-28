@@ -26,3 +26,18 @@ class LoyaltyTransactionAdmin(admin.ModelAdmin):
     list_filter   = ['transaction_type', 'status', 'quarter']
     list_editable = ['status']
     search_fields = ['user__username', 'user__unique_id']
+
+from .models import Wallet, WalletTransaction
+
+@admin.register(Wallet)
+class WalletAdmin(admin.ModelAdmin):
+    list_display  = ['user','cad_balance','usd_balance','ugx_balance','kes_balance','eur_balance','jpy_balance','updated_at']
+    search_fields = ['user__username','user__email']
+    readonly_fields = ['created_at','updated_at']
+
+@admin.register(WalletTransaction)
+class WalletTransactionAdmin(admin.ModelAdmin):
+    list_display  = ['wallet','currency','amount','transaction_type','reference','created_at']
+    list_filter   = ['transaction_type','currency']
+    search_fields = ['wallet__user__username','reference']
+    readonly_fields = ['created_at']

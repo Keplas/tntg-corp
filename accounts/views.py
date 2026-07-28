@@ -527,3 +527,157 @@ def set_withdrawal_pin(request):
                 return redirect(reverse('dashboard') + '#loyalty')
 
     return render(request, 'accounts/set_pin.html')
+
+
+# ════════════════════════════════════════════════════════════════════════
+# MULTI-CURRENCY WALLET
+# ════════════════════════════════════════════════════════════════════════
+
+@login_required
+def wallet_view(request):
+    """User wallet — balances, transactions, convert, withdraw."""
+    from .models import Wallet, WalletTransaction
+    from decimal import Decimal
+
+    wallet, _ = Wallet.objects.get_or_create(user=request.user)
+    transactions = WalletTransaction.objects.filter(wallet=wallet)[:30]
+
+    # Get live forex rates for balance conversion display
+    try:
+        from core.exchange_rates import fetch_live_rates, build_pairs
+        raw_rates = fetch_live_rates()
+    except Exception:
+        raw_rates = None
+
+    # Build balance cards
+    balances = []
+    total_in_cad = Decimal('0')
+    for code, label, symbol in Wallet.SUPPORTED:
+        bal = wallet.get_balance(code)
+        # Convert to CAD equivalent for total
+        if raw_rates and bal > 0:
+            try:
+                if code == 'CAD':
+                    cad_eq = bal
+                elif code == 'USD':
+                    cad_eq = bal * Decimal(str(raw_rates.get('CAD',1)))
+                else:
+                    usd_rate  = Decimal(str(raw_rates.get(code, 1)))
+                    cad_rate  = Decimal(str(raw_rates.get('CAD', 1)))
+                    cad_eq = (bal / usd_rate) * cad_rate if usd_rate else Decimal('0')
+                total_in_cad += cad_eq
+            except Exception:
+                cad_eq = Decimal('0')
+        else:
+            cad_eq = Decimal('0')
+        balances.append({'code': code, 'label': label, 'symbol': symbol,
+                         'balance': bal, 'cad_eq': cad_eq})
+
+    ctx = {
+        'wallet':       wallet,
+        'balances':     balances,
+        'transactions': transactions,
+        'total_cad':    total_in_cad,
+        'has_balance':  any(b['balance'] > 0 for b in balances),
+    }
+    return render(request, 'accounts/wallet.html', ctx)
+
+
+@login_required
+def wallet_convert(request):
+    """Convert between currencies using live rates."""
+    from .models import Wallet, WalletTransaction
+    from decimal import Decimal
+
+    if request.method == 'POST':
+        wallet, _ = Wallet.objects.get_or_create(user=request.user)
+        from_c  = request.POST.get('from_currency','').upper()
+        to_c    = request.POST.get('to_currency','').upper()
+        try:
+            amount = Decimal(request.POST.get('amount','0') or '0')
+        except Exception:
+            amount = Decimal('0')
+
+        if from_c == to_c:
+            messages.error(request, 'Please select two different currencies.')
+        elif amount <= 0:
+            messages.error(request, 'Please enter a valid amount.')
+        elif wallet.get_balance(from_c) < amount:
+            messages.error(request, f'Insufficient {from_c} balance.')
+        else:
+            try:
+                from core.exchange_rates import fetch_live_rates
+                raw = fetch_live_rates()
+                if raw:
+                    # Calculate cross rate via USD
+                    if from_c == 'USD':
+                        rate = Decimal(str(raw.get(to_c, 1)))
+                    elif to_c == 'USD':
+                        rate = Decimal('1') / Decimal(str(raw.get(from_c, 1)))
+                    else:
+                        rate = Decimal(str(raw.get(to_c, 1))) / Decimal(str(raw.get(from_c, 1)))
+
+                    converted = (amount * rate).quantize(Decimal('0.0001'))
+                    ref = f'CONV-{from_c}-{to_c}'
+                    wallet.debit(from_c,  amount,    ref=ref, note=f'Converted {amount} {from_c} to {to_c}', created_by=request.user)
+                    wallet.credit(to_c, converted, ref=ref, note=f'Received {converted} {to_c} from {from_c}', created_by=request.user)
+                    # Save conversion transaction
+                    WalletTransaction.objects.create(
+                        wallet=wallet, currency=f'{from_c}>{to_c}',
+                        amount=amount, transaction_type='conversion',
+                        reference=ref,
+                        note=f'{amount} {from_c} → {converted} {to_c} @ rate {rate:.6f}',
+                        created_by=request.user
+                    )
+                    messages.success(request, f'Converted {amount} {from_c} → {converted} {to_c} successfully.')
+                else:
+                    messages.error(request, 'Live rates unavailable. Please try again later.')
+            except Exception as e:
+                messages.error(request, f'Conversion failed: {e}')
+
+    return redirect('wallet')
+
+
+@login_required
+def wallet_withdraw(request):
+    """Request a withdrawal from wallet."""
+    from .models import Wallet
+    from decimal import Decimal
+
+    if request.method == 'POST':
+        wallet, _ = Wallet.objects.get_or_create(user=request.user)
+        currency = request.POST.get('currency','CAD').upper()
+        try:
+            amount = Decimal(request.POST.get('amount','0') or '0')
+        except Exception:
+            amount = Decimal('0')
+        method  = request.POST.get('method','Bank Transfer')
+        details = request.POST.get('details','').strip()
+
+        if amount <= 0:
+            messages.error(request, 'Please enter a valid amount.')
+        elif wallet.get_balance(currency) < amount:
+            messages.error(request, f'Insufficient {currency} balance. Available: {wallet.get_balance(currency)}')
+        elif not details:
+            messages.error(request, 'Please provide your payment details.')
+        else:
+            # Hold the amount (debit from wallet, mark as withdrawal pending)
+            wallet.debit(currency, amount,
+                ref=f'WD-{currency}',
+                note=f'Withdrawal request via {method}. Details: {details}',
+                created_by=request.user
+            )
+            # Notify admin
+            try:
+                from core.models import Notification
+                Notification.notify(
+                    'sell_order',
+                    f'Withdrawal Request — {request.user.username}',
+                    f'{amount} {currency} withdrawal via {method}. Details: {details}',
+                    '/admin/accounts/wallettransaction/'
+                )
+            except Exception:
+                pass
+            messages.success(request, f'Withdrawal request of {amount} {currency} submitted. Processing on Day 45 cycle.')
+
+    return redirect('wallet')

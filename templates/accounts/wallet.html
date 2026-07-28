@@ -1,0 +1,278 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}My Wallet — T&TG Trade Corp{% endblock %}
+{% block content %}
+
+<style>
+  .wl-bg   { background:#060f1e; min-height:100vh; padding:50px 0 80px; }
+  .wl-card { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.15); border-radius:18px; }
+  .cur-card { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.12); border-radius:16px; padding:22px; position:relative; overflow:hidden; transition:border-color .3s,transform .25s; cursor:default; }
+  .cur-card:hover { border-color:rgba(201,168,76,.4); transform:translateY(-3px); }
+  .cur-card.has-balance { border-color:rgba(201,168,76,.3); background:rgba(201,168,76,.06); }
+  .cur-flag { font-size:1.8rem; margin-bottom:10px; }
+  .cur-code { font-size:.72rem; font-weight:800; letter-spacing:2px; color:#7a6e5f; text-transform:uppercase; margin-bottom:4px; }
+  .cur-bal  { font-size:1.6rem; font-weight:900; color:#c9a84c; line-height:1; }
+  .cur-cad  { font-size:.72rem; color:#7a6e5f; margin-top:6px; }
+  .cur-label { font-size:.72rem; color:#7a6e5f; }
+  .wl-input  { background:rgba(255,255,255,.05); border:1px solid rgba(201,168,76,.2); color:#e0d5c0; border-radius:10px; padding:11px 14px; width:100%; font-size:.9rem; }
+  .wl-input:focus { border-color:rgba(201,168,76,.5); outline:none; }
+  .wl-select { background:rgba(13,31,60,.9); border:1px solid rgba(201,168,76,.2); color:#e0d5c0; border-radius:10px; padding:11px 14px; width:100%; }
+  .wl-select option { background:#0d1f3c; }
+  .tx-type-credit { color:#4ade80; }
+  .tx-type-debit   { color:#f87171; }
+  .tx-type-conversion { color:#60a5fa; }
+  .tx-type-withdrawal { color:#fbbf24; }
+  .tx-type-loyalty { color:#a855f7; }
+  .tx-type-refund  { color:#34d399; }
+  .tx-type-order   { color:#f87171; }
+  .tx-type-admin   { color:#c9a84c; }
+</style>
+
+<div class="wl-bg">
+<div class="container">
+
+  <!-- Header -->
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-5">
+    <div>
+      <div style="font-size:.68rem;font-weight:800;letter-spacing:3px;color:#c9a84c;text-transform:uppercase;margin-bottom:8px">My Account</div>
+      <h2 style="color:#fff;font-weight:900;margin:0">Multi-Currency Wallet</h2>
+      <p style="color:#7a6e5f;margin-top:6px;font-size:.9rem">Manage balances across 6 currencies</p>
+    </div>
+    <div style="text-align:right">
+      <div style="color:#7a6e5f;font-size:.75rem;margin-bottom:4px">Total Portfolio Value</div>
+      <div style="color:#c9a84c;font-weight:900;font-size:1.8rem">CA$ {{ total_cad|floatformat:2 }}</div>
+      <div style="color:#7a6e5f;font-size:.7rem">approx. equivalent in CAD</div>
+    </div>
+  </div>
+
+  {% if messages %}
+  {% for m in messages %}
+  <div class="alert mb-4" style="background:{% if 'fail' in m.tags or 'error' in m.tags %}rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#f87171{% else %}rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#4ade80{% endif %};border-radius:12px;padding:14px 18px">
+    {{ m }}
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  <!-- Currency Balance Cards -->
+  <div class="row g-3 mb-5">
+    {% for b in balances %}
+    <div class="col-6 col-md-4 col-lg-2">
+      <div class="cur-card {% if b.balance > 0 %}has-balance{% endif %}">
+        <div class="cur-flag">
+          {% if b.code == 'CAD' %}CA
+          {% elif b.code == 'USD' %}US
+          {% elif b.code == 'UGX' %}UG
+          {% elif b.code == 'KES' %}KE
+          {% elif b.code == 'EUR' %}EU
+          {% elif b.code == 'JPY' %}JP
+          {% endif %}
+        </div>
+        <div class="cur-code">{{ b.code }}</div>
+        <div class="cur-bal">{{ b.balance|floatformat:2 }}</div>
+        <div class="cur-label">{{ b.label }}</div>
+        {% if b.cad_eq > 0 %}
+        <div class="cur-cad">≈ CA$ {{ b.cad_eq|floatformat:2 }}</div>
+        {% endif %}
+        {% if b.balance > 0 %}
+        <div style="position:absolute;top:12px;right:12px;width:8px;height:8px;border-radius:50%;background:#4ade80;box-shadow:0 0 6px #4ade80"></div>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="row g-4">
+
+    <!-- LEFT COLUMN: Convert + Withdraw -->
+    <div class="col-lg-5">
+
+      <!-- Currency Converter -->
+      <div class="wl-card p-4 mb-4">
+        <h5 style="color:#c9a84c;font-weight:800;margin-bottom:20px">
+          <i class="fas fa-exchange-alt me-2"></i>Convert Currency
+        </h5>
+        <form method="POST" action="{% url 'wallet_convert' %}">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label style="color:#7a6e5f;font-size:.78rem;display:block;margin-bottom:6px">Amount to Convert</label>
+            <input type="number" name="amount" class="wl-input" placeholder="0.00" min="0.01" step="0.01" required>
+          </div>
+          <div class="row g-2 mb-3">
+            <div class="col-5">
+              <label style="color:#7a6e5f;font-size:.78rem;display:block;margin-bottom:6px">From</label>
+              <select name="from_currency" class="wl-select" id="fromCur">
+                {% for b in balances %}
+                <option value="{{ b.code }}" {% if b.code == 'USD' %}selected{% endif %}>{{ b.code }} — {{ b.label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-2 d-flex align-items-end justify-content-center pb-2">
+              <button type="button" onclick="swapCurrencies()" style="background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);color:#c9a84c;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:.9rem">⇄</button>
+            </div>
+            <div class="col-5">
+              <label style="color:#7a6e5f;font-size:.78rem;display:block;margin-bottom:6px">To</label>
+              <select name="to_currency" class="wl-select" id="toCur">
+                {% for b in balances %}
+                <option value="{{ b.code }}" {% if b.code == 'CAD' %}selected{% endif %}>{{ b.code }} — {{ b.label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div id="ratePreview" style="background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:12px;font-size:.78rem;color:#7a6e5f;margin-bottom:16px;text-align:center">
+            Live rate will be applied at time of conversion
+          </div>
+          <button type="submit" class="btn btn-gold w-100 py-2" style="font-weight:700">
+            Convert Now
+          </button>
+        </form>
+      </div>
+
+      <!-- Withdraw -->
+      <div class="wl-card p-4">
+        <h5 style="color:#c9a84c;font-weight:800;margin-bottom:6px">
+          <i class="fas fa-arrow-up me-2"></i>Request Withdrawal
+        </h5>
+        <div style="color:#7a6e5f;font-size:.75rem;margin-bottom:18px">Processed on Day 45 cycle · Requires admin approval</div>
+        <form method="POST" action="{% url 'wallet_withdraw' %}">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label style="color:#7a6e5f;font-size:.78rem;display:block;margin-bottom:6px">Currency</label>
+            <select name="currency" class="wl-select">
+              {% for b in balances %}
+              <option value="{{ b.code }}">{{ b.code }} — {{ b.label }} ({{ b.balance|floatformat:2 }} available)</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-3">
+            <label style="color:#7a6e5f;font-size:.78rem;display:block;margin-bottom:6px">Amount</label>
+            <input type="number" name="amount" class="wl-input" placeholder="0.00" min="0.01" step="0.01" required>
+          </div>
+          <div class="mb-3">
+            <label style="color:#7a6e5f;font-size:.78rem;display:block;margin-bottom:6px">Payment Method</label>
+            <select name="method" class="wl-select">
+              <option>Bank Transfer</option>
+              <option>MTN Mobile Money</option>
+              <option>Airtel Money</option>
+              <option>Stripe Payout</option>
+              <option>Western Union</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label style="color:#7a6e5f;font-size:.78rem;display:block;margin-bottom:6px">Payment Details (account number / mobile number)</label>
+            <textarea name="details" class="wl-input" rows="2" placeholder="e.g. Bank account: 1234567890, Sort: 00-00-00 or Mobile: +256 700 000 000" required></textarea>
+          </div>
+          <div style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.15);border-radius:10px;padding:12px;font-size:.72rem;color:#7a6e5f;margin-bottom:16px">
+            <i class="fas fa-info-circle" style="color:#fbbf24;margin-right:6px"></i>
+            Withdrawals are processed on Day 45 from the qualifying transaction date. Subject to T&TG admin approval and a 4-digit PIN verification.
+          </div>
+          <button type="submit" class="btn w-100 py-2" style="background:rgba(201,168,76,.15);color:#c9a84c;border:1px solid rgba(201,168,76,.3);border-radius:12px;font-weight:700">
+            Request Withdrawal
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: Transaction History -->
+    <div class="col-lg-7">
+      <div class="wl-card" style="overflow:hidden">
+        <div style="padding:20px 24px;border-bottom:1px solid rgba(201,168,76,.12);display:flex;justify-content:space-between;align-items:center">
+          <h5 style="color:#c9a84c;font-weight:800;margin:0"><i class="fas fa-history me-2"></i>Transaction History</h5>
+          <span style="color:#7a6e5f;font-size:.75rem">Last 30 transactions</span>
+        </div>
+
+        {% if transactions %}
+        <div style="overflow-x:auto">
+          <table style="width:100%;border-collapse:collapse;font-size:.82rem;min-width:500px">
+            <thead>
+              <tr style="border-bottom:1px solid rgba(201,168,76,.1)">
+                <th style="color:#7a6e5f;padding:12px 16px;font-size:.7rem;letter-spacing:1px;text-align:left">Date</th>
+                <th style="color:#7a6e5f;padding:12px 16px;font-size:.7rem;letter-spacing:1px;text-align:left">Type</th>
+                <th style="color:#7a6e5f;padding:12px 16px;font-size:.7rem;letter-spacing:1px;text-align:left">Currency</th>
+                <th style="color:#7a6e5f;padding:12px 16px;font-size:.7rem;letter-spacing:1px;text-align:right">Amount</th>
+                <th style="color:#7a6e5f;padding:12px 16px;font-size:.7rem;letter-spacing:1px;text-align:left">Reference</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for tx in transactions %}
+              <tr style="border-bottom:1px solid rgba(255,255,255,.04)">
+                <td style="padding:12px 16px;color:#7a6e5f;font-size:.72rem">{{ tx.created_at|date:"d M Y" }}<br>{{ tx.created_at|time:"H:i" }}</td>
+                <td style="padding:12px 16px">
+                  <span class="tx-type-{{ tx.transaction_type }}" style="font-weight:700;font-size:.75rem">
+                    {% if tx.transaction_type == 'credit' or tx.transaction_type == 'loyalty' or tx.transaction_type == 'refund' %}+{% elif tx.transaction_type == 'debit' or tx.transaction_type == 'withdrawal' or tx.transaction_type == 'order' %}-{% endif %}
+                    {{ tx.get_transaction_type_display }}
+                  </span>
+                </td>
+                <td style="padding:12px 16px;color:#c9a84c;font-weight:700">{{ tx.currency }}</td>
+                <td style="padding:12px 16px;text-align:right;font-weight:800;color:{% if tx.transaction_type == 'credit' or tx.transaction_type == 'loyalty' or tx.transaction_type == 'refund' %}#4ade80{% else %}#f87171{% endif %}">
+                  {{ tx.amount|floatformat:2 }}
+                </td>
+                <td style="padding:12px 16px;color:#7a6e5f;font-size:.72rem">
+                  {{ tx.reference|default:"—" }}
+                  {% if tx.note %}<br><span title="{{ tx.note }}" style="cursor:help">{{ tx.note|truncatechars:30 }}</span>{% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        {% else %}
+        <div style="text-align:center;padding:60px 20px">
+          <i class="fas fa-wallet" style="font-size:3rem;color:rgba(201,168,76,.15);margin-bottom:16px"></i>
+          <div style="color:#fff;font-weight:700;margin-bottom:8px">No transactions yet</div>
+          <div style="color:#7a6e5f;font-size:.85rem">Your wallet activity will appear here. Start by placing an order or earning loyalty points.</div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Info box -->
+      <div class="wl-card p-4 mt-4">
+        <h6 style="color:#c9a84c;font-weight:800;margin-bottom:14px">How the Wallet Works</h6>
+        <div style="display:grid;gap:10px;font-size:.82rem">
+          <div style="display:flex;gap:10px;color:#b0a898"><i class="fas fa-check-circle" style="color:#4ade80;margin-top:2px;flex-shrink:0"></i> Earn loyalty points (0.5% per purchase) — convertible to wallet credits</div>
+          <div style="display:flex;gap:10px;color:#b0a898"><i class="fas fa-check-circle" style="color:#4ade80;margin-top:2px;flex-shrink:0"></i> Hold balances in CAD, USD, UGX, KES, EUR and JPY simultaneously</div>
+          <div style="display:flex;gap:10px;color:#b0a898"><i class="fas fa-check-circle" style="color:#4ade80;margin-top:2px;flex-shrink:0"></i> Convert between currencies using live Bank of Canada-referenced rates</div>
+          <div style="display:flex;gap:10px;color:#b0a898"><i class="fas fa-check-circle" style="color:#4ade80;margin-top:2px;flex-shrink:0"></i> Withdraw funds via Bank Transfer, MTN Mobile Money or Stripe on Day 45</div>
+          <div style="display:flex;gap:10px;color:#b0a898"><i class="fas fa-check-circle" style="color:#4ade80;margin-top:2px;flex-shrink:0"></i> All balances secured by 4-digit PIN verification for withdrawals</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+function swapCurrencies(){
+  var f = document.getElementById('fromCur');
+  var t = document.getElementById('toCur');
+  var tmp = f.value; f.value = t.value; t.value = tmp;
+}
+
+// Live rate preview
+function updateRatePreview(){
+  var from = document.getElementById('fromCur').value;
+  var to   = document.getElementById('toCur').value;
+  var el   = document.getElementById('ratePreview');
+  if(from === to){ el.textContent = 'Please select two different currencies'; return; }
+  fetch('/api/rates/')
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      var pair = (data.pairs||[]).find(function(p){
+        return p.from_code===from && p.to_code===to;
+      });
+      var revPair = (data.pairs||[]).find(function(p){
+        return p.from_code===to && p.to_code===from;
+      });
+      if(pair)    el.textContent = '1 ' + from + ' = ' + pair.display + ' ' + to;
+      else if(revPair) el.textContent = '1 ' + from + ' ≈ ' + (1/parseFloat(revPair.rate)).toFixed(6) + ' ' + to;
+      else        el.textContent = 'Rate available at conversion time';
+    })
+    .catch(function(){ el.textContent = 'Live rate will be applied at time of conversion'; });
+}
+
+document.getElementById('fromCur').addEventListener('change', updateRatePreview);
+document.getElementById('toCur').addEventListener('change', updateRatePreview);
+updateRatePreview();
+</script>
+{% endblock %}
