@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
-{% block title %}Avon Points — T&TG Trade Corp{% endblock %}
+{% block title %}T&TG Loyalty Points — T&TG Trade Corp{% endblock %}
 {% block content %}
-<div class="page-header"><div class="container"><h1><i class="fas fa-coins me-3"></i>Avon Points</h1></div></div>
+<div class="page-header"><div class="container"><h1><i class="fas fa-coins me-3"></i>T&TG Loyalty Points</h1></div></div>
 <section class="section" style="padding-top:2rem"><div class="container">
   <div class="row g-4 mb-4">
     <div class="col-lg-4">
       <div class="avon-card">
         <div class="avon-label">Total Balance</div>
         <div class="avon-balance">{{ request.user.avon_points|floatformat:2 }}</div>
-        <div class="text-muted" style="font-size:.8rem;margin-top:.5rem">Avon Points</div>
+        <div class="text-muted" style="font-size:.8rem;margin-top:.5rem">T&TG Loyalty Points</div>
         <hr style="border-color:rgba(201,168,76,.2)">
         <div class="small text-muted">
           <div class="mb-1">💳 Equivalent approx. <span class="text-gold">${{ request.user.avon_points|floatformat:2 }} USD</span></div>
@@ -77,7 +77,7 @@
       </table>
     </div>
     {% else %}
-    <div class="p-5 text-center text-muted"><div style="font-size:4rem;opacity:.2;margin-bottom:1rem">💰</div><div>No transactions yet. Start shopping to earn Avon Points!</div><a href="{% url 'marketplace' %}" class="btn btn-gold mt-3">Browse Products</a></div>
+    <div class="p-5 text-center text-muted"><div style="font-size:4rem;opacity:.2;margin-bottom:1rem">💰</div><div>No transactions yet. Start shopping to earn T&TG Loyalty Points!</div><a href="{% url 'marketplace' %}" class="btn btn-gold mt-3">Browse Products</a></div>
     {% endif %}
   </div>
 </div></section>

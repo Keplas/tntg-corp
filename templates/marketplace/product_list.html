@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block meta_description %}<meta name="description" content="Shop premium T&TG Arabica and Robusta green coffee. Sourced from Uganda. Delivered to Canada, USA, Kenya. Earn loyalty points on every purchase.">{% endblock %}
 {% block title %}
- {% if category %}{{ category|title }}{% else %}All Products{% endif %} — T&TG Online Shopping Platform
+ {% if category %}{{ category|title }}{% else %}All Products{% endif %} — T&TG Shopping Platform
 {% endblock %}
 
 {% block content %}
@@ -92,7 +92,7 @@
  onerror="this.style.display='none';this.parentElement.querySelector('.product-placeholder').style.display='flex'">
  {% endif %}
  <div class="product-placeholder" {% if product.safe_image_url %}style="display:none"{% endif %}>
- {% if product.category == 'clothing' %}{% elif product.category == 'shoes' %}{% elif product.category == 'watches' %}⌚{% elif product.category == 'coffee' %}{% else %}{% endif %}
+ 
  </div>
  {% if product.is_featured %}<div class="p-badge">Featured</div>{% endif %}
  <div class="m-badge {{ product.market_type }}">{{ product.get_market_type_display }}</div>

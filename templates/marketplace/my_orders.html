@@ -7,7 +7,7 @@
   {% if orders %}
   <div class="table-responsive">
     <table class="table table-hover">
-      <thead><tr><th>Order #</th><th>Product</th><th>Qty</th><th>Total</th><th>Delivery</th><th>Status</th><th>Avon Pts</th><th>Date</th><th></th></tr></thead>
+      <thead><tr><th>Order #</th><th>Product</th><th>Qty</th><th>Total</th><th>Delivery</th><th>Status</th><th>T&TG Points</th><th>Date</th><th></th></tr></thead>
       <tbody>
       {% for order in orders %}
       <tr>
@@ -17,7 +17,7 @@
         <td class="text-gold fw-bold">${{ order.total_price }}</td>
         <td><span class="badge {% if order.delivery_type == 'express' %}badge-accent{% else %}badge-muted{% endif %}" style="font-size:.65rem">{{ order.get_delivery_type_display }}</span></td>
         <td><span class="badge {% if order.status == 'accepted' or order.status == 'delivered' %}badge-green{% elif order.status == 'processing' or order.status == 'shipped' %}badge-accent{% elif order.status == 'not_accepted' %}badge-danger{% else %}badge-gold{% endif %}" style="font-size:.65rem">{{ order.get_status_display }}</span></td>
-        <td class="text-accent2">+{{ order.avon_points_earned }}</td>
+        <td class="text-accent2">+{{ order.avon_points_earned }} pts</td>
         <td class="text-muted" style="font-size:.8rem">{{ order.created_at|date:"M d, Y" }}</td>
         <td><a href="{% url 'order_detail' order.pk %}" class="btn btn-outline-gold btn-sm">View</a></td>
       </tr>

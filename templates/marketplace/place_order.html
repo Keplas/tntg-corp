@@ -40,7 +40,9 @@
                 <label class="form-label">Destination Country *</label>
                 <select name="destination_country" class="form-select" required>
                   <option value="">Select Country</option>
-                  <option value="Canada">🇨🇦 Canada</option>
+                  <option value="Netherlands (Amsterdam)">Netherlands (Amsterdam)</option>
+                    <option value="Japan (Tokyo)">Japan (Tokyo)</option>
+                    <option value="Canada">🇨🇦 Canada</option>
                   <option value="Uganda">🇺🇬 Uganda</option>
                   <option value="Kenya">🇰🇪 Kenya</option>
                   <option value="Other">Other</option>
@@ -76,7 +78,7 @@
                        placeholder="Enter referrer's T&TG ID to credit their loyalty points">
                 <div class="small text-muted mt-1">
                   <i class="fas fa-info-circle me-1 text-gold"></i>
-                  Entering a referrer's ID gives them 2.5% loyalty points on this order.
+                  Entering a referrer's ID gives them 1% T&TG Loyalty Points on this order.
                 </div>
               </div>
             </div>
@@ -104,7 +106,7 @@
               </div>
               <div class="p-2 rounded-3" style="background:rgba(0,200,150,.05);border:1px solid rgba(0,200,150,.1)">
                 <div class="d-flex justify-content-between small">
-                  <span class="text-muted"><i class="fas fa-user-friends me-1"></i>Referral Bonus (2.5%):</span>
+                  <span class="text-muted"><i class="fas fa-user-friends me-1"></i>Referral Bonus (1%):</span>
                   <span style="color:#00c896;font-weight:600" id="pts-referral">{{ product.loyalty_points_referral }}</span>
                 </div>
                 <div class="text-muted mt-1" style="font-size:.68rem">Rewarded to the referring member (if ID provided)</div>
@@ -137,7 +139,7 @@
                  onerror="this.style.display='none'">
             {% else %}
             <div class="product-placeholder">
-              {% if product.category == 'clothing' %}👔{% elif product.category == 'shoes' %}👟{% elif product.category == 'watches' %}⌚{% elif product.category == 'coffee' %}☕{% else %}📦{% endif %}
+              
             </div>
             {% endif %}
           </div>
@@ -155,7 +157,7 @@
           </div>
           <ul class="small text-muted mb-0 ps-3">
             <li>Every purchase earns you <strong>1%</strong> of the net price as loyalty points</li>
-            <li>If referred, the referrer earns <strong>2.5%</strong> loyalty points</li>
+            <li>If referred, the referrer earns <strong>1%</strong> T&TG Loyalty Points</li>
             <li>Reward payment processed on <strong>Day {{ settings.payment_days }}</strong> after purchase</li>
             <li>Rates applied on net price after expenses &amp; taxes</li>
             <li>Manage your points in <a href="{% url 'loyalty_dashboard' %}" class="text-gold">My Loyalty Dashboard</a></li>
