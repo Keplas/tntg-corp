@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('training', '0005_add_tntg_tv_programs'),
+        ('training', '0004_add_program_videos'),
     ]
 
     operations = [
