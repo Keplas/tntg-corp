@@ -49,6 +49,7 @@ class TVProgram(models.Model):
     title              = models.CharField(max_length=300)
     description        = models.TextField()
     thumbnail          = models.ImageField(upload_to='tv/', blank=True, null=True)
+    thumbnail_url      = models.URLField(blank=True, help_text="External thumbnail URL (Unsplash etc.)")
     video_url          = models.URLField(blank=True)
     broadcast_schedule = models.CharField(max_length=200, blank=True)
     category           = models.CharField(max_length=100, blank=True)

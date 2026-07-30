@@ -67,8 +67,8 @@
     <div class="col-md-6 col-lg-4 video-item" data-cat="{{ vid.category }}" data-title="{{ vid.title|lower }}">
       <div class="vl-card h-100" onclick="openVideo('{{ vid.video_url }}','{{ vid.title|escapejs }}')">
         <div class="vl-thumb">
-          {% if vid.thumbnail_url %}
-          <img src="{{ vid.thumbnail_url }}" alt="{{ vid.title }}" loading="lazy">
+          {% if vid.thumbnail %}
+          <img src="{{ vid.thumbnail.url }}" alt="{{ vid.title }}" loading="lazy">
           {% else %}
           <div style="position:absolute;inset:0;background:linear-gradient(135deg,#0d1f3c,#1a3a5c);display:flex;align-items:center;justify-content:center">
             <i class="fas fa-play-circle" style="font-size:4rem;color:rgba(201,168,76,.3)"></i>
