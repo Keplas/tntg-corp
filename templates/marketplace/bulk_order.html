@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% block title %}Bulk & Wholesale Orders — T&TG Trade Corp{% endblock %}
+{% block content %}
+<style>
+  .bl-hero { background:linear-gradient(135deg,#060f1e,#0d1f3c); padding:60px 0 40px; border-bottom:1px solid rgba(201,168,76,.15); }
+  .bl-card { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.15); border-radius:18px; padding:28px; }
+  .bl-input { background:rgba(255,255,255,.05); border:1px solid rgba(201,168,76,.2); color:#e0d5c0; border-radius:10px; padding:11px 14px; width:100%; }
+  .bl-input:focus { border-color:rgba(201,168,76,.5); outline:none; }
+  .bl-select { background:rgba(13,31,60,.95); border:1px solid rgba(201,168,76,.2); color:#e0d5c0; border-radius:10px; padding:11px 14px; width:100%; }
+  .tier-row { display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid rgba(201,168,76,.08); }
+  .tier-row:last-child { border-bottom:none; }
+</style>
+
+<section class="bl-hero bg-shimmer">
+  <div class="container">
+    <div style="font-size:.68rem;font-weight:800;letter-spacing:3px;color:#c9a84c;text-transform:uppercase;margin-bottom:12px">B2B · Wholesale</div>
+    <h1 style="color:#fff;font-weight:900;font-size:clamp(1.6rem,4vw,2.4rem);margin-bottom:10px">Bulk & Wholesale Orders</h1>
+    <p style="color:#7a6e5f;max-width:540px;line-height:1.7">For businesses, roasters and importers ordering 25kg+ of T&TG Arabica or Robusta green coffee. Get a custom quote within 2 business days.</p>
+  </div>
+</section>
+
+<section style="background:#060f1e;padding:60px 0">
+<div class="container">
+  {% if messages %}{% for m in messages %}
+  <div class="alert mb-4" style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#4ade80;border-radius:12px;padding:14px 18px">{{ m }}</div>
+  {% endfor %}{% endif %}
+
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="bl-card">
+        <h5 style="color:#c9a84c;font-weight:800;margin-bottom:24px"><i class="fas fa-boxes me-2"></i>Request a Bulk Quote</h5>
+        <form method="POST">
+          {% csrf_token %}
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label style="color:#7a6e5f;font-size:.78rem;display:block;margin-bottom:6px">Company / Business Name</label>
+              <input type="text" name="company_name" class="bl-input" placeholder="Your company name">
+            </div>
+            <div class="col-md-6">
+              <label style="color:#7a6e5f;font-size:.78rem;display:block;margin-bottom:6px">Destination Country *</label>
+              <select name="destination" class="bl-select" required>
+                <option value="">Select country</option>
+                <option>Canada</option><option>USA (Ohio)</option>
+                <option>Uganda</option><option>Kenya</option>
+                <option>Netherlands (Amsterdam)</option><option>Japan (Tokyo)</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label style="color:#7a6e5f;font-size:.78rem;display:block;margin-bottom:6px">Product Type *</label>
+              <select name="product_type" class="bl-select" required>
+                <option value="">Select product</option>
+                <option>Arabica Green Coffee</option>
+                <option>Robusta Green Coffee</option>
+                <option>Both Arabica & Robusta</option>
+                <option>Instant Coffee (Medium Roast)</option>
+                <option>Mixed / Custom blend</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label style="color:#7a6e5f;font-size:.78rem;display:block;margin-bottom:6px">Quantity (kg) *</label>
+              <input type="number" name="quantity_kg" class="bl-input" placeholder="e.g. 500" min="25" required>
+            </div>
+            <div class="col-12">
+              <label style="color:#7a6e5f;font-size:.78rem;display:block;margin-bottom:6px">Order Frequency</label>
+              <select name="frequency" class="bl-select">
+                <option value="">One-time order</option>
+                <option>Monthly recurring</option>
+                <option>Quarterly recurring</option>
+                <option>Bi-annual</option>
+                <option>Annual contract</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label style="color:#7a6e5f;font-size:.78rem;display:block;margin-bottom:6px">Additional Requirements</label>
+              <textarea name="notes" class="bl-input" rows="3" placeholder="Preferred grade/screen number, packaging, certifications needed, Incoterms (FOB/CIF), delivery port..."></textarea>
+            </div>
+          </div>
+          <div style="background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:14px;margin-top:16px;font-size:.78rem;color:#7a6e5f;">
+            <i class="fas fa-clock" style="color:#c9a84c;margin-right:6px"></i>
+            Our team will review your request and send a custom quotation within <strong style="color:#e0d5c0">2 business days</strong> to <strong style="color:#e0d5c0">{{ request.user.email }}</strong>.
+          </div>
+          <button type="submit" class="btn btn-gold w-100 py-3 mt-4" style="font-size:1rem;font-weight:800">
+            <i class="fas fa-paper-plane me-2"></i>Submit Bulk Order Request
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <!-- Pricing tiers -->
+      <div class="bl-card mb-4">
+        <h6 style="color:#c9a84c;font-weight:800;margin-bottom:16px">Wholesale Pricing Tiers</h6>
+        {% for tier in tiers %}
+        <div class="tier-row">
+          <div>
+            <div style="color:#fff;font-weight:700;font-size:.88rem">{{ tier.range }}</div>
+            <div style="color:#7a6e5f;font-size:.72rem">{{ tier.note }}</div>
+          </div>
+          <div style="color:#c9a84c;font-weight:800;font-size:.85rem;text-align:right">{{ tier.discount }}</div>
+        </div>
+        {% endfor %}
+        <div style="color:#7a6e5f;font-size:.72rem;margin-top:14px;padding-top:14px;border-top:1px solid rgba(201,168,76,.1)">
+          All prices quoted in USD. Final rate subject to market conditions at time of order confirmation.
+        </div>
+      </div>
+
+      <!-- What's included -->
+      <div class="bl-card mb-4">
+        <h6 style="color:#c9a84c;font-weight:800;margin-bottom:14px">What's Included</h6>
+        <div style="display:grid;gap:10px;font-size:.82rem">
+          <div style="display:flex;gap:10px;color:#b0a898"><i class="fas fa-check-circle" style="color:#4ade80;flex-shrink:0;margin-top:2px"></i> Custom quote tailored to your quantity and destination</div>
+          <div style="display:flex;gap:10px;color:#b0a898"><i class="fas fa-check-circle" style="color:#4ade80;flex-shrink:0;margin-top:2px"></i> Export documentation support (Phytosanitary, CoO, BoL)</div>
+          <div style="display:flex;gap:10px;color:#b0a898"><i class="fas fa-check-circle" style="color:#4ade80;flex-shrink:0;margin-top:2px"></i> Cargo tracking and transport coordination</div>
+          <div style="display:flex;gap:10px;color:#b0a898"><i class="fas fa-check-circle" style="color:#4ade80;flex-shrink:0;margin-top:2px"></i> Loyalty points on qualifying bulk orders</div>
+          <div style="display:flex;gap:10px;color:#b0a898"><i class="fas fa-check-circle" style="color:#4ade80;flex-shrink:0;margin-top:2px"></i> Dedicated account support from Tom's team</div>
+        </div>
+      </div>
+
+      <!-- Contact direct -->
+      <div class="bl-card" style="text-align:center">
+        <h6 style="color:#c9a84c;font-weight:800;margin-bottom:10px">Prefer to call?</h6>
+        <p style="color:#7a6e5f;font-size:.82rem;margin-bottom:16px">Speak directly with Tom for large orders or recurring contracts</p>
+        <a href="https://wa.me/14168323512" target="_blank" class="btn btn-gold w-100 mb-2">WhatsApp Tom</a>
+        <a href="mailto:tom.grouptrade@gmail.com" class="btn w-100" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:none;border-radius:12px">tom.grouptrade@gmail.com</a>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+{% endblock %}

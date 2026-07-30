@@ -378,3 +378,64 @@ def order_invoice(request, pk):
         messages.error(request, 'Access denied.')
         return redirect('my_orders')
     return render(request, 'marketplace/order_invoice.html', {'order': order})
+
+
+@login_required
+def bulk_order_request(request):
+    """Wholesale / bulk order enquiry form."""
+    from .models import BulkOrder
+    if request.method == 'POST':
+        d = request.POST
+        try:
+            qty = float(d.get('quantity_kg', 0) or 0)
+        except Exception:
+            qty = 0
+        BulkOrder.objects.create(
+            buyer=request.user,
+            company_name=d.get('company_name','').strip(),
+            destination=d.get('destination','').strip(),
+            product_type=d.get('product_type','').strip(),
+            quantity_kg=qty,
+            frequency=d.get('frequency','').strip(),
+            notes=d.get('notes','').strip(),
+        )
+        # Notify admin
+        try:
+            from core.models import Notification
+            Notification.notify('sell_order',
+                f'Bulk Order Request — {request.user.username}',
+                f'{qty}kg {d.get("product_type","")} to {d.get("destination","")}',
+                '/admin/marketplace/bulkorder/')
+        except Exception:
+            pass
+        # Email admin
+        try:
+            from django.core.mail import send_mail
+            from django.conf import settings as djsettings
+            send_mail(
+                subject=f'New Bulk Order Request — {request.user.get_full_name() or request.user.username}',
+                message=(f'Bulk order from {request.user.email}\n\n'
+                         f'Company: {d.get("company_name","")}\n'
+                         f'Product: {d.get("product_type","")}\n'
+                         f'Quantity: {qty} kg\n'
+                         f'Destination: {d.get("destination","")}\n'
+                         f'Frequency: {d.get("frequency","")}\n'
+                         f'Notes: {d.get("notes","")}'),
+                from_email=getattr(djsettings,'DEFAULT_FROM_EMAIL',''),
+                recipient_list=['tom.grouptrade@gmail.com'],
+                fail_silently=True,
+            )
+        except Exception:
+            pass
+        messages.success(request,
+            'Bulk order request submitted! Our team will send you a custom quote within 2 business days.')
+        return redirect('bulk_order_request')
+
+    tiers = [
+        {'range':'1 – 24 kg',    'discount':'Standard retail rate','note':'Available in online shop'},
+        {'range':'25 – 99 kg',   'discount':'Negotiable rate',      'note':'Contact for quote'},
+        {'range':'100 – 499 kg', 'discount':'5% bulk discount',     'note':'B2B pricing'},
+        {'range':'500 – 999 kg', 'discount':'10% bulk discount',    'note':'Wholesale tier'},
+        {'range':'1,000 kg+',    'discount':'Custom pricing',       'note':'Enterprise / export'},
+    ]
+    return render(request, 'marketplace/bulk_order.html', {'tiers': tiers})

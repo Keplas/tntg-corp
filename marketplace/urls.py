@@ -21,4 +21,5 @@ urlpatterns = [
     path('products/<int:pk>/wishlist/',views.wishlist_toggle,  name='wishlist_toggle'),
     path('wishlist/',                  views.wishlist_view,    name='wishlist'),
     path('orders/<int:pk>/invoice/', views.order_invoice, name='order_invoice'),
+    path('bulk-order/', views.bulk_order_request, name='bulk_order_request'),
 ]

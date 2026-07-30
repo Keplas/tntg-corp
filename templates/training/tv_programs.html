@@ -1,74 +1,200 @@
 {% extends 'base.html' %}
-{% block title %}TV Programs — T&TG Trade Corp{% endblock %}
+{% block title %}T&TG Video Library — Learn, Trade & Earn{% endblock %}
 {% block content %}
-<div class="page-header">
+<style>
+  .vl-hero { background:linear-gradient(135deg,#060f1e,#0d1f3c); padding:60px 0 40px; border-bottom:1px solid rgba(201,168,76,.15); position:relative; overflow:hidden; }
+  .vl-card { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.12); border-radius:18px; overflow:hidden; transition:border-color .3s,transform .25s,box-shadow .3s; }
+  .vl-card:hover { border-color:rgba(201,168,76,.4); transform:translateY(-4px); box-shadow:0 20px 48px rgba(0,0,0,.3); }
+  .vl-thumb { position:relative; padding-top:56.25%; overflow:hidden; background:#0d1f3c; cursor:pointer; }
+  .vl-thumb img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform .4s; }
+  .vl-card:hover .vl-thumb img { transform:scale(1.05); }
+  .vl-play { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.35); transition:background .3s; }
+  .vl-play-btn { width:60px; height:60px; border-radius:50%; background:rgba(201,168,76,.9); display:flex; align-items:center; justify-content:center; transition:transform .25s,background .25s; }
+  .vl-card:hover .vl-play-btn { transform:scale(1.1); background:#c9a84c; }
+  .vl-cat { font-size:.66rem; font-weight:800; letter-spacing:2px; text-transform:uppercase; padding:3px 10px; border-radius:100px; }
+  .cat-trade    { background:rgba(96,165,250,.12); color:#60a5fa; }
+  .cat-ecommerce{ background:rgba(34,197,94,.12);  color:#4ade80; }
+  .cat-coffee   { background:rgba(201,168,76,.12); color:#c9a84c; }
+  .cat-other    { background:rgba(255,255,255,.06); color:#7a6e5f; }
+  .vl-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:9999; align-items:center; justify-content:center; padding:20px; }
+  .vl-modal.open { display:flex; }
+  .vl-modal-inner { background:#0d1f3c; border:1px solid rgba(201,168,76,.25); border-radius:20px; width:100%; max-width:800px; overflow:hidden; }
+  .vl-iframe-wrap { position:relative; padding-top:56.25%; }
+  .vl-iframe-wrap iframe { position:absolute; inset:0; width:100%; height:100%; border:none; }
+  .filter-btn { border:1px solid rgba(201,168,76,.2); color:#7a6e5f; background:none; border-radius:100px; padding:7px 18px; font-size:.78rem; cursor:pointer; transition:all .2s; }
+  .filter-btn.active, .filter-btn:hover { border-color:#c9a84c; color:#c9a84c; background:rgba(201,168,76,.08); }
+  .search-input { background:rgba(255,255,255,.05); border:1px solid rgba(201,168,76,.2); color:#e0d5c0; border-radius:100px; padding:10px 20px; font-size:.88rem; width:100%; max-width:340px; }
+  .search-input:focus { border-color:rgba(201,168,76,.5); outline:none; }
+  .search-input::placeholder { color:#7a6e5f; }
+</style>
+
+<!-- Hero -->
+<section class="vl-hero bg-shimmer">
   <div class="container">
-    <h1><i class="fas fa-tv me-3"></i>T&TG TV Programs</h1>
-    <p class="text-muted">Watch, advertise, and subscribe to our curated broadcast programs</p>
-  </div>
-</div>
-<section class="section" style="padding-top:2rem">
-  <div class="container">
-    <div class="glass-card p-4 mb-5" style="background:linear-gradient(135deg,#0a0020,#1a0a40)">
-      <div class="row align-items-center g-4">
-        <div class="col-lg-8">
-          <div class="badge badge-gold mb-2">📡 BROADCAST</div>
-          <h3 class="text-gold">Advertise on T&TG TV</h3>
-          <p class="text-muted mt-2">Reach audiences across 6 countries. Our TV program provides advertising slots for partner businesses and subscription-based educational content.</p>
-        </div>
-        <div class="col-lg-4 text-center">
-          <a href="{% url 'contact' %}" class="btn btn-gold btn-lg"><i class="fas fa-bullhorn me-2"></i>Advertise With Us</a>
-        </div>
+    <div class="d-flex align-items-end justify-content-between flex-wrap gap-4">
+      <div>
+        <div style="font-size:.68rem;font-weight:800;letter-spacing:3px;color:#c9a84c;text-transform:uppercase;margin-bottom:12px">T&TG CORPORATION</div>
+        <h1 style="color:#fff;font-weight:900;font-size:clamp(1.6rem,4vw,2.4rem);margin-bottom:8px">Video Training Library</h1>
+        <p style="color:#7a6e5f;font-size:.9rem;max-width:500px">Learn how to trade, shop, earn and grow with T&TG. Free video courses for all members.</p>
+      </div>
+      <div>
+        <input type="text" id="videoSearch" class="search-input" placeholder="Search videos...">
       </div>
     </div>
-
-    <div class="row g-4">
-      {% for program in tv_programs %}
-      <div class="col-md-6 col-lg-4">
-        <div class="card h-100">
-          <div style="height:200px;background:linear-gradient(135deg,#0a0020,#2a1040);display:flex;align-items:center;justify-content:center;font-size:5rem;opacity:.6;position:relative">
-            📺
-            {% if program.is_live %}<div style="position:absolute;top:12px;right:12px" class="badge badge-danger pulse" style="font-size:.65rem"><i class="fas fa-circle me-1" style="font-size:.5rem"></i>LIVE</div>{% endif %}
-          </div>
-          <div class="card-body d-flex flex-column">
-            {% if program.category %}<span class="badge badge-muted mb-2" style="font-size:.65rem;align-self:flex-start">{{ program.category }}</span>{% endif %}
-            <h5 class="text-gold">{{ program.title }}</h5>
-            <p class="text-muted flex-fill" style="font-size:.875rem">{{ program.description|truncatechars:120 }}</p>
-            {% if program.broadcast_schedule %}<div class="small text-muted mt-2"><i class="fas fa-calendar me-1"></i>{{ program.broadcast_schedule }}</div>{% endif %}
-          </div>
-          <div class="card-footer p-3">
-            {% if program.video_url %}
-            <a href="{{ program.video_url }}" target="_blank" class="btn btn-outline-gold btn-sm w-100"><i class="fas fa-play me-2"></i>Watch Now</a>
-            {% else %}
-            <a href="{% url 'contact' %}" class="btn btn-outline-gold btn-sm w-100"><i class="fas fa-envelope me-2"></i>Subscribe</a>
-            {% endif %}
-          </div>
-        </div>
-      </div>
-      {% empty %}
-      <div class="col-12">
-        <div class="glass-card p-5 text-center">
-          <div style="font-size:5rem;opacity:.2;margin-bottom:1.5rem">📺</div>
-          <h4 class="text-gold">TV Programs Coming Soon</h4>
-          <p class="text-muted">Our broadcast platform is being set up. Subscribe to be notified.</p>
-          <a href="{% url 'contact' %}" class="btn btn-gold mt-3">Get Notified</a>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-
-    <!-- Training Subscription CTA -->
-    <div class="glass-card p-4 mt-5">
-      <div class="section-label">Subscribe & Learn</div>
-      <h4 class="text-gold mt-2">Online Training Subscription Programs</h4>
-      <div class="row g-4 mt-2">
-        <div class="col-md-6"><div class="step-card"><div class="step-num" style="font-size:.9rem">📦</div><h6 class="text-gold">Import &amp; Export Operations</h6><p class="text-muted small">Cross-border trade fundamentals: documentation, RM registration, customs and compliance.</p></div></div>
-        <div class="col-md-6"><div class="step-card"><div class="step-num" style="font-size:.9rem">🏢</div><h6 class="text-gold">E-Commerce Business Setup &amp; Management</h6><p class="text-muted small">How to set up and run a successful online trade and e-commerce business.</p></div></div>
-      </div>
-      <div class="text-center mt-4">
-        <a href="{% url 'training_home' %}" class="btn btn-gold"><i class="fas fa-graduation-cap me-2"></i>View All Training Programs</a>
-      </div>
+    <!-- Filter tabs -->
+    <div class="d-flex gap-2 flex-wrap mt-4">
+      <button class="filter-btn active" data-cat="all">All Videos</button>
+      <button class="filter-btn" data-cat="trade">Trade & Forex</button>
+      <button class="filter-btn" data-cat="ecommerce">Shopping & E-Commerce</button>
+      <button class="filter-btn" data-cat="coffee">Coffee & Products</button>
     </div>
   </div>
 </section>
+
+<!-- Video Grid -->
+<section style="background:#060f1e;padding:60px 0;min-height:60vh">
+<div class="container">
+
+  <!-- Stats bar -->
+  <div class="d-flex gap-4 mb-5 flex-wrap">
+    <div style="color:#7a6e5f;font-size:.82rem"><span style="color:#c9a84c;font-weight:800">{{ tv_programs|length }}</span> Videos</div>
+    <div style="color:#7a6e5f;font-size:.82rem"><span style="color:#c9a84c;font-weight:800">Free</span> for all members</div>
+    <div style="color:#7a6e5f;font-size:.82rem"><span style="color:#c9a84c;font-weight:800">6</span> categories</div>
+  </div>
+
+  <div class="row g-4" id="videoGrid">
+    {% for vid in tv_programs %}
+    <div class="col-md-6 col-lg-4 video-item" data-cat="{{ vid.category }}" data-title="{{ vid.title|lower }}">
+      <div class="vl-card h-100" onclick="openVideo('{{ vid.video_url }}','{{ vid.title|escapejs }}')">
+        <div class="vl-thumb">
+          {% if vid.thumbnail_url %}
+          <img src="{{ vid.thumbnail_url }}" alt="{{ vid.title }}" loading="lazy">
+          {% else %}
+          <div style="position:absolute;inset:0;background:linear-gradient(135deg,#0d1f3c,#1a3a5c);display:flex;align-items:center;justify-content:center">
+            <i class="fas fa-play-circle" style="font-size:4rem;color:rgba(201,168,76,.3)"></i>
+          </div>
+          {% endif %}
+          <div class="vl-play">
+            <div class="vl-play-btn"><i class="fas fa-play" style="color:#1a0a00;margin-left:4px"></i></div>
+          </div>
+          {% if not vid.video_url %}
+          <div style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,.7);color:#fbbf24;font-size:.68rem;font-weight:700;padding:3px 8px;border-radius:4px">Coming Soon</div>
+          {% endif %}
+        </div>
+        <div style="padding:18px">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="vl-cat cat-{{ vid.category }}">{{ vid.get_category_display|default:vid.category|capfirst }}</span>
+          </div>
+          <h6 style="color:#fff;font-weight:800;line-height:1.4;margin-bottom:8px">{{ vid.title }}</h6>
+          <p style="color:#7a6e5f;font-size:.8rem;line-height:1.6;margin:0">{{ vid.description|truncatechars:100 }}</p>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center" style="padding:80px">
+      <i class="fas fa-video-slash" style="font-size:3rem;color:rgba(201,168,76,.15);margin-bottom:16px"></i>
+      <div style="color:#fff;font-weight:700;margin-bottom:8px">No videos yet</div>
+      <div style="color:#7a6e5f">Content coming soon. Check back shortly.</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div id="noResults" style="display:none;text-align:center;padding:60px 20px;color:#7a6e5f">No videos match your search.</div>
+</div>
+</section>
+
+<!-- Training Programs Section -->
+{% if programs %}
+<section style="background:#040d1c;padding:60px 0;border-top:1px solid rgba(201,168,76,.08)">
+<div class="container">
+  <div class="text-center mb-5">
+    <div style="font-size:.68rem;font-weight:800;letter-spacing:3px;color:#c9a84c;text-transform:uppercase;margin-bottom:10px">Structured Learning</div>
+    <h2 style="color:#fff;font-weight:900">Training Programmes</h2>
+    <p style="color:#7a6e5f;margin-top:8px">In-depth courses for T&TG trade and e-commerce professionals</p>
+  </div>
+  <div class="row g-4">
+    {% for prog in programs %}
+    <div class="col-md-6">
+      <div class="vl-card p-4 h-100">
+        <div class="d-flex align-items-start gap-3 mb-3">
+          <div style="width:48px;height:48px;border-radius:12px;background:rgba(201,168,76,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <i class="fas fa-graduation-cap" style="color:#c9a84c"></i>
+          </div>
+          <div>
+            <h6 style="color:#fff;font-weight:800;margin-bottom:4px">{{ prog.title }}</h6>
+            <span class="vl-cat cat-{{ prog.category }}">{{ prog.get_category_display|default:prog.category }}</span>
+            {% if prog.duration_hours %}<span style="color:#7a6e5f;font-size:.72rem;margin-left:8px">{{ prog.duration_hours }} hrs</span>{% endif %}
+          </div>
+        </div>
+        <p style="color:#7a6e5f;font-size:.82rem;line-height:1.7;margin-bottom:16px">{{ prog.description|truncatechars:120 }}</p>
+        <a href="{% url 'program_detail' prog.pk %}" class="btn btn-gold btn-sm px-4">View Course</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+</section>
+{% endif %}
+
+<!-- Video Modal -->
+<div class="vl-modal" id="videoModal" onclick="closeVideoIfBackdrop(event)">
+  <div class="vl-modal-inner" id="modalInner">
+    <div style="padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(201,168,76,.15)">
+      <span id="modalTitle" style="color:#fff;font-weight:700;font-size:.9rem"></span>
+      <button onclick="closeVideo()" style="background:rgba(255,255,255,.08);border:none;color:#e0d5c0;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:1rem">×</button>
+    </div>
+    <div class="vl-iframe-wrap" id="iframeWrap"></div>
+  </div>
+</div>
+
+<script>
+// ── Video Modal ────────────────────────────────────────────────────────
+function openVideo(url, title){
+  if(!url || url==='') return;
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('iframeWrap').innerHTML =
+    '<iframe src="'+url+'?autoplay=1&rel=0" allowfullscreen allow="autoplay"></iframe>';
+  document.getElementById('videoModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeVideo(){
+  document.getElementById('videoModal').classList.remove('open');
+  document.getElementById('iframeWrap').innerHTML='';
+  document.body.style.overflow='';
+}
+function closeVideoIfBackdrop(e){
+  if(e.target===document.getElementById('videoModal')) closeVideo();
+}
+document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeVideo(); });
+
+// ── Filter by category ─────────────────────────────────────────────────
+document.querySelectorAll('.filter-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    var cat = btn.dataset.cat;
+    filterVideos(cat, document.getElementById('videoSearch').value);
+  });
+});
+
+// ── Search ─────────────────────────────────────────────────────────────
+document.getElementById('videoSearch').addEventListener('input',function(){
+  var activeCat = (document.querySelector('.filter-btn.active')||{}).dataset||{cat:'all'};
+  filterVideos(activeCat.cat||'all', this.value);
+});
+
+function filterVideos(cat, search){
+  var items = document.querySelectorAll('.video-item');
+  var q = (search||'').toLowerCase().trim();
+  var shown = 0;
+  items.forEach(function(item){
+    var matchCat  = cat==='all' || item.dataset.cat===cat;
+    var matchText = !q || item.dataset.title.includes(q);
+    var show = matchCat && matchText;
+    item.style.display = show ? '' : 'none';
+    if(show) shown++;
+  });
+  document.getElementById('noResults').style.display = shown===0 ? 'block':'none';
+}
+</script>
 {% endblock %}

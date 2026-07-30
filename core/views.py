@@ -438,3 +438,18 @@ def error_404(request, exception=None):
 
 def error_500(request):
     return render(request, '500.html', status=500)
+
+
+def search(request):
+    from marketplace.models import Product
+    from core.models import BlogPost
+    from training.models import TrainingProgram, TVProgram
+    q = request.GET.get('q','').strip()
+    results = {'products':[],'blogs':[],'programs':[],'videos':[]}
+    if q:
+        results['products']  = list(Product.objects.filter(name__icontains=q, is_active=True)[:8])
+        results['blogs']     = list(BlogPost.objects.filter(title__icontains=q, is_published=True)[:5]) if hasattr(BlogPost,'is_published') else []
+        results['programs']  = list(TrainingProgram.objects.filter(title__icontains=q, is_active=True)[:5])
+        results['videos']    = list(TVProgram.objects.filter(title__icontains=q, is_active=True)[:5])
+    total = sum(len(v) for v in results.values())
+    return render(request, 'core/search.html', {'q': q, 'results': results, 'total': total})

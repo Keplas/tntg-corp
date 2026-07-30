@@ -1333,5 +1333,26 @@ document.querySelectorAll('.tg-card,.glass-card,.ie-card,.ta-card').forEach(func
 });
 </script>
 
+
+<div id="searchOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:99999;align-items:flex-start;justify-content:center;padding-top:80px">
+  <div style="width:100%;max-width:600px;padding:0 20px">
+    <form method="GET" action="{% url 'search' %}" style="display:flex;gap:12px">
+      <input id="searchInput" type="text" name="q" placeholder="Search products, courses, videos..."
+        style="flex:1;background:rgba(13,31,60,.98);border:1px solid rgba(201,168,76,.4);color:#e0d5c0;border-radius:14px;padding:16px 22px;font-size:1.1rem">
+      <button type="submit" class="btn btn-gold px-4" style="font-weight:700;border-radius:14px">Go</button>
+      <button type="button" onclick="toggleSearch()" style="background:rgba(255,255,255,.08);border:none;color:#e0d5c0;border-radius:14px;padding:0 16px;cursor:pointer;font-size:1.2rem">×</button>
+    </form>
+    <div style="color:#7a6e5f;font-size:.78rem;margin-top:12px;padding:0 4px">Try: arabica, robusta, forex, import, loyalty, onboarding</div>
+  </div>
+</div>
+<script>
+function toggleSearch(){
+  var o=document.getElementById('searchOverlay');
+  if(o.style.display==='flex'){o.style.display='none';document.body.style.overflow='';}
+  else{o.style.display='flex';document.getElementById('searchInput').focus();document.body.style.overflow='hidden';}
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')toggleSearch();});
+</script>
+
 </body>
 </html>

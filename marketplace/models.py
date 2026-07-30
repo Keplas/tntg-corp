@@ -170,3 +170,24 @@ class Wishlist(models.Model):
         unique_together = ('user','product')
     def __str__(self):
         return f"{self.user.username} ♥ {self.product.name}"
+
+
+class BulkOrder(models.Model):
+    """Wholesale / bulk order for B2B clients."""
+    STATUS = [
+        ('pending','Pending Review'),('quoted','Quote Sent'),
+        ('confirmed','Confirmed'),('rejected','Rejected'),('fulfilled','Fulfilled'),
+    ]
+    buyer            = models.ForeignKey('accounts.CustomUser', on_delete=models.CASCADE, related_name='bulk_orders')
+    company_name     = models.CharField(max_length=200, blank=True)
+    destination      = models.CharField(max_length=100)
+    product_type     = models.CharField(max_length=100)
+    quantity_kg      = models.DecimalField(max_digits=10, decimal_places=2)
+    frequency        = models.CharField(max_length=50, blank=True)
+    notes            = models.TextField(blank=True)
+    quoted_price_usd = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    status           = models.CharField(max_length=20, choices=STATUS, default='pending')
+    created_at       = models.DateTimeField(auto_now_add=True)
+    updated_at       = models.DateTimeField(auto_now=True)
+    class Meta: ordering=["-created_at"]
+    def __str__(self): return f"Bulk #{self.pk} — {self.buyer.username} — {self.quantity_kg}kg"

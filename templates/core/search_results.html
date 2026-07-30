@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %}Search: {{ query }} — T&TG{% endblock %}
+{% block content %}
+<section style="background:#060f1e;min-height:80vh;padding:60px 0">
+<div class="container">
+
+  <!-- Search bar -->
+  <form method="GET" action="{% url 'search' %}" class="mb-5">
+    <div class="d-flex gap-3" style="max-width:580px">
+      <input type="text" name="q" value="{{ query }}" placeholder="Search products, courses, videos..."
+        style="flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.25);color:#e0d5c0;border-radius:12px;padding:14px 20px;font-size:1rem">
+      <button type="submit" class="btn btn-gold px-4" style="font-weight:700">Search</button>
+    </div>
+  </form>
+
+  {% if query %}
+  <div style="color:#7a6e5f;font-size:.85rem;margin-bottom:32px">
+    Results for <span style="color:#c9a84c;font-weight:700">"{{ query }}"</span>
+    — {{ products|length }} products · {{ programs|length }} courses · {{ tv|length }} videos
+  </div>
+
+  <!-- Products -->
+  {% if products %}
+  <div class="mb-5">
+    <h5 style="color:#c9a84c;font-weight:800;margin-bottom:20px"><i class="fas fa-shopping-bag me-2"></i>Coffee Products</h5>
+    <div class="row g-3">
+      {% for p in products %}
+      <div class="col-md-6 col-lg-4">
+        <a href="{% url 'product_detail' p.pk %}" style="text-decoration:none">
+          <div style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.12);border-radius:14px;padding:18px;display:flex;gap:14px;align-items:center;transition:border-color .25s" onmouseover="this.style.borderColor='rgba(201,168,76,.4)'" onmouseout="this.style.borderColor='rgba(201,168,76,.12)'">
+            <div style="width:52px;height:52px;border-radius:10px;background:rgba(201,168,76,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.6rem">
+              {% if p.safe_image_url %}<img src="{{ p.safe_image_url }}" style="width:100%;height:100%;object-fit:cover;border-radius:10px">{% else %}C{% endif %}
+            </div>
+            <div>
+              <div style="color:#fff;font-weight:700;font-size:.88rem">{{ p.name }}</div>
+              <div style="color:#c9a84c;font-weight:800;font-size:.85rem">{{ p.currency }} {{ p.price }}/{{ p.unit }}</div>
+              <div style="color:#7a6e5f;font-size:.72rem">{{ p.get_category_display|default:"Coffee" }}</div>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Training Courses -->
+  {% if programs %}
+  <div class="mb-5">
+    <h5 style="color:#c9a84c;font-weight:800;margin-bottom:20px"><i class="fas fa-graduation-cap me-2"></i>Training Courses</h5>
+    <div class="row g-3">
+      {% for p in programs %}
+      <div class="col-md-6">
+        <a href="{% url 'program_detail' p.pk %}" style="text-decoration:none">
+          <div style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.12);border-radius:14px;padding:18px;transition:border-color .25s" onmouseover="this.style.borderColor='rgba(201,168,76,.4)'" onmouseout="this.style.borderColor='rgba(201,168,76,.12)'">
+            <div style="color:#fff;font-weight:700;margin-bottom:6px">{{ p.title }}</div>
+            <div style="color:#7a6e5f;font-size:.8rem">{{ p.description|truncatechars:80 }}</div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Videos -->
+  {% if tv %}
+  <div class="mb-5">
+    <h5 style="color:#c9a84c;font-weight:800;margin-bottom:20px"><i class="fas fa-play-circle me-2"></i>Videos</h5>
+    <div class="row g-3">
+      {% for v in tv %}
+      <div class="col-md-6 col-lg-4">
+        <a href="{% url 'tv_programs' %}" style="text-decoration:none">
+          <div style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.12);border-radius:14px;padding:18px;transition:border-color .25s" onmouseover="this.style.borderColor='rgba(201,168,76,.4)'" onmouseout="this.style.borderColor='rgba(201,168,76,.12)'">
+            <div style="color:#fff;font-weight:700;margin-bottom:6px">{{ v.title }}</div>
+            <div style="color:#7a6e5f;font-size:.8rem">{{ v.description|truncatechars:80 }}</div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  {% if not products and not programs and not tv %}
+  <div style="text-align:center;padding:80px 20px">
+    <i class="fas fa-search" style="font-size:3rem;color:rgba(201,168,76,.15);margin-bottom:20px"></i>
+    <h4 style="color:#fff;margin-bottom:8px">No results for "{{ query }}"</h4>
+    <p style="color:#7a6e5f">Try a different keyword — coffee, arabica, robusta, forex, import, loyalty</p>
+  </div>
+  {% endif %}
+
+  {% else %}
+  <div style="text-align:center;padding:80px 20px">
+    <i class="fas fa-search" style="font-size:3rem;color:rgba(201,168,76,.15);margin-bottom:20px"></i>
+    <h4 style="color:#fff;margin-bottom:8px">Search T&TG</h4>
+    <p style="color:#7a6e5f">Find products, courses, videos and more</p>
+  </div>
+  {% endif %}
+
+</div>
+</section>
+{% endblock %}
