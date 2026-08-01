@@ -1228,3 +1228,55 @@ body::before {
   position: absolute; inset: 0;
   pointer-events: none; z-index: 0;
 }
+
+/* ── Dynamic Map Badges ─────────────────────────────────────────── */
+.map-badge {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  pointer-events: none;
+  z-index: 10;
+  transform: translate(-50%, -100%);
+  margin-top: -8px;
+  animation: badgePop .4s ease;
+}
+@keyframes badgePop {
+  from { opacity:0; transform:translate(-50%,-90%); }
+  to   { opacity:1; transform:translate(-50%,-100%); }
+}
+.mb-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #c9a84c;
+  box-shadow: 0 0 8px rgba(201,168,76,.8);
+  flex-shrink: 0;
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: dotPulse 2s ease infinite;
+}
+@keyframes dotPulse {
+  0%,100% { box-shadow: 0 0 4px rgba(201,168,76,.6); }
+  50%     { box-shadow: 0 0 12px rgba(201,168,76,1); }
+}
+.mb-label {
+  background: rgba(6,15,30,.88);
+  border: 1px solid rgba(201,168,76,.35);
+  border-radius: 7px;
+  padding: 4px 8px;
+  white-space: nowrap;
+  backdrop-filter: blur(4px);
+}
+.mb-name {
+  font-size: .62rem;
+  font-weight: 800;
+  color: #c9a84c;
+  line-height: 1.2;
+}
+.mb-role {
+  font-size: .54rem;
+  color: rgba(244,239,228,.5);
+  line-height: 1.2;
+}

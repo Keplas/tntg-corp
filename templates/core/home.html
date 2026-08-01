@@ -75,25 +75,13 @@
  <!-- map canvas -->
  <canvas id="worldMap" data-parallax="0.08"></canvas>
 
- <!-- country badges overlaid on map -->
- <div class="tg-cbadge tg-cb-ca">
- <div class="tg-cb-flag"></div>
- <div><div class="tg-cb-name">Canada</div><div class="tg-cb-role">Headquarters · Toronto</div></div>
- </div>
- <div class="tg-cbadge tg-cb-ug">
- <div class="tg-cb-flag"></div>
- <div><div class="tg-cb-name">Uganda</div><div class="tg-cb-role">East Africa Hub · Kampala</div></div>
- </div>
- <div class="tg-cbadge tg-cb-ke">
- <div class="tg-cb-flag"></div>
- <div><div class="tg-cb-name">Kenya</div><div class="tg-cb-role">Trade Gateway · Nairobi</div></div>
-              <div class="tg-cb"><div style="font-size:1.5rem">NL</div><div><div class="tg-cb-name">Netherlands</div><div class="tg-cb-role">European Hub · Amsterdam</div></div></div>
-              <div class="tg-cb"><div style="font-size:1.5rem">JP</div><div><div class="tg-cb-name">Japan</div><div class="tg-cb-role">Asia Pacific · Tokyo</div></div></div>
- </div>
- <div class="tg-cbadge tg-cb-us">
- <div class="tg-cb-flag"></div>
- <div><div class="tg-cb-name">USA</div><div class="tg-cb-role">Midwest Hub · Ohio</div></div>
- </div>
+ <!-- country badges — positioned via JS using D3 projection -->
+ <div id="map-badge-ca"  class="map-badge" style="display:none"><div class="mb-dot"></div><div class="mb-label"><div class="mb-name">Canada</div><div class="mb-role">HQ · Toronto</div></div></div>
+ <div id="map-badge-us"  class="map-badge" style="display:none"><div class="mb-dot"></div><div class="mb-label"><div class="mb-name">USA</div><div class="mb-role">Ohio</div></div></div>
+ <div id="map-badge-ug"  class="map-badge" style="display:none"><div class="mb-dot"></div><div class="mb-label"><div class="mb-name">Uganda</div><div class="mb-role">Kampala</div></div></div>
+ <div id="map-badge-ke"  class="map-badge" style="display:none"><div class="mb-dot"></div><div class="mb-label"><div class="mb-name">Kenya</div><div class="mb-role">Nairobi</div></div></div>
+ <div id="map-badge-nl"  class="map-badge" style="display:none"><div class="mb-dot"></div><div class="mb-label"><div class="mb-name">Netherlands</div><div class="mb-role">Amsterdam</div></div></div>
+ <div id="map-badge-jp"  class="map-badge" style="display:none"><div class="mb-dot"></div><div class="mb-label"><div class="mb-name">Japan</div><div class="mb-role">Tokyo</div></div></div>
 
  <!-- footer bar -->
  <div class="tg-map-ftr">
@@ -928,6 +916,30 @@
  });
 
  animRaf = requestAnimationFrame(drawAnimated);
+ positionBadges();
+ }
+
+
+ function positionBadges() {
+   if (!projection) return;
+   var BADGE_MAP = {
+     'map-badge-ca': CITIES.toronto,
+     'map-badge-us': CITIES.ohio,
+     'map-badge-ug': CITIES.kampala,
+     'map-badge-ke': CITIES.nairobi,
+     'map-badge-nl': CITIES.amsterdam,
+     'map-badge-jp': CITIES.tokyo,
+   };
+   Object.keys(BADGE_MAP).forEach(function(id){
+     var el = document.getElementById(id);
+     var city = BADGE_MAP[id];
+     if (!el || !city) return;
+     var p = projection(city);
+     if (!p) return;
+     el.style.left = p[0] + 'px';
+     el.style.top  = p[1] + 'px';
+     el.style.display = 'flex';
+   });
  }
 
  function removeLoading() {
