@@ -1,5 +1,38 @@
 {% extends 'base.html' %}
-{% block title %}T&TG Onboarding Program — Learn, Trade & Earn{% endblock %}
+{% block title %}T&TG Onboarding Program — Learn, Trade & Earn
+<!-- Inline video modal for onboarding -->
+<div id="ob-video-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:99999;align-items:center;justify-content:center;padding:20px" onclick="closeObVideo(event)">
+  <div style="width:100%;max-width:700px;background:#0d1f3c;border:1px solid rgba(201,168,76,.25);border-radius:20px;overflow:hidden">
+    <div style="padding:14px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(201,168,76,.12)">
+      <span id="ob-video-title" style="color:#fff;font-weight:700;font-size:.88rem"></span>
+      <button onclick="closeObVideo()" style="background:rgba(255,255,255,.08);border:none;color:#e0d5c0;border-radius:50%;width:30px;height:30px;cursor:pointer">x</button>
+    </div>
+    <div style="position:relative;padding-top:56.25%">
+      <iframe id="ob-video-frame" style="position:absolute;inset:0;width:100%;height:100%;border:none" allowfullscreen allow="autoplay"></iframe>
+    </div>
+    <div style="padding:12px 18px;text-align:center">
+      <a href="{% url 'tv_programs' %}" style="color:#c9a84c;font-size:.8rem;text-decoration:none">See all videos in the Training Library</a>
+    </div>
+  </div>
+</div>
+
+<script>
+function playObVideo(url, title){
+  document.getElementById('ob-video-frame').src = url + '?autoplay=1&rel=0';
+  document.getElementById('ob-video-title').textContent = title;
+  var m = document.getElementById('ob-video-modal');
+  m.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeObVideo(e){
+  if(e && e.target !== document.getElementById('ob-video-modal') && e.type === 'click') return;
+  document.getElementById('ob-video-frame').src = '';
+  document.getElementById('ob-video-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeObVideo(); });
+</script>
+{% endblock %}
 {% block content %}
 
 <style>
@@ -122,9 +155,14 @@
         <div class="ob-feat"><i class="fas fa-check-circle"></i> Wholesale & retail shopping available</div>
         <div class="ob-feat"><i class="fas fa-check-circle"></i> Shopping cart, wishlist & order tracking</div>
       </div>
-      <a href="{% url 'marketplace' %}" style="display:block;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);border-radius:12px;padding:12px;text-align:center;color:#4ade80;font-size:.82rem;font-weight:700;text-decoration:none;margin-bottom:20px">
-        <i class="fas fa-external-link-alt me-2"></i>Browse Coffee Products
-      </a>
+      <div style="display:flex;gap:8px;margin-bottom:20px">
+        <a href="{% url 'marketplace' %}" style="flex:1;display:block;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);border-radius:12px;padding:10px;text-align:center;color:#4ade80;font-size:.78rem;font-weight:700;text-decoration:none">
+          <i class="fas fa-shopping-cart me-1"></i>Shop Now
+        </a>
+        <button onclick="playObVideo('https://www.youtube.com/embed/TxBRbMDKIgA','How to Use T&TG Shopping Platform')" style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px;color:#e0d5c0;font-size:.78rem;font-weight:700;cursor:pointer">
+          <i class="fas fa-play-circle me-1" style="color:#c9a84c"></i>Watch Video
+        </button>
+      </div>
       <div class="ob-nav">
         <button class="ob-btn-back" onclick="goTo(0)"><i class="fas fa-arrow-left me-1"></i> Back</button>
         <button class="ob-btn-skip" onclick="goTo(4)">Skip</button>
@@ -150,9 +188,14 @@
         <div class="ob-feat"><i class="fas fa-star" style="color:#fbbf24"></i> 4-digit PIN secured withdrawals</div>
         <div class="ob-feat"><i class="fas fa-star" style="color:#fbbf24"></i> Points · Promotions · Referral · Reward</div>
       </div>
-      <a href="{% url 'loyalty_info' %}" style="display:block;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:12px;padding:12px;text-align:center;color:#fbbf24;font-size:.82rem;font-weight:700;text-decoration:none;margin-bottom:20px">
-        <i class="fas fa-external-link-alt me-2"></i>Learn More About Loyalty
-      </a>
+      <div style="display:flex;gap:8px;margin-bottom:20px">
+        <a href="{% url 'loyalty_info' %}" style="flex:1;display:block;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:12px;padding:10px;text-align:center;color:#fbbf24;font-size:.78rem;font-weight:700;text-decoration:none">
+          <i class="fas fa-coins me-1"></i>Loyalty Info
+        </a>
+        <button onclick="playObVideo('https://www.youtube.com/embed/TxBRbMDKIgA','T&TG Loyalty Programme — Earn, Refer & Withdraw')" style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px;color:#e0d5c0;font-size:.78rem;font-weight:700;cursor:pointer">
+          <i class="fas fa-play-circle me-1" style="color:#c9a84c"></i>Watch Video
+        </button>
+      </div>
       <div class="ob-nav">
         <button class="ob-btn-back" onclick="goTo(1)"><i class="fas fa-arrow-left me-1"></i> Back</button>
         <button class="ob-btn-skip" onclick="goTo(4)">Skip</button>
@@ -179,9 +222,14 @@
       <div class="ob-feat"><i class="fas fa-check-circle" style="color:#60a5fa"></i> Live foreign exchange rates</div>
       <div class="ob-feat"><i class="fas fa-check-circle" style="color:#60a5fa"></i> Business trade solutions</div>
       <div class="ob-feat"><i class="fas fa-check-circle" style="color:#60a5fa"></i> Trade application & agreement system</div>
-      <a href="{% url 'forex' %}" style="display:block;background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.2);border-radius:12px;padding:12px;text-align:center;color:#60a5fa;font-size:.82rem;font-weight:700;text-decoration:none;margin:16px 0 20px">
-        <i class="fas fa-external-link-alt me-2"></i>View Live Exchange Rates
-      </a>
+      <div style="display:flex;gap:8px;margin:16px 0 20px">
+        <a href="{% url 'forex' %}" style="flex:1;display:block;background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.2);border-radius:12px;padding:10px;text-align:center;color:#60a5fa;font-size:.78rem;font-weight:700;text-decoration:none">
+          <i class="fas fa-chart-line me-1"></i>Live Rates
+        </a>
+        <button onclick="playObVideo('https://www.youtube.com/embed/TxBRbMDKIgA','Forex Basics — CAD, USD, UGX, KES, EUR & JPY')" style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px;color:#e0d5c0;font-size:.78rem;font-weight:700;cursor:pointer">
+          <i class="fas fa-play-circle me-1" style="color:#c9a84c"></i>Watch Video
+        </button>
+      </div>
       <div class="ob-nav">
         <button class="ob-btn-back" onclick="goTo(2)"><i class="fas fa-arrow-left me-1"></i> Back</button>
         <button class="ob-btn-next" onclick="goTo(4)" style="background:linear-gradient(135deg,#60a5fa,#93c5fd);color:#0a1628">Finish <i class="fas fa-check ms-1"></i></button>
@@ -222,6 +270,13 @@
             <i class="fas fa-exchange-alt" style="color:#c9a84c;font-size:1.4rem;margin-bottom:8px"></i>
             <div style="color:#fff;font-weight:800;font-size:.82rem;margin-bottom:4px">Trade Apply</div>
             <div style="color:#7a6e5f;font-size:.72rem">Start Trading</div>
+          </a>
+        </div>
+        <div class="col-12">
+          <a href="{% url 'tv_programs' %}" class="ob-cta" style="display:block;border-color:rgba(201,168,76,.3);background:rgba(201,168,76,.06)">
+            <i class="fas fa-play-circle" style="color:#c9a84c;font-size:1.4rem;margin-bottom:8px"></i>
+            <div style="color:#fff;font-weight:800;font-size:.82rem;margin-bottom:4px">Video Library</div>
+            <div style="color:#7a6e5f;font-size:.72rem">Watch Training Videos</div>
           </a>
         </div>
       </div>
