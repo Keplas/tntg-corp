@@ -15,6 +15,7 @@ urlpatterns = [
     path('forgot-password/',                      views.forgot_password,  name='forgot_password'),
     path('reset-password/<str:token>/',           views.reset_password,   name='reset_password'),
     path('verify-email/<str:token>/',             views.verify_email,     name='verify_email'),
+    path('analytics/', views.analytics_dashboard, name='analytics_dashboard'),
     path('wallet/',          views.wallet_view,     name='wallet'),
     path('wallet/convert/',  views.wallet_convert,  name='wallet_convert'),
     path('wallet/withdraw/', views.wallet_withdraw, name='wallet_withdraw'),

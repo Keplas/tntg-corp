@@ -681,3 +681,61 @@ def wallet_withdraw(request):
             messages.success(request, f'Withdrawal request of {amount} {currency} submitted. Processing on Day 45 cycle.')
 
     return redirect('wallet')
+
+
+@login_required
+def analytics_dashboard(request):
+    """Admin-only analytics dashboard."""
+    from marketplace.models import Order, Product, BulkOrder
+    from services.models import TradeInquiry
+    from core.models import Notification, NewsletterSubscriber
+    from accounts.models import CustomUser
+    from django.db.models import Sum, Avg, Count
+    from django.utils import timezone
+    from datetime import timedelta
+    import decimal
+
+    if not request.user.is_staff:
+        messages.error(request, 'Access denied.')
+        return redirect('dashboard')
+
+    now   = timezone.now()
+    month = now - timedelta(days=30)
+
+    # Core stats
+    try: total_revenue    = Order.objects.aggregate(s=Sum('total_price'))['s'] or decimal.Decimal('0')
+    except: total_revenue = decimal.Decimal('0')
+    try: monthly_revenue  = Order.objects.filter(created_at__gte=month).aggregate(s=Sum('total_price'))['s'] or decimal.Decimal('0')
+    except: monthly_revenue = decimal.Decimal('0')
+    try: avg_order        = Order.objects.aggregate(a=Avg('total_price'))['a'] or decimal.Decimal('0')
+    except: avg_order     = decimal.Decimal('0')
+
+    stats = {
+        'total_users':      CustomUser.objects.count(),
+        'total_orders':     Order.objects.count(),
+        'pending_orders':   Order.objects.filter(status='pending').count(),
+        'trade_inquiries':  TradeInquiry.objects.count(),
+        'bulk_orders':      BulkOrder.objects.count(),
+        'newsletter_subs':  NewsletterSubscriber.objects.filter(active=True).count(),
+        'total_revenue':    total_revenue,
+        'monthly_revenue':  monthly_revenue,
+        'avg_order':        avg_order,
+    }
+
+    top_products = Product.objects.filter(is_active=True).annotate(
+        order_count=Count('order')
+    ).order_by('-order_count')[:5]
+
+    users_by_country = CustomUser.objects.values('country').annotate(
+        count=Count('id')
+    ).order_by('-count')[:6]
+
+    ctx = {
+        'stats':          stats,
+        'top_products':   top_products,
+        'users_by_country': users_by_country,
+        'recent_orders':  Order.objects.select_related('buyer','product').order_by('-created_at')[:8],
+        'recent_trade':   TradeInquiry.objects.order_by('-created_at')[:6],
+        'recent_notifs':  Notification.objects.order_by('-created_at')[:6],
+    }
+    return render(request, 'accounts/analytics_dashboard.html', ctx)

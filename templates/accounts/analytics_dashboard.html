@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% block title %}Admin Analytics — T&TG Trade Corp{% endblock %}
+{% block content %}
+<style>
+  .an-bg  { background:#060f1e; min-height:100vh; padding:40px 0 80px; }
+  .an-card { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.15); border-radius:16px; padding:24px; }
+  .an-stat { background:rgba(201,168,76,.06); border:1px solid rgba(201,168,76,.2); border-radius:14px; padding:20px; text-align:center; }
+  .an-num  { font-size:2.2rem; font-weight:900; color:#c9a84c; line-height:1; }
+  .an-lbl  { font-size:.75rem; color:#7a6e5f; margin-top:6px; text-transform:uppercase; letter-spacing:1px; }
+  .an-trend-up   { color:#4ade80; font-size:.72rem; }
+  .an-trend-down { color:#f87171; font-size:.72rem; }
+  .act-item { display:flex; gap:12px; align-items:flex-start; padding:12px 0; border-bottom:1px solid rgba(255,255,255,.04); }
+  .act-item:last-child { border-bottom:none; }
+  .act-dot  { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+</style>
+
+<div class="an-bg">
+<div class="container-fluid px-4">
+
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-5">
+    <div>
+      <div style="font-size:.68rem;font-weight:800;letter-spacing:3px;color:#c9a84c;margin-bottom:8px">ADMIN ONLY</div>
+      <h2 style="color:#fff;font-weight:900;margin:0">Analytics Dashboard</h2>
+    </div>
+    <div style="color:#7a6e5f;font-size:.8rem">Last updated: {% now "d M Y, H:i" %}</div>
+  </div>
+
+  <!-- Top Stats -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3 col-lg-2">
+      <div class="an-stat">
+        <div class="an-num">{{ stats.total_users }}</div>
+        <div class="an-lbl">Total Users</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3 col-lg-2">
+      <div class="an-stat">
+        <div class="an-num">{{ stats.total_orders }}</div>
+        <div class="an-lbl">Total Orders</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3 col-lg-2">
+      <div class="an-stat">
+        <div class="an-num">{{ stats.pending_orders }}</div>
+        <div class="an-lbl">Pending Orders</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3 col-lg-2">
+      <div class="an-stat">
+        <div class="an-num">{{ stats.trade_inquiries }}</div>
+        <div class="an-lbl">Trade Applications</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3 col-lg-2">
+      <div class="an-stat">
+        <div class="an-num">{{ stats.bulk_orders }}</div>
+        <div class="an-lbl">Bulk Requests</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3 col-lg-2">
+      <div class="an-stat">
+        <div class="an-num">{{ stats.newsletter_subs }}</div>
+        <div class="an-lbl">Newsletter</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <!-- Revenue Stats -->
+    <div class="col-md-4">
+      <div class="an-card h-100">
+        <h6 style="color:#c9a84c;font-weight:800;margin-bottom:16px"><i class="fas fa-dollar-sign me-2"></i>Revenue Overview</h6>
+        <div style="margin-bottom:14px">
+          <div style="color:#7a6e5f;font-size:.72rem;margin-bottom:4px">Total Revenue (USD)</div>
+          <div style="color:#fff;font-weight:900;font-size:1.5rem">USD {{ stats.total_revenue|floatformat:2 }}</div>
+        </div>
+        <div style="margin-bottom:14px">
+          <div style="color:#7a6e5f;font-size:.72rem;margin-bottom:4px">This Month</div>
+          <div style="color:#4ade80;font-weight:800">USD {{ stats.monthly_revenue|floatformat:2 }}</div>
+        </div>
+        <div>
+          <div style="color:#7a6e5f;font-size:.72rem;margin-bottom:4px">Avg. Order Value</div>
+          <div style="color:#c9a84c;font-weight:700">USD {{ stats.avg_order|floatformat:2 }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products -->
+    <div class="col-md-4">
+      <div class="an-card h-100">
+        <h6 style="color:#c9a84c;font-weight:800;margin-bottom:16px"><i class="fas fa-box me-2"></i>Products & Inventory</h6>
+        {% for p in top_products %}
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.04)">
+          <div>
+            <div style="color:#e0d5c0;font-size:.82rem;font-weight:600">{{ p.name|truncatechars:24 }}</div>
+            <div style="color:#7a6e5f;font-size:.7rem">{{ p.currency }} {{ p.price }}/{{ p.unit }}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="color:#c9a84c;font-weight:800;font-size:.82rem">{{ p.order_count }} orders</div>
+            <div style="color:#7a6e5f;font-size:.7rem">{{ p.quantity_available }} in stock</div>
+          </div>
+        </div>
+        {% empty %}
+        <div style="color:#7a6e5f;font-size:.82rem">No orders yet</div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Users by Country -->
+    <div class="col-md-4">
+      <div class="an-card h-100">
+        <h6 style="color:#c9a84c;font-weight:800;margin-bottom:16px"><i class="fas fa-globe me-2"></i>Users by Country</h6>
+        {% for item in users_by_country %}
+        <div style="display:flex;justify-content:space-between;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.04)">
+          <span style="color:#e0d5c0;font-size:.82rem">{{ item.country|default:"Not specified" }}</span>
+          <span style="color:#c9a84c;font-weight:700">{{ item.count }}</span>
+        </div>
+        {% empty %}
+        <div style="color:#7a6e5f;font-size:.82rem">No data yet</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Recent Orders -->
+    <div class="col-lg-6">
+      <div class="an-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 style="color:#c9a84c;font-weight:800;margin:0"><i class="fas fa-shopping-bag me-2"></i>Recent Orders</h6>
+          <a href="/admin/marketplace/order/" style="color:#7a6e5f;font-size:.72rem;text-decoration:none">View all</a>
+        </div>
+        {% for o in recent_orders %}
+        <div class="act-item">
+          <div class="act-dot" style="background:{% if o.status == 'delivered' %}#4ade80{% elif o.status == 'pending' %}#fbbf24{% else %}#60a5fa{% endif %}"></div>
+          <div style="flex:1">
+            <div style="color:#e0d5c0;font-size:.82rem;font-weight:600">{{ o.buyer.get_full_name|default:o.buyer.username }}</div>
+            <div style="color:#7a6e5f;font-size:.72rem">{{ o.product.name|truncatechars:28 }} · {{ o.created_at|date:"d M" }}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="color:#c9a84c;font-weight:700;font-size:.82rem">{{ o.product.currency }} {{ o.total_price }}</div>
+            <div style="font-size:.68rem;padding:2px 8px;border-radius:100px;{% if o.status == 'pending' %}background:rgba(251,191,36,.15);color:#fbbf24{% elif o.status == 'delivered' %}background:rgba(34,197,94,.15);color:#4ade80{% else %}background:rgba(96,165,250,.15);color:#60a5fa{% endif %}">{{ o.status|capfirst }}</div>
+          </div>
+        </div>
+        {% empty %}
+        <div style="color:#7a6e5f;text-align:center;padding:24px;font-size:.85rem">No orders yet</div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Recent Trade Applications -->
+    <div class="col-lg-6">
+      <div class="an-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 style="color:#c9a84c;font-weight:800;margin:0"><i class="fas fa-exchange-alt me-2"></i>Trade Applications</h6>
+          <a href="{% url 'trade_dashboard' %}" style="color:#7a6e5f;font-size:.72rem;text-decoration:none">Manage</a>
+        </div>
+        {% for t in recent_trade %}
+        <div class="act-item">
+          <div class="act-dot" style="background:{% if t.status == 'approved' %}#4ade80{% elif t.status == 'pending' %}#fbbf24{% else %}#60a5fa{% endif %}"></div>
+          <div style="flex:1">
+            <div style="color:#e0d5c0;font-size:.82rem;font-weight:600">{{ t.full_name }}</div>
+            <div style="color:#7a6e5f;font-size:.72rem">{{ t.get_direction_display|truncatechars:20 }} · {{ t.quantity_kg|floatformat:0 }}kg · {{ t.created_at|date:"d M" }}</div>
+          </div>
+          <div style="font-size:.68rem;padding:2px 8px;border-radius:100px;{% if t.status == 'pending' %}background:rgba(251,191,36,.15);color:#fbbf24{% elif t.status == 'approved' %}background:rgba(34,197,94,.15);color:#4ade80{% else %}background:rgba(96,165,250,.15);color:#60a5fa{% endif %}">{{ t.get_status_display }}</div>
+        </div>
+        {% empty %}
+        <div style="color:#7a6e5f;text-align:center;padding:24px;font-size:.85rem">No applications yet</div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="col-12">
+      <div class="an-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 style="color:#c9a84c;font-weight:800;margin:0"><i class="fas fa-bell me-2"></i>Recent Notifications</h6>
+          <a href="{% url 'notifications' %}" style="color:#7a6e5f;font-size:.72rem;text-decoration:none">View all</a>
+        </div>
+        {% for n in recent_notifs %}
+        <div class="act-item">
+          <div class="act-dot" style="background:{% if not n.is_read %}#c9a84c{% else %}rgba(201,168,76,.3){% endif %}"></div>
+          <div style="flex:1">
+            <div style="color:{% if not n.is_read %}#fff{% else %}#7a6e5f{% endif %};font-size:.82rem;font-weight:{% if not n.is_read %}700{% else %}400{% endif %}">{{ n.title }}</div>
+            <div style="color:#7a6e5f;font-size:.72rem">{{ n.message|truncatechars:60 }} · {{ n.created_at|date:"d M, H:i" }}</div>
+          </div>
+          {% if n.link %}<a href="{{ n.link }}" style="color:#c9a84c;font-size:.72rem;text-decoration:none;white-space:nowrap">View</a>{% endif %}
+        </div>
+        {% empty %}
+        <div style="color:#7a6e5f;text-align:center;padding:24px;font-size:.85rem">No notifications</div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+{% endblock %}
