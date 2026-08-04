@@ -260,9 +260,28 @@
  </div>
  </div>
 
- <!-- ── Card 5: Partner With Us ── -->
+ <!-- ── Card 5: B2B Trade Application Form ── -->
  <div class="col-md-6 col-lg-3">
- <div class="tg-card tg-reveal" id="card-partner" style="transition-delay:.32s">
+ <div class="tg-card tg-reveal" id="card-b2b" style="transition-delay:.32s">
+ <div class="tg-card-canvas-wrap">
+ <img class="tg-card-img" loading="lazy"
+ src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&h=400&fit=crop&q=80"
+ alt="B2B Trade Application Form — T&TG"
+ onerror="this.style.display='none';this.nextElementSibling.style.display='none';this.parentElement.querySelector('.tg-card-cv').style.opacity='1'">
+ <div class="tg-card-img-overlay"></div>
+ <canvas id="cvB2B" class="tg-card-cv" style="opacity:.35"></canvas>
+ </div>
+ <div class="tg-card-body">
+ <h5 class="tg-card-title">B2B Trade Application Form</h5>
+ <p class="tg-card-text">Register and partner with T&TG. Apply to begin import and export operations across Canada, USA, Uganda, Kenya, Netherlands and Japan.</p>
+ <a href="{% url 'trade_apply' %}" class="tg-card-btn">Apply Now <i class="fas fa-arrow-right"></i></a>
+ </div>
+ </div>
+ </div>
+
+ <!-- ── Card 6: Partner With Us ── -->
+ <div class="col-md-6 col-lg-3">
+ <div class="tg-card tg-reveal" id="card-partner" style="transition-delay:.40s">
  <div class="tg-card-canvas-wrap">
  <img class="tg-card-img" loading="lazy"
  src="https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=600&h=400&fit=crop&q=80"
@@ -274,7 +293,7 @@
  <div class="tg-card-body">
  <h5 class="tg-card-title">Partner With Us</h5>
  <p class="tg-card-text">Coffee suppliers, distributors and regional managers across Canada, USA, Uganda, Kenya, Netherlands and Japan — join the T&TG network.</p>
- <a href="{% url 'trade_apply' %}" class="tg-card-btn">Become a Partner <i class="fas fa-arrow-right"></i></a>
+ <a href="{% url 'import_export' %}" class="tg-card-btn">Explore Partnership <i class="fas fa-arrow-right"></i></a>
  </div>
  </div>
  </div>
