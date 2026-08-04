@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}Training Events — T&TG Trade Corporation{% endblock %}
+{% block content %}
+<style>
+  .ev-hero { background:linear-gradient(135deg,#060f1e,#0a1a35); padding:56px 0 36px; border-bottom:1px solid rgba(201,168,76,.15); }
+  .ev-card { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.12); border-radius:18px; overflow:hidden; transition:border-color .25s,transform .25s; }
+  .ev-card:hover { border-color:rgba(201,168,76,.4); transform:translateY(-4px); }
+  .ev-badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:.68rem; font-weight:800; letter-spacing:.5px; text-transform:uppercase; }
+  .ev-free  { background:rgba(34,197,94,.12); color:#4ade80; border:1px solid rgba(34,197,94,.2); }
+  .ev-full  { background:rgba(248,113,113,.12); color:#f87171; border:1px solid rgba(248,113,113,.2); }
+  .ev-meta  { display:flex; align-items:center; gap:6px; font-size:.74rem; color:#7a6e5f; }
+</style>
+
+<section class="ev-hero bg-shimmer">
+  <div class="container">
+    <div style="font-size:.65rem;font-weight:900;letter-spacing:4px;color:#c9a84c;margin-bottom:12px">LIVE TRAINING EVENTS</div>
+    <h1 style="color:#fff;font-weight:900;font-size:clamp(1.6rem,4vw,2.2rem);margin-bottom:10px">T&TG Training Events</h1>
+    <p style="color:#7a6e5f;max-width:540px;line-height:1.7">Reserve your free online spot, receive your ticket by email, and join live training sessions on shopping, loyalty, forex and import & export operations.</p>
+    {% if user.is_authenticated %}
+    <a href="{% url 'my_tickets' %}" style="display:inline-flex;align-items:center;gap:8px;margin-top:16px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);color:#c9a84c;padding:8px 18px;border-radius:20px;text-decoration:none;font-size:.8rem;font-weight:700">
+      <i class="fas fa-ticket-alt"></i> My Tickets
+    </a>
+    {% endif %}
+  </div>
+</section>
+
+<section style="background:#060f1e;padding:56px 0 80px">
+<div class="container">
+  {% if events %}
+  <div class="row g-4">
+    {% for event in events %}
+    <div class="col-md-6 col-lg-6">
+      <div class="ev-card">
+        <!-- Thumbnail -->
+        {% if event.thumbnail_url %}
+        <div style="height:180px;overflow:hidden;position:relative">
+          <img src="{{ event.thumbnail_url }}" alt="{{ event.title }}" style="width:100%;height:100%;object-fit:cover">
+          <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(6,15,30,.9))"></div>
+          <div style="position:absolute;bottom:12px;left:16px;display:flex;gap:8px">
+            <span class="ev-badge {% if event.is_full %}ev-full{% else %}ev-free{% endif %}">
+              {% if event.is_full %}Fully Booked{% elif event.is_free %}Free{% else %}{{ event.price_points }} pts{% endif %}
+            </span>
+          </div>
+        </div>
+        {% endif %}
+        <!-- Body -->
+        <div style="padding:20px">
+          <div style="font-size:.7rem;font-weight:800;color:#c9a84c;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">{{ event.get_category_display }}</div>
+          <h5 style="color:#fff;font-weight:800;margin-bottom:10px;font-size:1rem">{{ event.title }}</h5>
+          <p style="color:#7a6e5f;font-size:.8rem;line-height:1.6;margin-bottom:16px">{{ event.description|truncatechars:120 }}</p>
+          <!-- Meta -->
+          <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+            <div class="ev-meta"><i class="fas fa-calendar-alt" style="color:#c9a84c"></i>{{ event.event_date|date:"D, d M Y" }}</div>
+            <div class="ev-meta"><i class="fas fa-clock" style="color:#c9a84c"></i>{{ event.event_date|date:"g:i A" }}</div>
+            <div class="ev-meta"><i class="fas fa-users" style="color:#c9a84c"></i>{{ event.spots_left }} spots left</div>
+            <div class="ev-meta"><i class="fas fa-hourglass-half" style="color:#c9a84c"></i>{{ event.duration_mins }} mins</div>
+          </div>
+          <a href="{% url 'event_detail' event.pk %}" class="btn btn-gold w-100" style="font-weight:800">
+            {% if event.is_full %}View Event{% else %}Reserve a Spot <i class="fas fa-arrow-right ms-1"></i>{% endif %}
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div style="text-align:center;padding:80px 0">
+    <i class="fas fa-calendar-times" style="font-size:3rem;color:rgba(201,168,76,.15);margin-bottom:20px"></i>
+    <h4 style="color:#fff">No events scheduled yet</h4>
+    <p style="color:#7a6e5f">Check back soon — new events are added regularly.</p>
+  </div>
+  {% endif %}
+</div>
+</section>
+{% endblock %}

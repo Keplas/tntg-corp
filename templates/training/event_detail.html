@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% block title %}{{ event.title }} — T&TG Training{% endblock %}
+{% block content %}
+<style>
+  .ed-hero { background:linear-gradient(135deg,#060f1e,#0a1a35); padding:56px 0 36px; border-bottom:1px solid rgba(201,168,76,.15); }
+  .ed-card { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.15); border-radius:18px; padding:28px; }
+  .ed-input { background:rgba(255,255,255,.05); border:1px solid rgba(201,168,76,.2); color:#e0d5c0; border-radius:10px; padding:12px 16px; width:100%; font-size:.9rem; }
+  .ed-input:focus { border-color:rgba(201,168,76,.5); outline:none; }
+  .agenda-row { display:flex; gap:14px; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.05); font-size:.82rem; }
+  .agenda-row:last-child { border-bottom:none; }
+  .agenda-time { color:#c9a84c; font-weight:800; width:80px; flex-shrink:0; }
+  .agenda-text { color:#b0a898; }
+</style>
+
+<section class="ed-hero bg-shimmer">
+  <div class="container">
+    <a href="{% url 'event_list' %}" style="color:#7a6e5f;font-size:.78rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-bottom:20px">
+      <i class="fas fa-arrow-left"></i> All Events
+    </a>
+    <div style="font-size:.68rem;font-weight:900;letter-spacing:3px;color:#c9a84c;margin-bottom:10px;text-transform:uppercase">{{ event.get_category_display }}</div>
+    <h1 style="color:#fff;font-weight:900;font-size:clamp(1.4rem,3.5vw,2rem);margin-bottom:14px">{{ event.title }}</h1>
+    <div style="display:flex;flex-wrap:wrap;gap:16px">
+      <div style="display:flex;align-items:center;gap:6px;font-size:.8rem;color:#7a6e5f"><i class="fas fa-calendar-alt" style="color:#c9a84c"></i>{{ event.event_date|date:"l, d F Y" }}</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:.8rem;color:#7a6e5f"><i class="fas fa-clock" style="color:#c9a84c"></i>{{ event.event_date|date:"g:i A" }} ({{ event.duration_mins }} mins)</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:.8rem;color:#7a6e5f"><i class="fas fa-users" style="color:#c9a84c"></i>{{ event.spots_left }} of {{ event.capacity }} spots available</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:.8rem"><i class="fas fa-tag" style="color:#c9a84c"></i><span style="{% if event.is_free %}color:#4ade80{% endif %};font-weight:700">{% if event.is_free %}Free Event{% else %}{{ event.price_points }} T&TG Points{% endif %}</span></div>
+    </div>
+  </div>
+</section>
+
+<section style="background:#060f1e;padding:56px 0 80px">
+<div class="container">
+  {% if messages %}{% for m in messages %}
+  <div class="alert mb-4" style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#4ade80;border-radius:12px;padding:14px 18px">
+    <i class="fas fa-check-circle me-2"></i>{{ m }}
+  </div>
+  {% endfor %}{% endif %}
+
+  <div class="row g-4">
+    <!-- Left: About + Agenda -->
+    <div class="col-lg-7">
+      {% if event.thumbnail_url %}
+      <div style="border-radius:16px;overflow:hidden;margin-bottom:24px;height:240px">
+        <img src="{{ event.thumbnail_url }}" alt="{{ event.title }}" style="width:100%;height:100%;object-fit:cover">
+      </div>
+      {% endif %}
+
+      <div class="ed-card mb-4">
+        <h5 style="color:#c9a84c;font-weight:800;margin-bottom:14px"><i class="fas fa-info-circle me-2"></i>About This Event</h5>
+        <p style="color:#b0a898;line-height:1.8;font-size:.88rem">{{ event.description }}</p>
+      </div>
+
+      {% if agenda %}
+      <div class="ed-card">
+        <h5 style="color:#c9a84c;font-weight:800;margin-bottom:14px"><i class="fas fa-list-ul me-2"></i>Event Agenda</h5>
+        {% for item in agenda %}
+        <div class="agenda-row">
+          {% if '–' in item or '-' in item %}
+            {% with parts=item|cut:"–"|cut:"-" %}
+            <div class="agenda-time">{{ item|slice:":8" }}</div>
+            <div class="agenda-text">{{ item|slice:"8:" }}</div>
+            {% endwith %}
+          {% else %}
+            <div class="agenda-text" style="width:100%">{{ item }}</div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Right: Registration Form -->
+    <div class="col-lg-5">
+      <div class="ed-card" style="position:sticky;top:100px">
+        {% if already_registered %}
+        <div style="text-align:center;padding:20px 0">
+          <div style="font-size:2.5rem;margin-bottom:12px">🎟️</div>
+          <h5 style="color:#4ade80;font-weight:800">You're Registered!</h5>
+          <p style="color:#7a6e5f;font-size:.82rem;margin-bottom:20px">You already have a confirmed ticket for this event. Check your email for ticket details.</p>
+          <a href="{% url 'my_tickets' %}" class="btn btn-gold w-100">View My Tickets</a>
+        </div>
+        {% elif event.is_full %}
+        <div style="text-align:center;padding:20px 0">
+          <div style="font-size:2.5rem;margin-bottom:12px">😔</div>
+          <h5 style="color:#f87171;font-weight:800">Fully Booked</h5>
+          <p style="color:#7a6e5f;font-size:.82rem">This event is fully booked. Check other upcoming events.</p>
+          <a href="{% url 'event_list' %}" class="btn btn-gold w-100 mt-3">See Other Events</a>
+        </div>
+        {% else %}
+        <div style="text-align:center;margin-bottom:20px">
+          <div style="font-size:2rem;margin-bottom:8px">🎟️</div>
+          <h5 style="color:#fff;font-weight:900;margin-bottom:4px">Reserve Your Spot</h5>
+          <p style="color:#7a6e5f;font-size:.78rem">Free · Instant confirmation · Ticket sent to your email</p>
+        </div>
+
+        <form method="POST" action="{% url 'reserve_spot' event.pk %}">
+          {% csrf_token %}
+          <div style="margin-bottom:14px">
+            <label style="color:#7a6e5f;font-size:.74rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:6px">Full Name *</label>
+            <input type="text" name="name" class="ed-input" placeholder="Your full name" required
+              value="{% if user.is_authenticated %}{{ user.get_full_name|default:user.username }}{% endif %}">
+          </div>
+          <div style="margin-bottom:20px">
+            <label style="color:#7a6e5f;font-size:.74rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:6px">Email Address *</label>
+            <input type="email" name="email" class="ed-input" placeholder="Ticket will be sent here" required
+              value="{% if user.is_authenticated %}{{ user.email }}{% endif %}">
+          </div>
+
+          <div style="background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.12);border-radius:10px;padding:14px;margin-bottom:20px">
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:6px">
+              <span style="color:#7a6e5f">General Admission</span>
+              <span style="color:#4ade80;font-weight:800">CA$0.00</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:6px">
+              <span style="color:#7a6e5f">Service Fee</span>
+              <span style="color:#4ade80;font-weight:800">CA$0.00</span>
+            </div>
+            <div style="border-top:1px solid rgba(201,168,76,.15);margin-top:10px;padding-top:10px;display:flex;justify-content:space-between;font-size:.88rem">
+              <span style="color:#fff;font-weight:700">Total</span>
+              <span style="color:#4ade80;font-weight:900">CA$0.00</span>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-gold w-100 py-3" style="font-weight:900;font-size:.95rem">
+            <i class="fas fa-ticket-alt me-2"></i>Reserve My Free Spot
+          </button>
+          <p style="color:#7a6e5f;font-size:.7rem;text-align:center;margin-top:10px">
+            By registering you agree to T&TG's <a href="{% url 'terms' %}" style="color:#c9a84c">Terms & Conditions</a>
+          </p>
+        </form>
+        {% endif %}
+
+        <!-- Organiser -->
+        <div style="border-top:1px solid rgba(201,168,76,.1);margin-top:24px;padding-top:20px;display:flex;gap:12px;align-items:center">
+          <div style="width:40px;height:40px;border-radius:50%;background:rgba(201,168,76,.1);display:flex;align-items:center;justify-content:center;font-weight:900;color:#c9a84c;flex-shrink:0">TS</div>
+          <div>
+            <div style="color:#7a6e5f;font-size:.68rem;font-weight:700;text-transform:uppercase">Organised by</div>
+            <div style="color:#fff;font-weight:800;font-size:.85rem">Tom Ssembiito</div>
+            <div style="color:#7a6e5f;font-size:.72rem">T&TG Trade Corporation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+{% endblock %}

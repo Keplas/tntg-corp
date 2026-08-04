@@ -59,3 +59,67 @@ class TVProgram(models.Model):
 
     def __str__(self):
         return self.title
+
+
+import uuid
+
+class TrainingEvent(models.Model):
+    CATEGORY = [
+        ('shopping',    'T&TG Shopping Platform'),
+        ('loyalty',     'Loyalty & Rewards'),
+        ('trade',       'Import & Export Trade'),
+        ('forex',       'Live Forex & Currency'),
+        ('onboarding',  'Platform Onboarding'),
+        ('coffee',      'Coffee Knowledge'),
+    ]
+    title           = models.CharField(max_length=300)
+    category        = models.CharField(max_length=20, choices=CATEGORY)
+    description     = models.TextField()
+    agenda          = models.TextField(blank=True, help_text="Line-by-line agenda items")
+    event_date      = models.DateTimeField()
+    duration_mins   = models.IntegerField(default=60)
+    capacity        = models.IntegerField(default=100)
+    is_free         = models.BooleanField(default=True)
+    price_points    = models.IntegerField(default=0, help_text="Cost in T&TG Loyalty Points (0 = free)")
+    video_url       = models.URLField(blank=True, help_text="YouTube/stream link unlocked after registration")
+    thumbnail_url   = models.URLField(blank=True)
+    is_active       = models.BooleanField(default=True)
+    created_at      = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def spots_taken(self):
+        return self.tickets.filter(status='confirmed').count()
+
+    @property
+    def spots_left(self):
+        return max(0, self.capacity - self.spots_taken)
+
+    @property
+    def is_full(self):
+        return self.spots_left == 0
+
+    def __str__(self):
+        return self.title
+
+
+class EventTicket(models.Model):
+    STATUS = [
+        ('confirmed', 'Confirmed'),
+        ('cancelled', 'Cancelled'),
+        ('attended',  'Attended'),
+    ]
+    ticket_number   = models.CharField(max_length=20, unique=True, editable=False)
+    event           = models.ForeignKey(TrainingEvent, on_delete=models.CASCADE, related_name='tickets')
+    user            = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='event_tickets', null=True, blank=True)
+    name            = models.CharField(max_length=200)
+    email           = models.EmailField()
+    status          = models.CharField(max_length=20, choices=STATUS, default='confirmed')
+    registered_at   = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.ticket_number:
+            self.ticket_number = 'TKT-' + uuid.uuid4().hex[:8].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.ticket_number} — {self.name} — {self.event.title}"

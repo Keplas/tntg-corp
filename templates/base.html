@@ -455,7 +455,8 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  <button class="tg-nl">{% t "nav_training" %} <i class="fas fa-chevron-down tg-caret"></i></button>
  <div class="tg-dd">
  <a href="{% url 'training_home' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>Onboarding Program</a>
- <a href="{% url 'tv_programs' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>Streaming</a>
+ <a href="{% url 'event_list' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-ticket-alt"></i></span>Training Events</a>
+              <a href="{% url 'tv_programs' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>Streaming</a>
  </div>
  </li>
  <li>
@@ -532,7 +533,8 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  <span class="tg-pts-badge">{{ user.avon_points|floatformat:0 }}</span>
  </a>
  <a href="{% url 'wallet' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-wallet"></i></span>My Wallet</a>
-                <a href="{% url 'my_orders' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>My Orders</a>
+                <a href="{% url 'my_tickets' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-ticket-alt"></i></span>My Tickets</a>
+              <a href="{% url 'my_orders' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>My Orders</a>
  <a href="{% url 'wishlist' %}" class="tg-dd-item"><span class="tg-dd-ico">️</span>My Wishlist</a>
  <a href="{% url 'cart' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>My Cart</a>
  <div style="height:1px;background:rgba(201,168,76,.12);margin:6px 8px"></div>

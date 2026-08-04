@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}My Tickets — T&TG{% endblock %}
+{% block content %}
+<section style="background:#060f1e;min-height:80vh;padding:60px 0">
+<div class="container">
+  <div style="margin-bottom:32px">
+    <div style="font-size:.65rem;font-weight:900;letter-spacing:3px;color:#c9a84c;margin-bottom:8px">MY REGISTRATIONS</div>
+    <h2 style="color:#fff;font-weight:900">My Training Tickets</h2>
+  </div>
+
+  {% if tickets %}
+  <div class="row g-3">
+    {% for t in tickets %}
+    <div class="col-md-6 col-lg-4">
+      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,{% if t.status == 'confirmed' %}.25{% else %}.08{% endif %});border-radius:16px;overflow:hidden">
+        <div style="background:rgba(201,168,76,.06);padding:14px 18px;border-bottom:1px solid rgba(201,168,76,.1)">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="color:#c9a84c;font-weight:900;font-size:.85rem;letter-spacing:1px">{{ t.ticket_number }}</span>
+            <span style="font-size:.65rem;font-weight:800;padding:3px 10px;border-radius:20px;{% if t.status == 'confirmed' %}background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.2){% elif t.status == 'attended' %}background:rgba(96,165,250,.12);color:#60a5fa;border:1px solid rgba(96,165,250,.2){% else %}background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.2){% endif %}">
+              {{ t.get_status_display|upper }}
+            </span>
+          </div>
+        </div>
+        <div style="padding:16px 18px">
+          <div style="color:#fff;font-weight:700;font-size:.88rem;margin-bottom:8px">{{ t.event.title|truncatechars:50 }}</div>
+          <div style="color:#7a6e5f;font-size:.74rem;margin-bottom:4px"><i class="fas fa-calendar-alt" style="color:#c9a84c;width:14px"></i> {{ t.event.event_date|date:"D, d M Y" }}</div>
+          <div style="color:#7a6e5f;font-size:.74rem;margin-bottom:4px"><i class="fas fa-clock" style="color:#c9a84c;width:14px"></i> {{ t.event.event_date|date:"g:i A" }}</div>
+          <div style="color:#7a6e5f;font-size:.74rem;margin-bottom:16px"><i class="fas fa-tag" style="color:#c9a84c;width:14px"></i> Free — CA$0.00</div>
+          <a href="{% url 'ticket_detail' t.pk %}" class="btn btn-gold w-100" style="font-size:.82rem;font-weight:700">View Ticket</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div style="text-align:center;padding:80px 0">
+    <i class="fas fa-ticket-alt" style="font-size:3rem;color:rgba(201,168,76,.15);margin-bottom:20px"></i>
+    <h4 style="color:#fff;margin-bottom:8px">No tickets yet</h4>
+    <p style="color:#7a6e5f;margin-bottom:24px">Browse upcoming training events and reserve your free spot.</p>
+    <a href="{% url 'event_list' %}" class="btn btn-gold px-5">Browse Events</a>
+  </div>
+  {% endif %}
+</div>
+</section>
+{% endblock %}
