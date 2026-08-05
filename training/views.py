@@ -64,8 +64,9 @@ def reserve_spot(request, pk):
 
     if request.method == 'POST':
         spot_type = request.POST.get('spot_type','online')
-        name  = request.POST.get('name','').strip()
-        email = request.POST.get('email','').strip()
+        name      = request.POST.get('name','').strip()
+        email     = request.POST.get('email','').strip()
+        spot_type = request.POST.get('spot_type','online')
 
         if not name or not email:
             messages.error(request, 'Please enter your name and email.')

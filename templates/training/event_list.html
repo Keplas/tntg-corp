@@ -56,7 +56,7 @@
             <div class="ev-meta"><i class="fas fa-hourglass-half" style="color:#c9a84c"></i>{{ event.duration_mins }} mins</div>
           </div>
           <a href="{% url 'event_detail' event.pk %}" class="btn btn-gold w-100" style="font-weight:800">
-            {% if event.is_full %}View Event{% else %}Reserve a Spot <i class="fas fa-arrow-right ms-1"></i>{% endif %}
+            {% if event.is_full %}View Event{% else %}Register <i class="fas fa-arrow-right ms-1"></i>{% endif %}
           </a>
         </div>
       </div>
