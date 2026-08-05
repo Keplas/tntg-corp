@@ -38,6 +38,7 @@ body{font-family:Arial,sans-serif;background:#f4f4f4;margin:0;padding:20px}
       <div class="row"><span class="lbl">Date</span><span class="val">{{ event.event_date|date:"l, d F Y" }}</span></div>
       <div class="row"><span class="lbl">Time</span><span class="val">{{ event.event_date|date:"g:i A" }}</span></div>
       <div class="row"><span class="lbl">Duration</span><span class="val">{{ event.duration_mins }} minutes</span></div>
+      <div class="row"><span class="lbl">Spot Type</span><span class="val">{{ ticket.get_spot_type_display }}</span></div>
       <div class="row"><span class="lbl">Attendee</span><span class="val">{{ ticket.name }}</span></div>
       <div class="row"><span class="lbl">Email</span><span class="val">{{ ticket.email }}</span></div>
     </div>

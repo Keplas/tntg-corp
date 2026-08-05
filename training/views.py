@@ -63,6 +63,7 @@ def reserve_spot(request, pk):
         return redirect('event_detail', pk=pk)
 
     if request.method == 'POST':
+        spot_type = request.POST.get('spot_type','online')
         name  = request.POST.get('name','').strip()
         email = request.POST.get('email','').strip()
 
@@ -81,6 +82,7 @@ def reserve_spot(request, pk):
             user=request.user if request.user.is_authenticated else None,
             name=name,
             email=email,
+            spot_type=spot_type,
             status='confirmed',
         )
 

@@ -113,6 +113,8 @@ class EventTicket(models.Model):
     user            = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='event_tickets', null=True, blank=True)
     name            = models.CharField(max_length=200)
     email           = models.EmailField()
+    SPOT_TYPE = [('in_person','Reserve a Spot (In-Person)'),('online','Online Spot (Virtual)')]
+    spot_type       = models.CharField(max_length=20, choices=SPOT_TYPE, default='online')
     status          = models.CharField(max_length=20, choices=STATUS, default='confirmed')
     registered_at   = models.DateTimeField(auto_now_add=True)
 
