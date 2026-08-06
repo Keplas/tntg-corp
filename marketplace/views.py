@@ -468,13 +468,15 @@ def update_product_image(request, pk):
         image_file = request.FILES.get('image')
 
         if image_file:
-            product.image = image_file
+            product.image     = image_file
+            product.image_url = ''   # clear URL when uploading a file
             product.save()
             messages.success(request, f'Photo uploaded to Cloudinary for {product.name}')
         elif image_url:
+            product.image     = None   # clear CloudinaryField when using URL
             product.image_url = image_url
             product.save()
-            messages.success(request, f'Image URL updated for {product.name}')
+            messages.success(request, f'Image URL saved for {product.name}')
         else:
             messages.error(request, 'Please upload a photo or paste a Cloudinary URL.')
 

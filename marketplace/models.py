@@ -49,24 +49,37 @@ class Product(models.Model):
 
     @property
     def safe_image_url(self):
+        """
+        Priority order:
+        1. CloudinaryField (self.image) — build full URL from public_id
+        2. External URL (self.image_url) — direct URL field
+        """
+        import os
+        from django.conf import settings as djsettings
+
+        # ── Try CloudinaryField first ─────────────────────────────────────
         if self.image:
+            raw = str(self.image)  # stores public_id e.g. "tntg/products/abc123"
+            # If it already looks like a full URL, return it
+            if raw.startswith('http'):
+                return raw
+            # Build Cloudinary URL from public_id + env config
+            cloud = getattr(djsettings, 'CLOUDINARY_CLOUD_NAME', '')
+            if cloud and raw:
+                return f'https://res.cloudinary.com/{cloud}/image/upload/{raw}'
+            # Try .url attribute as last resort
             try:
-                # CloudinaryField returns full URL via .url
-                url = self.image.url if hasattr(self.image, 'url') else str(self.image)
-                if url and not url.endswith('/'):
-                    return url
-                # Cloudinary URLs start with https:// — return directly
-                if url.startswith('http'):
-                    return url
-                # Local /media/ URL — only return if file actually exists on disk
-                import os
-                from django.conf import settings as djsettings
-                local_path = os.path.join(djsettings.MEDIA_ROOT, str(self.image))
-                if os.path.exists(local_path):
+                url = self.image.url
+                if url and url.startswith('http'):
                     return url
             except Exception:
                 pass
-        return self.image_url or None
+
+        # ── Fall back to image_url field ──────────────────────────────────
+        if self.image_url:
+            return self.image_url
+
+        return None
 
     @property
     def safe_video_url(self):
