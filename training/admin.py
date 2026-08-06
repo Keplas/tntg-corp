@@ -23,7 +23,7 @@ class EventTicketAdmin(admin.ModelAdmin):
 
 @admin.register(TrainingProgram)
 class TrainingProgramAdmin(admin.ModelAdmin):
-    list_display  = ['title', 'category', 'duration', 'is_active']
+    list_display  = ['title', 'category', 'duration_hours', 'is_active']
     list_filter   = ['category', 'is_active']
     search_fields = ['title']
 
