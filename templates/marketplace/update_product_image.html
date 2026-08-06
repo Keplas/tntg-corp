@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block title %}Update Photo — {{ product.name }}{% endblock %}
+{% block content %}
+<style>
+  .up-bg   { background:#060f1e; min-height:90vh; padding:60px 0 80px; }
+  .up-card { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.15); border-radius:18px; padding:28px; max-width:560px; margin:0 auto; }
+  .up-input { background:rgba(255,255,255,.05); border:1px solid rgba(201,168,76,.2); color:#e0d5c0; border-radius:10px; padding:12px 16px; width:100%; font-size:.9rem; }
+  .up-input:focus { border-color:rgba(201,168,76,.5); outline:none; }
+</style>
+
+<div class="up-bg">
+<div class="container">
+  <a href="{% url 'manage_products' %}" style="color:#7a6e5f;font-size:.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-bottom:28px">
+    <i class="fas fa-arrow-left"></i> Back to Products
+  </a>
+
+  <div class="up-card">
+    <h4 style="color:#fff;font-weight:900;margin-bottom:4px">Update Product Photo</h4>
+    <div style="color:#7a6e5f;font-size:.82rem;margin-bottom:24px">{{ product.name }}</div>
+
+    <!-- Current image -->
+    {% if product.safe_image_url %}
+    <div style="margin-bottom:24px;text-align:center">
+      <div style="font-size:.7rem;color:#7a6e5f;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Current Photo</div>
+      <img src="{{ product.safe_image_url }}" alt="{{ product.name }}"
+        style="width:100%;max-width:320px;height:200px;object-fit:cover;border-radius:14px;border:1px solid rgba(201,168,76,.2)">
+      {% if product.image %}
+      <div style="margin-top:8px;font-size:.7rem;color:#60a5fa"><i class="fas fa-cloud me-1"></i>Stored on Cloudinary</div>
+      {% elif product.image_url %}
+      <div style="margin-top:8px;font-size:.7rem;color:#fbbf24"><i class="fas fa-link me-1"></i>External URL</div>
+      {% endif %}
+    </div>
+    {% else %}
+    <div style="background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);border-radius:12px;padding:14px;text-align:center;margin-bottom:24px;color:#f87171;font-size:.82rem">
+      <i class="fas fa-exclamation-circle me-2"></i>No photo set — product shows placeholder
+    </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <!-- Option 1: Upload file to Cloudinary -->
+      <div style="margin-bottom:20px">
+        <div style="font-size:.72rem;font-weight:800;color:#c9a84c;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">
+          <i class="fas fa-cloud-upload-alt me-1"></i> Option 1 — Upload Photo (→ Cloudinary CDN)
+        </div>
+        <div style="border:2px dashed rgba(201,168,76,.25);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:border-color .2s"
+          id="drop-zone" onclick="document.getElementById('file-input').click()">
+          <i class="fas fa-camera" style="font-size:1.8rem;color:rgba(201,168,76,.4);margin-bottom:10px"></i>
+          <div style="color:#e0d5c0;font-weight:700;font-size:.85rem" id="file-label">Click to choose a photo</div>
+          <div style="color:#7a6e5f;font-size:.72rem;margin-top:4px">JPG, PNG, WEBP — max 5MB · Saved to Cloudinary CDN</div>
+          <input id="file-input" type="file" name="image" accept="image/*" style="display:none" onchange="showFileName(this)">
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+        <div style="flex:1;height:1px;background:rgba(201,168,76,.1)"></div>
+        <span style="color:#7a6e5f;font-size:.72rem;font-weight:700">OR</span>
+        <div style="flex:1;height:1px;background:rgba(201,168,76,.1)"></div>
+      </div>
+
+      <!-- Option 2: Paste Cloudinary/external URL -->
+      <div style="margin-bottom:24px">
+        <div style="font-size:.72rem;font-weight:800;color:#c9a84c;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">
+          <i class="fas fa-link me-1"></i> Option 2 — Paste Cloudinary / Image URL
+        </div>
+        <input type="url" name="image_url" class="up-input"
+          placeholder="https://res.cloudinary.com/your-cloud/image/upload/..."
+          value="{{ product.image_url }}">
+        <div style="color:#7a6e5f;font-size:.7rem;margin-top:6px">
+          Paste any image URL — Cloudinary, Unsplash, or your own CDN
+        </div>
+      </div>
+
+      <!-- Preview -->
+      <div id="preview-wrap" style="display:none;margin-bottom:20px;text-align:center">
+        <div style="font-size:.7rem;color:#7a6e5f;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Preview</div>
+        <img id="preview-img" style="width:100%;max-width:280px;height:180px;object-fit:cover;border-radius:12px;border:1px solid rgba(201,168,76,.2)">
+      </div>
+
+      <button type="submit" class="btn btn-gold w-100 py-3" style="font-weight:900;font-size:.95rem">
+        <i class="fas fa-save me-2"></i>Save Product Photo
+      </button>
+    </form>
+  </div>
+</div>
+</div>
+
+<script>
+function showFileName(input){
+  if(input.files && input.files[0]){
+    document.getElementById('file-label').textContent = input.files[0].name;
+    var reader = new FileReader();
+    reader.onload = function(e){
+      var pw = document.getElementById('preview-wrap');
+      var pi = document.getElementById('preview-img');
+      pi.src = e.target.result;
+      pw.style.display = 'block';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+// URL paste preview
+document.querySelector('input[name="image_url"]').addEventListener('input', function(){
+  if(this.value.length > 10){
+    var pw = document.getElementById('preview-wrap');
+    var pi = document.getElementById('preview-img');
+    pi.src = this.value;
+    pi.onerror = function(){ pw.style.display='none'; };
+    pi.onload  = function(){ pw.style.display='block'; };
+  }
+});
+
+// Drag & drop
+var dz = document.getElementById('drop-zone');
+dz.addEventListener('dragover',  function(e){ e.preventDefault(); dz.style.borderColor='rgba(201,168,76,.6)'; });
+dz.addEventListener('dragleave', function(){ dz.style.borderColor='rgba(201,168,76,.25)'; });
+dz.addEventListener('drop', function(e){
+  e.preventDefault();
+  dz.style.borderColor='rgba(201,168,76,.25)';
+  var fi = document.getElementById('file-input');
+  fi.files = e.dataTransfer.files;
+  showFileName(fi);
+});
+</script>
+{% endblock %}

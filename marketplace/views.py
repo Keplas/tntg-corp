@@ -439,3 +439,45 @@ def bulk_order_request(request):
         {'range':'1,000 kg+',    'discount':'Custom pricing',       'note':'Enterprise / export'},
     ]
     return render(request, 'marketplace/bulk_order.html', {'tiers': tiers})
+
+
+@login_required
+def manage_products(request):
+    """Staff-only product image and detail management."""
+    if not request.user.is_staff:
+        messages.error(request, 'Access denied.')
+        return redirect('dashboard')
+    products = Product.objects.all().order_by('name')
+    return render(request, 'marketplace/manage_products.html', {'products': products})
+
+
+@login_required
+def update_product_image(request, pk):
+    """Staff: update a product's Cloudinary image URL or upload new photo."""
+    from django.shortcuts import get_object_or_404
+    if not request.user.is_staff:
+        messages.error(request, 'Access denied.')
+        return redirect('dashboard')
+
+    product = get_object_or_404(Product, pk=pk)
+
+    if request.method == 'POST':
+        # Handle direct Cloudinary URL paste
+        image_url = request.POST.get('image_url', '').strip()
+        # Handle file upload (goes to Cloudinary via CloudinaryField)
+        image_file = request.FILES.get('image')
+
+        if image_file:
+            product.image = image_file
+            product.save()
+            messages.success(request, f'Photo uploaded to Cloudinary for {product.name}')
+        elif image_url:
+            product.image_url = image_url
+            product.save()
+            messages.success(request, f'Image URL updated for {product.name}')
+        else:
+            messages.error(request, 'Please upload a photo or paste a Cloudinary URL.')
+
+        return redirect('manage_products')
+
+    return render(request, 'marketplace/update_product_image.html', {'product': product})

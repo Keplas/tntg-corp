@@ -1,3 +1,4 @@
+from cloudinary.models import CloudinaryField
 from django.db import models
 from accounts.models import CustomUser
 
@@ -27,8 +28,8 @@ class Product(models.Model):
     currency          = models.CharField(max_length=5, default='USD')
     quantity_available= models.IntegerField(default=0)
     unit              = models.CharField(max_length=50, default='unit')
-    image             = models.ImageField(upload_to='products/', blank=True, null=True,
-                                          help_text='Upload your own photo — takes priority over Image URL below.')
+    image             = CloudinaryField('image', folder='tntg/products', blank=True, null=True,
+                                          help_text='Upload photo — stored on Cloudinary CDN.')
     image_url         = models.URLField(blank=True,
                                         help_text='Stock/placeholder photo link — used only if no photo is uploaded above.')
     video             = models.FileField(upload_to='products/videos/', blank=True, null=True,
@@ -50,7 +51,10 @@ class Product(models.Model):
     def safe_image_url(self):
         if self.image:
             try:
-                url = self.image.url
+                # CloudinaryField returns full URL via .url
+                url = self.image.url if hasattr(self.image, 'url') else str(self.image)
+                if url and not url.endswith('/'):
+                    return url
                 # Cloudinary URLs start with https:// — return directly
                 if url.startswith('http'):
                     return url

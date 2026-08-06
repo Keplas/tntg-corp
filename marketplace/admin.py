@@ -5,26 +5,31 @@ from .models import Product, Order, ProductReview
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display  = ['image_preview', 'name', 'category', 'gender_target', 'price',
+    list_display  = ['image_preview', 'name', 'category', 'price',
                      'currency', 'quantity_available', 'market_type', 'is_active', 'is_featured']
-    list_filter   = ['category', 'gender_target', 'market_type', 'is_active', 'is_featured']
+    list_filter   = ['category', 'market_type', 'is_active', 'is_featured']
     search_fields = ['name', 'description']
-    list_editable = ['name', 'category', 'gender_target', 'price', 'is_active', 'is_featured']
+    list_editable = ['price', 'is_active', 'is_featured']
     fields = [
-        'name', 'category', 'gender_target', 'description', 'price', 'currency',
+        'name', 'category', 'description', 'price', 'currency',
         'quantity_available', 'unit', 'market_type', 'seller',
-        'origin_country', 'image', 'video_url', 'is_active', 'is_featured',
+        'origin_country', 'image', 'image_url', 'video_url', 'is_active', 'is_featured',
     ]
 
     def image_preview(self, obj):
+        url = None
         if obj.image:
             try:
-                return format_html(
-                    '<img src="{}" style="width:48px;height:48px;object-fit:cover;border-radius:6px;">',
-                    obj.image.url
-                )
+                url = obj.image.url
             except Exception:
-                return '⚠️'
+                pass
+        if not url:
+            url = getattr(obj, 'image_url', None)
+        if url:
+            return format_html(
+                '<img src="{}" style="width:56px;height:56px;object-fit:cover;border-radius:8px">',
+                url
+            )
         return '—'
     image_preview.short_description = 'Image'
 
