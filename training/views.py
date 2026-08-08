@@ -4,8 +4,43 @@ from django.contrib import messages
 from .models import TrainingProgram, Enrollment, TVProgram
 
 def training_home(request):
-    programs = TrainingProgram.objects.filter(is_active=True)
-    tv = TVProgram.objects.filter(is_active=True)
+    from django.shortcuts import redirect
+    from .models import TrainingEvent, EventTicket
+
+    if request.method == 'POST':
+        name  = request.POST.get('name','').strip()
+        email = request.POST.get('email','').strip()
+        if name and email:
+            event = TrainingEvent.objects.filter(is_active=True, category='onboarding').first() or                     TrainingEvent.objects.filter(is_active=True).first()
+            if event and not EventTicket.objects.filter(event=event, email=email).exists():
+                EventTicket.objects.create(
+                    event=event,
+                    user=request.user if request.user.is_authenticated else None,
+                    name=name, email=email,
+                    spot_type='online', status='confirmed',
+                )
+                try:
+                    from django.core.mail import send_mail
+                    from django.conf import settings as djs
+                    msg  = 'Hi ' + name + ',\n\n'
+                    msg += 'You are registered for T&TG Training.\n\n'
+                    msg += 'Watch your videos at:\n'
+                    msg += 'https://tntg-corp.onrender.com/training/streaming/\n\n'
+                    msg += 'T&TG Trade Corporation\n'
+                    msg += '9 Summerbridge Rd, Toronto, ON M1G 1L8, Canada'
+                    send_mail(
+                        subject='Welcome to T&TG Training',
+                        message=msg,
+                        from_email=getattr(djs,'DEFAULT_FROM_EMAIL',''),
+                        recipient_list=[email],
+                        fail_silently=True,
+                    )
+                except Exception:
+                    pass
+        return redirect('tv_programs')
+
+    programs   = TrainingProgram.objects.filter(is_active=True)
+    tv         = TVProgram.objects.filter(is_active=True)
     categories = TrainingProgram._meta.get_field('category').choices
     ctx = {'programs': programs, 'tv_programs': tv, 'categories': categories}
     return render(request, 'training/training_home.html', ctx)

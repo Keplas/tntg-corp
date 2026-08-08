@@ -1,330 +1,144 @@
 {% extends 'base.html' %}
-{% block title %}T&TG Onboarding Program — Learn, Trade & Earn
-<!-- Inline video modal for onboarding -->
-<div id="ob-video-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:99999;align-items:center;justify-content:center;padding:20px" onclick="closeObVideo(event)">
-  <div style="width:100%;max-width:700px;background:#0d1f3c;border:1px solid rgba(201,168,76,.25);border-radius:20px;overflow:hidden">
-    <div style="padding:14px 18px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(201,168,76,.12)">
-      <span id="ob-video-title" style="color:#fff;font-weight:700;font-size:.88rem"></span>
-      <button onclick="closeObVideo()" style="background:rgba(255,255,255,.08);border:none;color:#e0d5c0;border-radius:50%;width:30px;height:30px;cursor:pointer">x</button>
-    </div>
-    <div style="position:relative;padding-top:56.25%">
-      <iframe id="ob-video-frame" style="position:absolute;inset:0;width:100%;height:100%;border:none" allowfullscreen allow="autoplay"></iframe>
-    </div>
-    <div style="padding:12px 18px;text-align:center">
-      <a href="{% url 'tv_programs' %}" style="color:#c9a84c;font-size:.8rem;text-decoration:none">See all videos in the Training Library</a>
-    </div>
-  </div>
-</div>
-
-<script>
-function playObVideo(url, title){
-  document.getElementById('ob-video-frame').src = url + '?autoplay=1&rel=0';
-  document.getElementById('ob-video-title').textContent = title;
-  var m = document.getElementById('ob-video-modal');
-  m.style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-}
-function closeObVideo(e){
-  if(e && e.target !== document.getElementById('ob-video-modal') && e.type === 'click') return;
-  document.getElementById('ob-video-frame').src = '';
-  document.getElementById('ob-video-modal').style.display = 'none';
-  document.body.style.overflow = '';
-}
-document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeObVideo(); });
-</script>
-{% endblock %}
+{% block title %}T&TG Training Programme — Register & Get Started{% endblock %}
 {% block content %}
-
 <style>
-  .ob-wrap    { background:#060f1e; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:40px 20px 80px; }
-  .ob-phone   { background:linear-gradient(160deg,#0d1f3c,#060f1e); border:1px solid rgba(201,168,76,.25); border-radius:36px; width:100%; max-width:380px; overflow:hidden; box-shadow:0 40px 80px rgba(0,0,0,.5); position:relative; }
-  .ob-screen  { display:none; padding:40px 28px 32px; min-height:600px; flex-direction:column; }
-  .ob-screen.active { display:flex; animation: screenIn .4s cubic-bezier(.4,0,.2,1); }
-  @keyframes screenIn { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
-  .ob-icon    { width:88px; height:88px; border-radius:24px; display:flex; align-items:center; justify-content:center; margin:0 auto 24px; font-size:2.4rem; }
-  .ob-h       { color:#fff; font-weight:900; font-size:1.2rem; text-align:center; margin-bottom:12px; line-height:1.4; }
-  .ob-p       { color:#7a6e5f; font-size:.85rem; text-align:center; line-height:1.7; margin-bottom:24px; }
-  .ob-feat    { display:flex; align-items:center; gap:10px; color:#b0a898; font-size:.82rem; margin-bottom:10px; }
-  .ob-feat i  { color:#c9a84c; width:16px; flex-shrink:0; }
-  .ob-dots    { display:flex; justify-content:center; gap:7px; margin-bottom:24px; }
-  .ob-dot     { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.15); transition:all .3s; }
-  .ob-dot.active { width:24px; border-radius:100px; background:#c9a84c; }
-  .ob-nav     { display:flex; justify-content:space-between; align-items:center; padding:0 4px; margin-top:auto; }
-  .ob-btn-next { background:linear-gradient(135deg,#c9a84c,#e8c96a); color:#1a0a00; border:none; border-radius:100px; padding:12px 28px; font-weight:800; font-size:.88rem; cursor:pointer; }
-  .ob-btn-back { background:none; color:#7a6e5f; border:1px solid rgba(255,255,255,.1); border-radius:100px; padding:12px 20px; font-size:.82rem; cursor:pointer; }
-  .ob-btn-skip { background:none; color:#7a6e5f; border:none; font-size:.78rem; cursor:pointer; text-decoration:underline; padding:4px; }
-  .ob-badge   { display:inline-block; padding:4px 14px; border-radius:100px; font-size:.68rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:16px; }
-  /* Rate card mini */
-  .rate-mini  { background:rgba(255,255,255,.04); border:1px solid rgba(201,168,76,.15); border-radius:10px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
-  /* Final screen CTA cards */
-  .ob-cta     { background:rgba(255,255,255,.04); border:1px solid rgba(201,168,76,.15); border-radius:14px; padding:16px; text-align:center; cursor:pointer; text-decoration:none; transition:border-color .2s; }
-  .ob-cta:hover { border-color:rgba(201,168,76,.5); }
-</style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
-
-
-<canvas id="ob-particles" style="position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.6"></canvas>
-<script>
-/* Onboarding particle background */
-(function(){
-  var cv = document.getElementById('ob-particles');
-  if(!cv) return;
-  var ctx = cv.getContext('2d');
-  function resize(){ cv.width=window.innerWidth; cv.height=window.innerHeight; }
-  resize();
-  window.addEventListener('resize',resize,{passive:true});
-  var pts=[];
-  for(var i=0;i<40;i++) pts.push({
-    x:Math.random()*cv.width, y:Math.random()*cv.height,
-    r:Math.random()*1.8+.3, vx:Math.random()*.3-.15, vy:Math.random()*.3-.15,
-    a:Math.random()*.3+.05, da:Math.random()*.004+.002, dir:1
-  });
-  function draw(){
-    ctx.clearRect(0,0,cv.width,cv.height);
-    pts.forEach(function(p){
-      p.x+=p.vx; p.y+=p.vy; p.a+=p.da*p.dir;
-      if(p.a>.35||p.a<.05) p.dir*=-1;
-      if(p.x<0||p.x>cv.width) p.vx*=-1;
-      if(p.y<0||p.y>cv.height) p.vy*=-1;
-      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle='rgba(201,168,76,'+p.a.toFixed(2)+')'; ctx.fill();
-    });
-    requestAnimationFrame(draw);
+  .ob-bg {
+    background: linear-gradient(135deg, #060f1e 0%, #0a1a35 60%, #060f1e 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 16px;
+    position: relative;
+    overflow: hidden;
   }
-  draw();
-})();
-</script>
-<div class="ob-wrap" style="position:relative;z-index:1">
+  .ob-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(201,168,76,.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 20%, rgba(96,165,250,.05) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .ob-wrap {
+    width: 100%;
+    max-width: 460px;
+    position: relative;
+    z-index: 1;
+  }
+  .ob-card {
+    background: rgba(13,31,60,.95);
+    border: 1px solid rgba(201,168,76,.2);
+    border-radius: 24px;
+    padding: 36px 32px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 24px 80px rgba(0,0,0,.5);
+  }
+  .ob-input {
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(201,168,76,.2);
+    color: #e0d5c0;
+    border-radius: 12px;
+    padding: 13px 16px;
+    width: 100%;
+    font-size: .95rem;
+    transition: border-color .2s;
+  }
+  .ob-input:focus { border-color: rgba(201,168,76,.6); outline: none; background: rgba(255,255,255,.08); }
+  .ob-input::placeholder { color: rgba(224,213,192,.35); }
+  .ob-feat {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 0;
+    color: #b0a898;
+    font-size: .82rem;
+    line-height: 1.4;
+  }
+  .ob-feat i { color: #c9a84c; flex-shrink: 0; width: 16px; }
+</style>
 
-  <!-- Heading above phone -->
-  <div class="text-center mb-5" style="max-width:420px">
-    <div style="font-size:.68rem;font-weight:800;letter-spacing:3px;color:#c9a84c;text-transform:uppercase;margin-bottom:10px">T&TG CORPORATION</div>
-    <h1 style="color:#fff;font-weight:900;font-size:clamp(1.6rem,4vw,2.2rem);margin-bottom:10px">Onboarding Program</h1>
-    <p style="color:#7a6e5f;font-size:.9rem;line-height:1.6">Learn everything about T&TG — Shopping, Loyalty and International Trade.</p>
+<section class="ob-bg bg-shimmer">
+<div class="ob-wrap">
+
+  <!-- Logo + brand -->
+  <div style="text-align:center;margin-bottom:28px">
+    <img src="/static/images/logo.jpg" alt="T&TG"
+      style="width:64px;height:64px;border-radius:16px;object-fit:cover;border:2px solid rgba(201,168,76,.3);margin-bottom:14px">
+    <div style="font-size:.62rem;font-weight:900;letter-spacing:4px;color:#c9a84c;text-transform:uppercase;margin-bottom:6px">Training Programme</div>
+    <h1 style="color:#fff;font-weight:900;font-size:1.5rem;margin:0;line-height:1.25">Welcome to<br>T&TG Trade Corporation</h1>
   </div>
 
-  <!-- Phone frame -->
-  <div class="ob-phone">
+  <!-- Features -->
+  <div style="background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.12);border-radius:14px;padding:16px 18px;margin-bottom:24px">
+    <div class="ob-feat"><i class="fas fa-shopping-bag"></i>Shop T&TG premium coffee products</div>
+    <div class="ob-feat"><i class="fas fa-coins"></i>Earn loyalty points on every purchase</div>
+    <div class="ob-feat"><i class="fas fa-exchange-alt"></i>Access live international currency rates</div>
+    <div class="ob-feat"><i class="fas fa-globe"></i>Trade globally — Canada, USA, Uganda, Kenya, Netherlands and Japan</div>
+  </div>
 
-    <!-- Dots -->
-    <div class="ob-dots" style="padding:20px 0 0">
-      <div class="ob-dot active" id="dot-0"></div>
-      <div class="ob-dot" id="dot-1"></div>
-      <div class="ob-dot" id="dot-2"></div>
-      <div class="ob-dot" id="dot-3"></div>
-      <div class="ob-dot" id="dot-4"></div>
+  <!-- Registration card -->
+  <div class="ob-card">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:1.8rem;margin-bottom:8px">🎓</div>
+      <h4 style="color:#fff;font-weight:900;margin-bottom:4px;font-size:1.1rem">Register & Get Started</h4>
+      <p style="color:#7a6e5f;font-size:.78rem;margin:0">Enter your details to access the training videos</p>
     </div>
 
-    <!-- ═══ SCREEN 0: Welcome ═══════════════════════════════════════════ -->
-    <div class="ob-screen active" id="screen-0">
-      <div class="ob-icon" style="background:linear-gradient(135deg,rgba(201,168,76,.2),rgba(201,168,76,.05));border:1px solid rgba(201,168,76,.3)">
-        <img src="/static/images/logo.jpg" alt="T&TG" style="width:60px;height:60px;border-radius:14px;object-fit:cover">
+    <form method="POST" action="{% url 'training_home' %}">
+      {% csrf_token %}
+      <div style="margin-bottom:14px">
+        <label style="color:#7a6e5f;font-size:.72rem;font-weight:800;letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:7px">Full Name</label>
+        <input type="text" name="name" class="ob-input" placeholder="Your full name" required
+          value="{% if user.is_authenticated %}{{ user.get_full_name|default:user.username }}{% endif %}">
       </div>
-      <div style="text-align:center;margin-bottom:24px">
-        <div class="ob-badge" style="background:rgba(201,168,76,.12);color:#c9a84c;border:1px solid rgba(201,168,76,.2)">Welcome</div>
+      <div style="margin-bottom:22px">
+        <label style="color:#7a6e5f;font-size:.72rem;font-weight:800;letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:7px">Email Address</label>
+        <input type="email" name="email" class="ob-input" placeholder="Your email address" required
+          value="{% if user.is_authenticated %}{{ user.email }}{% endif %}">
       </div>
-      <h2 class="ob-h" style="font-size:1.4rem">Welcome to<br>T&TG Trade Corporation</h2>
-      <p class="ob-p">Connecting people, businesses and global markets through technology, trade and rewards.</p>
-      <div style="background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.15);border-radius:14px;padding:18px;margin-bottom:20px">
-        <div class="ob-feat"><i class="fas fa-shopping-bag"></i> Shop T&TG premium coffee products</div>
-        <div class="ob-feat"><i class="fas fa-coins"></i> Earn loyalty points on every purchase</div>
-        <div class="ob-feat"><i class="fas fa-exchange-alt"></i> Access live international currency rates</div>
-        <div class="ob-feat"><i class="fas fa-globe"></i> Trade globally — Canada, USA, Uganda, Kenya, Netherlands and Japan</div>
-      </div>
-      <div class="ob-nav">
-        <button class="ob-btn-skip" onclick="goTo(4)">Skip</button>
-        <button class="ob-btn-next" onclick="goTo(1)">Get Started &nbsp;<i class="fas fa-arrow-right"></i></button>
-      </div>
-    </div>
 
-    <!-- ═══ SCREEN 1: Shopping Platform ══════════════════════════════════ -->
-    <div class="ob-screen" id="screen-1">
-      <div style="text-align:center;margin-bottom:8px">
-        <div class="ob-badge" style="background:rgba(34,197,94,.1);color:#4ade80;border:1px solid rgba(34,197,94,.2)">1 / 4 &nbsp;·&nbsp; Shopping</div>
+      <!-- Order summary style -->
+      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 16px;margin-bottom:20px">
+        <div style="display:flex;justify-content:space-between;font-size:.8rem;margin-bottom:5px">
+          <span style="color:#7a6e5f">Training Access — General</span>
+          <span style="color:#4ade80;font-weight:800">Free</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:.8rem">
+          <span style="color:#7a6e5f">Video Library Access</span>
+          <span style="color:#4ade80;font-weight:800">Included</span>
+        </div>
+        <div style="border-top:1px solid rgba(255,255,255,.06);margin-top:10px;padding-top:10px;display:flex;justify-content:space-between;font-size:.88rem">
+          <span style="color:#fff;font-weight:700">Total</span>
+          <span style="color:#4ade80;font-weight:900">CA$0.00</span>
+        </div>
       </div>
-      <div class="ob-icon" style="background:linear-gradient(135deg,rgba(34,197,94,.15),rgba(34,197,94,.05));border:1px solid rgba(34,197,94,.2)">
-        <i class="fas fa-shopping-cart" style="color:#4ade80"></i>
-      </div>
-      <h2 class="ob-h">Learn about T&TG Shopping Platform</h2>
-      <p class="ob-p">Shop smarter with access to premium T&TG coffee products from trusted Canadian and Ugandan sources.</p>
-      <div style="flex:1">
-        <div class="ob-feat"><i class="fas fa-check-circle"></i> Buy coffee products worldwide</div>
-        <div class="ob-feat"><i class="fas fa-check-circle"></i> Secure online payments via Stripe & Flutterwave</div>
-        <div class="ob-feat"><i class="fas fa-check-circle"></i> Fast delivery to Canada, USA, Uganda, Kenya, Netherlands and Japan</div>
-        <div class="ob-feat"><i class="fas fa-check-circle"></i> Marketplace for Canadians & Global Clients</div>
-        <div class="ob-feat"><i class="fas fa-check-circle"></i> Wholesale & retail shopping available</div>
-        <div class="ob-feat"><i class="fas fa-check-circle"></i> Shopping cart, wishlist & order tracking</div>
-      </div>
-      <div style="display:flex;gap:8px;margin-bottom:20px">
-        <a href="{% url 'event_list' %}" class="btn btn-gold w-100 mb-2" style="font-weight:800"><i class="fas fa-ticket-alt me-2"></i>Register</a>
-        <a href="{% url 'marketplace' %}" style="flex:1;display:block;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);border-radius:12px;padding:10px;text-align:center;color:#4ade80;font-size:.78rem;font-weight:700;text-decoration:none">
-          <i class="fas fa-shopping-cart me-1"></i>Shop Now
-        </a>
-        <button onclick="playObVideo('https://www.youtube.com/embed/TxBRbMDKIgA','How to Use T&TG Shopping Platform')" style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px;color:#e0d5c0;font-size:.78rem;font-weight:700;cursor:pointer">
-          <i class="fas fa-play-circle me-1" style="color:#c9a84c"></i>Watch Video
-        </button>
-      </div>
-      <div class="ob-nav">
-        <button class="ob-btn-back" onclick="goTo(0)"><i class="fas fa-arrow-left me-1"></i> Back</button>
-        <button class="ob-btn-skip" onclick="goTo(4)">Skip</button>
-        <button class="ob-btn-next" onclick="goTo(2)">Next <i class="fas fa-arrow-right ms-1"></i></button>
-      </div>
-    </div>
 
-    <!-- ═══ SCREEN 2: Loyalty Platform ══════════════════════════════════ -->
-    <div class="ob-screen" id="screen-2">
-      <div style="text-align:center;margin-bottom:8px">
-        <div class="ob-badge" style="background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2)">2 / 4 &nbsp;·&nbsp; Loyalty</div>
-      </div>
-      <div class="ob-icon" style="background:linear-gradient(135deg,rgba(251,191,36,.15),rgba(251,191,36,.05));border:1px solid rgba(251,191,36,.2)">
-        <i class="fas fa-trophy" style="color:#fbbf24"></i>
-      </div>
-      <h2 class="ob-h">Learn about T&TG Loyalty Platform</h2>
-      <p class="ob-p">Shop, refer friends and grow your rewards through the T&TG Loyalty Programme.</p>
-      <div style="flex:1">
-        <div class="ob-feat"><i class="fas fa-star" style="color:#fbbf24"></i> Earn <strong style="color:#fbbf24">0.5%</strong> loyalty points on every purchase</div>
-        <div class="ob-feat"><i class="fas fa-star" style="color:#fbbf24"></i> Referral bonus — earn <strong style="color:#fbbf24">1%</strong> per referral</div>
-        <div class="ob-feat"><i class="fas fa-star" style="color:#fbbf24"></i> Withdraw your funds on <strong style="color:#fbbf24">Day 45</strong></div>
-        <div class="ob-feat"><i class="fas fa-star" style="color:#fbbf24"></i> Exclusive member offers & promotions</div>
-        <div class="ob-feat"><i class="fas fa-star" style="color:#fbbf24"></i> 4-digit PIN secured withdrawals</div>
-        <div class="ob-feat"><i class="fas fa-star" style="color:#fbbf24"></i> Points · Promotions · Referral · Reward</div>
-      </div>
-      <div style="display:flex;gap:8px;margin-bottom:20px">
-        <a href="{% url 'loyalty_info' %}" style="flex:1;display:block;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:12px;padding:10px;text-align:center;color:#fbbf24;font-size:.78rem;font-weight:700;text-decoration:none">
-          <i class="fas fa-coins me-1"></i>Loyalty Info
-        </a>
-        <button onclick="playObVideo('https://www.youtube.com/embed/TxBRbMDKIgA','T&TG Loyalty Programme — Earn, Refer & Withdraw')" style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px;color:#e0d5c0;font-size:.78rem;font-weight:700;cursor:pointer">
-          <i class="fas fa-play-circle me-1" style="color:#c9a84c"></i>Watch Video
-        </button>
-      </div>
-      <div class="ob-nav">
-        <button class="ob-btn-back" onclick="goTo(1)"><i class="fas fa-arrow-left me-1"></i> Back</button>
-        <button class="ob-btn-skip" onclick="goTo(4)">Skip</button>
-        <button class="ob-btn-next" onclick="goTo(3)">Next <i class="fas fa-arrow-right ms-1"></i></button>
-      </div>
-    </div>
+      <button type="submit" class="btn btn-gold w-100 py-3" style="font-size:1rem;font-weight:900;letter-spacing:.5px">
+        <i class="fas fa-play-circle me-2"></i>Get Started — Watch Videos
+      </button>
+    </form>
 
-    <!-- ═══ SCREEN 3: Trade & Forex ══════════════════════════════════════ -->
-    <div class="ob-screen" id="screen-3">
-      <div style="text-align:center;margin-bottom:8px">
-        <div class="ob-badge" style="background:rgba(96,165,250,.1);color:#60a5fa;border:1px solid rgba(96,165,250,.2)">3 / 4 &nbsp;·&nbsp; Trade & FX</div>
-      </div>
-      <div class="ob-icon" style="background:linear-gradient(135deg,rgba(96,165,250,.15),rgba(96,165,250,.05));border:1px solid rgba(96,165,250,.2)">
-        <i class="fas fa-globe" style="color:#60a5fa"></i>
-      </div>
-      <h2 class="ob-h">International Trade & Currency Exchange</h2>
-      <p class="ob-p">Trade globally and access competitive international currency exchange services with confidence.</p>
-      <div style="margin-bottom:16px">
-        <div class="rate-mini"><span style="color:#7a6e5f;font-size:.75rem">USD / CAD</span><span style="color:#c9a84c;font-weight:800;font-size:.9rem">1.3600</span></div>
-        <div class="rate-mini"><span style="color:#7a6e5f;font-size:.75rem">CAD / UGX</span><span style="color:#c9a84c;font-weight:800;font-size:.9rem">2,890.00</span></div>
-        <div class="rate-mini"><span style="color:#7a6e5f;font-size:.75rem">USD / KES</span><span style="color:#c9a84c;font-weight:800;font-size:.9rem">129.45</span></div>
-      </div>
-      <div class="ob-feat"><i class="fas fa-check-circle" style="color:#60a5fa"></i> Import & Export coffee globally</div>
-      <div class="ob-feat"><i class="fas fa-check-circle" style="color:#60a5fa"></i> Live foreign exchange rates</div>
-      <div class="ob-feat"><i class="fas fa-check-circle" style="color:#60a5fa"></i> Business trade solutions</div>
-      <div class="ob-feat"><i class="fas fa-check-circle" style="color:#60a5fa"></i> Trade application & agreement system</div>
-      <div style="display:flex;gap:8px;margin:16px 0 20px">
-        <a href="{% url 'forex' %}" style="flex:1;display:block;background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.2);border-radius:12px;padding:10px;text-align:center;color:#60a5fa;font-size:.78rem;font-weight:700;text-decoration:none">
-          <i class="fas fa-chart-line me-1"></i>Live Rates
-        </a>
-        <button onclick="playObVideo('https://www.youtube.com/embed/TxBRbMDKIgA','Forex Basics — CAD, USD, UGX, KES, EUR & JPY')" style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px;color:#e0d5c0;font-size:.78rem;font-weight:700;cursor:pointer">
-          <i class="fas fa-play-circle me-1" style="color:#c9a84c"></i>Watch Video
-        </button>
-      </div>
-      <div class="ob-nav">
-        <button class="ob-btn-back" onclick="goTo(2)"><i class="fas fa-arrow-left me-1"></i> Back</button>
-        <button class="ob-btn-next" onclick="goTo(4)" style="background:linear-gradient(135deg,#60a5fa,#93c5fd);color:#0a1628">Finish <i class="fas fa-check ms-1"></i></button>
-      </div>
-    </div>
-
-    <!-- ═══ SCREEN 4: You're All Set ════════════════════════════════════ -->
-    <div class="ob-screen" id="screen-4">
-      <div class="ob-icon" style="background:linear-gradient(135deg,rgba(168,85,247,.2),rgba(168,85,247,.05));border:1px solid rgba(168,85,247,.3)">
-        <i class="fas fa-check" style="color:#a855f7;font-size:2.6rem"></i>
-      </div>
-      <h2 class="ob-h" style="font-size:1.5rem">You're All Set!</h2>
-      <p class="ob-p">Explore everything T&TG Corporation has to offer and grow with us.</p>
-      <div class="row g-2" style="flex:1">
-        <div class="col-6">
-          <a href="{% url 'marketplace' %}" class="ob-cta" style="display:block">
-            <i class="fas fa-shopping-cart" style="color:#4ade80;font-size:1.4rem;margin-bottom:8px"></i>
-            <div style="color:#fff;font-weight:800;font-size:.82rem;margin-bottom:4px">T&TG Shopping</div>
-            <div style="color:#7a6e5f;font-size:.72rem">Shop Now</div>
-          </a>
-        </div>
-        <div class="col-6">
-          <a href="{% url 'loyalty_info' %}" class="ob-cta" style="display:block">
-            <i class="fas fa-trophy" style="color:#fbbf24;font-size:1.4rem;margin-bottom:8px"></i>
-            <div style="color:#fff;font-weight:800;font-size:.82rem;margin-bottom:4px">T&TG Loyalty</div>
-            <div style="color:#7a6e5f;font-size:.72rem">Earn Rewards</div>
-          </a>
-        </div>
-        <div class="col-6">
-          <a href="{% url 'forex' %}" class="ob-cta" style="display:block">
-            <i class="fas fa-chart-line" style="color:#60a5fa;font-size:1.4rem;margin-bottom:8px"></i>
-            <div style="color:#fff;font-weight:800;font-size:.82rem;margin-bottom:4px">Trade & FX</div>
-            <div style="color:#7a6e5f;font-size:.72rem">Go Global</div>
-          </a>
-        </div>
-        <div class="col-6">
-          <a href="{% url 'trade_apply' %}" class="ob-cta" style="display:block">
-            <i class="fas fa-exchange-alt" style="color:#c9a84c;font-size:1.4rem;margin-bottom:8px"></i>
-            <div style="color:#fff;font-weight:800;font-size:.82rem;margin-bottom:4px">Trade Apply</div>
-            <div style="color:#7a6e5f;font-size:.72rem">Start Trading</div>
-          </a>
-        </div>
-        <div class="col-12">
-          <a href="{% url 'tv_programs' %}" class="ob-cta" style="display:block;border-color:rgba(201,168,76,.3);background:rgba(201,168,76,.06)">
-            <i class="fas fa-play-circle" style="color:#c9a84c;font-size:1.4rem;margin-bottom:8px"></i>
-            <div style="color:#fff;font-weight:800;font-size:.82rem;margin-bottom:4px">Video Library</div>
-            <div style="color:#7a6e5f;font-size:.72rem">Watch Training Videos</div>
-          </a>
-        </div>
-      </div>
-      <a href="{% url 'home' %}" class="btn btn-gold w-100 py-3 mt-4" style="font-weight:800;font-size:1rem">
-        Start Exploring <i class="fas fa-arrow-right ms-2"></i>
+    <!-- Already have account -->
+    <div style="text-align:center;margin-top:16px">
+      {% if user.is_authenticated %}
+      <a href="{% url 'tv_programs' %}" style="color:#c9a84c;font-size:.8rem;text-decoration:none">
+        <i class="fas fa-arrow-right me-1"></i>Go straight to the Video Library
       </a>
+      {% else %}
+      <span style="color:#7a6e5f;font-size:.76rem">Already registered? </span>
+      <a href="{% url 'tv_programs' %}" style="color:#c9a84c;font-size:.76rem;text-decoration:none">Watch Videos →</a>
+      {% endif %}
     </div>
+  </div>
 
-  </div><!-- end .ob-phone -->
-
-  <!-- Progress text below phone -->
-  <div id="progressText" style="color:#7a6e5f;font-size:.78rem;margin-top:24px;text-align:center"></div>
+  <!-- Links below -->
+  <div style="display:flex;justify-content:center;gap:20px;margin-top:20px;flex-wrap:wrap">
+    <a href="{% url 'event_list' %}" style="color:#7a6e5f;font-size:.74rem;text-decoration:none"><i class="fas fa-ticket-alt me-1"></i>Live Training Events</a>
+    <a href="{% url 'home' %}" style="color:#7a6e5f;font-size:.74rem;text-decoration:none"><i class="fas fa-home me-1"></i>Back to Home</a>
+    <a href="{% url 'my_tickets' %}" style="color:#7a6e5f;font-size:.74rem;text-decoration:none"><i class="fas fa-ticket-alt me-1"></i>My Tickets</a>
+  </div>
 
 </div>
-
-<script>
-var current = 0;
-var total   = 5;
-
-function goTo(n){
-  // Hide all screens
-  document.querySelectorAll('.ob-screen').forEach(function(s){ s.classList.remove('active'); });
-  // Update dots
-  document.querySelectorAll('.ob-dot').forEach(function(d,i){ d.classList.toggle('active', i===n); });
-  // Show target
-  document.getElementById('screen-'+n).classList.add('active');
-  current = n;
-  // Update progress text
-  var pt = document.getElementById('progressText');
-  if(n===0) pt.textContent = 'Swipe through to learn about T&TG';
-  else if(n===4) pt.textContent = 'All Set!';
-  else pt.textContent = 'Step ' + n + ' of 3';
-}
-
-// Swipe support
-var startX = 0;
-var phone   = document.querySelector('.ob-phone');
-phone.addEventListener('touchstart', function(e){ startX = e.touches[0].clientX; });
-phone.addEventListener('touchend', function(e){
-  var diff = startX - e.changedTouches[0].clientX;
-  if(Math.abs(diff) > 50){
-    if(diff > 0 && current < total-1) goTo(current+1);
-    if(diff < 0 && current > 0)       goTo(current-1);
-  }
-});
-
-// Init
-goTo(0);
-</script>
+</section>
 {% endblock %}
