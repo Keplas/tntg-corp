@@ -1,62 +1,116 @@
 {% extends 'base.html' %}
-{% block title %}Training Events — T&TG Trade Corporation{% endblock %}
+{% block title %}Onboarding Program — T&TG Trade Corporation{% endblock %}
 {% block content %}
 <style>
-  .ev-hero { background:linear-gradient(135deg,#060f1e,#0a1a35); padding:56px 0 36px; border-bottom:1px solid rgba(201,168,76,.15); }
+  .ob-hero { background:linear-gradient(135deg,#060f1e 0%,#0a1a35 60%,#060f1e 100%); padding:64px 0 48px; position:relative; overflow:hidden; }
+  .ob-hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 30% 50%,rgba(201,168,76,.08) 0%,transparent 60%),radial-gradient(ellipse at 70% 20%,rgba(96,165,250,.05) 0%,transparent 50%); pointer-events:none; }
+  .ob-feat { display:flex; align-items:center; gap:10px; padding:7px 0; color:#b0a898; font-size:.85rem; }
+  .ob-feat i { color:#c9a84c; width:18px; flex-shrink:0; }
   .ev-card { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.12); border-radius:18px; overflow:hidden; transition:border-color .25s,transform .25s; }
   .ev-card:hover { border-color:rgba(201,168,76,.4); transform:translateY(-4px); }
-  .ev-badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:.68rem; font-weight:800; letter-spacing:.5px; text-transform:uppercase; }
-  .ev-free  { background:rgba(34,197,94,.12); color:#4ade80; border:1px solid rgba(34,197,94,.2); }
-  .ev-full  { background:rgba(248,113,113,.12); color:#f87171; border:1px solid rgba(248,113,113,.2); }
-  .ev-meta  { display:flex; align-items:center; gap:6px; font-size:.74rem; color:#7a6e5f; }
+  .ev-badge-free { background:rgba(34,197,94,.12); color:#4ade80; border:1px solid rgba(34,197,94,.2); display:inline-block; padding:3px 10px; border-radius:20px; font-size:.68rem; font-weight:800; }
+  .ev-badge-full { background:rgba(248,113,113,.12); color:#f87171; border:1px solid rgba(248,113,113,.2); display:inline-block; padding:3px 10px; border-radius:20px; font-size:.68rem; font-weight:800; }
+  .ev-meta { display:flex; align-items:center; gap:6px; font-size:.74rem; color:#7a6e5f; }
 </style>
 
-<section class="ev-hero bg-shimmer">
+<!-- ── Onboarding Welcome Section ── -->
+<section class="ob-hero bg-shimmer">
   <div class="container">
-    <div style="font-size:.65rem;font-weight:900;letter-spacing:4px;color:#c9a84c;margin-bottom:12px">LIVE TRAINING EVENTS</div>
-    <h1 style="color:#fff;font-weight:900;font-size:clamp(1.6rem,4vw,2.2rem);margin-bottom:10px">T&TG Training Events</h1>
-    <p style="color:#7a6e5f;max-width:540px;line-height:1.7">Reserve your free online spot, receive your ticket by email, and join live training sessions on shopping, loyalty, forex and import & export operations.</p>
-    {% if user.is_authenticated %}
-    <a href="{% url 'my_tickets' %}" style="display:inline-flex;align-items:center;gap:8px;margin-top:16px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);color:#c9a84c;padding:8px 18px;border-radius:20px;text-decoration:none;font-size:.8rem;font-weight:700">
-      <i class="fas fa-ticket-alt"></i> My Tickets
-    </a>
-    {% endif %}
+    <div class="row align-items-center g-5">
+      <!-- Left: Welcome content -->
+      <div class="col-lg-7">
+        <div style="font-size:.65rem;font-weight:900;letter-spacing:4px;color:#c9a84c;margin-bottom:12px;text-transform:uppercase">Onboarding Program</div>
+        <h1 style="color:#fff;font-weight:900;font-size:clamp(1.6rem,4vw,2.4rem);margin-bottom:16px;line-height:1.2">
+          Welcome to<br>T&TG Trade Corporation
+        </h1>
+        <p style="color:#7a6e5f;font-size:.9rem;line-height:1.8;margin-bottom:24px;max-width:500px">
+          Join T&TG's Onboarding Programme and learn everything about our platform — from shopping and loyalty to live forex rates and global trade operations.
+        </p>
+        <!-- Features -->
+        <div style="background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.12);border-radius:14px;padding:18px 20px;margin-bottom:28px;max-width:480px">
+          <div class="ob-feat"><i class="fas fa-shopping-bag"></i>Shop T&TG premium coffee products</div>
+          <div class="ob-feat"><i class="fas fa-coins"></i>Earn loyalty points on every purchase</div>
+          <div class="ob-feat"><i class="fas fa-exchange-alt"></i>Access live international currency rates</div>
+          <div class="ob-feat"><i class="fas fa-globe"></i>Trade globally — Canada, USA, Uganda, Kenya, Netherlands and Japan</div>
+        </div>
+        <!-- Get Started CTA -->
+        <a href="#events" class="btn btn-gold px-5 py-3" style="font-weight:900;font-size:1rem">
+          <i class="fas fa-play-circle me-2"></i>Get Started
+        </a>
+        {% if user.is_authenticated %}
+        <a href="{% url 'tv_programs' %}" style="display:inline-flex;align-items:center;gap:8px;margin-left:14px;color:#c9a84c;font-size:.82rem;text-decoration:none;font-weight:700">
+          Watch Videos <i class="fas fa-arrow-right"></i>
+        </a>
+        {% endif %}
+      </div>
+
+      <!-- Right: Quick stats -->
+      <div class="col-lg-5">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div style="background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.15);border-radius:14px;padding:18px;text-align:center">
+            <div style="font-size:1.8rem;font-weight:900;color:#c9a84c">4</div>
+            <div style="color:#7a6e5f;font-size:.74rem;margin-top:4px">Training<br>Sessions</div>
+          </div>
+          <div style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.12);border-radius:14px;padding:18px;text-align:center">
+            <div style="font-size:1.8rem;font-weight:900;color:#4ade80">Free</div>
+            <div style="color:#7a6e5f;font-size:.74rem;margin-top:4px">Tickets<br>Available</div>
+          </div>
+          <div style="background:rgba(96,165,250,.06);border:1px solid rgba(96,165,250,.12);border-radius:14px;padding:18px;text-align:center">
+            <div style="font-size:1.8rem;font-weight:900;color:#60a5fa">6</div>
+            <div style="color:#7a6e5f;font-size:.74rem;margin-top:4px">Countries<br>Covered</div>
+          </div>
+          <div style="background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.15);border-radius:14px;padding:18px;text-align:center">
+            <div style="font-size:1.8rem;font-weight:900;color:#c9a84c">🎟️</div>
+            <div style="color:#7a6e5f;font-size:.74rem;margin-top:4px">Ticket by<br>Email</div>
+          </div>
+        </div>
+        {% if user.is_authenticated %}
+        <a href="{% url 'my_tickets' %}" style="display:block;text-align:center;margin-top:14px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);color:#c9a84c;padding:10px;border-radius:12px;text-decoration:none;font-size:.8rem;font-weight:700">
+          <i class="fas fa-ticket-alt me-1"></i>View My Tickets
+        </a>
+        {% endif %}
+      </div>
+    </div>
   </div>
 </section>
 
-<section style="background:#060f1e;padding:56px 0 80px">
+<!-- ── Onboarding Program Events ── -->
+<section id="events" style="background:#060f1e;padding:56px 0 80px">
 <div class="container">
+
+  <div style="margin-bottom:36px">
+    <div style="font-size:.65rem;font-weight:900;letter-spacing:4px;color:#c9a84c;margin-bottom:8px;text-transform:uppercase">Reserve Your Spot</div>
+    <h2 style="color:#fff;font-weight:900;font-size:1.6rem;margin:0">Onboarding Program Sessions</h2>
+    <p style="color:#7a6e5f;font-size:.85rem;margin-top:8px">Reserve a free spot below — get your ticket by email instantly.</p>
+  </div>
+
   {% if events %}
   <div class="row g-4">
     {% for event in events %}
     <div class="col-md-6 col-lg-6">
       <div class="ev-card">
-        <!-- Thumbnail -->
         {% if event.thumbnail_url %}
         <div style="height:180px;overflow:hidden;position:relative">
           <img src="{{ event.thumbnail_url }}" alt="{{ event.title }}" style="width:100%;height:100%;object-fit:cover">
           <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(6,15,30,.9))"></div>
-          <div style="position:absolute;bottom:12px;left:16px;display:flex;gap:8px">
-            <span class="ev-badge {% if event.is_full %}ev-full{% else %}ev-free{% endif %}">
+          <div style="position:absolute;bottom:12px;left:16px">
+            <span class="{% if event.is_full %}ev-badge-full{% else %}ev-badge-free{% endif %}">
               {% if event.is_full %}Fully Booked{% elif event.is_free %}Free{% else %}{{ event.price_points }} pts{% endif %}
             </span>
           </div>
         </div>
         {% endif %}
-        <!-- Body -->
         <div style="padding:20px">
-          <div style="font-size:.7rem;font-weight:800;color:#c9a84c;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">{{ event.get_category_display }}</div>
+          <div style="font-size:.68rem;font-weight:800;color:#c9a84c;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">{{ event.get_category_display }}</div>
           <h5 style="color:#fff;font-weight:800;margin-bottom:10px;font-size:1rem">{{ event.title }}</h5>
           <p style="color:#7a6e5f;font-size:.8rem;line-height:1.6;margin-bottom:16px">{{ event.description|truncatechars:120 }}</p>
-          <!-- Meta -->
-          <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+          <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px">
             <div class="ev-meta"><i class="fas fa-calendar-alt" style="color:#c9a84c"></i>{{ event.event_date|date:"D, d M Y" }}</div>
             <div class="ev-meta"><i class="fas fa-clock" style="color:#c9a84c"></i>{{ event.event_date|date:"g:i A" }}</div>
             <div class="ev-meta"><i class="fas fa-users" style="color:#c9a84c"></i>{{ event.spots_left }} spots left</div>
-            <div class="ev-meta"><i class="fas fa-hourglass-half" style="color:#c9a84c"></i>{{ event.duration_mins }} mins</div>
           </div>
           <a href="{% url 'event_detail' event.pk %}" class="btn btn-gold w-100" style="font-weight:800">
-            {% if event.is_full %}View Event{% else %}Register <i class="fas fa-arrow-right ms-1"></i>{% endif %}
+            {% if event.is_full %}View Session{% else %}Register — Get Ticket <i class="fas fa-arrow-right ms-1"></i>{% endif %}
           </a>
         </div>
       </div>
@@ -64,12 +118,13 @@
     {% endfor %}
   </div>
   {% else %}
-  <div style="text-align:center;padding:80px 0">
+  <div style="text-align:center;padding:60px 0">
     <i class="fas fa-calendar-times" style="font-size:3rem;color:rgba(201,168,76,.15);margin-bottom:20px"></i>
-    <h4 style="color:#fff">No events scheduled yet</h4>
-    <p style="color:#7a6e5f">Check back soon — new events are added regularly.</p>
+    <h4 style="color:#fff">No sessions scheduled yet</h4>
+    <p style="color:#7a6e5f">Check back soon — new sessions are added regularly.</p>
   </div>
   {% endif %}
+
 </div>
 </section>
 {% endblock %}
