@@ -21,7 +21,32 @@
  <label class="text-muted mb-1 d-block" style="font-size:.8rem">Your Review</label>
  <textarea name="comment" rows="3" class="form-control" style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);color:#e0d5c0;border-radius:10px" placeholder="Share your experience with this coffee..."></textarea>
  </div>
- <button type="submit" class="btn btn-gold px-4">Submit Review</button>
+ <button type="submit" 
+<!-- ── Country Prices Table ── -->
+<div style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.15);border-radius:16px;padding:20px;margin-bottom:24px">
+  <div style="font-size:.7rem;font-weight:800;color:#c9a84c;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px">
+    <i class="fas fa-globe me-2"></i>Prices in All Countries
+  </div>
+  <div style="display:grid;gap:8px">
+    {% for cp in country_prices %}
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:rgba(255,255,255,.02);border-radius:10px;border:1px solid rgba(255,255,255,.04)">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:1.1rem">{{ cp.flag }}</span>
+        <span style="color:#b0a898;font-size:.82rem">{{ cp.country }}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="color:#fff;font-weight:800;font-size:.88rem">{{ cp.currency }} {{ cp.price|floatformat:0 }}{% if cp.currency not in 'UGX,KES,JPY' %}.{{ cp.price|stringformat:".2f"|slice:"-2:" }}{% endif %}</span>
+        {% if cp.is_override %}<span style="font-size:.62rem;background:rgba(201,168,76,.12);color:#c9a84c;padding:2px 6px;border-radius:20px">Set</span>{% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div style="color:#7a6e5f;font-size:.68rem;margin-top:10px">
+    <i class="fas fa-info-circle me-1"></i>Prices auto-converted via live exchange rates. Final charge depends on your payment method.
+  </div>
+</div>
+
+        <a class="btn btn-gold px-4">Submit Review</button>
  </form>
  {% else %}
  <div class="glass-card p-4 text-center" style="border-radius:16px">

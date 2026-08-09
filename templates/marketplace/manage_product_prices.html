@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %}Manage Prices — {{ product.name }}{% endblock %}
+{% block content %}
+<style>
+  .pp-bg   { background:#060f1e; min-height:90vh; padding:60px 0 80px; }
+  .pp-card { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.15); border-radius:18px; padding:28px; max-width:580px; margin:0 auto; }
+  .pp-input { background:rgba(255,255,255,.05); border:1px solid rgba(201,168,76,.2); color:#e0d5c0; border-radius:10px; padding:11px 14px; width:100%; font-size:.9rem; }
+  .pp-input:focus { border-color:rgba(201,168,76,.5); outline:none; }
+  .pp-row { background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.05); border-radius:12px; padding:16px; margin-bottom:10px; }
+</style>
+
+<div class="pp-bg">
+<div class="container">
+  <a href="{% url 'manage_products' %}" style="color:#7a6e5f;font-size:.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-bottom:28px">
+    <i class="fas fa-arrow-left"></i> Back to Products
+  </a>
+
+  <div class="pp-card">
+    <h4 style="color:#fff;font-weight:900;margin-bottom:4px">Country Pricing</h4>
+    <div style="color:#7a6e5f;font-size:.82rem;margin-bottom:6px">{{ product.name }}</div>
+    <div style="color:#7a6e5f;font-size:.75rem;margin-bottom:24px;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.12);border-radius:8px;padding:10px 12px">
+      <i class="fas fa-info-circle" style="color:#c9a84c;margin-right:6px"></i>
+      Leave a price blank to use live forex auto-conversion. Enter a value to override with a fixed price.
+      Base price: <strong style="color:#c9a84c">{{ product.currency }} {{ product.price }}</strong>/{{ product.unit }}
+    </div>
+
+    {% if messages %}{% for m in messages %}
+    <div class="alert mb-4" style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#4ade80;border-radius:10px;padding:12px 16px;font-size:.85rem">
+      <i class="fas fa-check-circle me-2"></i>{{ m }}
+    </div>
+    {% endfor %}{% endif %}
+
+    <form method="POST">
+      {% csrf_token %}
+      {% for row in country_rows %}
+      <div class="pp-row">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:1.3rem">{{ row.flag }}</span>
+            <div>
+              <div style="color:#fff;font-weight:700;font-size:.88rem">{{ row.country }}</div>
+              <div style="color:#7a6e5f;font-size:.7rem">{{ row.currency }}</div>
+            </div>
+          </div>
+          <div style="text-align:right">
+            <div style="color:#7a6e5f;font-size:.68rem;margin-bottom:2px">Auto rate</div>
+            <div style="color:#60a5fa;font-size:.82rem;font-weight:700">{{ row.currency }} {{ row.auto_price }}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <div style="flex:1">
+            <label style="color:#7a6e5f;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px">Override Price ({{ row.currency }})</label>
+            <input type="number" name="price_{{ row.country }}" class="pp-input"
+              placeholder="Leave blank = auto rate"
+              step="0.01" min="0"
+              value="{% if row.override and row.override.is_active %}{{ row.override.price }}{% endif %}">
+          </div>
+          <div style="text-align:center;padding-top:18px">
+            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer">
+              <input type="checkbox" name="enabled_{{ row.country }}"
+                {% if row.override and row.override.is_active %}checked{% endif %}
+                style="accent-color:#c9a84c;width:16px;height:16px">
+              <span style="color:#7a6e5f;font-size:.65rem">Active</span>
+            </label>
+          </div>
+        </div>
+        {% if row.override and row.override.is_active %}
+        <div style="margin-top:8px;font-size:.68rem;color:#c9a84c"><i class="fas fa-check-circle me-1"></i>Manual override active — auto rate ignored</div>
+        {% else %}
+        <div style="margin-top:8px;font-size:.68rem;color:#60a5fa"><i class="fas fa-sync me-1"></i>Using live forex rate</div>
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      <button type="submit" class="btn btn-gold w-100 py-3 mt-3" style="font-weight:900">
+        <i class="fas fa-save me-2"></i>Save Country Prices
+      </button>
+    </form>
+  </div>
+</div>
+</div>
+{% endblock %}

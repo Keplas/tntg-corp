@@ -1,10 +1,18 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Product, Order, ProductReview
+from .models import Product, Order, ProductReview, ProductCountryPrice
+
+
+class CountryPriceInline(admin.TabularInline):
+    model       = ProductCountryPrice
+    extra       = 6
+    fields      = ['country','price','currency','is_active']
+    max_num     = 6
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
+    inlines = [CountryPriceInline]
     list_display  = ['image_preview', 'name', 'category', 'price',
                      'currency', 'quantity_available', 'market_type', 'is_active', 'is_featured']
     list_filter   = ['category', 'market_type', 'is_active', 'is_featured']
@@ -51,3 +59,11 @@ class OrderAdmin(admin.ModelAdmin):
 @admin.register(ProductReview)
 class ProductReviewAdmin(admin.ModelAdmin):
     list_display = ['user', 'product', 'rating', 'created_at']
+
+
+@admin.register(ProductCountryPrice)
+class ProductCountryPriceAdmin(admin.ModelAdmin):
+    list_display  = ['product', 'country', 'currency', 'price', 'is_active', 'updated_at']
+    list_filter   = ['country', 'currency', 'is_active']
+    list_editable = ['price', 'currency', 'is_active']
+    search_fields = ['product__name']

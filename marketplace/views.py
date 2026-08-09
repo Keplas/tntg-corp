@@ -483,3 +483,66 @@ def update_product_image(request, pk):
         return redirect('manage_products')
 
     return render(request, 'marketplace/update_product_image.html', {'product': product})
+
+
+@login_required
+def manage_product_prices(request, pk):
+    from django.shortcuts import get_object_or_404
+    from .models import ProductCountryPrice
+    if not request.user.is_staff:
+        return redirect('dashboard')
+
+    product = get_object_or_404(Product, pk=pk)
+
+    COUNTRY_CONFIG = [
+        ('Canada',      'CAD', '🇨🇦'),
+        ('USA',         'USD', '🇺🇸'),
+        ('Uganda',      'UGX', '🇺🇬'),
+        ('Kenya',       'KES', '🇰🇪'),
+        ('Netherlands', 'EUR', '🇳🇱'),
+        ('Japan',       'JPY', '🇯🇵'),
+    ]
+
+    if request.method == 'POST':
+        for country, currency, flag in COUNTRY_CONFIG:
+            price_val = request.POST.get(f'price_{country}','').strip()
+            enabled   = request.POST.get(f'enabled_{country}')
+            if price_val:
+                try:
+                    ProductCountryPrice.objects.update_or_create(
+                        product=product, country=country,
+                        defaults={
+                            'price':     float(price_val),
+                            'currency':  currency,
+                            'is_active': bool(enabled),
+                        }
+                    )
+                except Exception:
+                    pass
+            else:
+                # If cleared — deactivate override (fall back to auto-rate)
+                ProductCountryPrice.objects.filter(
+                    product=product, country=country
+                ).update(is_active=False)
+
+        messages.success(request, f'Prices updated for {product.name}')
+        return redirect('manage_products')
+
+    # Get current overrides
+    overrides = {op.country: op for op in product.country_prices.all()}
+    auto_prices = product.get_country_prices()
+    country_rows = []
+    for cp in auto_prices:
+        override = overrides.get(cp['country'])
+        country_rows.append({
+            'country':    cp['country'],
+            'flag':       cp['flag'],
+            'currency':   cp['currency'],
+            'auto_price': cp['price'],
+            'override':   override,
+        })
+
+    return render(request, 'marketplace/manage_product_prices.html', {
+        'product': product,
+        'country_rows': country_rows,
+    })

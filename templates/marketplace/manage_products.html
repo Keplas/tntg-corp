@@ -51,9 +51,14 @@
         </div>
       </div>
       <!-- Action -->
-      <a href="{% url 'update_product_image' p.pk %}" class="btn btn-gold" style="font-size:.8rem;font-weight:700;padding:8px 18px;white-space:nowrap">
-        <i class="fas fa-camera me-1"></i>Update Photo
-      </a>
+      <div style="display:flex;gap:8px">
+        <a href="{% url 'update_product_image' p.pk %}" class="btn btn-gold" style="font-size:.78rem;font-weight:700;padding:8px 14px;white-space:nowrap">
+          <i class="fas fa-camera me-1"></i>Photo
+        </a>
+        <a href="{% url 'manage_product_prices' p.pk %}" class="btn" style="font-size:.78rem;font-weight:700;padding:8px 14px;white-space:nowrap;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);color:#c9a84c;border-radius:10px">
+          <i class="fas fa-globe me-1"></i>Prices
+        </a>
+      </div>
     </div>
     {% endfor %}
   </div>

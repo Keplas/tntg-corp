@@ -22,6 +22,7 @@ urlpatterns = [
     path('wishlist/',                  views.wishlist_view,    name='wishlist'),
     path('orders/<int:pk>/invoice/', views.order_invoice, name='order_invoice'),
     path('manage/', views.manage_products, name='manage_products'),
+    path('manage/<int:pk>/prices/', views.manage_product_prices, name='manage_product_prices'),
     path('manage/<int:pk>/image/', views.update_product_image, name='update_product_image'),
     path('bulk-order/', views.bulk_order_request, name='bulk_order_request'),
 ]

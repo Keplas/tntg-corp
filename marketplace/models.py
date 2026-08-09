@@ -47,6 +47,74 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+
+    def get_country_prices(self):
+        """
+        Returns list of {country, flag, currency, symbol, price, is_override}
+        Priority: manual override > live forex conversion.
+        """
+        from core.exchange_rates import fetch_live_rates
+        from decimal import Decimal
+
+        COUNTRIES = [
+            ('Canada',      'CAD', 'CA$', '🇨🇦'),
+            ('USA',         'USD', 'US$', '🇺🇸'),
+            ('Uganda',      'UGX', 'UGX',  '🇺🇬'),
+            ('Kenya',       'KES', 'KES',  '🇰🇪'),
+            ('Netherlands', 'EUR', '€',    '🇳🇱'),
+            ('Japan',       'JPY', '¥',    '🇯🇵'),
+        ]
+
+        rates   = fetch_live_rates() or {}
+        base    = Decimal(str(self.price))
+        base_c  = self.currency or 'CAD'
+
+        # Build USD-base conversion helper
+        def to_usd(amount, currency):
+            r = rates.get(currency, 1)
+            return amount / Decimal(str(r)) if r else amount
+
+        def from_usd(amount, currency):
+            r = rates.get(currency, 1)
+            return amount * Decimal(str(r))
+
+        base_usd = to_usd(base, base_c)
+
+        # Fetch all overrides for this product in one query
+        overrides = {op.country: op for op in self.country_prices.filter(is_active=True)}
+
+        result = []
+        for country, currency, symbol, flag in COUNTRIES:
+            if country in overrides:
+                op = overrides[country]
+                result.append({
+                    'country':     country,
+                    'flag':        flag,
+                    'currency':    op.currency,
+                    'symbol':      symbol,
+                    'price':       op.price,
+                    'is_override': True,
+                })
+            else:
+                try:
+                    converted = from_usd(base_usd, currency)
+                    # Round sensibly
+                    if currency in ('UGX', 'KES', 'JPY'):
+                        converted = converted.quantize(Decimal('1'))
+                    else:
+                        converted = converted.quantize(Decimal('0.01'))
+                    result.append({
+                        'country':     country,
+                        'flag':        flag,
+                        'currency':    currency,
+                        'symbol':      symbol,
+                        'price':       converted,
+                        'is_override': False,
+                    })
+                except Exception:
+                    pass
+        return result
+
     @property
     def safe_image_url(self):
         """
@@ -208,3 +276,32 @@ class BulkOrder(models.Model):
     updated_at       = models.DateTimeField(auto_now=True)
     class Meta: ordering=["-created_at"]
     def __str__(self): return f"Bulk #{self.pk} — {self.buyer.username} — {self.quantity_kg}kg"
+
+
+class ProductCountryPrice(models.Model):
+    """Optional manual price override per product per country."""
+    COUNTRIES = [
+        ('Canada',              'Canada (CAD)'),
+        ('USA',                 'USA (USD)'),
+        ('Uganda',              'Uganda (UGX)'),
+        ('Kenya',               'Kenya (KES)'),
+        ('Netherlands',         'Netherlands (EUR)'),
+        ('Japan',               'Japan (JPY)'),
+    ]
+    CURRENCIES = [
+        ('CAD','CAD'),('USD','USD'),('UGX','UGX'),
+        ('KES','KES'),('EUR','EUR'),('JPY','JPY'),
+    ]
+    product    = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='country_prices')
+    country    = models.CharField(max_length=20, choices=COUNTRIES)
+    price      = models.DecimalField(max_digits=12, decimal_places=2)
+    currency   = models.CharField(max_length=3, choices=CURRENCIES)
+    is_active  = models.BooleanField(default=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ['product', 'country']
+        ordering = ['country']
+
+    def __str__(self):
+        return f"{self.product.name} — {self.country}: {self.currency} {self.price}"
