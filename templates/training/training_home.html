@@ -122,12 +122,7 @@
     <!-- Already have account -->
     <div style="text-align:center;margin-top:16px">
       {% if user.is_authenticated %}
-      <a href="{% url 'tv_programs' %}" style="color:#c9a84c;font-size:.8rem;text-decoration:none">
-        <i class="fas fa-arrow-right me-1"></i>Go straight to the Video Library
-      </a>
-      {% else %}
-      <span style="color:#7a6e5f;font-size:.76rem">Already registered? </span>
-      <a href="{% url 'tv_programs' %}" style="color:#c9a84c;font-size:.76rem;text-decoration:none">Watch Videos →</a>
+      
       {% endif %}
     </div>
   </div>

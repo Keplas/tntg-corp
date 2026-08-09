@@ -70,12 +70,7 @@
     <div class="row g-3">
       {% for v in tv %}
       <div class="col-md-6 col-lg-4">
-        <a href="{% url 'tv_programs' %}" style="text-decoration:none">
-          <div style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.12);border-radius:14px;padding:18px;transition:border-color .25s" onmouseover="this.style.borderColor='rgba(201,168,76,.4)'" onmouseout="this.style.borderColor='rgba(201,168,76,.12)'">
-            <div style="color:#fff;font-weight:700;margin-bottom:6px">{{ v.title }}</div>
-            <div style="color:#7a6e5f;font-size:.8rem">{{ v.description|truncatechars:80 }}</div>
-          </div>
-        </a>
+        
       </div>
       {% endfor %}
     </div>
