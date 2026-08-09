@@ -49,18 +49,6 @@
         <h5 style="color:#c9a84c;font-weight:800;margin-bottom:14px"><i class="fas fa-info-circle me-2"></i>About This Event</h5>
         <p style="color:#b0a898;line-height:1.8;font-size:.88rem">{{ event.description }}</p>
       </div>
-
-
-      {% if event.video_url %}
-      <div class="ed-card mb-4">
-        <h5 style="color:#c9a84c;font-weight:800;margin-bottom:14px"><i class="fas fa-play-circle me-2"></i>Session Video</h5>
-        <p style="color:#7a6e5f;font-size:.8rem;margin-bottom:14px">Watch the training video for this session below.</p>
-        <div style="position:relative;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#000">
-          <iframe src="{{ event.video_url }}" style="position:absolute;inset:0;width:100%;height:100%;border:none"
-            allowfullscreen allow="autoplay; encrypted-media"></iframe>
-        </div>
-      </div>
-      {% endif %}
       {% if agenda %}
       <div class="ed-card">
         <h5 style="color:#c9a84c;font-weight:800;margin-bottom:14px"><i class="fas fa-list-ul me-2"></i>Event Agenda</h5>

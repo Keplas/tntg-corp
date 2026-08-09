@@ -99,17 +99,7 @@
         </div>
         {% endif %}
         <div style="padding:20px">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-            <div style="font-size:.68rem;font-weight:800;color:#c9a84c;letter-spacing:1px;text-transform:uppercase">{{ event.get_category_display }}</div>
-            {% if event.video_url %}<div style="font-size:.68rem;color:#60a5fa;font-weight:700"><i class="fas fa-play-circle me-1"></i>Includes Video</div>{% endif %}
-          </div>
-          <h5 style="color:#fff;font-weight:800;margin-bottom:10px;font-size:1rem">{{ event.title }}</h5>
-          <p style="color:#7a6e5f;font-size:.8rem;line-height:1.6;margin-bottom:16px">{{ event.description|truncatechars:120 }}</p>
-          <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px">
-            <div class="ev-meta"><i class="fas fa-calendar-alt" style="color:#c9a84c"></i>{{ event.event_date|date:"D, d M Y" }}</div>
-            <div class="ev-meta"><i class="fas fa-clock" style="color:#c9a84c"></i>{{ event.event_date|date:"g:i A" }}</div>
-            <div class="ev-meta"><i class="fas fa-users" style="color:#c9a84c"></i>{{ event.spots_left }} spots left</div>
-          </div>
+          <div style="font-size:.68rem;font-weight:800;color:#c9a84c;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">{{ event.get_category_display }}</div>
           <a href="{% url 'event_detail' event.pk %}" class="btn btn-gold w-100" style="font-weight:800">
             {% if event.is_full %}View Session{% else %}Register — Get Ticket <i class="fas fa-arrow-right ms-1"></i>{% endif %}
           </a>
