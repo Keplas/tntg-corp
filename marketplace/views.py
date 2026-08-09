@@ -55,7 +55,8 @@ def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk, is_active=True)
     reviews = product.reviews.all()[:10]
     related = Product.objects.filter(category=product.category, is_active=True).exclude(pk=pk)[:4]
-    ctx = {'product': product, 'reviews': reviews, 'related': related}
+    country_prices = product.get_country_prices()
+    ctx = {'product': product, 'reviews': reviews, 'related': related, 'country_prices': country_prices}
     return render(request, 'marketplace/product_detail.html', ctx)
 
 
