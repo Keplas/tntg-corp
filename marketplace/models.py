@@ -51,9 +51,9 @@ class Product(models.Model):
     def get_country_prices(self):
         """
         Returns list of {country, flag, currency, symbol, price, is_override}
-        Priority: manual override > live forex conversion.
+        Priority: manual override > live forex > static fallback rates.
+        Never raises — always returns a list.
         """
-        from core.exchange_rates import fetch_live_rates
         from decimal import Decimal
 
         COUNTRIES = [
@@ -65,23 +65,36 @@ class Product(models.Model):
             ('Japan',       'JPY', '¥',    '🇯🇵'),
         ]
 
-        rates   = fetch_live_rates() or {}
-        base    = Decimal(str(self.price))
-        base_c  = self.currency or 'CAD'
+        # Static fallback rates (USD base) — updated when API unavailable
+        STATIC_RATES = {
+            'CAD': 1.36, 'USD': 1.0, 'UGX': 3750.0,
+            'KES': 129.0, 'EUR': 0.92, 'JPY': 157.0,
+        }
 
-        # Build USD-base conversion helper
+        try:
+            from core.exchange_rates import fetch_live_rates
+            rates = fetch_live_rates() or STATIC_RATES
+        except Exception:
+            rates = STATIC_RATES
+
+        base   = Decimal(str(self.price))
+        base_c = self.currency or 'CAD'
+
         def to_usd(amount, currency):
-            r = rates.get(currency, 1)
-            return amount / Decimal(str(r)) if r else amount
+            r = Decimal(str(rates.get(currency, 1) or 1))
+            return amount / r
 
         def from_usd(amount, currency):
-            r = rates.get(currency, 1)
-            return amount * Decimal(str(r))
+            r = Decimal(str(rates.get(currency, 1) or 1))
+            return amount * r
 
         base_usd = to_usd(base, base_c)
 
-        # Fetch all overrides for this product in one query
-        overrides = {op.country: op for op in self.country_prices.filter(is_active=True)}
+        # Safe override lookup
+        try:
+            overrides = {op.country: op for op in self.country_prices.filter(is_active=True)}
+        except Exception:
+            overrides = {}
 
         result = []
         for country, currency, symbol, flag in COUNTRIES:
@@ -98,7 +111,6 @@ class Product(models.Model):
             else:
                 try:
                     converted = from_usd(base_usd, currency)
-                    # Round sensibly
                     if currency in ('UGX', 'KES', 'JPY'):
                         converted = converted.quantize(Decimal('1'))
                     else:
