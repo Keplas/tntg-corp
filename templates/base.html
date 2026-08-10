@@ -472,9 +472,9 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  <!-- Auth / user actions -->
  <div class="tg-nav-auth">
  <!-- Language toggle -->
- <a href="{% url 'set_language' %}?lang={% if request.session.lang == 'sw' %}en{% else %}sw{% endif %}"
- class="tg-bell" title="{% if request.session.lang == 'sw' %}Switch to English{% else %}Badili kwa Kiswahili{% endif %}">
- <span style="font-size:.72rem;font-weight:800;letter-spacing:.5px">{% if request.session.lang == 'sw' %}EN{% else %}SW{% endif %}</span>
+ <a href="{% url 'set_language' %}?lang={% if request.session.lang == 'lg' %}en{% else %}lg{% endif %}"
+ class="tg-bell" title="{% if request.session.lang == 'lg' %}Switch to English{% else %}Kyusa okutuuka mu Luganda{% endif %}">
+ <span style="font-size:.72rem;font-weight:800;letter-spacing:.5px">{% if request.session.lang == 'lg' %}EN{% else %}LG{% endif %}</span>
  </a>
 
  <!-- Search -->

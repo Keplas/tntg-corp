@@ -252,7 +252,7 @@ def analytics_dashboard(request):
 def set_language(request):
     """Toggle site language between English and Swahili — stored in session."""
     lang = request.GET.get('lang', 'en')
-    if lang not in ('en', 'sw'):
+    if lang not in ('en', 'lg'):
         lang = 'en'
     request.session['lang'] = lang
     next_url = request.GET.get('next') or request.META.get('HTTP_REFERER') or '/'
