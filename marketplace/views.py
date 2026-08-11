@@ -546,3 +546,126 @@ def manage_product_prices(request, pk):
         'product': product,
         'country_rows': country_rows,
     })
+
+
+@login_required
+def cart_checkout(request):
+    """Process all cart items into orders at once."""
+    cart = request.session.get('cart', {})
+    if not cart:
+        messages.error(request, 'Your cart is empty.')
+        return redirect('cart')
+
+    if request.method == 'POST':
+        import decimal
+        from django.utils import timezone
+        from datetime import timedelta
+
+        destination    = request.POST.get('destination', '').strip()
+        delivery_type  = request.POST.get('delivery_type', 'standard')
+        referral_code  = request.POST.get('referral_code', '').strip()
+        order_type     = request.POST.get('order_type', 'consumer')
+
+        orders_created = []
+        total_points   = decimal.Decimal('0')
+
+        for pk_str, qty in cart.items():
+            try:
+                product = Product.objects.get(pk=int(pk_str), is_active=True)
+                # Stock check
+                if product.quantity_available < qty:
+                    messages.warning(request, f'Only {product.quantity_available} kg of {product.name} available.')
+                    continue
+
+                subtotal   = product.price * qty
+                points     = subtotal * decimal.Decimal('0.005')
+                reward_date = timezone.now().date() + timedelta(days=45)
+
+                order = Order.objects.create(
+                    buyer=request.user,
+                    product=product,
+                    quantity=qty,
+                    total_price=subtotal,
+                    order_type=order_type,
+                    delivery_type=delivery_type,
+                    destination_country=destination,
+                    status='pending',
+                    avon_points_earned=points,
+                    reward_payment_date=reward_date,
+                )
+
+                # Deduct stock
+                product.quantity_available = max(0, product.quantity_available - qty)
+                product.save()
+
+                # Referral points
+                if referral_code:
+                    try:
+                        from accounts.models import CustomUser
+                        referrer = CustomUser.objects.get(referral_code=referral_code)
+                        ref_points = subtotal * decimal.Decimal('0.01')
+                        referrer.loyalty_points = (referrer.loyalty_points or 0) + float(ref_points)
+                        referrer.save()
+                    except Exception:
+                        pass
+
+                orders_created.append(order)
+                total_points += points
+
+            except Product.DoesNotExist:
+                pass
+
+        if orders_created:
+            # Clear cart
+            request.session['cart'] = {}
+
+            # Confirmation email
+            try:
+                from django.core.mail import send_mail
+                from django.conf import settings as djs
+                order_lines = '\n'.join([
+                    f'- {o.product.name} x{o.quantity} = {o.product.currency} {o.total_price}'
+                    for o in orders_created
+                ])
+                send_mail(
+                    subject='Your T&TG Order Confirmation',
+                    message=(
+                        f'Hi {request.user.get_full_name() or request.user.username},\n\n'
+                        f'Thank you for your order!\n\n'
+                        f'{order_lines}\n\n'
+                        f'T&TG Loyalty Points earned: {float(total_points):.2f}\n'
+                        f'Points available for withdrawal on Day 45.\n\n'
+                        f'T&TG Trade Corporation\n'
+                        f'9 Summerbridge Rd, Toronto, ON M1G 1L8, Canada'
+                    ),
+                    from_email=getattr(djs, 'DEFAULT_FROM_EMAIL', ''),
+                    recipient_list=[request.user.email],
+                    fail_silently=True,
+                )
+            except Exception:
+                pass
+
+            messages.success(request,
+                f'Order placed! {len(orders_created)} item(s) ordered. '
+                f'You earned {float(total_points):.2f} T&TG Loyalty Points.')
+            return redirect('my_orders')
+
+        messages.error(request, 'No items could be processed. Please check stock availability.')
+        return redirect('cart')
+
+    # GET — show checkout form
+    cart_items = []
+    total = decimal.Decimal('0')
+    for pk_str, qty in cart.items():
+        try:
+            p = Product.objects.get(pk=int(pk_str), is_active=True)
+            sub = p.price * qty
+            total += sub
+            cart_items.append({'product': p, 'qty': qty, 'subtotal': sub})
+        except Product.DoesNotExist:
+            pass
+
+    return render(request, 'marketplace/cart_checkout.html', {
+        'items': cart_items,
+        'total': total,
+    })
