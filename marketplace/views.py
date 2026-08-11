@@ -551,121 +551,110 @@ def manage_product_prices(request, pk):
 @login_required
 def cart_checkout(request):
     """Process all cart items into orders at once."""
+    from accounts.models import AvonPointTransaction
     cart = request.session.get('cart', {})
     if not cart:
         messages.error(request, 'Your cart is empty.')
         return redirect('cart')
 
-    if request.method == 'POST':
-        import decimal
-        from django.utils import timezone
-        from datetime import timedelta
-
-        destination    = request.POST.get('destination', '').strip()
-        delivery_type  = request.POST.get('delivery_type', 'standard')
-        referral_code  = request.POST.get('referral_code', '').strip()
-        order_type     = request.POST.get('order_type', 'consumer')
-
-        orders_created = []
-        total_points   = decimal.Decimal('0')
-
-        for pk_str, qty in cart.items():
-            try:
-                product = Product.objects.get(pk=int(pk_str), is_active=True)
-                # Stock check
-                if product.quantity_available < qty:
-                    messages.warning(request, f'Only {product.quantity_available} kg of {product.name} available.')
-                    continue
-
-                subtotal   = product.price * qty
-                points     = subtotal * decimal.Decimal('0.005')
-                reward_date = timezone.now().date() + timedelta(days=45)
-
-                order = Order.objects.create(
-                    buyer=request.user,
-                    product=product,
-                    quantity=qty,
-                    total_price=subtotal,
-                    order_type=order_type,
-                    delivery_type=delivery_type,
-                    destination_country=destination,
-                    status='pending',
-                    avon_points_earned=points,
-                    reward_payment_date=reward_date,
-                )
-
-                # Deduct stock
-                product.quantity_available = max(0, product.quantity_available - qty)
-                product.save()
-
-                # Referral points
-                if referral_code:
-                    try:
-                        from accounts.models import CustomUser
-                        referrer = CustomUser.objects.get(referral_code=referral_code)
-                        ref_points = subtotal * decimal.Decimal('0.01')
-                        referrer.loyalty_points = (referrer.loyalty_points or 0) + float(ref_points)
-                        referrer.save()
-                    except Exception:
-                        pass
-
-                orders_created.append(order)
-                total_points += points
-
-            except Product.DoesNotExist:
-                pass
-
-        if orders_created:
-            # Clear cart
-            request.session['cart'] = {}
-
-            # Confirmation email
-            try:
-                from django.core.mail import send_mail
-                from django.conf import settings as djs
-                order_lines = '\n'.join([
-                    f'- {o.product.name} x{o.quantity} = {o.product.currency} {o.total_price}'
-                    for o in orders_created
-                ])
-                send_mail(
-                    subject='Your T&TG Order Confirmation',
-                    message=(
-                        f'Hi {request.user.get_full_name() or request.user.username},\n\n'
-                        f'Thank you for your order!\n\n'
-                        f'{order_lines}\n\n'
-                        f'T&TG Loyalty Points earned: {float(total_points):.2f}\n'
-                        f'Points available for withdrawal on Day 45.\n\n'
-                        f'T&TG Trade Corporation\n'
-                        f'9 Summerbridge Rd, Toronto, ON M1G 1L8, Canada'
-                    ),
-                    from_email=getattr(djs, 'DEFAULT_FROM_EMAIL', ''),
-                    recipient_list=[request.user.email],
-                    fail_silently=True,
-                )
-            except Exception:
-                pass
-
-            messages.success(request,
-                f'Order placed! {len(orders_created)} item(s) ordered. '
-                f'You earned {float(total_points):.2f} T&TG Loyalty Points.')
-            return redirect('my_orders')
-
-        messages.error(request, 'No items could be processed. Please check stock availability.')
-        return redirect('cart')
-
-    # GET — show checkout form
-    cart_items = []
+    # Build items list
+    items = []
     total = decimal.Decimal('0')
     for pk_str, qty in cart.items():
         try:
             p = Product.objects.get(pk=int(pk_str), is_active=True)
             sub = p.price * qty
             total += sub
-            cart_items.append({'product': p, 'qty': qty, 'subtotal': sub})
+            items.append({'product': p, 'qty': qty, 'subtotal': sub})
         except Product.DoesNotExist:
             pass
 
+    if not items:
+        messages.error(request, 'No valid items in cart.')
+        return redirect('cart')
+
+    if request.method == 'POST':
+        destination   = request.POST.get('destination', '').strip()
+        delivery_type = request.POST.get('delivery_type', 'ordinary')
+        order_type    = request.POST.get('order_type', 'buy')
+        referred_by   = request.POST.get('referral_code', '').strip()
+
+        settings      = LoyaltySettings.get_settings()
+        reward_date   = date.today() + timedelta(days=settings.payment_days)
+        rate          = decimal.Decimal(str(settings.referral_rate if referred_by else settings.consumer_rate))
+        tx_type       = 'earn_referral' if referred_by else 'earn_purchase'
+
+        orders_created = []
+
+        for item in items:
+            product = item['product']
+            qty     = item['qty']
+            subtotal = item['subtotal']
+
+            # Stock check
+            if product.quantity_available is not None and product.quantity_available < qty:
+                messages.warning(request, f'Only {product.quantity_available} kg of {product.name} available — skipped.')
+                continue
+
+            pts = (subtotal * rate).quantize(decimal.Decimal('0.01'))
+
+            order = Order.objects.create(
+                buyer               = request.user,
+                product             = product,
+                order_type          = order_type,
+                quantity            = qty,
+                total_price         = subtotal,
+                delivery_type       = delivery_type,
+                destination_country = destination,
+                referred_by         = referred_by,
+                referrer_unique_id  = referred_by,
+                avon_points_earned  = pts,
+                reward_payment_date = reward_date,
+            )
+
+            # Deduct stock
+            if product.quantity_available is not None:
+                product.quantity_available = max(0, product.quantity_available - qty)
+                product.save()
+
+            # Credit loyalty points
+            request.user.avon_points += pts
+            request.user.save()
+
+            AvonPointTransaction.objects.create(
+                user=request.user,
+                transaction_type=tx_type,
+                points=pts,
+                description=f"Earned from Order #{order.pk}: {product.name}",
+                status='completed',
+                min_execution_date=reward_date,
+            )
+
+            Notification.notify(
+                'order_placed',
+                f'New Order #{order.pk} — {product.name}',
+                f'Buyer: {request.user.get_full_name() or request.user.username} | Qty: {qty} | Total: {product.currency} {subtotal}',
+                f'/admin/marketplace/order/{order.pk}/change/'
+            )
+
+            try:
+                send_order_placed_email(order)
+            except Exception:
+                pass
+
+            orders_created.append(order)
+
+        if orders_created:
+            request.session['cart'] = {}
+            messages.success(request,
+                f'{len(orders_created)} order(s) placed successfully! Check your email for confirmation.')
+            return redirect('my_orders')
+
+        messages.error(request, 'No orders could be placed. Please check product availability.')
+        return redirect('cart')
+
     return render(request, 'marketplace/cart_checkout.html', {
-        'items': cart_items,
-        'total': total,
+        'items': items, 'total': total,
     })
+
+
