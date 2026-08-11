@@ -426,8 +426,15 @@ def exchange_rates_api(request):
     from .exchange_rates import fetch_live_rates, build_pairs
     raw   = fetch_live_rates()
     pairs = build_pairs(raw)
+    # Also return simple currency->rate dict (USD base) for frontend switcher
+    simple_rates = {}
+    if raw:
+        for currency, rate in raw.items():
+            try: simple_rates[currency] = float(rate)
+            except: pass
     return JsonResponse({
-        'pairs':     [{k: str(v) if hasattr(v,'__round__') else v for k, v in p.items()} for p in pairs],
+        'pairs':     [{k: str(v) if hasattr(v,"__round__") else v for k, v in p.items()} for p in pairs],
+        'rates':     simple_rates,
         'has_live':  bool(raw),
         'timestamp': timezone.now().isoformat(),
     })
