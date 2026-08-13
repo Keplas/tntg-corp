@@ -550,28 +550,63 @@ def manage_product_prices(request, pk):
 
 @login_required
 def cart_checkout(request):
-    """Process all cart items into orders at once."""
+    """Process all cart items — charge in buyer's selected currency."""
     from accounts.models import AvonPointTransaction
+    import decimal
+
     cart = request.session.get('cart', {})
     if not cart:
         messages.error(request, 'Your cart is empty.')
         return redirect('cart')
 
-    # Build items list
+    # Get selected currency from session
+    display_currency = request.session.get('display_currency', 'CAD')
+
+    # Fetch and LOCK live rates at this moment
+    STATIC_RATES = {'CAD':1.36,'USD':1.0,'UGX':3750.0,'KES':129.0,'EUR':0.92,'JPY':157.0}
+    try:
+        from core.exchange_rates import fetch_live_rates
+        raw_rates = fetch_live_rates() or STATIC_RATES
+    except Exception:
+        raw_rates = STATIC_RATES
+
+    def convert(amount, from_curr, to_curr):
+        if from_curr == to_curr:
+            return decimal.Decimal(str(amount))
+        from_rate = decimal.Decimal(str(raw_rates.get(from_curr, 1) or 1))
+        to_rate   = decimal.Decimal(str(raw_rates.get(to_curr, 1) or 1))
+        usd = decimal.Decimal(str(amount)) / from_rate
+        return (usd * to_rate).quantize(decimal.Decimal('0.01'))
+
+    SYMBOLS = {'CAD':'CA$','USD':'US$','UGX':'UGX ','KES':'KES ','EUR':'€','JPY':'¥'}
+
+    # Build items in display currency
     items = []
-    total = decimal.Decimal('0')
+    total_display = decimal.Decimal('0')
+    total_base    = decimal.Decimal('0')
+
     for pk_str, qty in cart.items():
         try:
-            p = Product.objects.get(pk=int(pk_str), is_active=True)
-            sub = p.price * qty
-            total += sub
-            items.append({'product': p, 'qty': qty, 'subtotal': sub})
+            p   = Product.objects.get(pk=int(pk_str), is_active=True)
+            sub_base    = p.price * qty
+            sub_display = convert(sub_base, p.currency, display_currency)
+            total_base    += sub_base
+            total_display += sub_display
+            items.append({
+                'product':      p,
+                'qty':          qty,
+                'subtotal':     sub_display,
+                'base_subtotal': sub_base,
+            })
         except Product.DoesNotExist:
             pass
 
     if not items:
         messages.error(request, 'No valid items in cart.')
         return redirect('cart')
+
+    # Lock rate for display
+    locked_rate = decimal.Decimal(str(raw_rates.get(display_currency, 1)))
 
     if request.method == 'POST':
         destination   = request.POST.get('destination', '').strip()
@@ -587,23 +622,25 @@ def cart_checkout(request):
         orders_created = []
 
         for item in items:
-            product = item['product']
-            qty     = item['qty']
-            subtotal = item['subtotal']
+            product  = item['product']
+            qty      = item['qty']
+            base_sub = item['base_subtotal']
+            disp_sub = item['subtotal']
+            pts      = (base_sub * rate).quantize(decimal.Decimal('0.01'))
 
-            # Stock check
             if product.quantity_available is not None and product.quantity_available < qty:
-                messages.warning(request, f'Only {product.quantity_available} kg of {product.name} available — skipped.')
+                messages.warning(request, f'Only {product.quantity_available} kg of {product.name} available.')
                 continue
-
-            pts = (subtotal * rate).quantize(decimal.Decimal('0.01'))
 
             order = Order.objects.create(
                 buyer               = request.user,
                 product             = product,
                 order_type          = order_type,
                 quantity            = qty,
-                total_price         = subtotal,
+                total_price         = base_sub,
+                display_currency    = display_currency,
+                display_total       = disp_sub,
+                exchange_rate_used  = locked_rate,
                 delivery_type       = delivery_type,
                 destination_country = destination,
                 referred_by         = referred_by,
@@ -612,12 +649,10 @@ def cart_checkout(request):
                 reward_payment_date = reward_date,
             )
 
-            # Deduct stock
             if product.quantity_available is not None:
                 product.quantity_available = max(0, product.quantity_available - qty)
                 product.save()
 
-            # Credit loyalty points
             request.user.avon_points += pts
             request.user.save()
 
@@ -633,7 +668,7 @@ def cart_checkout(request):
             Notification.notify(
                 'order_placed',
                 f'New Order #{order.pk} — {product.name}',
-                f'Buyer: {request.user.get_full_name() or request.user.username} | Qty: {qty} | Total: {product.currency} {subtotal}',
+                f'Buyer: {request.user.get_full_name() or request.user.username} | {display_currency} {disp_sub}',
                 f'/admin/marketplace/order/{order.pk}/change/'
             )
 
@@ -647,14 +682,34 @@ def cart_checkout(request):
         if orders_created:
             request.session['cart'] = {}
             messages.success(request,
-                f'{len(orders_created)} order(s) placed successfully! Check your email for confirmation.')
+                f'{len(orders_created)} order(s) placed in {display_currency}. Confirmation sent to {request.user.email}.')
             return redirect('my_orders')
 
-        messages.error(request, 'No orders could be placed. Please check product availability.')
+        messages.error(request, 'No orders placed. Please check stock availability.')
         return redirect('cart')
 
     return render(request, 'marketplace/cart_checkout.html', {
-        'items': items, 'total': total,
+        'items':            items,
+        'total':            total_display,
+        'display_currency': display_currency,
+        'symbol':           SYMBOLS.get(display_currency, display_currency + ' '),
+        'locked_rate':      locked_rate,
     })
 
 
+
+def set_currency(request):
+    """Save selected currency to session."""
+    from django.http import JsonResponse
+    VALID = ['CAD','USD','UGX','KES','EUR','JPY']
+    if request.method == 'POST':
+        import json
+        try:
+            body = json.loads(request.body)
+            currency = body.get('currency','CAD').upper()
+        except Exception:
+            currency = request.POST.get('currency','CAD').upper()
+        if currency in VALID:
+            request.session['display_currency'] = currency
+        return JsonResponse({'currency': request.session.get('display_currency','CAD')})
+    return JsonResponse({'currency': request.session.get('display_currency','CAD')})

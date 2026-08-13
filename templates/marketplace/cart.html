@@ -170,10 +170,20 @@ fetch('/api/rates/')
 
 function switchCurrency(btn, currency){
   SELECTED = currency;
-  // Update active button
   document.querySelectorAll('.curr-btn').forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active');
   updatePrices(currency);
+  // Save to session so checkout uses same currency
+  fetch('/marketplace/set-currency/', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','X-CSRFToken': getCookie('csrftoken')},
+    body: JSON.stringify({'currency': currency})
+  });
+}
+
+function getCookie(name){
+  var v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+  return v ? v[2] : null;
 }
 
 function convert(amount, fromCurrency, toCurrency){

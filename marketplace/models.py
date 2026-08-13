@@ -238,6 +238,9 @@ class Order(models.Model):
     # Payment tracking
     payment_status    = models.CharField(max_length=12, choices=PAYMENT_STATUS_CHOICES, default='unpaid')
     payment_method    = models.CharField(max_length=14, choices=PAYMENT_METHOD_CHOICES, blank=True)
+    display_currency   = models.CharField(max_length=3, default="CAD", blank=True, help_text="Currency chosen by buyer at checkout")
+    display_total     = models.DecimalField(max_digits=14, decimal_places=2, null=True, blank=True, help_text="Total in buyer's chosen currency")
+    exchange_rate_used= models.DecimalField(max_digits=14, decimal_places=6, null=True, blank=True, help_text="Rate at time of checkout")
     payment_reference = models.CharField(max_length=120, blank=True,
                                           help_text='Stripe session ID or Flutterwave transaction ref')
     paid_at           = models.DateTimeField(blank=True, null=True)

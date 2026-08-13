@@ -460,3 +460,16 @@ def search(request):
         results['videos']    = list(TVProgram.objects.filter(title__icontains=q, is_active=True)[:5])
     total = sum(len(v) for v in results.values())
     return render(request, 'core/search.html', {'q': q, 'results': results, 'total': total})
+
+
+def set_cart_currency(request):
+    """Save user's chosen cart currency to session."""
+    from django.http import JsonResponse
+    if request.method == 'POST':
+        import json
+        data = json.loads(request.body)
+        currency = data.get('currency','CAD')
+        if currency in ('CAD','USD','UGX','KES','EUR','JPY'):
+            request.session['cart_currency'] = currency
+        return JsonResponse({'ok': True, 'currency': currency})
+    return JsonResponse({'ok': False})

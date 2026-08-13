@@ -14,6 +14,7 @@ urlpatterns = [
     path('orders/<int:pk>/pay/mobile/', views.payment_start_mobile,name='payment_start_mobile'),
     path('orders/<int:pk>/pay/success/',views.payment_success,     name='payment_success'),
     path('cart/',                      views.cart_view,        name='cart'),
+    path('set-currency/', views.set_currency, name='set_currency'),
     path('cart/checkout/',             views.cart_checkout,    name='cart_checkout'),
     path('cart/add/<int:pk>/',         views.cart_add,         name='cart_add'),
     path('cart/remove/<int:pk>/',      views.cart_remove,      name='cart_remove'),
