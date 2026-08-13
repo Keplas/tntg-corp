@@ -639,22 +639,38 @@ def cart_checkout(request):
                 messages.warning(request, f'Only {product.quantity_available} kg of {product.name} available.')
                 continue
 
-            order = Order.objects.create(
-                buyer               = request.user,
-                product             = product,
-                order_type          = order_type,
-                quantity            = qty,
-                total_price         = base_sub,
-                display_currency    = display_currency,
-                display_total       = disp_sub,
-                exchange_rate_used  = locked_rate,
-                delivery_type       = delivery_type,
-                destination_country = destination,
-                referred_by         = referred_by,
-                referrer_unique_id  = referred_by,
-                avon_points_earned  = pts,
-                reward_payment_date = reward_date,
-            )
+            try:
+                order = Order.objects.create(
+                    buyer               = request.user,
+                    product             = product,
+                    order_type          = order_type,
+                    quantity            = qty,
+                    total_price         = base_sub,
+                    display_currency    = display_currency,
+                    display_total       = disp_sub,
+                    exchange_rate_used  = locked_rate,
+                    delivery_type       = delivery_type,
+                    destination_country = destination,
+                    referred_by         = referred_by,
+                    referrer_unique_id  = referred_by,
+                    avon_points_earned  = pts,
+                    reward_payment_date = reward_date,
+                )
+            except Exception:
+                # Fallback if new currency fields not yet in DB
+                order = Order.objects.create(
+                    buyer               = request.user,
+                    product             = product,
+                    order_type          = order_type,
+                    quantity            = qty,
+                    total_price         = base_sub,
+                    delivery_type       = delivery_type,
+                    destination_country = destination,
+                    referred_by         = referred_by,
+                    referrer_unique_id  = referred_by,
+                    avon_points_earned  = pts,
+                    reward_payment_date = reward_date,
+                )
 
             if product.quantity_available is not None:
                 product.quantity_available = max(0, product.quantity_available - qty)
