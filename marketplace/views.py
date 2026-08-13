@@ -61,6 +61,13 @@ def product_detail(request, pk):
 
 @login_required
 def place_order(request, pk):
+    """Legacy: redirect to cart — use cart_checkout for all orders."""
+    # Add item to cart then go straight to checkout
+    cart = request.session.get('cart', {})
+    cart[str(pk)] = cart.get(str(pk), 0) + 1
+    request.session['cart'] = cart
+    messages.info(request, 'Item added to cart. Complete your order below.')
+    return redirect('cart_checkout')
     product  = get_object_or_404(Product, pk=pk, is_active=True)
     # Out of stock check
     if product.quantity_available is not None and product.quantity_available <= 0:
@@ -683,7 +690,8 @@ def cart_checkout(request):
             request.session['cart'] = {}
             messages.success(request,
                 f'{len(orders_created)} order(s) placed in {display_currency}. Confirmation sent to {request.user.email}.')
-            return redirect('my_orders')
+            # Send to payment for first order
+            return redirect('payment_select', pk=orders_created[0].pk)
 
         messages.error(request, 'No orders placed. Please check stock availability.')
         return redirect('cart')

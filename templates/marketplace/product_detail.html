@@ -160,7 +160,7 @@
  {% csrf_token %}<input type="hidden" name="quantity" value="1">
  <button type="submit" class="btn btn-gold btn-lg w-100"> Add to Cart</button>
  </form>
- <a href="{% url 'place_order' product.pk %}" class="btn btn-gold btn-lg flex-fill" style="background:linear-gradient(135deg,#0a2540,#1a3a5c);border:1px solid rgba(201,168,76,.4)">
+ <a href="{% url 'cart_add' product.pk %}" class="btn btn-gold btn-lg flex-fill" style="background:linear-gradient(135deg,#0a2540,#1a3a5c);border:1px solid rgba(201,168,76,.4)">
  <i class="fas fa-shopping-cart me-2"></i>Place Order
  </a>
  <a href="{% url 'wishlist_toggle' product.pk %}" class="btn btn-lg" style="border:1px solid rgba(239,68,68,.4);color:#f87171;background:rgba(239,68,68,.08)">
@@ -216,7 +216,7 @@
  </div>
  <div class="product-foot">
  <a href="{% url 'product_detail' p.pk %}" class="btn btn-outline-gold btn-sm flex-fill">View</a>
- <a href="{% url 'place_order' p.pk %}" class="btn btn-gold btn-sm flex-fill">Order</a>
+ <a href="{% url 'cart_add' p.pk %}" class="btn btn-gold btn-sm flex-fill">Add to Cart</a>
  </div>
  </div>
  </div>

@@ -25,7 +25,14 @@
               <div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Order #{{ order.pk }}</div>
               <div class="fw-bold" style="font-size:1.1rem">{{ order.product.name }} × {{ order.quantity }}</div>
             </div>
-            <div class="text-gold fw-bold" style="font-size:1.5rem">${{ order.total_price }}</div>
+            <div class="text-gold fw-bold" style="font-size:1.5rem">
+              {% if order.display_currency and order.display_currency != "CAD" %}
+              {{ order.display_currency }} {{ order.display_total }}
+              <div style="font-size:.75rem;color:#7a6e5f;font-weight:400">≈ {{ order.product.currency }} {{ order.total_price }} (base)</div>
+              {% else %}
+              {{ order.product.currency }} {{ order.total_price }}
+              {% endif %}
+            </div>
           </div>
         </div>
 
@@ -46,7 +53,7 @@
               <p class="text-muted small flex-grow-1">Visa, Mastercard, and other major cards. Secured by Stripe.</p>
               {% if stripe_ready %}
               <a href="{% url 'payment_start_card' order.pk %}" class="btn btn-gold w-100 text-center">
-                Pay ${{ order.total_price }} by Card
+                Pay {% if order.display_currency %}{{ order.display_currency }} {{ order.display_total }}{% else %}{{ order.product.currency }} {{ order.total_price }}{% endif %} by Card
               </a>
               {% else %}
               <button class="btn btn-gold w-100 text-center" disabled style="opacity:.5;cursor:not-allowed">
@@ -67,7 +74,7 @@
                 {% csrf_token %}
                 <input type="tel" name="phone" class="form-control mb-2" placeholder="e.g. 256712345678" required>
                 <button type="submit" class="btn btn-gold w-100 text-center">
-                  Pay ${{ order.total_price }} by Mobile Money
+                  Pay {% if order.display_currency %}{{ order.display_currency }} {{ order.display_total }}{% else %}{{ order.product.currency }} {{ order.total_price }}{% endif %} by Mobile Money
                 </button>
               </form>
               {% else %}
