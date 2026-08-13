@@ -302,12 +302,12 @@ def cart_view(request):
 
 def cart_add(request, pk):
     product = get_object_or_404(Product, pk=pk, is_active=True)
-    qty  = max(1, int(request.POST.get('quantity', 1)))
+    qty  = max(1, int(request.POST.get('quantity', request.GET.get('quantity', 1))))
     cart = request.session.get('cart', {})
     cart[str(pk)] = cart.get(str(pk), 0) + qty
     request.session['cart'] = cart
-    messages.success(request, f'☕ {product.name} added to cart ({cart[str(pk)]} kg total).')
-    return redirect(request.META.get('HTTP_REFERER', reverse('cart')))
+    messages.success(request, f'{product.name} added to cart.')
+    return redirect('cart')
 
 
 def cart_remove(request, pk):
