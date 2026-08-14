@@ -89,7 +89,21 @@
           T&TG Loyalty Points (0.5%) are credited 45 days after delivery.
         </div>
 
-        <button type="submit" class="btn btn-gold w-100 py-3" style="font-weight:900;font-size:1rem">
+        <div class="row g-3 mt-1">
+  <div class="col-12"><label class="co-label">Destination Address *</label>
+  <textarea name="destination_address" class="co-input" rows="2" placeholder="Full delivery address..." required></textarea></div>
+  <div class="col-md-6"><label class="co-label">Desired Arrival Date *</label>
+  <input type="date" name="desired_arrival_date" class="co-input" min="{{ min_date }}" required></div>
+  <div class="col-md-6"><label class="co-label">Desired Arrival Time</label>
+  <input type="time" name="desired_arrival_time" class="co-input"></div>
+  <div class="col-md-6"><label class="co-label">Referred By</label>
+  <input type="text" name="referred_by_name" class="co-input" placeholder="Who referred you?"></div>
+  <div class="col-md-6"><label class="co-label">Referrer T&TG ID (optional)</label>
+  <input type="text" name="referral_code" class="co-input" placeholder="e.g. TG00123"></div>
+  <div class="col-12" style="font-size:.72rem;color:#7a6e5f"><i class="fas fa-info-circle" style="color:#c9a84c"></i> Referrer earns 1% T&TG Loyalty Points.</div>
+</div>
+<br>
+<button type="submit" class="btn btn-gold w-100 py-3" style="font-weight:900;font-size:1rem">
           <i class="fas fa-check-circle me-2"></i>Place Order — {{ display_currency }} {{ total }}
         </button>
       </form>
