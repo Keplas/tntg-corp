@@ -638,7 +638,9 @@ def cart_checkout(request):
                     total_price          = base_sub,
                     delivery_type        = delivery_type,
                     destination_country  = destination,
-                    desired_arrival_date = date.today() + timedelta(days=14),
+                    destination_address  = destination_address,
+                    desired_arrival_date = arrival_date,
+                    desired_arrival_time = arrival_time,
                     referred_by          = referred_by,
                     referrer_unique_id   = referred_by,
                     avon_points_earned   = pts,
@@ -709,8 +711,11 @@ def cart_checkout(request):
             messages.error(request, f'Something went wrong: {str(e)[:150]}. Please try again.')
             return redirect('cart')
 
+    from datetime import datetime
+    min_date = (date.today() + timedelta(days=1)).strftime('%Y-%m-%d')
     return render(request, 'marketplace/cart_checkout.html', {
         'items':            items,
+        'min_date':         min_date,
         'total':            total_display,
         'display_currency': display_currency,
         'symbol':           SYMBOLS.get(display_currency, display_currency + ' '),
