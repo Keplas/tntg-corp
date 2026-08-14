@@ -631,17 +631,18 @@ def cart_checkout(request):
                     continue
 
                 order = Order.objects.create(
-                    buyer               = request.user,
-                    product             = product,
-                    order_type          = order_type,
-                    quantity            = qty,
-                    total_price         = base_sub,
-                    delivery_type       = delivery_type,
-                    destination_country = destination,
-                    referred_by         = referred_by,
-                    referrer_unique_id  = referred_by,
-                    avon_points_earned  = pts,
-                    reward_payment_date = reward_date,
+                    buyer                = request.user,
+                    product              = product,
+                    order_type           = order_type,
+                    quantity             = qty,
+                    total_price          = base_sub,
+                    delivery_type        = delivery_type,
+                    destination_country  = destination,
+                    desired_arrival_date = date.today() + timedelta(days=14),
+                    referred_by          = referred_by,
+                    referrer_unique_id   = referred_by,
+                    avon_points_earned   = pts,
+                    reward_payment_date  = reward_date,
                 )
 
                 # Save currency fields (safe if migration not yet run on Neon)
