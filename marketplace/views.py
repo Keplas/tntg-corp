@@ -557,19 +557,13 @@ def manage_product_prices(request, pk):
 
 @login_required
 def cart_checkout(request):
-    """Process all cart items — charge in buyer's selected currency."""
-    from accounts.models import AvonPointTransaction
-    import decimal
-
+    """Process all cart items — charge in buyer selected currency."""
     cart = request.session.get('cart', {})
     if not cart:
         messages.error(request, 'Your cart is empty.')
         return redirect('cart')
 
-    # Get selected currency from session
     display_currency = request.session.get('display_currency', 'CAD')
-
-    # Fetch and LOCK live rates at this moment
     STATIC_RATES = {'CAD':1.36,'USD':1.0,'UGX':3750.0,'KES':129.0,'EUR':0.92,'JPY':157.0}
     try:
         from core.exchange_rates import fetch_live_rates
@@ -580,31 +574,25 @@ def cart_checkout(request):
     def convert(amount, from_curr, to_curr):
         if from_curr == to_curr:
             return decimal.Decimal(str(amount))
-        from_rate = decimal.Decimal(str(raw_rates.get(from_curr, 1) or 1))
-        to_rate   = decimal.Decimal(str(raw_rates.get(to_curr, 1) or 1))
-        usd = decimal.Decimal(str(amount)) / from_rate
-        return (usd * to_rate).quantize(decimal.Decimal('0.01'))
+        fr = decimal.Decimal(str(raw_rates.get(from_curr, 1) or 1))
+        to = decimal.Decimal(str(raw_rates.get(to_curr, 1) or 1))
+        return ((decimal.Decimal(str(amount)) / fr) * to).quantize(decimal.Decimal('0.01'))
 
     SYMBOLS = {'CAD':'CA$','USD':'US$','UGX':'UGX ','KES':'KES ','EUR':'€','JPY':'¥'}
+    locked_rate = decimal.Decimal(str(raw_rates.get(display_currency, 1)))
 
-    # Build items in display currency
     items = []
     total_display = decimal.Decimal('0')
     total_base    = decimal.Decimal('0')
 
     for pk_str, qty in cart.items():
         try:
-            p   = Product.objects.get(pk=int(pk_str), is_active=True)
+            p = Product.objects.get(pk=int(pk_str), is_active=True)
             sub_base    = p.price * qty
             sub_display = convert(sub_base, p.currency, display_currency)
             total_base    += sub_base
             total_display += sub_display
-            items.append({
-                'product':      p,
-                'qty':          qty,
-                'subtotal':     sub_display,
-                'base_subtotal': sub_base,
-            })
+            items.append({'product': p, 'qty': qty, 'subtotal': sub_display, 'base_subtotal': sub_base})
         except Product.DoesNotExist:
             pass
 
@@ -612,34 +600,37 @@ def cart_checkout(request):
         messages.error(request, 'No valid items in cart.')
         return redirect('cart')
 
-    # Lock rate for display
-    locked_rate = decimal.Decimal(str(raw_rates.get(display_currency, 1)))
-
     if request.method == 'POST':
-        destination   = request.POST.get('destination', '').strip()
-        delivery_type = request.POST.get('delivery_type', 'ordinary')
-        order_type    = request.POST.get('order_type', 'buy')
-        referred_by   = request.POST.get('referral_code', '').strip()
+        try:
+            destination   = request.POST.get('destination', '').strip()
+            delivery_type = request.POST.get('delivery_type', 'ordinary')
+            order_type    = request.POST.get('order_type', 'buy')
+            referred_by   = request.POST.get('referral_code', '').strip()
 
-        settings      = LoyaltySettings.get_settings()
-        reward_date   = date.today() + timedelta(days=settings.payment_days)
-        rate          = decimal.Decimal(str(settings.referral_rate if referred_by else settings.consumer_rate))
-        tx_type       = 'earn_referral' if referred_by else 'earn_purchase'
+            if delivery_type not in ('express', 'ordinary'):
+                delivery_type = 'ordinary'
+            if order_type not in ('buy', 'sell'):
+                order_type = 'buy'
 
-        orders_created = []
+            settings    = LoyaltySettings.get_settings()
+            reward_date = date.today() + timedelta(days=settings.payment_days)
+            rate        = decimal.Decimal(str(settings.referral_rate if referred_by else settings.consumer_rate))
+            tx_type     = 'earn_referral' if referred_by else 'earn_purchase'
 
-        for item in items:
-            product  = item['product']
-            qty      = item['qty']
-            base_sub = item['base_subtotal']
-            disp_sub = item['subtotal']
-            pts      = (base_sub * rate).quantize(decimal.Decimal('0.01'))
+            orders_created = []
 
-            if product.quantity_available is not None and product.quantity_available < qty:
-                messages.warning(request, f'Only {product.quantity_available} kg of {product.name} available.')
-                continue
+            for item in items:
+                product  = item['product']
+                qty      = item['qty']
+                base_sub = item['base_subtotal']
+                disp_sub = item['subtotal']
+                pts      = (base_sub * rate).quantize(decimal.Decimal('0.01'))
 
-            order = Order.objects.create(
+                if product.quantity_available is not None and product.quantity_available < qty:
+                    messages.warning(request, f'Only {product.quantity_available} kg of {product.name} available.')
+                    continue
+
+                order = Order.objects.create(
                     buyer               = request.user,
                     product             = product,
                     order_type          = order_type,
@@ -652,54 +643,70 @@ def cart_checkout(request):
                     avon_points_earned  = pts,
                     reward_payment_date = reward_date,
                 )
-            # Save currency fields separately (safe if migration not yet run)
-            try:
-                order.display_currency   = display_currency
-                order.display_total      = disp_sub
-                order.exchange_rate_used = locked_rate
-                order.save(update_fields=['display_currency','display_total','exchange_rate_used'])
-            except Exception:
-                pass
 
-            if product.quantity_available is not None:
-                product.quantity_available = max(0, product.quantity_available - qty)
-                product.save()
+                # Save currency fields (safe if migration not yet run on Neon)
+                try:
+                    order.display_currency   = display_currency
+                    order.display_total      = disp_sub
+                    order.exchange_rate_used = locked_rate
+                    order.save(update_fields=['display_currency', 'display_total', 'exchange_rate_used'])
+                except Exception:
+                    pass
 
-            request.user.avon_points += pts
-            request.user.save()
+                # Update stock
+                try:
+                    if product.quantity_available is not None:
+                        product.quantity_available = max(0, product.quantity_available - qty)
+                        product.save()
+                except Exception:
+                    pass
 
-            AvonPointTransaction.objects.create(
-                user=request.user,
-                transaction_type=tx_type,
-                points=pts,
-                description=f"Earned from Order #{order.pk}: {product.name}",
-                status='completed',
-                min_execution_date=reward_date,
-            )
+                # Credit loyalty points
+                try:
+                    request.user.avon_points = (request.user.avon_points or decimal.Decimal('0')) + pts
+                    request.user.save(update_fields=['avon_points'])
+                    AvonPointTransaction.objects.create(
+                        user             = request.user,
+                        transaction_type = tx_type,
+                        points           = pts,
+                        description      = f'Earned from Order #{order.pk}: {product.name}',
+                        status           = 'completed',
+                        min_execution_date = reward_date,
+                    )
+                except Exception:
+                    pass
 
-            Notification.notify(
-                'order_placed',
-                f'New Order #{order.pk} — {product.name}',
-                f'Buyer: {request.user.get_full_name() or request.user.username} | {display_currency} {disp_sub}',
-                f'/admin/marketplace/order/{order.pk}/change/'
-            )
+                # Notify admin
+                try:
+                    Notification.notify(
+                        'order_placed',
+                        f'New Order #{order.pk} — {product.name}',
+                        f'Buyer: {request.user.get_full_name() or request.user.username} | {display_currency} {disp_sub}',
+                        f'/admin/marketplace/order/{order.pk}/change/'
+                    )
+                except Exception:
+                    pass
 
-            try:
-                send_order_placed_email(order)
-            except Exception:
-                pass
+                # Send confirmation email
+                try:
+                    send_order_placed_email(order)
+                except Exception:
+                    pass
 
-            orders_created.append(order)
+                orders_created.append(order)
 
-        if orders_created:
-            request.session['cart'] = {}
-            messages.success(request,
-                f'{len(orders_created)} order(s) placed in {display_currency}. Confirmation sent to {request.user.email}.')
-            # Send to payment for first order
-            return redirect('payment_select', pk=orders_created[0].pk)
+            if orders_created:
+                request.session['cart'] = {}
+                messages.success(request,
+                    f'{len(orders_created)} order(s) placed in {display_currency}!')
+                return redirect('payment_select', pk=orders_created[0].pk)
 
-        messages.error(request, 'No orders placed. Please check stock availability.')
-        return redirect('cart')
+            messages.error(request, 'No orders placed. Please check stock availability.')
+            return redirect('cart')
+
+        except Exception as e:
+            messages.error(request, f'Something went wrong: {str(e)[:150]}. Please try again.')
+            return redirect('cart')
 
     return render(request, 'marketplace/cart_checkout.html', {
         'items':            items,
@@ -708,7 +715,6 @@ def cart_checkout(request):
         'symbol':           SYMBOLS.get(display_currency, display_currency + ' '),
         'locked_rate':      locked_rate,
     })
-
 
 
 def set_currency(request):
