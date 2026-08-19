@@ -3,7 +3,7 @@ from django.db import migrations
 PRODUCTS = [
     dict(
         name              = "T&TG Rustic Coffee Invitation Set",
-        category          = "merchandise",
+        category          = "coffee",
         description       = "A beautifully crafted rustic coffee-themed invitation set for events, launches and corporate gatherings. Includes 10 invitations on premium kraft paper with wax seal, twine and dried flower accent. Perfect for T&TG trade events and coffee launch ceremonies.",
         price             = "48.00",
         currency          = "CAD",
@@ -17,7 +17,7 @@ PRODUCTS = [
     ),
     dict(
         name              = "T&TG 'The Perfect Blend' Gift Set",
-        category          = "merchandise",
+        category          = "coffee",
         description       = "Premium coffee-themed gift stationery set — 'The Perfect Blend'. Includes 10 kraft paper cards with coffee cup wooden tag and jute twine ribbon. Ideal for corporate gifting, client appreciation and trade partner welcome packs.",
         price             = "62.00",
         currency          = "CAD",
@@ -31,7 +31,7 @@ PRODUCTS = [
     ),
     dict(
         name              = "T&TG Artisanal Luxury Coffee Pen",
-        category          = "merchandise",
+        category          = "coffee",
         description       = "A premium handcrafted luxury ballpoint pen with black and gold coffee-pattern design. Smooth German ink refill. An elegant corporate gift for T&TG trade partners, business clients and coffee industry professionals.",
         price             = "38.00",
         currency          = "CAD",
@@ -45,7 +45,7 @@ PRODUCTS = [
     ),
     dict(
         name              = "T&TG Coffee Notebook & Pen Set",
-        category          = "merchandise",
+        category          = "coffee",
         description       = "A premium dark coffee-brown spiral notebook with matching pen — inspired by T&TG's coffee heritage. 200 pages, A5 size, lay-flat binding. Ideal for trade meetings, onboarding sessions and corporate gifting across all 6 T&TG markets.",
         price             = "35.00",
         currency          = "CAD",
@@ -59,7 +59,7 @@ PRODUCTS = [
     ),
     dict(
         name              = "T&TG Handcrafted Wooden Fountain Pen",
-        category          = "merchandise",
+        category          = "coffee",
         description       = "An exquisite handcrafted artisan fountain pen made from premium dark rosewood and olive wood, fitted with a gold-plated nib. Each pen is unique — no two are the same. A distinguished gift for T&TG trade partners, directors and managing directors.",
         price             = "55.00",
         currency          = "CAD",
