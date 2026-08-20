@@ -37,7 +37,7 @@ def training_home(request):
                     )
                 except Exception:
                     pass
-        return redirect('tv_programs')
+        return redirect('event_list')
 
     programs   = TrainingProgram.objects.filter(is_active=True)
     tv         = TVProgram.objects.filter(is_active=True)
