@@ -250,6 +250,61 @@ def payment_start_mobile(request, pk):
     return redirect(link)
 
 
+
+@login_required
+def payment_manual(request, pk):
+    """Confirm order for manual payment (bank transfer, WhatsApp, mobile money)."""
+    order = get_object_or_404(Order, pk=pk, buyer=request.user)
+    if request.method == 'POST':
+        order.payment_method = 'manual'
+        order.payment_status = 'pending'
+        order.status         = 'confirmed'
+        order.save(update_fields=['payment_method', 'payment_status', 'status'])
+
+        try:
+            Notification.notify(
+                'order_placed',
+                'Manual Payment Order #' + str(order.pk),
+                order.buyer.get_full_name() + ' confirmed order for manual payment.',
+                '/admin/marketplace/order/' + str(order.pk) + '/change/'
+            )
+        except Exception:
+            pass
+
+        try:
+            from django.core.mail import send_mail
+            from django.conf import settings as djs
+            buyer_name = order.buyer.get_full_name() or order.buyer.username
+            msg = (
+                'Order #' + str(order.pk) + ' — Manual Payment\n\n'
+                'Buyer: ' + buyer_name + '\n'
+                'Email: ' + str(order.buyer.email) + '\n'
+                'Product: ' + order.product.name + ' x' + str(order.quantity) + '\n'
+                'Amount: ' + str(order.product.currency) + ' ' + str(order.total_price) + '\n'
+                'Destination: ' + str(order.destination_country) + '\n\n'
+                'Please contact the buyer to collect payment.'
+            )
+            send_mail(
+                subject='Manual Payment Order #' + str(order.pk) + ' — ' + buyer_name,
+                message=msg,
+                from_email=getattr(djs, 'DEFAULT_FROM_EMAIL', ''),
+                recipient_list=['tom.grouptrade@gmail.com'],
+                fail_silently=True,
+            )
+        except Exception:
+            pass
+
+        try:
+            send_order_confirmation_email(order)
+        except Exception:
+            pass
+
+        messages.success(request,
+            'Order #' + str(order.pk) + ' confirmed! Tom will contact you within 24 hours to arrange payment.')
+        return redirect('order_detail', pk=order.pk)
+    return redirect('payment_select', pk=pk)
+
+
 @login_required
 def payment_success(request, pk):
     """Landing page after returning from Stripe or Flutterwave — verifies payment."""

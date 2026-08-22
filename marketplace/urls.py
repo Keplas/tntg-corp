@@ -13,6 +13,7 @@ urlpatterns = [
     path('orders/<int:pk>/pay/card/',   views.payment_start_card,  name='payment_start_card'),
     path('orders/<int:pk>/pay/mobile/', views.payment_start_mobile,name='payment_start_mobile'),
     path('orders/<int:pk>/pay/success/',views.payment_success,     name='payment_success'),
+    path('orders/<int:pk>/pay/manual/', views.payment_manual,      name='payment_manual'),
     path('cart/',                      views.cart_view,        name='cart'),
     path('set-currency/', views.set_currency, name='set_currency'),
     path('cart/checkout/',             views.cart_checkout,    name='cart_checkout'),
