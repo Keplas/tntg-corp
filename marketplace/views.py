@@ -61,14 +61,12 @@ def product_detail(request, pk):
 
 @login_required
 def place_order(request, pk):
-    """Legacy: redirect to cart — use cart_checkout for all orders."""
-    # Add item to cart then go straight to checkout
+    """Redirects to cart — all orders now go through cart checkout."""
     cart = request.session.get('cart', {})
     cart[str(pk)] = cart.get(str(pk), 0) + 1
     request.session['cart'] = cart
-    messages.info(request, 'Item added to cart. Complete your order below.')
-    return redirect('cart_checkout')
-    product  = get_object_or_404(Product, pk=pk, is_active=True)
+    messages.success(request, 'Item added to your cart.')
+    return redirect('cart')
     # Out of stock check
     if product.quantity_available is not None and product.quantity_available <= 0:
         messages.error(request, f'{product.name} is currently out of stock. Please check back soon.')

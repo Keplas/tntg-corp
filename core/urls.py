@@ -11,7 +11,6 @@ urlpatterns = [
     path('loyalty/',      views.loyalty_info,        name='loyalty_info'),
     # Legacy redirects — keep so old bookmarks / templates still resolve
     path('avon-points/',  views.loyalty_info,        name='avon_points_info'),
-    path('coffee/',       views.coffee,              name='coffee'),
     path('search/', views.search, name='search'),
     path('notifications/', views.notifications,                      name='notifications'),
     path('notifications/mark-read/<int:pk>/', views.mark_notification_read, name='mark_notification_read'),

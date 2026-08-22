@@ -114,7 +114,7 @@ body { background:#f0f0f0; }
       <div class="tot-box">
         <div class="tot-row"><span>Subtotal</span><span>{{ order.product.currency }} {{ order.total_amount|default:order.product.price }}</span></div>
         <div class="tot-row"><span>Shipping</span><span>TBD</span></div>
-        <div class="tot-row"><span>Loyalty Points Earned</span><span style="color:#15803d">+{{ order.loyalty_points_earned|default:"0" }} pts</span></div>
+        <div class="tot-row"><span>Loyalty Points Earned</span><span style="color:#15803d">+{{ order.avon_points_earned|default:"0" }} pts</span></div>
         <div class="tot-row total"><span>Total Due</span><span>{{ order.product.currency }} {{ order.total_amount|default:order.product.price }}</span></div>
       </div>
     </div>
