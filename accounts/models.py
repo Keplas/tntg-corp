@@ -46,6 +46,7 @@ class CustomUser(AbstractUser):
     partner_company       = models.CharField(max_length=200, blank=True)
     partner_id            = models.CharField(max_length=50, blank=True)
     has_certificate       = models.BooleanField(default=False)
+    saved_cart            = models.JSONField(default=dict, blank=True)
     is_registered_company = models.BooleanField(default=False)
     avon_points           = models.DecimalField(
         max_digits=12, decimal_places=2, default=0,

@@ -359,6 +359,13 @@ def cart_add(request, pk):
     cart = request.session.get('cart', {})
     cart[str(pk)] = cart.get(str(pk), 0) + qty
     request.session['cart'] = cart
+    # Persist to DB if logged in so cart survives logout/login
+    if request.user.is_authenticated:
+        try:
+            request.user.saved_cart = cart
+            request.user.save(update_fields=['saved_cart'])
+        except Exception:
+            pass
     messages.success(request, f'{product.name} added to cart.')
     return redirect('cart')
 
