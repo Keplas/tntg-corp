@@ -666,6 +666,18 @@ def cart_checkout(request):
             delivery_type = request.POST.get('delivery_type', 'ordinary')
             order_type    = request.POST.get('order_type', 'buy')
             referred_by   = request.POST.get('referral_code', '').strip()
+            dest_address  = request.POST.get('destination_address', '').strip()
+            arrival_date_str = request.POST.get('desired_arrival_date', '').strip()
+            arrival_time_str = request.POST.get('desired_arrival_time', '').strip()
+            from datetime import datetime as dt
+            try:
+                arrival_date = dt.strptime(arrival_date_str, '%Y-%m-%d').date() if arrival_date_str else (date.today() + timedelta(days=14))
+            except Exception:
+                arrival_date = date.today() + timedelta(days=14)
+            try:
+                arrival_time = dt.strptime(arrival_time_str, '%H:%M').time() if arrival_time_str else None
+            except Exception:
+                arrival_time = None
 
             if delivery_type not in ('express', 'ordinary'):
                 delivery_type = 'ordinary'
@@ -698,7 +710,7 @@ def cart_checkout(request):
                     total_price          = base_sub,
                     delivery_type        = delivery_type,
                     destination_country  = destination,
-                    destination_address  = destination_address,
+                    destination_address  = dest_address,
                     desired_arrival_date = arrival_date,
                     desired_arrival_time = arrival_time,
                     referred_by          = referred_by,
