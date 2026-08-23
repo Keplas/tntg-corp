@@ -1,135 +1,196 @@
 {% extends 'base.html' %}
-{% block title %}Blog & News — T&TG Trade Corp{% endblock %}
+{% load static %}
+{% block title %}T&TG Blog — Trade, Coffee & Global Commerce Insights{% endblock %}
 {% block content %}
-
-{% include 'core/blog_live_feed.html' %}
 <style>
-  .bl-bg    { background:#0a0a0a; }
-  .bl-card  { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.15); border-radius:16px; overflow:hidden; transition:border-color .25s, transform .25s; text-decoration:none; display:block; }
-  .bl-card:hover { border-color:rgba(201,168,76,.4); transform:translateY(-4px); }
-  .bl-gold  { color:#c9a84c; }
-  .bl-muted { color:#7a6e5f; }
-  .bl-text  { color:#e0d5c0; }
-  .bl-tag   { display:inline-block; padding:3px 10px; border-radius:100px; font-size:.68rem; font-weight:700; background:rgba(201,168,76,.12); color:#c9a84c; border:1px solid rgba(201,168,76,.2); }
-  .bl-cat-btn { padding:7px 18px; border-radius:100px; font-size:.78rem; font-weight:600; border:1px solid rgba(201,168,76,.2); color:#7a6e5f; background:none; cursor:pointer; text-decoration:none; transition:all .2s; }
-  .bl-cat-btn:hover, .bl-cat-btn.active { background:rgba(201,168,76,.12); color:#c9a84c; border-color:rgba(201,168,76,.4); }
-  .bl-img   { width:100%; aspect-ratio:16/9; object-fit:cover; background:#111; }
-  .bl-feat-img { width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:16px; }
+  .bl-hero { background:linear-gradient(135deg,#060f1e 0%,#0a1a35 100%); padding:72px 0 48px; border-bottom:1px solid rgba(201,168,76,.12); position:relative; overflow:hidden; }
+  .bl-hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 20% 50%,rgba(201,168,76,.07) 0%,transparent 60%); pointer-events:none; }
+  .bl-tag { display:inline-block; padding:3px 12px; border-radius:100px; font-size:.68rem; font-weight:800; letter-spacing:1px; text-transform:uppercase; }
+  .bl-tag-trade   { background:rgba(201,168,76,.15); color:#c9a84c; border:1px solid rgba(201,168,76,.25); }
+  .bl-tag-forex   { background:rgba(96,165,250,.12); color:#60a5fa; border:1px solid rgba(96,165,250,.2); }
+  .bl-tag-loyalty { background:rgba(34,197,94,.1);  color:#4ade80; border:1px solid rgba(34,197,94,.2); }
+  .bl-tag-coffee  { background:rgba(180,83,9,.15);  color:#f59e0b; border:1px solid rgba(180,83,9,.25); }
+  .bl-tag-general { background:rgba(255,255,255,.06); color:#b0a898; border:1px solid rgba(255,255,255,.1); }
+  .bl-card { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.1); border-radius:20px; overflow:hidden; transition:all .3s; display:flex; flex-direction:column; height:100%; }
+  .bl-card:hover { border-color:rgba(201,168,76,.35); transform:translateY(-5px); box-shadow:0 20px 48px rgba(0,0,0,.3); }
+  .bl-card-img { height:200px; object-fit:cover; width:100%; display:block; }
+  .bl-card-body { padding:22px; flex:1; display:flex; flex-direction:column; }
+  .bl-card-title { color:#fff; font-weight:800; font-size:1rem; line-height:1.4; margin:10px 0 8px; }
+  .bl-card-excerpt { color:#7a6e5f; font-size:.82rem; line-height:1.7; flex:1; }
+  .bl-card-meta { display:flex; align-items:center; gap:12px; margin-top:16px; padding-top:14px; border-top:1px solid rgba(255,255,255,.05); font-size:.72rem; color:#7a6e5f; }
+  .bl-featured { border-color:rgba(201,168,76,.3); background:linear-gradient(135deg,rgba(201,168,76,.05),rgba(255,255,255,.02)); }
+  .bl-featured-img { height:320px; }
+  .bl-sidebar-card { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.1); border-radius:14px; padding:20px; margin-bottom:16px; }
+  .bl-cat-btn { display:block; padding:8px 16px; border-radius:10px; font-size:.8rem; font-weight:700; text-decoration:none; transition:all .2s; margin-bottom:6px; }
+  .bl-cat-btn:hover { transform:translateX(4px); }
+  .bl-cat-active { background:rgba(201,168,76,.15); color:#c9a84c; }
+  .bl-cat-inactive { background:rgba(255,255,255,.04); color:#7a6e5f; }
 </style>
 
-<!-- HERO -->
-<section class="bl-bg" style="padding:70px 0 50px;position:relative;overflow:hidden">
-  <div style="position:absolute;top:-80px;right:-80px;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.07),transparent 70%);pointer-events:none"></div>
+<!-- Hero -->
+<section class="bl-hero bg-shimmer">
   <div class="container">
-    <div class="d-inline-flex align-items-center gap-2 mb-4 px-3 py-1 rounded-pill" style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2)">
-      <i class="fas fa-newspaper bl-gold" style="font-size:.75rem"></i>
-      <span class="bl-gold" style="font-size:.7rem;font-weight:700;letter-spacing:2px">T&TG TRADE CORP</span>
+    <div style="font-size:.65rem;font-weight:900;letter-spacing:4px;color:#c9a84c;margin-bottom:12px;text-transform:uppercase">T&TG Insights</div>
+    <h1 style="color:#fff;font-weight:900;font-size:clamp(1.8rem,5vw,2.8rem);margin-bottom:12px;line-height:1.15">
+      Trade · Coffee · Commerce<br>
+      <span style="color:#c9a84c">Insights & Updates</span>
+    </h1>
+    <p style="color:#7a6e5f;max-width:540px;line-height:1.8;font-size:.95rem">
+      Expert insights on global coffee trade, loyalty rewards, live forex markets and import/export operations across Canada, Uganda, Kenya, Netherlands and Japan.
+    </p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:20px">
+      <span class="bl-tag bl-tag-trade">Trade</span>
+      <span class="bl-tag bl-tag-coffee">Coffee</span>
+      <span class="bl-tag bl-tag-forex">Forex</span>
+      <span class="bl-tag bl-tag-loyalty">Loyalty</span>
     </div>
-    <h1 style="font-size:clamp(2rem,5vw,3.2rem);font-weight:900;color:#fff;letter-spacing:-1px" class="mb-2">Blog &amp; <span class="bl-gold">News</span></h1>
-    <p class="bl-muted" style="max-width:520px;font-size:1rem;line-height:1.7">Trade insights, coffee market updates, import tips and East African business news — straight from the T&TG team.</p>
   </div>
 </section>
 
-<section class="bl-bg" style="padding:0 0 80px">
-  <div class="container">
+<!-- Content -->
+<section style="background:#060f1e;padding:56px 0 80px">
+<div class="container">
+  <div class="row g-4">
 
-    <!-- Category filter -->
-    <div class="d-flex flex-wrap gap-2 mb-5 pb-4" style="border-bottom:1px solid rgba(201,168,76,.1)">
-      <a href="{% url 'blog_list' %}" class="bl-cat-btn {% if not current_cat %}active{% endif %}">All</a>
-      {% for val, label in categories %}
-      <a href="{% url 'blog_list' %}?category={{ val }}" class="bl-cat-btn {% if current_cat == val %}active{% endif %}">{{ label }}</a>
-      {% endfor %}
-    </div>
+    <!-- Posts -->
+    <div class="col-lg-8">
 
-    <!-- Featured article -->
-    {% if featured and not current_cat %}
-    <div class="row g-4 mb-5">
-      <div class="col-lg-7">
-        {% if featured.safe_cover_url %}
-        <img src="{{ featured.safe_cover_url }}" alt="{{ featured.title }}" class="bl-feat-img">
+      {% if featured %}
+      <!-- Featured Post -->
+      <div class="bl-card bl-featured mb-4">
+        {% if featured.cover_image_url %}
+        <img src="{{ featured.cover_image_url }}" alt="{{ featured.title }}" class="bl-card-img bl-featured-img">
         {% else %}
-        <div class="bl-feat-img d-flex align-items-center justify-content-center" style="background:linear-gradient(135deg,#1a1000,#2a1a00)">
-          <i class="fas fa-newspaper" style="font-size:4rem;color:rgba(201,168,76,.3)"></i>
+        <div style="height:280px;background:linear-gradient(135deg,rgba(201,168,76,.1),rgba(201,168,76,.03));display:flex;align-items:center;justify-content:center">
+          <i class="fas fa-newspaper" style="font-size:3rem;color:rgba(201,168,76,.2)"></i>
         </div>
         {% endif %}
+        <div class="bl-card-body">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="background:rgba(201,168,76,.2);color:#c9a84c;padding:3px 10px;border-radius:20px;font-size:.65rem;font-weight:900;letter-spacing:1px">FEATURED</span>
+            <span class="bl-tag bl-tag-{{ featured.category }}">{{ featured.get_category_display|default:featured.category }}</span>
+          </div>
+          <div class="bl-card-title" style="font-size:1.3rem;margin-top:12px">{{ featured.title }}</div>
+          <div class="bl-card-excerpt">{{ featured.excerpt }}</div>
+          <div class="bl-card-meta">
+            <i class="fas fa-user-circle" style="color:#c9a84c"></i>
+            <span>Tom Ssembiito · T&TG Trade Corporation</span>
+            <span style="margin-left:auto">{{ featured.published_at|date:"d M Y" }}</span>
+          </div>
+          <a href="{% url 'blog_detail' featured.slug %}" class="btn btn-gold mt-3 px-4" style="font-weight:700">
+            Read Article <i class="fas fa-arrow-right ms-2"></i>
+          </a>
+        </div>
       </div>
-      <div class="col-lg-5 d-flex flex-column justify-content-center">
-        <div class="d-flex align-items-center gap-2 mb-3">
-          <span class="bl-tag">⭐ Featured</span>
-          <span class="bl-tag">{{ featured.get_category_display }}</span>
+      {% endif %}
+
+      <!-- Filter tabs -->
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px">
+        <a href="{% url 'blog_list' %}" class="bl-tag {% if not active_cat %}bl-tag-trade{% else %}bl-tag-general{% endif %}" style="text-decoration:none;cursor:pointer">All Posts</a>
+        <a href="?cat=trade"   class="bl-tag {% if active_cat == 'trade'   %}bl-tag-trade{% else %}bl-tag-general{% endif %}" style="text-decoration:none">Trade</a>
+        <a href="?cat=forex"   class="bl-tag {% if active_cat == 'forex'   %}bl-tag-forex{% else %}bl-tag-general{% endif %}" style="text-decoration:none">Forex</a>
+        <a href="?cat=loyalty" class="bl-tag {% if active_cat == 'loyalty' %}bl-tag-loyalty{% else %}bl-tag-general{% endif %}" style="text-decoration:none">Loyalty</a>
+        <a href="?cat=coffee"  class="bl-tag {% if active_cat == 'coffee'  %}bl-tag-coffee{% else %}bl-tag-general{% endif %}" style="text-decoration:none">Coffee</a>
+      </div>
+
+      <!-- Post Grid -->
+      <div class="row g-4">
+        {% for post in posts %}
+        <div class="col-md-6">
+          <div class="bl-card">
+            {% if post.cover_image_url %}
+            <img src="{{ post.cover_image_url }}" alt="{{ post.title }}" class="bl-card-img">
+            {% else %}
+            <div style="height:160px;background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(13,31,60,.8));display:flex;align-items:center;justify-content:center">
+              <i class="fas {% if post.category == 'trade' %}fa-exchange-alt{% elif post.category == 'forex' %}fa-chart-line{% elif post.category == 'loyalty' %}fa-coins{% else %}fa-mug-hot{% endif %}" style="font-size:2.5rem;color:rgba(201,168,76,.25)"></i>
+            </div>
+            {% endif %}
+            <div class="bl-card-body">
+              <span class="bl-tag bl-tag-{{ post.category }}">{{ post.get_category_display|default:post.category }}</span>
+              <div class="bl-card-title">{{ post.title }}</div>
+              <div class="bl-card-excerpt">{{ post.excerpt|truncatechars:100 }}</div>
+              <div class="bl-card-meta">
+                <i class="fas fa-calendar" style="color:#c9a84c"></i>
+                <span>{{ post.published_at|date:"d M Y" }}</span>
+                {% if post.views_count %}
+                <span style="margin-left:auto"><i class="fas fa-eye me-1"></i>{{ post.views_count }}</span>
+                {% endif %}
+              </div>
+              <a href="{% url 'blog_detail' post.slug %}" style="display:inline-flex;align-items:center;gap:6px;margin-top:14px;color:#c9a84c;font-size:.82rem;font-weight:700;text-decoration:none">
+                Read More <i class="fas fa-arrow-right"></i>
+              </a>
+            </div>
+          </div>
         </div>
-        <h2 style="color:#fff;font-weight:900;font-size:1.6rem;line-height:1.25" class="mb-3">{{ featured.title }}</h2>
-        <p class="bl-muted mb-4" style="line-height:1.7">{{ featured.excerpt }}</p>
-        <div class="d-flex align-items-center gap-3 mb-4" style="font-size:.8rem">
-          <span class="bl-muted"><i class="fas fa-user me-1"></i>{{ featured.author.get_full_name|default:"T&TG Team" }}</span>
-          <span class="bl-muted"><i class="fas fa-clock me-1"></i>{{ featured.reading_time }} min read</span>
-          <span class="bl-muted"><i class="fas fa-eye me-1"></i>{{ featured.views_count }}</span>
+        {% empty %}
+        <div class="col-12" style="text-align:center;padding:60px 0">
+          <i class="fas fa-newspaper" style="font-size:3rem;color:rgba(201,168,76,.1);margin-bottom:16px"></i>
+          <h5 style="color:#fff">No posts in this category yet</h5>
+          <a href="{% url 'blog_list' %}" style="color:#c9a84c;font-size:.85rem">View all posts</a>
         </div>
-        <a href="{{ featured.get_absolute_url }}" class="btn btn-gold px-4 py-2 align-self-start">
-          Read Article <i class="fas fa-arrow-right ms-2"></i>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+
+      <!-- About T&TG -->
+      <div class="bl-sidebar-card mb-0">
+        <div style="text-align:center;margin-bottom:16px">
+          <img src="{% static 'images/logo.jpg' %}" alt="T&TG" style="width:56px;height:56px;border-radius:12px;object-fit:cover;border:2px solid rgba(201,168,76,.3)">
+        </div>
+        <h6 style="color:#fff;font-weight:800;text-align:center;margin-bottom:8px">T&TG Trade Corporation</h6>
+        <p style="color:#7a6e5f;font-size:.78rem;text-align:center;line-height:1.7;margin-bottom:16px">
+          Toronto-based import & export company connecting Canada, USA, Uganda, Kenya, Netherlands and Japan through premium coffee trade.
+        </p>
+        <a href="{% url 'trade_apply' %}" class="btn btn-gold w-100" style="font-size:.82rem;font-weight:700">Partner With Us</a>
+      </div>
+
+      <!-- Categories -->
+      <div class="bl-sidebar-card">
+        <h6 style="color:#c9a84c;font-weight:800;margin-bottom:14px"><i class="fas fa-tags me-2"></i>Categories</h6>
+        <a href="{% url 'blog_list' %}" class="bl-cat-btn {% if not active_cat %}bl-cat-active{% else %}bl-cat-inactive{% endif %}">
+          <i class="fas fa-th-large me-2"></i>All Articles
+        </a>
+        <a href="?cat=trade" class="bl-cat-btn {% if active_cat == 'trade' %}bl-cat-active{% else %}bl-cat-inactive{% endif %}">
+          <i class="fas fa-exchange-alt me-2"></i>Import & Export Trade
+        </a>
+        <a href="?cat=forex" class="bl-cat-btn {% if active_cat == 'forex' %}bl-cat-active{% else %}bl-cat-inactive{% endif %}">
+          <i class="fas fa-chart-line me-2"></i>Forex & Currency
+        </a>
+        <a href="?cat=loyalty" class="bl-cat-btn {% if active_cat == 'loyalty' %}bl-cat-active{% else %}bl-cat-inactive{% endif %}">
+          <i class="fas fa-coins me-2"></i>Loyalty & Rewards
+        </a>
+        <a href="?cat=coffee" class="bl-cat-btn {% if active_cat == 'coffee' %}bl-cat-active{% else %}bl-cat-inactive{% endif %}">
+          <i class="fas fa-mug-hot me-2"></i>Coffee & Sourcing
         </a>
       </div>
-    </div>
-    <div style="border-top:1px solid rgba(201,168,76,.1);margin-bottom:40px"></div>
-    {% endif %}
 
-    <!-- Article grid -->
-    {% if page_obj %}
-    <div class="row g-4">
-      {% for post in page_obj %}
-      <div class="col-md-6 col-lg-4">
-        <a href="{{ post.get_absolute_url }}" class="bl-card h-100">
-          <!-- Cover -->
-          {% if post.safe_cover_url %}
-          <img src="{{ post.safe_cover_url }}" alt="{{ post.title }}" class="bl-img">
-          {% else %}
-          <div class="bl-img d-flex align-items-center justify-content-center" style="background:linear-gradient(135deg,#1a1000,#2a1a00)">
-            <i class="fas fa-newspaper" style="font-size:2.5rem;color:rgba(201,168,76,.3)"></i>
-          </div>
-          {% endif %}
-          <!-- Content -->
-          <div class="p-4">
-            <div class="d-flex align-items-center gap-2 mb-2">
-              <span class="bl-tag">{{ post.get_category_display }}</span>
-              <span class="bl-muted ms-auto" style="font-size:.72rem"><i class="fas fa-clock me-1"></i>{{ post.reading_time }} min</span>
-            </div>
-            <h5 style="color:#fff;font-weight:800;line-height:1.3;font-size:1rem" class="mb-2">{{ post.title }}</h5>
-            <p class="bl-muted mb-3" style="font-size:.83rem;line-height:1.6">{{ post.excerpt|truncatechars:120 }}</p>
-            <div class="d-flex align-items-center justify-content-between mt-auto" style="font-size:.75rem">
-              <span class="bl-muted">{{ post.author.get_full_name|default:"T&TG Team" }}</span>
-              <span class="bl-muted">{% if post.published_at %}{{ post.published_at|date:"d M Y" }}{% endif %}</span>
-            </div>
-          </div>
-        </a>
+      <!-- Quick Links -->
+      <div class="bl-sidebar-card">
+        <h6 style="color:#c9a84c;font-weight:800;margin-bottom:14px"><i class="fas fa-link me-2"></i>Quick Links</h6>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:.82rem">
+          <a href="{% url 'product_list' %}" style="color:#b0a898;text-decoration:none;display:flex;align-items:center;gap:8px"><i class="fas fa-shopping-bag" style="color:#c9a84c;width:16px"></i>T&TG Coffee Shop</a>
+          <a href="{% url 'forex' %}" style="color:#b0a898;text-decoration:none;display:flex;align-items:center;gap:8px"><i class="fas fa-exchange-alt" style="color:#c9a84c;width:16px"></i>Live Forex Rates</a>
+          <a href="{% url 'loyalty_info' %}" style="color:#b0a898;text-decoration:none;display:flex;align-items:center;gap:8px"><i class="fas fa-coins" style="color:#c9a84c;width:16px"></i>Loyalty Programme</a>
+          <a href="{% url 'event_list' %}" style="color:#b0a898;text-decoration:none;display:flex;align-items:center;gap:8px"><i class="fas fa-ticket-alt" style="color:#c9a84c;width:16px"></i>Training Events</a>
+          <a href="{% url 'trade_apply' %}" style="color:#b0a898;text-decoration:none;display:flex;align-items:center;gap:8px"><i class="fas fa-handshake" style="color:#c9a84c;width:16px"></i>B2B Trade Application</a>
+        </div>
       </div>
-      {% endfor %}
-    </div>
 
-    <!-- Pagination -->
-    {% if page_obj.has_other_pages %}
-    <div class="d-flex justify-content-center gap-2 mt-5">
-      {% if page_obj.has_previous %}
-      <a href="?page={{ page_obj.previous_page_number }}{% if current_cat %}&category={{ current_cat }}{% endif %}" class="btn px-4" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:none;border-radius:10px">
-        <i class="fas fa-arrow-left me-2"></i>Previous
-      </a>
-      {% endif %}
-      <span class="d-flex align-items-center px-3 bl-muted" style="font-size:.85rem">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-      {% if page_obj.has_next %}
-      <a href="?page={{ page_obj.next_page_number }}{% if current_cat %}&category={{ current_cat }}{% endif %}" class="btn px-4" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:none;border-radius:10px">
-        Next <i class="fas fa-arrow-right ms-2"></i>
-      </a>
-      {% endif %}
-    </div>
-    {% endif %}
+      <!-- Contact -->
+      <div class="bl-sidebar-card" style="text-align:center">
+        <h6 style="color:#fff;font-weight:800;margin-bottom:8px">Get In Touch</h6>
+        <p style="color:#7a6e5f;font-size:.76rem;margin-bottom:14px">Questions about trade, coffee or partnerships?</p>
+        <a href="https://wa.me/14168323512" target="_blank" class="btn btn-gold w-100 mb-2" style="font-size:.82rem">
+          <i class="fab fa-whatsapp me-2"></i>WhatsApp Tom
+        </a>
+        <a href="mailto:tom.grouptrade@gmail.com" style="display:block;color:#7a6e5f;font-size:.74rem;text-decoration:none;margin-top:6px">tom.grouptrade@gmail.com</a>
+      </div>
 
-    {% else %}
-    <div class="text-center py-5">
-      <div style="font-size:4rem;opacity:.2;margin-bottom:16px">📰</div>
-      <h5 style="color:#fff;font-weight:700">No articles yet</h5>
-      <p class="bl-muted">Check back soon — trade news and insights are coming.</p>
     </div>
-    {% endif %}
-
   </div>
+</div>
 </section>
 {% endblock %}

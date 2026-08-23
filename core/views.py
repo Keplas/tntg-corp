@@ -334,14 +334,22 @@ def blog_list(request):
 
 
 def blog_detail(request, slug):
-    from .models import BlogPost
+    from django.shortcuts import get_object_or_404
+    from django.urls import reverse
     post = get_object_or_404(BlogPost, slug=slug, is_published=True)
-    post.views_count += 1
+    post.views_count = (post.views_count or 0) + 1
     post.save(update_fields=['views_count'])
-    related = BlogPost.objects.filter(
-        is_published=True, category=post.category
-    ).exclude(pk=post.pk)[:3]
-    return render(request, 'core/blog_detail.html', {'post': post, 'related': related})
+    related = BlogPost.objects.filter(is_published=True, category=post.category).exclude(pk=post.pk)[:3]
+    links = [
+        {'url': reverse('product_list'),  'icon': 'fas fa-shopping-bag', 'label': 'T&TG Coffee Shop'},
+        {'url': reverse('forex'),         'icon': 'fas fa-chart-line',   'label': 'Live Forex Rates'},
+        {'url': reverse('loyalty_info'),  'icon': 'fas fa-coins',        'label': 'Loyalty Programme'},
+        {'url': reverse('event_list'),    'icon': 'fas fa-ticket-alt',   'label': 'Training Events'},
+        {'url': reverse('trade_apply'),   'icon': 'fas fa-handshake',    'label': 'B2B Trade Application'},
+        {'url': reverse('blog_list'),     'icon': 'fas fa-newspaper',    'label': 'All Blog Posts'},
+    ]
+    return render(request, 'core/blog_detail.html', {'post': post, 'related': related, 'links': links})
+
 
 
 def privacy_policy(request):
