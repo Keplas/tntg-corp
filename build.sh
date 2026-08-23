@@ -25,6 +25,16 @@ else:
 "
 
 
+
+# Remove duplicate products (keep the ones with full descriptions)
+python manage.py shell -c "
+from marketplace.models import Product
+short = Product.objects.filter(name='T&TG Perfect Blend Gift Set')
+if short.exists(): short.delete(); print('Removed duplicate: T&TG Perfect Blend Gift Set')
+short2 = Product.objects.filter(name='T&TG Coffee Notebook and Pen Set')
+if short2.exists(): short2.delete(); print('Removed duplicate: T&TG Coffee Notebook and Pen Set')
+" || echo 'Duplicate cleanup skipped'
+
 # Create merchandise products (idempotent)
 python create_products.py || echo "Product creation skipped"
 
