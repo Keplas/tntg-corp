@@ -36,6 +36,8 @@ def home(request):
             'transactions': 1200,
         }
     }
+    from core.models import BlogPost
+    ctx['latest_posts'] = BlogPost.objects.filter(is_published=True).order_by('-published_at')[:3]
     return render(request, 'core/home.html', ctx)
 
 
