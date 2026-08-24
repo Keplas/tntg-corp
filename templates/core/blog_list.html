@@ -101,9 +101,15 @@
             {% if post.cover_image_url %}
             <img src="{{ post.cover_image_url }}" alt="{{ post.title }}" class="bl-card-img">
             {% else %}
-            <div style="height:160px;background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(13,31,60,.8));display:flex;align-items:center;justify-content:center">
-              <i class="fas {% if post.category == 'trade' %}fa-exchange-alt{% elif post.category == 'forex' %}fa-chart-line{% elif post.category == 'loyalty' %}fa-coins{% else %}fa-mug-hot{% endif %}" style="font-size:2.5rem;color:rgba(201,168,76,.25)"></i>
-            </div>
+            {% if post.category == 'trade' %}
+            <div style="height:160px;background:url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600&h=300&fit=crop') center/cover;position:relative"><div style="position:absolute;inset:0;background:rgba(6,15,30,.6)"></div></div>
+            {% elif post.category == 'forex' %}
+            <div style="height:160px;background:url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&h=300&fit=crop') center/cover;position:relative"><div style="position:absolute;inset:0;background:rgba(6,15,30,.6)"></div></div>
+            {% elif post.category == 'loyalty' %}
+            <div style="height:160px;background:url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&h=300&fit=crop') center/cover;position:relative"><div style="position:absolute;inset:0;background:rgba(6,15,30,.6)"></div></div>
+            {% else %}
+            <div style="height:160px;background:url('https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=600&h=300&fit=crop') center/cover;position:relative"><div style="position:absolute;inset:0;background:rgba(6,15,30,.6)"></div></div>
+            {% endif %}
             {% endif %}
             <div class="bl-card-body">
               <span class="bl-tag bl-tag-{{ post.category }}">{{ post.get_category_display|default:post.category }}</span>

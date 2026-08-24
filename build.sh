@@ -57,4 +57,19 @@ for name, url in images.items():
 # Create merchandise products (idempotent)
 python create_products.py || echo "Product creation skipped"
 
+
+# Set blog post cover images
+python manage.py shell -c "
+from core.models import BlogPost
+covers = {
+    1: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=1200&h=600&fit=crop&q=80',
+    2: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&h=600&fit=crop&q=80',
+    3: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1200&h=600&fit=crop&q=80',
+    4: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=1200&h=600&fit=crop&q=80',
+}
+for pk, url in covers.items():
+    BlogPost.objects.filter(pk=pk).update(cover_image_url=url, is_featured=(pk==1))
+    print('Blog cover set:', pk)
+" || echo 'Blog image update skipped'
+
 echo "Build complete ✓"
