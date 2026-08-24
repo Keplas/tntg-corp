@@ -35,6 +35,25 @@ short2 = Product.objects.filter(name='T&TG Coffee Notebook and Pen Set')
 if short2.exists(): short2.delete(); print('Removed duplicate: T&TG Coffee Notebook and Pen Set')
 " || echo 'Duplicate cleanup skipped'
 
+
+# Set product images via static files
+python manage.py shell -c "
+from marketplace.models import Product
+
+images = {
+    'T&TG Rustic Coffee Invitation Set':      '/static/images/product_invitation_rustic.jpg',
+    'T&TG Perfect Blend Gift Set':            '/static/images/product_invitation_blend.jpg',
+    "T&TG 'The Perfect Blend' Gift Set":    '/static/images/product_invitation_blend.jpg',
+    'T&TG Artisanal Luxury Coffee Pen':       '/static/images/product_pen_luxury.jpg',
+    'T&TG Coffee Notebook and Pen Set':       '/static/images/product_notebook_coffee.jpg',
+    'T&TG Coffee Notebook & Pen Set':         '/static/images/product_notebook_coffee.jpg',
+    'T&TG Handcrafted Wooden Fountain Pen':   '/static/images/product_pen_wooden.jpg',
+}
+for name, url in images.items():
+    updated = Product.objects.filter(name=name).update(image_url=url)
+    if updated: print('Image set for:', name)
+" || echo 'Image update skipped'
+
 # Create merchandise products (idempotent)
 python create_products.py || echo "Product creation skipped"
 
