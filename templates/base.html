@@ -383,6 +383,73 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 {% block extra_head %}{% endblock %}
   <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
   <link rel="shortcut icon" href="/static/favicon.ico">
+
+<style>
+/* ── Global Mobile Fixes ─────────────────────── */
+@media (max-width: 576px) {
+  /* Prevent horizontal scroll */
+  body { overflow-x: hidden; }
+  .container { padding-left: 16px; padding-right: 16px; }
+
+  /* Cart currency grid */
+  #currency-buttons { grid-template-columns: repeat(3,1fr) !important; }
+  .curr-btn { padding: 7px 6px !important; font-size: .72rem !important; }
+
+  /* Country price table on cart */
+  .co-card { padding: 16px !important; }
+
+  /* Map badges - hide on very small screens */
+  .map-badge { display: none !important; }
+
+  /* Order summary sticky sidebar */
+  [style*='position:sticky'] { position: relative !important; top: auto !important; }
+
+  /* Stat cards in event list */
+  .row.g-3 .col-6 { min-width: 0; }
+
+  /* Payment method cards */
+  .pay-card { margin-bottom: 16px; }
+
+  /* Blog cards */
+  .bl-card-title { font-size: .9rem !important; }
+  .bl-card-img { height: 160px !important; }
+
+  /* Hero text sizes */
+  h1 { font-size: clamp(1.4rem, 5vw, 2rem) !important; }
+
+  /* Forms */
+  .co-input, .ta-input, .pp-input, .ed-input, .ob-input { font-size: .88rem !important; }
+
+  /* Buttons */
+  .btn { padding: 10px 16px !important; font-size: .88rem !important; }
+  .btn-gold { white-space: normal !important; }
+
+  /* Nav fixes */
+  .tg-nav-brand img { height: 36px !important; }
+
+  /* Table overflow */
+  table { display: block; overflow-x: auto; }
+}
+
+@media (max-width: 768px) {
+  /* Checkout fields full width */
+  .col-md-6 { width: 100% !important; }
+
+  /* Cart items wrap */
+  [style*='display:flex'][style*='flex-wrap:wrap'] { gap: 10px !important; }
+
+  /* Payment page cards */
+  .pay-card { min-height: auto !important; }
+
+  /* Stat numbers */
+  .an-num { font-size: 1.6rem !important; }
+
+  /* Blog featured horizontal → vertical */
+  .bl-featured { flex-direction: column !important; }
+  .bl-feat-img { width: 100% !important; max-width: 100% !important; height: 180px !important; }
+}
+</style>
+
 </head>
 <body>
 
