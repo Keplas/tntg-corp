@@ -722,7 +722,7 @@ def analytics_dashboard(request):
         'avg_order':        avg_order,
     }
 
-    top_products = Product.objects.filter(is_active=True).annotate(
+    top_products = Product.objects.filter(is_active=True).select_related('seller').annotate(
         order_count=Count('order')
     ).order_by('-order_count')[:5]
 

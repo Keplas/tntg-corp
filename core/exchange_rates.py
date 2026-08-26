@@ -1,3 +1,4 @@
+CACHE_TIMEOUT = 3600  # 1 hour
 """
 T&TG Live Exchange Rates Service
 ─────────────────────────────────

@@ -25,7 +25,7 @@ def product_list(request):
     category = request.GET.get('category', '')
     gender   = request.GET.get('gender', '')
     query    = request.GET.get('q', '')
-    products = Product.objects.filter(is_active=True)
+    products = Product.objects.filter(is_active=True).select_related("seller")
     if market in ['local', 'international']:
         products = products.filter(market_type__in=[market, 'both'])
     if category:
@@ -169,7 +169,7 @@ def place_order(request, pk):
 
 @login_required
 def my_orders(request):
-    orders = Order.objects.filter(buyer=request.user).order_by('-created_at')
+    orders = Order.objects.filter(buyer=request.user).select_related("product", "buyer").order_by('-created_at')
     return render(request, 'marketplace/my_orders.html', {'orders': orders})
 
 

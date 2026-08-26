@@ -71,7 +71,7 @@ def tv_programs(request):
 from .models import TrainingEvent, EventTicket
 
 def event_list(request):
-    events = TrainingEvent.objects.filter(is_active=True).order_by('event_date')
+    events = TrainingEvent.objects.filter(is_active=True).order_by('event_date').prefetch_related('tickets')
     return render(request, 'training/event_list.html', {'events': events})
 
 def event_detail(request, pk):
