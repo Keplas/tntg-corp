@@ -40,7 +40,7 @@ def product_list(request):
         'category': category,
         'gender':   gender,
         'query':    query,
-        'categories': Product._meta.get_field('category').choices,
+        'categories': [('coffee', 'Coffee')],
         'genders':    Product._meta.get_field('gender_target').choices,
     }
     return render(request, 'marketplace/product_list.html', ctx)

@@ -3,10 +3,8 @@ from django.db import models
 from accounts.models import CustomUser
 
 CATEGORY_CHOICES = [
-    ('clothing', 'Clothing'),
-    ('shoes',    'Shoes'),
-    ('watches',  'Watches'),
-    ('coffee',   'Coffee'),
+    ('coffee',      'Coffee'),
+    ('merchandise', 'Merchandise & Gifts'),
 ]
 
 GENDER_TARGET_CHOICES = [
