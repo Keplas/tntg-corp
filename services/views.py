@@ -248,3 +248,7 @@ def trade_inquiry_detail(request, pk):
 def trade_form_download(request):
     """Printable / downloadable Trade Application Form (PDF)."""
     return render(request, 'services/trade_form_pdf.html')
+
+
+def cooperation_program(request):
+    return render(request, 'services/cooperation_program.html')
