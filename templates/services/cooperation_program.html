@@ -2,7 +2,7 @@
 {% block title %}T&TG Cooperation Program: Join the Network{% endblock %}
 {% block content %}
 <style>
-  .cp-hero { background:linear-gradient(135deg,#060f1e 0%,#0a1a35 100%); padding:72px 0 48px; border-bottom:1px solid rgba(201,168,76,.12); position:relative; overflow:hidden; }
+  .cp-hero { background:linear-gradient(135deg,#060f1e 0%,#0a1a35 100%); padding:52px 0 36px; border-bottom:1px solid rgba(201,168,76,.12); position:relative; overflow:hidden; }
   .cp-hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 25% 50%,rgba(201,168,76,.08),transparent 60%); }
   .cp-card { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.15); border-radius:18px; padding:28px; height:100%; }
   .cp-step { display:flex; gap:16px; align-items:flex-start; padding:18px 0; border-bottom:1px solid rgba(255,255,255,.05); }
@@ -34,10 +34,19 @@
       </a>
     </div>
     <!-- Stats -->
-    <div style="display:flex;flex-wrap:wrap;gap:28px;margin-top:36px">
-      <div><div style="color:#c9a84c;font-weight:900;font-size:1.6rem">6</div><div style="color:#7a6e5f;font-size:.76rem">Operating Countries</div></div>
-      <div><div style="color:#c9a84c;font-weight:900;font-size:1.6rem">2</div><div style="color:#7a6e5f;font-size:.76rem">Business Days Response</div></div>
-      <div><div style="color:#c9a84c;font-weight:900;font-size:1.6rem">1%</div><div style="color:#7a6e5f;font-size:.76rem">Referral Loyalty Bonus</div></div>
+    <div style="display:grid;grid-template-columns:repeat(3,auto);gap:0;margin-top:32px;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.15);border-radius:14px;overflow:hidden;max-width:460px">
+      <div style="padding:16px 20px;text-align:center;border-right:1px solid rgba(201,168,76,.1)">
+        <div style="color:#c9a84c;font-weight:900;font-size:1.5rem;line-height:1">6</div>
+        <div style="color:#7a6e5f;font-size:.68rem;margin-top:4px;text-transform:uppercase;letter-spacing:.5px">Countries</div>
+      </div>
+      <div style="padding:16px 20px;text-align:center;border-right:1px solid rgba(201,168,76,.1)">
+        <div style="color:#c9a84c;font-weight:900;font-size:1.5rem;line-height:1">2</div>
+        <div style="color:#7a6e5f;font-size:.68rem;margin-top:4px;text-transform:uppercase;letter-spacing:.5px">Days Response</div>
+      </div>
+      <div style="padding:16px 20px;text-align:center">
+        <div style="color:#c9a84c;font-weight:900;font-size:1.5rem;line-height:1">1%</div>
+        <div style="color:#7a6e5f;font-size:.68rem;margin-top:4px;text-transform:uppercase;letter-spacing:.5px">Referral Bonus</div>
+      </div>
     </div>
   </div>
 </section>
