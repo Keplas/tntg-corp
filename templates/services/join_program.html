@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Join T&TG — Choose Your Programme{% endblock %}
+{% block title %}Join T&TG: Choose Your Programme{% endblock %}
 {% block content %}
 <style>
   .jp-hero { background:linear-gradient(135deg,#060f1e 0%,#0a1a35 100%); padding:60px 0 40px; border-bottom:1px solid rgba(201,168,76,.12); }
@@ -20,7 +20,7 @@
     </a>
     <div style="font-size:.65rem;font-weight:900;letter-spacing:4px;color:#c9a84c;margin-bottom:10px;text-transform:uppercase">Starting From</div>
     <h1 style="color:#fff;font-weight:900;font-size:clamp(1.6rem,4vw,2.4rem);margin-bottom:12px;line-height:1.2">
-      Join T&TG — Choose<br>Your Partnership Type
+      Join T&TG: Choose Your Partnership Type
     </h1>
     <p style="color:#7a6e5f;max-width:520px;line-height:1.8;font-size:.88rem">
       Select the option that best describes your role in the T&TG trade network. Each pathway leads to the right registration or agreement form for you.
@@ -37,9 +37,9 @@
     <div class="col-md-6 col-lg-4">
       <a href="{% url 'trade_apply' %}" class="jp-card">
         <span class="jp-badge" style="background:rgba(201,168,76,.15);color:#c9a84c;border:1px solid rgba(201,168,76,.25)">Most Popular</span>
-        <div class="jp-icon">🤝</div>
+        <div class="jp-icon"><i class="fas fa-handshake" style="color:#c9a84c"></i></div>
         <div class="jp-title">Partner With Us</div>
-        <div class="jp-desc">Coffee suppliers, distributors and regional managers — start here to submit your B2B trade application and join the T&TG network.</div>
+        <div class="jp-desc">Coffee suppliers, distributors and regional managers. Start here to submit your B2B trade application and join the T&TG network.</div>
         <div class="jp-arrow">Apply Now <i class="fas fa-arrow-right"></i></div>
       </a>
     </div>
@@ -47,9 +47,9 @@
     <!-- 2. Selling Company Details -->
     <div class="col-md-6 col-lg-4">
       <a href="{% url 'import_export' %}#seller-agreement" class="jp-card">
-        <div class="jp-icon">🏢</div>
+        <div class="jp-icon"><i class="fas fa-building" style="color:#c9a84c"></i></div>
         <div class="jp-title">Selling Company Details</div>
-        <div class="jp-desc">Registered companies and individual sellers — submit your company profile, authorised signatures and commodity specifications for Arabica or Robusta coffee.</div>
+        <div class="jp-desc">Registered companies and individual sellers. Submit your company profile, authorised signatures and commodity specifications for Arabica or Robusta coffee.</div>
         <div class="jp-arrow">View Form <i class="fas fa-arrow-right"></i></div>
       </a>
     </div>
@@ -57,9 +57,9 @@
     <!-- 3. Active Seller Agreements Upload Log -->
     <div class="col-md-6 col-lg-4">
       <a href="{% url 'import_export' %}#seller-log" class="jp-card">
-        <div class="jp-icon">📋</div>
-        <div class="jp-title">Active Seller Agreements — Upload Log</div>
-        <div class="jp-desc">Existing T&TG partners — upload your signed seller agreement documents, track active contracts and manage your seller registration log.</div>
+        <div class="jp-icon"><i class="fas fa-file-signature" style="color:#c9a84c"></i></div>
+        <div class="jp-title">Active Seller Agreements: Upload Log</div>
+        <div class="jp-desc">Existing T&TG partners. Upload your signed seller agreement documents, track active contracts and manage your seller registration log.</div>
         <div class="jp-arrow">Upload Documents <i class="fas fa-arrow-right"></i></div>
       </a>
     </div>
@@ -67,9 +67,9 @@
     <!-- 4. Transportation Company -->
     <div class="col-md-6 col-lg-4">
       <a href="{% url 'trade_apply' %}?type=transport" class="jp-card">
-        <div class="jp-icon">🚛</div>
+        <div class="jp-icon"><i class="fas fa-truck" style="color:#c9a84c"></i></div>
         <div class="jp-title">Transportation Company</div>
-        <div class="jp-desc">Freight forwarders, cargo handlers and logistics providers — register to become an approved T&TG transportation partner for domestic and international shipments.</div>
+        <div class="jp-desc">Freight forwarders, cargo handlers and logistics providers. Register to become an approved T&TG transportation partner for domestic and international shipments.</div>
         <div class="jp-arrow">Register as Transporter <i class="fas fa-arrow-right"></i></div>
       </a>
     </div>
@@ -77,9 +77,9 @@
     <!-- 5. Registered Farms -->
     <div class="col-md-6 col-lg-4">
       <a href="{% url 'trade_apply' %}?type=farm" class="jp-card">
-        <div class="jp-icon">🌱</div>
+        <div class="jp-icon"><i class="fas fa-seedling" style="color:#c9a84c"></i></div>
         <div class="jp-title">Registered Farms</div>
-        <div class="jp-desc">Coffee farms in Uganda and Kenya — register your farm with T&TG for direct purchase agreements, fair pricing and full export documentation support.</div>
+        <div class="jp-desc">Coffee farms in Uganda and Kenya. Register your farm with T&TG for direct purchase agreements, fair pricing and full export documentation support.</div>
         <div class="jp-arrow">Register Farm <i class="fas fa-arrow-right"></i></div>
       </a>
     </div>
@@ -87,9 +87,9 @@
     <!-- 6. Coffee Artisanal Manufacturers -->
     <div class="col-md-6 col-lg-4">
       <a href="{% url 'trade_apply' %}?type=manufacturer" class="jp-card">
-        <div class="jp-icon">☕</div>
+        <div class="jp-icon"><i class="fas fa-mug-hot" style="color:#c9a84c"></i></div>
         <div class="jp-title">Coffee Artisanal Manufacturers</div>
-        <div class="jp-desc">Small-batch roasters, soap makers, gift producers and artisanal coffee product manufacturers — join T&TG's supplier network and reach global markets.</div>
+        <div class="jp-desc">Small-batch roasters, soap makers, gift producers and artisanal coffee product manufacturers. Join T&TG's supplier network and reach global markets.</div>
         <div class="jp-arrow">Apply as Manufacturer <i class="fas fa-arrow-right"></i></div>
       </a>
     </div>

@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}T&TG Cooperation Program — Join the Network{% endblock %}
+{% block title %}T&TG Cooperation Program: Join the Network{% endblock %}
 {% block content %}
 <style>
   .cp-hero { background:linear-gradient(135deg,#060f1e 0%,#0a1a35 100%); padding:72px 0 48px; border-bottom:1px solid rgba(201,168,76,.12); position:relative; overflow:hidden; }
@@ -49,7 +49,7 @@
     <div style="font-size:.65rem;font-weight:900;letter-spacing:4px;color:#c9a84c;margin-bottom:10px;text-transform:uppercase">Who Can Join</div>
     <h2 style="color:#fff;font-weight:900;font-size:clamp(1.4rem,3vw,2rem)">Three Ways to Partner With T&TG</h2>
     <p style="color:#7a6e5f;max-width:520px;margin:10px auto 0;font-size:.88rem;line-height:1.8">
-      Whether you grow coffee in Uganda, distribute it in Japan or manage regional sales — there's a place for you in the T&TG network.
+      Whether you grow coffee in Uganda, distribute it in Japan or manage regional sales. There's a place for you in the T&TG network.
     </p>
   </div>
 
@@ -57,7 +57,7 @@
     <!-- Coffee Supplier -->
     <div class="col-md-4">
       <div class="cp-partner-card">
-        <div style="font-size:2.4rem;margin-bottom:14px">🌱</div>
+        <div class="cp-icon-box"><i class="fas fa-seedling"></i></div>
         <h5 style="color:#fff;font-weight:800;margin-bottom:10px">Coffee Supplier</h5>
         <div style="color:#7a6e5f;font-size:.82rem;line-height:1.7;margin-bottom:20px">
           Coffee farmers, cooperatives and processors in Uganda and Kenya with access to quality Arabica or Robusta green coffee.
@@ -79,7 +79,7 @@
     <div class="col-md-4">
       <div class="cp-partner-card" style="border-color:rgba(201,168,76,.3);background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(255,255,255,.02))">
         <div style="background:rgba(201,168,76,.15);color:#c9a84c;font-size:.62rem;font-weight:900;letter-spacing:2px;padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:14px;text-transform:uppercase">Most Common</div>
-        <div style="font-size:2.4rem;margin-bottom:14px">🏭</div>
+        <div class="cp-icon-box"><i class="fas fa-industry"></i></div>
         <h5 style="color:#fff;font-weight:800;margin-bottom:10px">Distributor / Importer</h5>
         <div style="color:#7a6e5f;font-size:.82rem;line-height:1.7;margin-bottom:20px">
           Coffee roasters, importers and wholesalers looking for a reliable supply of premium Ugandan green coffee.
@@ -100,7 +100,7 @@
     <!-- Regional Manager -->
     <div class="col-md-4">
       <div class="cp-partner-card">
-        <div style="font-size:2.4rem;margin-bottom:14px">🗺️</div>
+        <div class="cp-icon-box"><i class="fas fa-map-marked-alt"></i></div>
         <h5 style="color:#fff;font-weight:800;margin-bottom:10px">Regional Manager</h5>
         <div style="color:#7a6e5f;font-size:.82rem;line-height:1.7;margin-bottom:20px">
           Experienced individuals to coordinate local purchasing, manage small business clients and represent T&TG in their country.
@@ -142,7 +142,7 @@
           <div class="cp-num">3</div>
           <div>
             <div style="color:#fff;font-weight:700;margin-bottom:4px">Sign the Cooperation Agreement</div>
-            <div style="color:#7a6e5f;font-size:.82rem;line-height:1.6">A formal B2B Seller/Buyer Agreement is issued — governed by Ontario law and compliant with CFIA, UCDA and relevant local regulations.</div>
+            <div style="color:#7a6e5f;font-size:.82rem;line-height:1.6">A formal B2B Seller/Buyer Agreement is issued, governed by Ontario law and compliant with CFIA, UCDA and relevant local regulations.</div>
           </div>
         </div>
         <div class="cp-step">
@@ -160,7 +160,7 @@
       <div class="cp-card mb-4">
         <h5 style="color:#c9a84c;font-weight:800;margin-bottom:16px"><i class="fas fa-star me-2"></i>Program Benefits</h5>
         <div class="cp-benefit"><i class="fas fa-check-circle"></i>Access to verified Ugandan & Kenyan coffee farms</div>
-        <div class="cp-benefit"><i class="fas fa-check-circle"></i>Multi-currency payments — CAD, USD, UGX, KES, EUR, JPY</div>
+        <div class="cp-benefit"><i class="fas fa-check-circle"></i>Multi-currency payments: CAD, USD, UGX, KES, EUR, JPY</div>
         <div class="cp-benefit"><i class="fas fa-check-circle"></i>T&TG Loyalty Points on every transaction</div>
         <div class="cp-benefit"><i class="fas fa-check-circle"></i>Export & customs documentation support</div>
         <div class="cp-benefit"><i class="fas fa-check-circle"></i>Dedicated WhatsApp support line with Tom</div>
@@ -169,7 +169,7 @@
 
       <!-- Contact Tom -->
       <div class="cp-card" style="text-align:center">
-        <div style="font-size:1.8rem;margin-bottom:8px">👤</div>
+        <div style="margin-bottom:8px"><i class="fas fa-user-circle" style="font-size:2.2rem;color:rgba(201,168,76,.4)"></i></div>
         <h6 style="color:#fff;font-weight:800;margin-bottom:4px">Tom Ssembiito</h6>
         <div style="color:#7a6e5f;font-size:.74rem;margin-bottom:18px">Founder & Managing Director<br>T&TG Trade Corporation, Toronto</div>
         <a href="{% url 'join_program' %}" class="btn btn-gold w-100 mb-2" style="font-weight:800">Apply to Join Programme</a>
