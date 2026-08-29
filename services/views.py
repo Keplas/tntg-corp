@@ -252,3 +252,7 @@ def trade_form_download(request):
 
 def cooperation_program(request):
     return render(request, 'services/cooperation_program.html')
+
+
+def join_program(request):
+    return render(request, 'services/join_program.html')

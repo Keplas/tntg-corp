@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block title %}Join T&TG — Choose Your Programme{% endblock %}
+{% block content %}
+<style>
+  .jp-hero { background:linear-gradient(135deg,#060f1e 0%,#0a1a35 100%); padding:60px 0 40px; border-bottom:1px solid rgba(201,168,76,.12); }
+  .jp-card { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.12); border-radius:18px; padding:28px 24px; cursor:pointer; transition:all .25s; text-decoration:none; display:flex; flex-direction:column; height:100%; }
+  .jp-card:hover { border-color:rgba(201,168,76,.45); background:rgba(201,168,76,.06); transform:translateY(-4px); box-shadow:0 16px 40px rgba(0,0,0,.25); }
+  .jp-icon { width:52px; height:52px; border-radius:14px; background:rgba(201,168,76,.1); border:1px solid rgba(201,168,76,.2); display:flex; align-items:center; justify-content:center; font-size:1.4rem; margin-bottom:16px; flex-shrink:0; }
+  .jp-title { color:#fff; font-weight:800; font-size:.95rem; margin-bottom:8px; line-height:1.3; }
+  .jp-desc { color:#7a6e5f; font-size:.8rem; line-height:1.7; flex:1; }
+  .jp-arrow { color:#c9a84c; font-size:.8rem; font-weight:700; margin-top:16px; display:flex; align-items:center; gap:6px; }
+  .jp-badge { font-size:.6rem; font-weight:900; letter-spacing:1.5px; text-transform:uppercase; padding:3px 10px; border-radius:20px; display:inline-block; margin-bottom:10px; }
+</style>
+
+<!-- Hero -->
+<section class="jp-hero">
+  <div class="container">
+    <a href="{% url 'cooperation_program' %}" style="color:#7a6e5f;font-size:.78rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-bottom:20px">
+      <i class="fas fa-arrow-left"></i> Back to Cooperation Program
+    </a>
+    <div style="font-size:.65rem;font-weight:900;letter-spacing:4px;color:#c9a84c;margin-bottom:10px;text-transform:uppercase">Starting From</div>
+    <h1 style="color:#fff;font-weight:900;font-size:clamp(1.6rem,4vw,2.4rem);margin-bottom:12px;line-height:1.2">
+      Join T&TG — Choose<br>Your Partnership Type
+    </h1>
+    <p style="color:#7a6e5f;max-width:520px;line-height:1.8;font-size:.88rem">
+      Select the option that best describes your role in the T&TG trade network. Each pathway leads to the right registration or agreement form for you.
+    </p>
+  </div>
+</section>
+
+<!-- Selection Cards -->
+<section style="background:#060f1e;padding:56px 0 80px">
+<div class="container">
+  <div class="row g-4">
+
+    <!-- 1. Partner With Us -->
+    <div class="col-md-6 col-lg-4">
+      <a href="{% url 'trade_apply' %}" class="jp-card">
+        <span class="jp-badge" style="background:rgba(201,168,76,.15);color:#c9a84c;border:1px solid rgba(201,168,76,.25)">Most Popular</span>
+        <div class="jp-icon">🤝</div>
+        <div class="jp-title">Partner With Us</div>
+        <div class="jp-desc">Coffee suppliers, distributors and regional managers — start here to submit your B2B trade application and join the T&TG network.</div>
+        <div class="jp-arrow">Apply Now <i class="fas fa-arrow-right"></i></div>
+      </a>
+    </div>
+
+    <!-- 2. Selling Company Details -->
+    <div class="col-md-6 col-lg-4">
+      <a href="{% url 'import_export' %}#seller-agreement" class="jp-card">
+        <div class="jp-icon">🏢</div>
+        <div class="jp-title">Selling Company Details</div>
+        <div class="jp-desc">Registered companies and individual sellers — submit your company profile, authorised signatures and commodity specifications for Arabica or Robusta coffee.</div>
+        <div class="jp-arrow">View Form <i class="fas fa-arrow-right"></i></div>
+      </a>
+    </div>
+
+    <!-- 3. Active Seller Agreements Upload Log -->
+    <div class="col-md-6 col-lg-4">
+      <a href="{% url 'import_export' %}#seller-log" class="jp-card">
+        <div class="jp-icon">📋</div>
+        <div class="jp-title">Active Seller Agreements — Upload Log</div>
+        <div class="jp-desc">Existing T&TG partners — upload your signed seller agreement documents, track active contracts and manage your seller registration log.</div>
+        <div class="jp-arrow">Upload Documents <i class="fas fa-arrow-right"></i></div>
+      </a>
+    </div>
+
+    <!-- 4. Transportation Company -->
+    <div class="col-md-6 col-lg-4">
+      <a href="{% url 'trade_apply' %}?type=transport" class="jp-card">
+        <div class="jp-icon">🚛</div>
+        <div class="jp-title">Transportation Company</div>
+        <div class="jp-desc">Freight forwarders, cargo handlers and logistics providers — register to become an approved T&TG transportation partner for domestic and international shipments.</div>
+        <div class="jp-arrow">Register as Transporter <i class="fas fa-arrow-right"></i></div>
+      </a>
+    </div>
+
+    <!-- 5. Registered Farms -->
+    <div class="col-md-6 col-lg-4">
+      <a href="{% url 'trade_apply' %}?type=farm" class="jp-card">
+        <div class="jp-icon">🌱</div>
+        <div class="jp-title">Registered Farms</div>
+        <div class="jp-desc">Coffee farms in Uganda and Kenya — register your farm with T&TG for direct purchase agreements, fair pricing and full export documentation support.</div>
+        <div class="jp-arrow">Register Farm <i class="fas fa-arrow-right"></i></div>
+      </a>
+    </div>
+
+    <!-- 6. Coffee Artisanal Manufacturers -->
+    <div class="col-md-6 col-lg-4">
+      <a href="{% url 'trade_apply' %}?type=manufacturer" class="jp-card">
+        <div class="jp-icon">☕</div>
+        <div class="jp-title">Coffee Artisanal Manufacturers</div>
+        <div class="jp-desc">Small-batch roasters, soap makers, gift producers and artisanal coffee product manufacturers — join T&TG's supplier network and reach global markets.</div>
+        <div class="jp-arrow">Apply as Manufacturer <i class="fas fa-arrow-right"></i></div>
+      </a>
+    </div>
+
+  </div>
+
+  <!-- Bottom CTA -->
+  <div style="text-align:center;margin-top:52px;padding:32px;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.15);border-radius:18px">
+    <h5 style="color:#fff;font-weight:800;margin-bottom:8px">Not sure which applies to you?</h5>
+    <p style="color:#7a6e5f;font-size:.85rem;margin-bottom:20px">Tom reviews every application personally and will guide you to the right programme.</p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <a href="https://wa.me/14168323512" target="_blank" class="btn btn-gold px-5" style="font-weight:700">
+        <i class="fab fa-whatsapp me-2"></i>WhatsApp Tom
+      </a>
+      <a href="mailto:tom.grouptrade@gmail.com" class="btn px-4" style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);color:#c9a84c;border-radius:12px;font-weight:700">
+        Send an Email
+      </a>
+    </div>
+    <div style="margin-top:12px;color:#7a6e5f;font-size:.74rem">+1 (416) 832 3512 · tom.grouptrade@gmail.com · Toronto, Canada</div>
+  </div>
+</div>
+</section>
+{% endblock %}
