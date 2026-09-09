@@ -72,4 +72,12 @@ for pk, url in covers.items():
     print('Blog cover set:', pk)
 " || echo 'Blog image update skipped'
 
+
+# Update Live Forex training event thumbnail
+python manage.py shell -c "
+from training.models import TrainingEvent
+TrainingEvent.objects.filter(pk=4).update(thumbnail_url='/static/images/forex_chart.png')
+print('Forex event thumbnail updated')
+" || echo 'Event thumbnail update skipped'
+
 echo "Build complete ✓"
