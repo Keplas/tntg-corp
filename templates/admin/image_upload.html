@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bulk Image Upload — T&TG Admin</title>
+  <title>Bulk Image Upload | T&TG Admin</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   <style>
@@ -111,7 +111,7 @@
   <div class="status-bar">
     <div class="status-dot"></div>
     <div class="status-text">
-      Storage: <strong>{% if use_cloudinary %}Cloudinary (Permanent ✓){% else %}Local Filesystem — images will be lost on Render deploy!{% endif %}</strong>
+      Storage: <strong>{% if use_cloudinary %}Cloudinary (Permanent ✓){% else %}Local Filesystem: images will be lost on Render deploy!{% endif %}</strong>
       {% if not use_cloudinary %}
       — Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET on Render.
       {% endif %}
@@ -149,7 +149,7 @@
 
   <!-- Product List -->
   <div class="card-section">
-    <div class="section-title"><i class="fas fa-boxes"></i>Products — Current Images</div>
+    <div class="section-title"><i class="fas fa-boxes"></i>Products: Current Images</div>
     <div style="overflow-x:auto">
       <table class="product-table" id="product-table">
         <thead>
@@ -248,7 +248,7 @@ function renderQueueItem(id, file) {
       <div class="matched none" id="match-${id}">Checking match…</div>
     </div>
     <select id="sel-${id}" onchange="setProduct('${id}', this.value)">
-      <option value="">— Select Product —</option>
+      <option value="">Select Product</option>
       ${productOptions}
     </select>
     <div class="status pending" id="status-${id}">Pending</div>

@@ -65,7 +65,7 @@
           Pay by Card
         </a>
         {% else %}
-        <div class="pay-coming"><i class="fas fa-clock me-1"></i>Card payments — coming soon</div>
+        <div class="pay-coming"><i class="fas fa-clock me-1"></i>Card payments: coming soon</div>
         {% endif %}
       </div>
     </div>
@@ -83,12 +83,12 @@
           <button type="submit" class="btn btn-gold w-100">Pay by Mobile Money</button>
         </form>
         {% else %}
-        <div class="pay-coming"><i class="fas fa-clock me-1"></i>Mobile Money — coming soon</div>
+        <div class="pay-coming"><i class="fas fa-clock me-1"></i>Mobile Money: coming soon</div>
         {% endif %}
       </div>
     </div>
 
-    <!-- 3. Manual / Bank Transfer — ALWAYS AVAILABLE -->
+    <!-- 3. Manual / Bank Transfer: ALWAYS AVAILABLE -->
     <div class="col-md-4">
       <div class="pay-card" style="border-color:rgba(201,168,76,.35)">
         <div class="pay-icon"><i class="fas fa-university"></i></div>
@@ -97,7 +97,7 @@
         <form method="post" action="{% url 'payment_manual' order.pk %}">
           {% csrf_token %}
           <button type="submit" class="btn btn-gold w-100 mt-auto">
-            <i class="fas fa-check me-2"></i>Confirm Order — Pay Later
+            <i class="fas fa-check me-2"></i>Confirm Order: Pay Later
           </button>
         </form>
         <a href="https://wa.me/14168323512?text=Hi Tom, I just placed Order {{ order.pk }} for {{ order.product.name }}. I would like to arrange payment." target="_blank"

@@ -34,7 +34,7 @@
               <i class="fas fa-check-circle"></i>
             </div>
             <h4 class="mb-3">Payment Confirmed!</h4>
-            <p class="text-muted">Thank you — your order is being processed.</p>
+            <p class="text-muted">Thank you: your order is being processed.</p>
             <a href="{% url 'order_detail' order.pk %}" class="btn btn-gold mt-2">View Order</a>
           </div>
 
@@ -76,7 +76,7 @@
           setTimeout(poll, 5000);
         } else {
           document.getElementById('statusText').textContent =
-            'Still waiting — this is taking longer than usual. You can refresh this page to check again.';
+            'Still waiting. This is taking longer than usual. You can refresh this page to check again.';
         }
       })
       .catch(function(){

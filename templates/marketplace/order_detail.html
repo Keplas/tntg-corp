@@ -20,7 +20,7 @@
         <div class="col-md-6"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Desired Arrival</div><div>{{ order.desired_arrival_date|date:"M d, Y" }}{% if order.desired_arrival_time %} at {{ order.desired_arrival_time }}{% endif %}</div></div>
         <div class="col-12"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Delivery Address</div><div>{{ order.destination_address }}</div></div>
         {% if order.referred_by %}<div class="col-12"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Referred By</div><div>{{ order.referred_by }} ({{ order.referrer_unique_id }})</div></div>{% endif %}
-        <div class="col-12"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Order Date</div><div>{{ order.created_at|date:"F d, Y — H:i" }}</div></div>
+        <div class="col-12"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Order Date</div><div>{{ order.created_at|date:"F d, Y: H:i" }}</div></div>
       </div>
     </div>
   </div>

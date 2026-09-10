@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Invoice #{{ order.unique_id }} — T&TG Trade Corp</title>
+<title>Invoice #{{ order.unique_id }} | T&TG Trade Corp</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 * { box-sizing:border-box; margin:0; padding:0; font-family:Arial,sans-serif; }
@@ -45,7 +45,7 @@ body { background:#f0f0f0; }
 </head>
 <body>
 <div class="dl-bar">
-  <span>T&TG Invoice — Order #{{ order.unique_id }}</span>
+  <span>T&TG Invoice: Order #{{ order.unique_id }}</span>
   <div>
     <button class="dl-btn-o" onclick="window.print()">Print</button>
     <button class="dl-btn" onclick="downloadPDF()">Download PDF</button>

@@ -38,7 +38,7 @@
               {{ inq.get_direction_display|truncatechars:20 }}
             </span>
           </div>
-          <div style="color:#e0d5c0;font-weight:700;margin-bottom:6px">{{ inq.get_coffee_type_display }} — {{ inq.quantity_kg|floatformat:0 }} kg</div>
+          <div style="color:#e0d5c0;font-weight:700;margin-bottom:6px">{{ inq.get_coffee_type_display }}: {{ inq.quantity_kg|floatformat:0 }} kg</div>
           <div style="color:#7a6e5f;font-size:.82rem">{{ inq.origin_country }} <span style="color:#c9a84c">→</span> {{ inq.destination_country }} &nbsp;·&nbsp; {{ inq.get_frequency_display }}</div>
         </div>
         <div class="text-end">

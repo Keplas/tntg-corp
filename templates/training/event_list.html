@@ -31,7 +31,7 @@
           <div class="ob-feat"><i class="fas fa-shopping-bag"></i>Shop T&TG premium coffee products</div>
           <div class="ob-feat"><i class="fas fa-coins"></i>Earn loyalty points on every purchase</div>
           <div class="ob-feat"><i class="fas fa-exchange-alt"></i>Access live international currency rates</div>
-          <div class="ob-feat"><i class="fas fa-globe"></i>Trade globally — Canada, USA, Uganda, Kenya, Netherlands and Japan</div>
+          <div class="ob-feat"><i class="fas fa-globe"></i>Trade globally: Canada, USA, Uganda, Kenya, Netherlands and Japan</div>
         </div>
         <!-- Get Started CTA -->
         <a href="#events" class="btn btn-gold px-5 py-3" style="font-weight:900;font-size:1rem">
@@ -79,7 +79,7 @@
   <div style="margin-bottom:36px">
     <div style="font-size:.65rem;font-weight:900;letter-spacing:4px;color:#c9a84c;margin-bottom:8px;text-transform:uppercase">Reserve Your Spot</div>
     <h2 style="color:#fff;font-weight:900;font-size:1.6rem;margin:0">Onboarding Program Sessions</h2>
-    <p style="color:#7a6e5f;font-size:.85rem;margin-top:8px">Reserve a free spot below — get your ticket by email instantly.</p>
+    <p style="color:#7a6e5f;font-size:.85rem;margin-top:8px">Reserve a free spot below: get your ticket by email instantly.</p>
   </div>
 
   {% if events %}
@@ -101,7 +101,7 @@
         <div style="padding:20px">
           <div style="font-size:.68rem;font-weight:800;color:#c9a84c;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">{{ event.get_category_display }}</div>
           <a href="{% url 'event_detail' event.pk %}" class="btn btn-gold w-100" style="font-weight:800">
-            {% if event.is_full %}View Session{% else %}Register — Get Ticket <i class="fas fa-arrow-right ms-1"></i>{% endif %}
+            {% if event.is_full %}View Session{% else %}Register: Get Ticket <i class="fas fa-arrow-right ms-1"></i>{% endif %}
           </a>
         </div>
       </div>
@@ -112,7 +112,7 @@
   <div style="text-align:center;padding:60px 0">
     <i class="fas fa-calendar-times" style="font-size:3rem;color:rgba(201,168,76,.15);margin-bottom:20px"></i>
     <h4 style="color:#fff">No sessions scheduled yet</h4>
-    <p style="color:#7a6e5f">Check back soon — new sessions are added regularly.</p>
+    <p style="color:#7a6e5f">Check back soon. New sessions are added regularly.</p>
   </div>
   {% endif %}
 

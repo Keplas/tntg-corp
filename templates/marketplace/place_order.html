@@ -30,8 +30,8 @@
               <div class="col-md-6">
                 <label class="form-label">Delivery Type *</label>
                 <select id="id_delivery_type" name="delivery_type" class="form-select">
-                  <option value="ordinary">🚢 Ordinary — Standard delivery</option>
-                  <option value="express">⚡ Express — Fast delivery</option>
+                  <option value="ordinary">🚢 Ordinary: Standard delivery</option>
+                  <option value="express">⚡ Express: Fast delivery</option>
                 </select>
                 <div id="delivery-note" class="small text-info mt-1">🚢 Standard shipping costs apply.</div>
               </div>
@@ -72,7 +72,7 @@
 
               <div class="col-12">
                 <label class="form-label">Referrer's T&TG ID
-                  <span class="text-muted" style="font-size:.78rem">(optional — e.g. TG00123)</span>
+                  <span class="text-muted" style="font-size:.78rem">(optional, e.g. TG00123)</span>
                 </label>
                 <input type="text" name="referrer_unique_id" class="form-control"
                        placeholder="Enter referrer's T&TG ID to credit their loyalty points">
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function(){
   delivSelect.addEventListener('change', function(){
     delivNote.innerHTML = this.value === 'express'
       ? '⚡ Express delivery — faster shipping, higher cost.'
-      : '🚢 Ordinary delivery — standard shipping costs.';
+      : '🚢 Ordinary delivery: standard shipping costs.';
   });
   update();
 });

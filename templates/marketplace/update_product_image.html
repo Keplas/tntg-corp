@@ -32,7 +32,7 @@
     </div>
     {% else %}
     <div style="background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);border-radius:12px;padding:14px;text-align:center;margin-bottom:24px;color:#f87171;font-size:.82rem">
-      <i class="fas fa-exclamation-circle me-2"></i>No photo set — product shows placeholder
+      <i class="fas fa-exclamation-circle me-2"></i>No photo set: product shows placeholder
     </div>
     {% endif %}
 
@@ -42,13 +42,13 @@
       <!-- Option 1: Upload file to Cloudinary -->
       <div style="margin-bottom:20px">
         <div style="font-size:.72rem;font-weight:800;color:#c9a84c;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">
-          <i class="fas fa-cloud-upload-alt me-1"></i> Option 1 — Upload Photo (→ Cloudinary CDN)
+          <i class="fas fa-cloud-upload-alt me-1"></i> Option 1: Upload Photo (→ Cloudinary CDN)
         </div>
         <div style="border:2px dashed rgba(201,168,76,.25);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:border-color .2s"
           id="drop-zone" onclick="document.getElementById('file-input').click()">
           <i class="fas fa-camera" style="font-size:1.8rem;color:rgba(201,168,76,.4);margin-bottom:10px"></i>
           <div style="color:#e0d5c0;font-weight:700;font-size:.85rem" id="file-label">Click to choose a photo</div>
-          <div style="color:#7a6e5f;font-size:.72rem;margin-top:4px">JPG, PNG, WEBP — max 5MB · Saved to Cloudinary CDN</div>
+          <div style="color:#7a6e5f;font-size:.72rem;margin-top:4px">JPG, PNG, WEBP: max 5MB · Saved to Cloudinary CDN</div>
           <input id="file-input" type="file" name="image" accept="image/*" style="display:none" onchange="showFileName(this)">
         </div>
       </div>
@@ -63,7 +63,7 @@
       <!-- Option 2: Paste Cloudinary/external URL -->
       <div style="margin-bottom:24px">
         <div style="font-size:.72rem;font-weight:800;color:#c9a84c;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">
-          <i class="fas fa-link me-1"></i> Option 2 — Paste Cloudinary / Image URL
+          <i class="fas fa-link me-1"></i> Option 2: Paste Cloudinary / Image URL
         </div>
         <input type="url" name="image_url" class="up-input"
           placeholder="https://res.cloudinary.com/your-cloud/image/upload/..."

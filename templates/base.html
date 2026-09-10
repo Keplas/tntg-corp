@@ -5,8 +5,8 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>{% block title %}T&TG Trade Corp — Trade & e-Commerce Platform{% endblock %}</title>
- <meta name="description" content="{% block meta_description %}T&TG Trade Corporation — Premium coffee shopping platform. Shop Arabica &amp; Robusta green coffee. Canada · USA · Uganda · Kenya · Netherlands · Japan. Earn T&TG Loyalty Points on every purchase.{% endblock %}">
+ <title>{% block title %}T&TG Trade Corp: Trade & e-Commerce Platform{% endblock %}</title>
+ <meta name="description" content="{% block meta_description %}T&TG Trade Corporation: Premium coffee shopping platform. Shop Arabica &amp; Robusta green coffee. Canada · USA · Uganda · Kenya · Netherlands · Japan. Earn T&TG Loyalty Points on every purchase.{% endblock %}">
  <link rel="canonical" href="{% block canonical_url %}https://tntgcorp.com{{ request.path }}{% endblock %}">
  <meta name="robots" content="index, follow">
 
@@ -20,7 +20,7 @@
 
  <!-- Open Graph (for social sharing) -->
  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
- <meta property="og:title" content="{% block og_title %}T&TG Trade Corp — Trade & e-Commerce{% endblock %}">
+ <meta property="og:title" content="{% block og_title %}T&TG Trade Corp: Trade & e-Commerce{% endblock %}">
  <meta property="og:description" content="{% block og_description %}Shop T&TG Artisanal Coffee Based Goods, Arabica &amp; Robusta green coffee. Earn loyalty points. Canada · USA · Uganda · Kenya · Netherlands · Japan.{% endblock %}">
  <meta property="og:url" content="{% block og_url %}https://tntgcorp.com{{ request.path }}{% endblock %}">
  <meta property="og:image" content="{% block og_image %}https://tntgcorp.com{% static 'images/logo.jpg' %}{% endblock %}">
@@ -457,7 +457,7 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 </head>
 <body>
 
-<!-- ═══ DYNAMIC BACKGROUND — animated gradient orbs + grid texture ═══ -->
+<!-- ═══ DYNAMIC BACKGROUND: animated gradient orbs + grid texture ═══ -->
 <div class="tg-bg-layer" aria-hidden="true">
  <div class="tg-bg-orb tg-bg-orb-1"></div>
  <div class="tg-bg-orb tg-bg-orb-2"></div>
@@ -482,7 +482,7 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  </div>
  </a>
 
- <!-- NAV MENU (right — always visible on desktop) -->
+ <!-- NAV MENU (right: always visible on desktop) -->
  <div class="tg-nav-menu" id="tgNavMenu">
 
  <!-- Desktop nav list (hidden on mobile via CSS) -->
@@ -556,7 +556,7 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  </button>
  <form action="{% url 'product_list' %}" method="get" class="tg-search-form" id="tgSearchForm">
  <input type="text" name="q" id="tgSearchInput" class="tg-search-input"
- placeholder="Search T&TG coffee — Arabica, Robusta…" autocomplete="off">
+ placeholder="Search T&TG coffee: Arabica, Robusta…" autocomplete="off">
  <button type="submit" class="tg-search-submit" aria-label="Search">
  <i class="fas fa-arrow-right"></i>
  </button>
@@ -769,7 +769,7 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  </div>
  {% else %}
  <a href="{% url 'login' %}" class="tg-mob-cta-login">Sign In</a>
- <a href="{% url 'register' %}" class="tg-mob-cta-register">Get Started — Join Free</a>
+ <a href="{% url 'register' %}" class="tg-mob-cta-register">Get Started: Join Free</a>
  {% endif %}
  </div>
 
@@ -861,8 +861,8 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 
  <div class="col-6 col-lg-2">
  <div class="footer-title">Operations</div>
- <div class="footer-link"> Canada — HQ</div>
- <div class="footer-link"> USA — Ohio</div>
+ <div class="footer-link"> Canada: HQ</div>
+ <div class="footer-link"> USA: Ohio</div>
  <div class="footer-link"> Uganda</div>
  <div class="footer-link"> Kenya</div>
         <div class="footer-link"> Netherlands</div>
@@ -959,7 +959,7 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 
 <!-- ═══ TARA CHATBOT WIDGET ═══ -->
 <div id="chat-widget">
- <button id="chat-toggle" title="Chat with TARA — T&TG AI Assistant">
+ <button id="chat-toggle" title="Chat with TARA | T&TG AI Assistant">
  <span id="chat-icon-open"><i class="fas fa-comments"></i></span>
  <span id="chat-icon-close" style="display:none"><i class="fas fa-times"></i></span>
  <span id="chat-notif-dot"></span>

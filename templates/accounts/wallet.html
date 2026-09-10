@@ -102,7 +102,7 @@
               <label style="color:#7a6e5f;font-size:.78rem;display:block;margin-bottom:6px">From</label>
               <select name="from_currency" class="wl-select" id="fromCur">
                 {% for b in balances %}
-                <option value="{{ b.code }}" {% if b.code == 'USD' %}selected{% endif %}>{{ b.code }} — {{ b.label }}</option>
+                <option value="{{ b.code }}" {% if b.code == 'USD' %}selected{% endif %}>{{ b.code }}: {{ b.label }}</option>
                 {% endfor %}
               </select>
             </div>
@@ -113,7 +113,7 @@
               <label style="color:#7a6e5f;font-size:.78rem;display:block;margin-bottom:6px">To</label>
               <select name="to_currency" class="wl-select" id="toCur">
                 {% for b in balances %}
-                <option value="{{ b.code }}" {% if b.code == 'CAD' %}selected{% endif %}>{{ b.code }} — {{ b.label }}</option>
+                <option value="{{ b.code }}" {% if b.code == 'CAD' %}selected{% endif %}>{{ b.code }}: {{ b.label }}</option>
                 {% endfor %}
               </select>
             </div>
@@ -139,7 +139,7 @@
             <label style="color:#7a6e5f;font-size:.78rem;display:block;margin-bottom:6px">Currency</label>
             <select name="currency" class="wl-select">
               {% for b in balances %}
-              <option value="{{ b.code }}">{{ b.code }} — {{ b.label }} ({{ b.balance|floatformat:2 }} available)</option>
+              <option value="{{ b.code }}">{{ b.code }}: {{ b.label }} ({{ b.balance|floatformat:2 }} available)</option>
               {% endfor %}
             </select>
           </div>
@@ -229,7 +229,7 @@
       <div class="wl-card p-4 mt-4">
         <h6 style="color:#c9a84c;font-weight:800;margin-bottom:14px">How the Wallet Works</h6>
         <div style="display:grid;gap:10px;font-size:.82rem">
-          <div style="display:flex;gap:10px;color:#b0a898"><i class="fas fa-check-circle" style="color:#4ade80;margin-top:2px;flex-shrink:0"></i> Earn loyalty points (0.5% per purchase) — convertible to wallet credits</div>
+          <div style="display:flex;gap:10px;color:#b0a898"><i class="fas fa-check-circle" style="color:#4ade80;margin-top:2px;flex-shrink:0"></i> Earn loyalty points (0.5% per purchase) , convertible to wallet credits</div>
           <div style="display:flex;gap:10px;color:#b0a898"><i class="fas fa-check-circle" style="color:#4ade80;margin-top:2px;flex-shrink:0"></i> Hold balances in CAD, USD, UGX, KES, EUR and JPY simultaneously</div>
           <div style="display:flex;gap:10px;color:#b0a898"><i class="fas fa-check-circle" style="color:#4ade80;margin-top:2px;flex-shrink:0"></i> Convert between currencies using live Bank of Canada-referenced rates</div>
           <div style="display:flex;gap:10px;color:#b0a898"><i class="fas fa-check-circle" style="color:#4ade80;margin-top:2px;flex-shrink:0"></i> Withdraw funds via Bank Transfer, MTN Mobile Money or Stripe on Day 45</div>
