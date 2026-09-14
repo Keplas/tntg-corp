@@ -15,15 +15,19 @@ def import_export(request):
 
 
 def forex(request):
-    """Live exchange rates — powered by Open Exchange Rates API."""
     from core.exchange_rates import fetch_live_rates, build_pairs
+    from django.utils import timezone
     raw   = fetch_live_rates()
     pairs = build_pairs(raw)
-    # Also pass DB rates as fallback display
     db_rates = ForexRate.objects.all()
+    is_live   = raw is not None
+    last_updated = timezone.now().strftime("%d %b %Y, %H:%M UTC")
     ctx = {
-        'pairs':    pairs,
-        'db_rates': db_rates,
+        'pairs':     pairs,
+        'db_rates':  db_rates,
+        'is_live':   is_live,
+        'last_updated': last_updated,
+        'raw_rates': raw,
         'has_live': bool(raw),
     }
     return render(request, 'services/forex.html', ctx)

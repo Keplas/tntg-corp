@@ -1,12 +1,11 @@
-CACHE_TIMEOUT = 3600  # 1 hour
 """
 T&TG Live Exchange Rates Service
-─────────────────────────────────
-Fetches rates from Open Exchange Rates API, caches for 1 hour,
-and saves to ForexRate DB records as a fallback.
-
-Set EXCHANGE_RATES_API_KEY on Render to activate.
-Free plan: 1,000 req/month — with 1-hr cache we use ~24/day = ~720/month.
+Three-tier fetch chain:
+  1. Frankfurter API  — free, no key, hosted by Cloudflare (primary)
+  2. Open Exchange Rates — free plan, needs EXCHANGE_RATES_API_KEY on Render
+  3. DB ForexRate records — last live values saved to Neon
+  4. Static fallback rates — hardcoded sensible defaults
+Rates cached 1 hour to stay well within free-tier limits.
 """
 
 import requests
@@ -14,119 +13,194 @@ import logging
 from decimal import Decimal
 from django.core.cache import cache
 from django.conf import settings
-from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
-# Pairs T&TG cares about (USD is OXR base, so we calculate cross-rates)
-TARGET_CURRENCIES = ['CAD', 'UGX', 'KES', 'USD', 'EUR', 'JPY']
+CACHE_KEY     = 'tntg_fx_rates_v3'
+CACHE_TIMEOUT = 3600   # 1 hour
+
+TARGET_CURRENCIES = ['CAD', 'UGX', 'KES', 'EUR', 'JPY']
 
 PAIR_LABELS = {
-    'CAD/UGX': ('Canadian Dollar', 'Ugandan Shilling'),
-    'CAD/KES': ('Canadian Dollar', 'Kenyan Shilling'),
-    'USD/CAD': ('US Dollar',       'Canadian Dollar'),
-    'USD/UGX': ('US Dollar',       'Ugandan Shilling'),
-    'USD/KES': ('US Dollar',       'Kenyan Shilling'),
-    'UGX/KES': ('Ugandan Shilling','Kenyan Shilling'),
-    'EUR/CAD': ('Euro',            'Canadian Dollar'),
-    'JPY/CAD': ('Japanese Yen',    'Canadian Dollar'),
-    'USD/EUR': ('US Dollar',        'Euro'),
-    'USD/JPY': ('US Dollar',        'Japanese Yen'),
+    'CAD/UGX': ('Canadian Dollar',   'Ugandan Shilling'),
+    'CAD/KES': ('Canadian Dollar',   'Kenyan Shilling'),
+    'CAD/EUR': ('Canadian Dollar',   'Euro'),
+    'CAD/JPY': ('Canadian Dollar',   'Japanese Yen'),
+    'USD/CAD': ('US Dollar',         'Canadian Dollar'),
+    'USD/UGX': ('US Dollar',         'Ugandan Shilling'),
+    'USD/KES': ('US Dollar',         'Kenyan Shilling'),
+    'USD/EUR': ('US Dollar',         'Euro'),
+    'USD/JPY': ('US Dollar',         'Japanese Yen'),
+    'EUR/UGX': ('Euro',              'Ugandan Shilling'),
+    'JPY/UGX': ('Japanese Yen',      'Ugandan Shilling'),
 }
 
-CACHE_KEY = 'oxr_rates_v2'
+# Sensible static fallback rates (USD base — updated Aug 2026)
+STATIC_FALLBACK = {
+    'USD': 1.0,
+    'CAD': 1.36,
+    'UGX': 3750.0,
+    'KES': 129.0,
+    'EUR': 0.92,
+    'JPY': 157.0,
+}
 
+
+# ─────────────────────────────────────────────────────────────
+# Public API
+# ─────────────────────────────────────────────────────────────
 
 def fetch_live_rates():
     """
-    Returns dict of rates relative to USD, e.g. {'CAD': 1.36, 'UGX': 3750, ...}
-    Uses cache first. Falls back to DB ForexRate records if API unavailable.
+    Returns dict of rates relative to USD.
+    e.g. {'USD':1.0, 'CAD':1.36, 'UGX':3750, 'KES':129, 'EUR':0.92, 'JPY':157}
     """
-    # 1. Try cache
     cached = cache.get(CACHE_KEY)
     if cached:
         return cached
 
-    api_key = getattr(settings, 'EXCHANGE_RATES_API_KEY', '')
+    rates = (
+        _fetch_frankfurter()
+        or _fetch_openexchangerates()
+        or _load_from_db()
+        or STATIC_FALLBACK
+    )
 
-    # 2. Try Open Exchange Rates API
-    if api_key:
-        try:
-            resp = requests.get(
-                'https://openexchangerates.org/api/latest.json',
-                params={
-                    'app_id': api_key,
-                    'symbols': ','.join(TARGET_CURRENCIES),
-                },
-                timeout=8
-            )
-            data = resp.json()
-            if 'rates' in data:
-                rates = data['rates']
-                cache.set(CACHE_KEY, rates, 3600)  # cache 1 hour
-                _save_to_db(rates)
-                logger.info('OXR rates refreshed successfully')
-                return rates
-        except Exception as e:
-            logger.warning(f'OXR API error: {e}')
+    if rates:
+        cache.set(CACHE_KEY, rates, CACHE_TIMEOUT)
+        _save_to_db(rates)
 
-    # 3. Fallback — load from DB
-    return _load_from_db()
+    return rates
 
 
 def build_pairs(rates):
     """
-    Convert USD-based rates dict to a list of cross-rate pair dicts
-    ready to pass to templates.
+    Convert USD-base rates dict → list of pair dicts for templates.
     """
     if not rates:
-        return []
+        rates = STATIC_FALLBACK
 
     pairs = []
-    usd_to = lambda c: Decimal(str(rates.get(c, 1)))
 
-    def cross(from_c, to_c):
-        """Calculate from_c → to_c cross rate via USD."""
+    def cross(fc, tc):
         try:
-            if from_c == 'USD':
-                return usd_to(to_c)
-            elif to_c == 'USD':
-                return Decimal('1') / usd_to(from_c)
+            f = Decimal(str(rates.get(fc, 1)))
+            t = Decimal(str(rates.get(tc, 1)))
+            if fc == 'USD':
+                return t
+            elif tc == 'USD':
+                return Decimal('1') / f
             else:
-                return usd_to(to_c) / usd_to(from_c)
+                return t / f
         except Exception:
             return None
 
     for pair_key, (from_label, to_label) in PAIR_LABELS.items():
         fc, tc = pair_key.split('/')
         rate = cross(fc, tc)
-        if rate:
-            pairs.append({
-                'pair':       pair_key,
-                'from_code':  fc,
-                'to_code':    tc,
-                'from_label': from_label,
-                'to_label':   to_label,
-                'rate':       rate,
-                'display':    f'{rate:,.4f}' if rate < 100 else f'{rate:,.2f}',
-            })
+        if not rate:
+            continue
+        pairs.append({
+            'pair':       pair_key,
+            'from_code':  fc,
+            'to_code':    tc,
+            'from_label': from_label,
+            'to_label':   to_label,
+            'rate':       rate,
+            'display':    f'{rate:,.4f}' if rate < 10 else f'{rate:,.2f}',
+        })
 
     return pairs
 
 
+def get_rate(from_currency, to_currency):
+    """Return a single cross rate as Decimal. Used by cart currency switcher."""
+    rates = fetch_live_rates()
+    pairs = build_pairs(rates)
+    pair_key = f'{from_currency}/{to_currency}'
+    for p in pairs:
+        if p['pair'] == pair_key:
+            return p['rate']
+    # Compute directly
+    try:
+        f = Decimal(str(rates.get(from_currency, 1)))
+        t = Decimal(str(rates.get(to_currency, 1)))
+        if from_currency == 'USD':
+            return t
+        elif to_currency == 'USD':
+            return Decimal('1') / f
+        return t / f
+    except Exception:
+        return Decimal('1')
+
+
+# ─────────────────────────────────────────────────────────────
+# Tier 1: Frankfurter (free, no key)
+# ─────────────────────────────────────────────────────────────
+
+def _fetch_frankfurter():
+    """
+    https://api.frankfurter.app — ECB data, free, no key required.
+    Base is EUR so we convert to USD base.
+    """
+    try:
+        resp = requests.get(
+            'https://api.frankfurter.app/latest',
+            params={'from': 'USD', 'to': ','.join(TARGET_CURRENCIES)},
+            timeout=6
+        )
+        data = resp.json()
+        if 'rates' in data:
+            rates = {'USD': 1.0}
+            rates.update({k: float(v) for k, v in data['rates'].items()})
+            logger.info('Frankfurter rates fetched successfully')
+            return rates
+    except Exception as e:
+        logger.warning(f'Frankfurter API error: {e}')
+    return None
+
+
+# ─────────────────────────────────────────────────────────────
+# Tier 2: Open Exchange Rates (needs API key)
+# ─────────────────────────────────────────────────────────────
+
+def _fetch_openexchangerates():
+    api_key = getattr(settings, 'EXCHANGE_RATES_API_KEY', '').strip()
+    if not api_key:
+        return None
+    try:
+        resp = requests.get(
+            'https://openexchangerates.org/api/latest.json',
+            params={'app_id': api_key, 'symbols': ','.join(TARGET_CURRENCIES)},
+            timeout=8
+        )
+        data = resp.json()
+        if 'rates' in data:
+            rates = {'USD': 1.0}
+            rates.update({k: float(v) for k, v in data['rates'].items()})
+            logger.info('OXR rates fetched successfully')
+            return rates
+    except Exception as e:
+        logger.warning(f'OXR API error: {e}')
+    return None
+
+
+# ─────────────────────────────────────────────────────────────
+# Tier 3: Database ForexRate records
+# ─────────────────────────────────────────────────────────────
+
 def _save_to_db(rates):
-    """Persist latest rates to ForexRate model as backup."""
     try:
         from services.models import ForexRate
         usd_to = lambda c: Decimal(str(rates.get(c, 1)))
-
         pairs_to_save = [
             ('CAD', 'UGX', usd_to('UGX') / usd_to('CAD')),
             ('CAD', 'KES', usd_to('KES') / usd_to('CAD')),
             ('USD', 'CAD', usd_to('CAD')),
             ('USD', 'UGX', usd_to('UGX')),
             ('USD', 'KES', usd_to('KES')),
-            ('UGX', 'KES', usd_to('KES') / usd_to('UGX')),
+            ('EUR', 'UGX', usd_to('UGX') / usd_to('EUR')),
+            ('JPY', 'UGX', usd_to('UGX') / usd_to('JPY')),
         ]
         for fc, tc, rate in pairs_to_save:
             ForexRate.objects.update_or_create(
@@ -138,17 +212,18 @@ def _save_to_db(rates):
 
 
 def _load_from_db():
-    """Load rates from DB ForexRate records (fallback)."""
     try:
         from services.models import ForexRate
-        db_rates = ForexRate.objects.all()
-        # Reconstruct approximate USD-base rates from DB pairs
+        db_rates = list(ForexRate.objects.all())
+        if not db_rates:
+            return None
         rates = {'USD': 1.0}
         for r in db_rates:
             if r.from_currency == 'USD':
                 rates[r.to_currency] = float(r.rate)
-            elif r.to_currency == 'USD':
-                rates[r.from_currency] = 1.0 / float(r.rate)
-        return rates if len(rates) > 1 else None
-    except Exception:
-        return None
+        if len(rates) > 2:
+            logger.info('Loaded rates from DB fallback')
+            return rates
+    except Exception as e:
+        logger.warning(f'DB rates load error: {e}')
+    return None

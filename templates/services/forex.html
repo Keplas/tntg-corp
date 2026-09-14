@@ -43,10 +43,10 @@
         <p style="color:#7a6e5f;margin-top:8px;font-size:.9rem">Real-time currency rates for T&TG trade corridors: Canada, USA, Uganda, Kenya, Netherlands and Japan</p>
       </div>
       <div class="text-end">
-        {% if has_live %}
-        <span class="fx-badge-live"><span class="pulse" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#4ade80;margin-right:5px"></span>Live via Open Exchange Rates</span>
+        {% if is_live %}
+        <span class="fx-badge-live"><span class="pulse" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#4ade80;margin-right:5px"></span>Live rates: updated {{ last_updated }}</span>
         {% else %}
-        <span class="fx-badge-cached">Stored rates: add API key to go live</span>
+        <span class="fx-badge-cached">Stored rates: live feed activates automatically</span>
         {% endif %}
         <div id="lastUpdated" style="color:#7a6e5f;font-size:.7rem;margin-top:6px">Updating every 5 minutes</div>
       </div>
@@ -93,7 +93,7 @@
       </div>
       <div style="color:#e0d5c0;font-size:.82rem;line-height:1.8">
         The exchange rates displayed on this page are provided <strong>for viewing and informational purposes only</strong>.
-        They are sourced from the Open Exchange Rates API and are updated periodically. These rates are
+        They are sourced from the Frankfurter API (European Central Bank data) and updated every hour. These rates are
         <strong>approximate estimates</strong> and do not represent the final rate that will be applied to your transaction.
       </div>
       <div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px">
@@ -162,9 +162,7 @@
       {% empty %}
       <div class="col-12 text-center py-5">
         <div style="color:#7a6e5f;font-size:1rem">
-          Add <strong style="color:#c9a84c">EXCHANGE_RATES_API_KEY</strong> to Render environment variables to enable live rates.
-          <br><br>
-          <a href="https://openexchangerates.org" target="_blank" class="btn btn-gold px-4 mt-2">Get Free API Key</a>
+          Rates are loading. Please refresh the page.
         </div>
       </div>
       {% endfor %}
