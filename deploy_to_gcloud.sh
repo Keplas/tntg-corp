@@ -4,7 +4,7 @@
 
 set -e
 
-PROJECT_ID="tom-grouptrade-org"   # Replace with actual Project ID from console
+PROJECT_ID="tomgrouptrade"   # Replace with actual Project ID from console
 REGION="us-central1"
 SERVICE_NAME="tntg-corp"
 
