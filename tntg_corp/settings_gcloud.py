@@ -1,0 +1,87 @@
+"""
+T&TG Trade Corporation — Google Cloud Run Settings
+Extends base settings.py with Cloud-specific overrides.
+"""
+from .settings import *
+import os
+
+# ── Security ──────────────────────────────────────────────────────────────────
+DEBUG = False
+SECRET_KEY = os.environ.get('SECRET_KEY', SECRET_KEY)
+ALLOWED_HOSTS = [
+    'tomtradecorp.com',
+    'www.tomtradecorp.com',
+    'tntg-corp.onrender.com',
+    '.run.app',            # Cloud Run auto-URL
+    '127.0.0.1',
+    'localhost',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://tomtradecorp.com',
+    'https://www.tomtradecorp.com',
+    'https://*.run.app',
+]
+
+# ── Database — Cloud SQL (PostgreSQL) ─────────────────────────────────────────
+import re
+CLOUD_SQL_URL = os.environ.get('DATABASE_URL', '')
+
+if CLOUD_SQL_URL:
+    DATABASES = {
+        'default': {
+            'ENGINE':   'django.db.backends.postgresql',
+            'NAME':     os.environ.get('DB_NAME',     'tntg_db'),
+            'USER':     os.environ.get('DB_USER',     'tntg_user'),
+            'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+            'HOST':     os.environ.get('DB_HOST',     '/cloudsql/' + os.environ.get('CLOUD_SQL_CONNECTION_NAME', '')),
+            'PORT':     os.environ.get('DB_PORT',     '5432'),
+        }
+    }
+
+# ── Static Files — Cloud Storage ──────────────────────────────────────────────
+GCS_BUCKET = os.environ.get('GCS_BUCKET_NAME', '')
+
+if GCS_BUCKET:
+    DEFAULT_FILE_STORAGE    = 'storages.backends.gcloud.GoogleCloudStorage'
+    STATICFILES_STORAGE     = 'storages.backends.gcloud.GoogleCloudStorage'
+    GS_BUCKET_NAME          = GCS_BUCKET
+    GS_DEFAULT_ACL          = 'publicRead'
+    STATIC_URL              = f'https://storage.googleapis.com/{GCS_BUCKET}/static/'
+    MEDIA_URL               = f'https://storage.googleapis.com/{GCS_BUCKET}/media/'
+else:
+    # WhiteNoise fallback if no GCS bucket yet
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# ── Email ─────────────────────────────────────────────────────────────────────
+EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST          = 'smtp.gmail.com'
+EMAIL_PORT          = 587
+EMAIL_USE_TLS       = True
+EMAIL_HOST_USER     = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+
+# ── Cloudinary ────────────────────────────────────────────────────────────────
+CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME', '')
+CLOUDINARY_API_KEY    = os.environ.get('CLOUDINARY_API_KEY', '')
+CLOUDINARY_API_SECRET = os.environ.get('CLOUDINARY_API_SECRET', '')
+
+# ── Logging ───────────────────────────────────────────────────────────────────
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {'class': 'logging.StreamHandler'},
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+}
+
+# ── Security Headers ──────────────────────────────────────────────────────────
+SECURE_SSL_REDIRECT              = True
+SECURE_HSTS_SECONDS              = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS   = True
+SESSION_COOKIE_SECURE            = True
+CSRF_COOKIE_SECURE               = True

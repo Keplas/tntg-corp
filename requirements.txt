@@ -12,3 +12,5 @@ cloudinary==1.45.0
 django-cloudinary-storage==0.3.0
 requests==2.32.3
 stripe==15.4.0
+google-cloud-storage==2.10.0
+django-storages[google]==1.14.2
