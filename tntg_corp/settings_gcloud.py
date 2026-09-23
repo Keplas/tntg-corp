@@ -12,7 +12,8 @@ ALLOWED_HOSTS = [
     'tomtradecorp.com',
     'www.tomtradecorp.com',
     'tntg-corp.onrender.com',
-    '.run.app',            # Cloud Run auto-URL
+    '.run.app',
+    'tntg-corp-683706953030.us-east1.run.app',
     '127.0.0.1',
     'localhost',
 ]

@@ -9,7 +9,9 @@ SECRET_KEY = os.environ.get(
     'django-insecure-tntg-trade-corp-2026-secure-key-change-in-production'
 )
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = ['tntg-corp.onrender.com', 'tntgcorp.com', 'localhost', '127.0.0.1', '.onrender.com']
+ALLOWED_HOSTS = [
+    '.run.app',
+    'tntg-corp-683706953030.us-east1.run.app','tntg-corp.onrender.com', 'tntgcorp.com', 'localhost', '127.0.0.1', '.onrender.com']
 
 # ── Apps ───────────────────────────────────────────────────────────────────────
 INSTALLED_APPS = [
