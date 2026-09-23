@@ -19,13 +19,17 @@ RUN pip install --no-cache-dir -r requirements.txt gunicorn psycopg2-binary
 COPY . .
 
 RUN printf '#!/bin/bash\n\
-echo "=== T&TG Starting up ==="\n\
+set -e\n\
+echo "=== T&TG Starting on Google Cloud ==="\n\
 echo "Settings: $DJANGO_SETTINGS_MODULE"\n\
 echo "DB Host: $DB_HOST"\n\
+echo "DB Name: $DB_NAME"\n\
+echo "DB User: $DB_USER"\n\
 echo "Running migrations..."\n\
-python manage.py migrate --noinput || echo "Migration warning - continuing"\n\
+python manage.py migrate --noinput 2>&1\n\
+echo "Migration exit code: $?"\n\
 echo "Collecting static files..."\n\
-python manage.py collectstatic --noinput || echo "Collectstatic warning - continuing"\n\
+python manage.py collectstatic --noinput 2>&1 || true\n\
 echo "Starting gunicorn..."\n\
 exec gunicorn tntg_corp.wsgi \\\n\
     --workers 2 \\\n\
