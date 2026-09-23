@@ -17,11 +17,18 @@ OPERATION_COUNTRIES = [
 
 
 def home(request):
-    featured_products = Product.objects.filter(is_active=True, is_featured=True)[:6]
-    latest_products   = Product.objects.filter(is_active=True)[:8]
-    training_programs = TrainingProgram.objects.filter(is_active=True)[:3]
-    tv_programs       = TVProgram.objects.filter(is_active=True)[:3]
-    forex_rates       = ForexRate.objects.all()[:3]
+    try:
+        featured_products = Product.objects.filter(is_active=True, is_featured=True)[:6]
+        latest_products   = Product.objects.filter(is_active=True)[:8]
+        training_programs = TrainingProgram.objects.filter(is_active=True)[:3]
+        tv_programs       = TVProgram.objects.filter(is_active=True)[:3]
+        forex_rates       = ForexRate.objects.all()[:3]
+    except Exception:
+        featured_products = []
+        latest_products   = []
+        training_programs = []
+        tv_programs       = []
+        forex_rates       = []
     ctx = {
         'featured_products': featured_products,
         'latest_products':   latest_products,
