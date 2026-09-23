@@ -3,7 +3,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
     dependencies = [
         ('marketplace', '0015_add_display_currency_to_order'),
-        ('training', '0001_initial'),
+        ('training', '0008_add_training_events_tickets'),
     ]
     operations = [
         migrations.RunSQL(
