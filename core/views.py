@@ -18,11 +18,11 @@ OPERATION_COUNTRIES = [
 
 def home(request):
     try:
-        featured_products = Product.objects.filter(is_active=True, is_featured=True)[:6]
-        latest_products   = Product.objects.filter(is_active=True)[:8]
-        training_programs = TrainingProgram.objects.filter(is_active=True)[:3]
-        tv_programs       = TVProgram.objects.filter(is_active=True)[:3]
-        forex_rates       = ForexRate.objects.all()[:3]
+        featured_products = list(Product.objects.filter(is_active=True, is_featured=True)[:6])
+        latest_products   = list(Product.objects.filter(is_active=True)[:8])
+        training_programs = list(TrainingProgram.objects.filter(is_active=True)[:3])
+        tv_programs       = list(TVProgram.objects.filter(is_active=True)[:3])
+        forex_rates       = list(ForexRate.objects.all()[:3])
     except Exception:
         featured_products = []
         latest_products   = []
@@ -44,7 +44,7 @@ def home(request):
         }
     }
     from core.models import BlogPost
-    ctx['latest_posts'] = BlogPost.objects.filter(is_published=True).order_by('-published_at')[:3]
+    ctx['latest_posts'] = list(BlogPost.objects.filter(is_published=True).order_by('-published_at')[:3])
     return render(request, 'core/home.html', ctx)
 
 
