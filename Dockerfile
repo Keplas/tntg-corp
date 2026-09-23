@@ -18,29 +18,6 @@ RUN pip install --no-cache-dir -r requirements.txt gunicorn psycopg2-binary
 
 COPY . .
 
-RUN printf '#!/bin/bash\n\
-echo "=== T&TG Trade Corp Starting ==="\n\
-echo "Running migrations..."\n\
-python manage.py migrate --noinput\n\
-if [ $? -eq 0 ]; then\n\
-    echo "Migrations completed successfully"\n\
-else\n\
-    echo "Migration failed - check logs"\n\
-    exit 1\n\
-fi\n\
-echo "Collecting static files..."\n\
-python manage.py collectstatic --noinput || echo "Collectstatic warning"\n\
-echo "Starting gunicorn..."\n\
-exec gunicorn tntg_corp.wsgi \\\n\
-    --workers 2 \\\n\
-    --timeout 120 \\\n\
-    --bind 0.0.0.0:$PORT \\\n\
-    --log-file - \\\n\
-    --access-logfile -\n\
-' > /app/start.sh
-
-RUN chmod +x /app/start.sh
-
 EXPOSE 8080
 
-CMD ["/app/start.sh"]
+CMD ["python", "start.py"]
