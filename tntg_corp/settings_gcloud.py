@@ -6,7 +6,7 @@ from .settings import *
 import os
 
 # ── Security ──────────────────────────────────────────────────────────────────
-DEBUG = False
+DEBUG = True  # Temp: show errors
 SECRET_KEY = os.environ.get('SECRET_KEY', SECRET_KEY)
 ALLOWED_HOSTS = [
     'tomtradecorp.com',
