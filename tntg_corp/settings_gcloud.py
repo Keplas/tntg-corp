@@ -25,7 +25,6 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # ── Database — Cloud SQL (PostgreSQL) ─────────────────────────────────────────
-import re
 # Cloud SQL Database — overrides base settings.py
 DATABASES = {
     'default': {
@@ -50,7 +49,7 @@ if GCS_BUCKET:
     MEDIA_URL               = f'https://storage.googleapis.com/{GCS_BUCKET}/media/'
 else:
     # WhiteNoise fallback if no GCS bucket yet
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
 
 # ── Email ─────────────────────────────────────────────────────────────────────
 EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
@@ -78,8 +77,11 @@ LOGGING = {
     },
 }
 
+# Tell Django it is behind HTTPS proxy (Cloud Run)
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 # ── Security Headers ──────────────────────────────────────────────────────────
-SECURE_SSL_REDIRECT              = True
+SECURE_SSL_REDIRECT              = False  # Cloud Run handles SSL externally
 SECURE_HSTS_SECONDS              = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS   = True
 SESSION_COOKIE_SECURE            = True
