@@ -1,7 +1,6 @@
 # T&TG Trade Corporation — Google Cloud Run Dockerfile
 FROM python:3.12-slim
 
-# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PORT=8080
@@ -13,7 +12,6 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Set work directory
 WORKDIR /app
 
 # Install Python dependencies
@@ -25,11 +23,20 @@ RUN pip install --no-cache-dir gunicorn psycopg2-binary google-cloud-storage dja
 COPY . .
 
 # Collect static files
-RUN python manage.py collectstatic --noinput
+RUN python manage.py collectstatic --noinput --settings=tntg_corp.settings_gcloud || \
+    python manage.py collectstatic --noinput
 
-# Run with Gunicorn
-CMD exec gunicorn tntg_corp.wsgi \
-    --workers 2 \
-    --timeout 120 \
-    --bind 0.0.0.0:$PORT \
-    --log-file -
+# Create startup script
+RUN echo '#!/bin/bash\n\
+echo "Running migrations..."\n\
+python manage.py migrate --noinput\n\
+echo "Starting server..."\n\
+exec gunicorn tntg_corp.wsgi \\\n\
+    --workers 2 \\\n\
+    --timeout 120 \\\n\
+    --bind 0.0.0.0:$PORT \\\n\
+    --log-file -' > /app/start.sh
+
+RUN chmod +x /app/start.sh
+
+CMD ["/app/start.sh"]
