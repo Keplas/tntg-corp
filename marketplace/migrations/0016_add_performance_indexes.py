@@ -1,10 +1,12 @@
 from django.db import migrations
 
 class Migration(migrations.Migration):
-    dependencies = [('marketplace', '0015_add_display_currency_to_order')]
+    dependencies = [
+        ('marketplace', '0015_add_display_currency_to_order'),
+        ('training', '0001_initial'),
+    ]
     operations = [
         migrations.RunSQL(
-            # Indexes for frequently filtered fields
             sql=[
                 "CREATE INDEX IF NOT EXISTS idx_product_is_active ON marketplace_product(is_active);",
                 "CREATE INDEX IF NOT EXISTS idx_product_category ON marketplace_product(category);",
