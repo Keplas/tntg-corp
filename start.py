@@ -1,38 +1,33 @@
 """
 T&TG Trade Corp — Google Cloud Run startup script
-Runs migrations then starts gunicorn
 """
 import os
 import sys
 import subprocess
 
 print("=== T&TG Trade Corp Starting on Google Cloud ===")
-print(f"Settings: {os.environ.get('DJANGO_SETTINGS_MODULE')}")
-print(f"DB Host: {os.environ.get('DB_HOST')}")
-print(f"DB Name: {os.environ.get('DB_NAME')}")
+print(f"Settings: {os.environ.get('DJANGO_SETTINGS_MODULE', 'NOT SET')}")
+print(f"DB Host:  {os.environ.get('DB_HOST', 'NOT SET')}")
+print(f"DB Name:  {os.environ.get('DB_NAME', 'NOT SET')}")
+print(f"DB User:  {os.environ.get('DB_USER', 'NOT SET')}")
 
-# Step 1: Run migrations
+# Run migrations
 print("\n--- Running database migrations ---")
 result = subprocess.run(
-    [sys.executable, "manage.py", "migrate", "--noinput", "--verbosity=2"],
+    [sys.executable, "manage.py", "migrate", "--noinput"],
     capture_output=False
 )
+print(f"Migration exit code: {result.returncode}")
 
-if result.returncode != 0:
-    print("ERROR: Migrations failed. Exiting.")
-    sys.exit(1)
-
-print("--- Migrations complete ---\n")
-
-# Step 2: Collect static files
-print("--- Collecting static files ---")
+# Collect static files
+print("\n--- Collecting static files ---")
 subprocess.run(
-    [sys.executable, "manage.py", "collectstatic", "--noinput"],
+    [sys.executable, "manage.py", "collectstatic", "--noinput", "--clear"],
     capture_output=False
 )
 
-# Step 3: Start gunicorn
-print("--- Starting Gunicorn ---")
+# Start gunicorn
+print("\n--- Starting Gunicorn ---")
 port = os.environ.get("PORT", "8080")
 os.execvp("gunicorn", [
     "gunicorn",

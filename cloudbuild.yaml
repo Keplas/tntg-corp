@@ -1,29 +1,14 @@
 # T&TG Trade Corporation — Google Cloud Build CI/CD
-# Auto-deploys to Cloud Run on every push to main branch
 steps:
-  # Step 1: Build the Docker image
   - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'build'
-      - '-t'
-      - 'gcr.io/$PROJECT_ID/tntg-corp:$COMMIT_SHA'
-      - '-t'
-      - 'gcr.io/$PROJECT_ID/tntg-corp:latest'
-      - '.'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/tntg-corp:$COMMIT_SHA', '-t', 'gcr.io/$PROJECT_ID/tntg-corp:latest', '.']
 
-  # Step 2: Push the image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'push'
-      - 'gcr.io/$PROJECT_ID/tntg-corp:$COMMIT_SHA'
+    args: ['push', 'gcr.io/$PROJECT_ID/tntg-corp:$COMMIT_SHA']
 
-  # Step 3: Push latest tag
   - name: 'gcr.io/cloud-builders/docker'
-    args:
-      - 'push'
-      - 'gcr.io/$PROJECT_ID/tntg-corp:latest'
+    args: ['push', 'gcr.io/$PROJECT_ID/tntg-corp:latest']
 
-  # Step 4: Deploy to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -49,7 +34,7 @@ steps:
       - '300'
       - '--port'
       - '8080'
-      - '--set-env-vars'
+      - '--update-env-vars'
       - 'DJANGO_SETTINGS_MODULE=tntg_corp.settings_gcloud'
 
 images:
