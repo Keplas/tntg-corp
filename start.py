@@ -26,6 +26,14 @@ for attempt in range(3):
     print(f"--- Migration attempt {attempt + 1} failed, waiting 5s ---")
     time.sleep(5)
 
+
+# Seed initial data
+print("\n--- Seeding initial data ---")
+subprocess.run(
+    [sys.executable, "seed_gcloud.py"],
+    capture_output=False
+)
+
 # Collect static files
 print("\n--- Collecting static files ---")
 subprocess.run(
