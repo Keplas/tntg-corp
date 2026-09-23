@@ -9,7 +9,6 @@ RUN apt-get update && apt-get install -y \
     gcc \
     libpq-dev \
     curl \
-    postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -20,30 +19,17 @@ RUN pip install --no-cache-dir -r requirements.txt gunicorn psycopg2-binary
 COPY . .
 
 RUN printf '#!/bin/bash\n\
-set -e\n\
-echo "=== T&TG Trade Corp Starting on Google Cloud ==="\n\
-echo "Settings: $DJANGO_SETTINGS_MODULE"\n\
-echo "DB Host: $DB_HOST"\n\
-echo "DB Name: $DB_NAME"\n\
-echo "DB User: $DB_USER"\n\
-\n\
-# Create database if it does not exist\n\
-echo "Ensuring database exists..."\n\
-PGPASSWORD=$DB_PASSWORD psql \\\n\
-    -h "$DB_HOST" \\\n\
-    -U "$DB_USER" \\\n\
-    -tc "SELECT 1 FROM pg_database WHERE datname = '"'"'$DB_NAME'"'"'" \\\n\
-    | grep -q 1 || PGPASSWORD=$DB_PASSWORD psql \\\n\
-    -h "$DB_HOST" \\\n\
-    -U "$DB_USER" \\\n\
-    -c "CREATE DATABASE $DB_NAME;" || echo "DB creation skipped"\n\
-\n\
+echo "=== T&TG Trade Corp Starting ==="\n\
 echo "Running migrations..."\n\
-python manage.py migrate --noinput || echo "Migration warning"\n\
-\n\
+python manage.py migrate --noinput\n\
+if [ $? -eq 0 ]; then\n\
+    echo "Migrations completed successfully"\n\
+else\n\
+    echo "Migration failed - check logs"\n\
+    exit 1\n\
+fi\n\
 echo "Collecting static files..."\n\
 python manage.py collectstatic --noinput || echo "Collectstatic warning"\n\
-\n\
 echo "Starting gunicorn..."\n\
 exec gunicorn tntg_corp.wsgi \\\n\
     --workers 2 \\\n\
