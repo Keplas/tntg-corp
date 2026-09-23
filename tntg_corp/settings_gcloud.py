@@ -26,19 +26,17 @@ CSRF_TRUSTED_ORIGINS = [
 
 # ── Database — Cloud SQL (PostgreSQL) ─────────────────────────────────────────
 import re
-CLOUD_SQL_URL = os.environ.get('DATABASE_URL', '')
-
-if CLOUD_SQL_URL:
-    DATABASES = {
-        'default': {
-            'ENGINE':   'django.db.backends.postgresql',
-            'NAME':     os.environ.get('DB_NAME',     'tntg_db'),
-            'USER':     os.environ.get('DB_USER',     'tntg_user'),
-            'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-            'HOST':     os.environ.get('DB_HOST',     '/cloudsql/' + os.environ.get('CLOUD_SQL_CONNECTION_NAME', '')),
-            'PORT':     os.environ.get('DB_PORT',     '5432'),
-        }
+# Cloud SQL Database — overrides base settings.py
+DATABASES = {
+    'default': {
+        'ENGINE':   'django.db.backends.postgresql',
+        'NAME':     os.environ.get('DB_NAME',     'tntg_db'),
+        'USER':     os.environ.get('DB_USER',     'postgres'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+        'HOST':     os.environ.get('DB_HOST',     '/cloudsql/tomgrouptrade:us-east1:tntg-db'),
+        'PORT':     os.environ.get('DB_PORT',     '5432'),
     }
+}
 
 # ── Static Files — Cloud Storage ──────────────────────────────────────────────
 GCS_BUCKET = os.environ.get('GCS_BUCKET_NAME', '')
