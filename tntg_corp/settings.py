@@ -11,7 +11,7 @@ SECRET_KEY = os.environ.get(
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 ALLOWED_HOSTS = [
     '.run.app',
-    'tntg-corp-683706953030.us-east1.run.app','tntg-corp.onrender.com', 'tntgcorp.com', 'localhost', '127.0.0.1', '.onrender.com']
+    'tomtradecorp.com','tomtradecorp.com', 'tntgcorp.com', 'localhost', '127.0.0.1', '.onrender.com']
 
 # ── Apps ───────────────────────────────────────────────────────────────────────
 INSTALLED_APPS = [
@@ -141,7 +141,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ── Trusted origins for CSRF (required behind Render's reverse proxy) ──────────
 CSRF_TRUSTED_ORIGINS = [
-    'https://tntg-corp.onrender.com',
+    'https://tomtradecorp.com',
     'https://tntgcorp.com',
     'https://*.onrender.com',
 ]

@@ -109,7 +109,7 @@ def trade_apply(request):
                     f'Quantity:    {inquiry.quantity_kg} kg\n'
                     f'Frequency:   {inquiry.get_frequency_display()}\n\n'
                     f'Notes:\n{inquiry.notes or "None"}\n\n'
-                    f'Review at: https://tntg-corp.onrender.com/trade/dashboard/'
+                    f'Review at: https://tomtradecorp.com/trade/dashboard/'
                 ),
                 from_email=getattr(djsettings,'DEFAULT_FROM_EMAIL',''),
                 recipient_list=['tom.grouptrade@gmail.com'],

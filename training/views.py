@@ -25,7 +25,7 @@ def training_home(request):
                     msg  = 'Hi ' + name + ',\n\n'
                     msg += 'You are registered for T&TG Training.\n\n'
                     msg += 'Watch your videos at:\n'
-                    msg += 'https://tntg-corp.onrender.com/training/streaming/\n\n'
+                    msg += 'https://tomtradecorp.com/training/streaming/\n\n'
                     msg += 'T&TG Trade Corporation\n'
                     msg += '9 Summerbridge Rd, Toronto, ON M1G 1L8, Canada'
                     send_mail(

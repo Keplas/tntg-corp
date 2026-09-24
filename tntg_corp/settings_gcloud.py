@@ -11,9 +11,9 @@ SECRET_KEY = os.environ.get('SECRET_KEY', SECRET_KEY)
 ALLOWED_HOSTS = [
     'tomtradecorp.com',
     'www.tomtradecorp.com',
-    'tntg-corp.onrender.com',
+    'tomtradecorp.com',
     '.run.app',
-    'tntg-corp-683706953030.us-east1.run.app',
+    'tomtradecorp.com',
     '127.0.0.1',
     'localhost',
 ]
