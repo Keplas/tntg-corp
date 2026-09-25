@@ -54,7 +54,7 @@ def home(request):
 def about(request):
     company_details = [
         {'icon': 'fas fa-building',        'label': 'Company Name',     'value': 'T&TG Trade Corporation'},
-        {'icon': 'fas fa-certificate',     'label': 'Registration',     'value': 'Import and Export (RM) Registered Corporation'},
+        {'icon': 'fas fa-certificate',     'label': 'Registration',     'value': 'Import and Export (RM0001) Registered Corporation'},
         {'icon': 'fas fa-calendar-alt',    'label': 'Founded',          'value': 'August 26, 2026'},
         {'icon': 'fas fa-map-marker-alt',  'label': 'Headquarters',     'value': '9 Summerbridge Rd, Toronto, ON M1G 1L8, Canada'},
         {'icon': 'fas fa-user-tie',        'label': 'Director',         'value': 'Tom Ssembiito'},
