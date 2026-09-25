@@ -88,21 +88,11 @@ CSRF_COOKIE_SECURE               = True
 # ── Social Auth Credentials (set in Cloud Run env vars) ──────────────────────
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
-        'APP': {
-            'client_id':     os.environ.get('GOOGLE_CLIENT_ID', ''),
-            'secret':        os.environ.get('GOOGLE_CLIENT_SECRET', ''),
-            'key':           '',
-        },
         'SCOPE': ['profile', 'email'],
         'AUTH_PARAMS': {'access_type': 'online'},
         'FETCH_USERINFO': True,
     },
     'microsoft': {
-        'APP': {
-            'client_id':     os.environ.get('MICROSOFT_CLIENT_ID', ''),
-            'secret':        os.environ.get('MICROSOFT_CLIENT_SECRET', ''),
-            'key':           '',
-        },
         'SCOPE': ['User.Read'],
         'AUTH_PARAMS': {'prompt': 'select_account'},
     },
