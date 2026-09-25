@@ -20,7 +20,7 @@ TRANSLATIONS = {
         'nav_getstarted': 'Get Started',
 
         # Hero
-        'hero_eyebrow':        'Import & Export (RM) Registered',
+        'hero_eyebrow':        'Import and Export (RM0001) Registered',
         'hero_title_1':        'Trade &',
         'hero_title_2':        'e-Commerce',
         'hero_title_3':        'Platform',
@@ -51,7 +51,7 @@ TRANSLATIONS = {
         'nav_getstarted': 'Tandika Kaakano',
 
         # Hero — Luganda
-        'hero_eyebrow':        'Eyawandiisibwa mu Kutwaala era Okulimba (RM)',
+        'hero_eyebrow':        'Eyawandiisibwa mu Kutwaala era Okulimba (RM0001)',
         'hero_title_1':        'Busuubuzi &',
         'hero_title_2':        'Obusuubuzi ku',
         'hero_title_3':        'Muterekero',

@@ -15,7 +15,7 @@ COMPANY INFO:
 - Email: tom.grouptrade@gmail.com
 - Founded: October 14, 2026
 - Operates in: Canada 🇨🇦, Uganda 🇺🇬 and Kenya 🇰🇪
-- Import & Export (RM) registered corporation
+- Import and Export (RM0001) registered corporation
 - Founder: Tom Ssembiito
 
 ABOUT US:
