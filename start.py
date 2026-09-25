@@ -27,6 +27,13 @@ for attempt in range(3):
     time.sleep(5)
 
 
+# Setup auth providers
+print("\n--- Setting up auth providers ---")
+subprocess.run(
+    [sys.executable, "manage.py", "setup_auth"],
+    capture_output=False
+)
+
 # Seed initial data
 print("\n--- Seeding initial data ---")
 subprocess.run(
