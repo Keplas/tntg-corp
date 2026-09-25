@@ -29,9 +29,15 @@ class CustomAccountAdapter(DefaultAccountAdapter):
         return '/accounts/dashboard/'
 
     def send_mail(self, template_prefix, email, context):
+        import logging
+        logger = logging.getLogger(__name__)
         context['site_name'] = 'T&TG Trade Corporation'
         context['domain'] = 'tomtradecorp.com'
-        super().send_mail(template_prefix, email, context)
+        try:
+            super().send_mail(template_prefix, email, context)
+        except Exception as e:
+            logger.error(f'T&TG email send failed to {email}: {e}')
+            # Do not raise — allow login/signup to continue even if email fails
 
 
 class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
