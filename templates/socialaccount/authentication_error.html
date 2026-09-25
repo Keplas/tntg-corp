@@ -1,0 +1,13 @@
+{% extends 'allauth/layouts/base.html' %}
+{% block allauth_content %}
+<div style="text-align:center">
+  <i class="fas fa-exclamation-triangle" style="font-size:2.5rem;color:#f87171;margin-bottom:16px"></i>
+  <h3 style="color:#fff;font-weight:900;margin-bottom:12px">Authentication Error</h3>
+  <p style="color:#b0a898;line-height:1.8;margin-bottom:24px">
+    An error occurred during social authentication. Please try again or sign in with your email and password.
+  </p>
+  <a href="{% url 'account_login' %}" class="btn btn-gold px-5 py-3" style="font-weight:700">
+    Back to Sign In
+  </a>
+</div>
+{% endblock %}

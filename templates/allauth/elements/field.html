@@ -1,0 +1,15 @@
+{% load allauth %}
+<div class="mb-3">
+  {% if field.label_tag %}
+  <label class="form-label" style="color:#b0a898;font-size:.82rem;font-weight:600">{{ field.label_tag }}</label>
+  {% endif %}
+  {{ field|add_css_class:"form-control" }}
+  {% if field.help_text %}
+  <div style="color:#7a6e5f;font-size:.74rem;margin-top:4px">{{ field.help_text }}</div>
+  {% endif %}
+  {% if field.errors %}
+  {% for error in field.errors %}
+  <div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:6px 10px;color:#fca5a5;font-size:.76rem;margin-top:4px">{{ error }}</div>
+  {% endfor %}
+  {% endif %}
+</div>

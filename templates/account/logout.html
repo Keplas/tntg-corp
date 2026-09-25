@@ -1,0 +1,15 @@
+{% extends 'allauth/layouts/base.html' %}
+{% block allauth_content %}
+<div style="text-align:center">
+  <i class="fas fa-sign-out-alt" style="font-size:2.5rem;color:#c9a84c;margin-bottom:16px"></i>
+  <h3 style="color:#fff;font-weight:900;margin-bottom:10px">Sign Out</h3>
+  <p style="color:#b0a898;margin-bottom:28px">Are you sure you want to sign out of your T&TG account?</p>
+  <form method="post" action="{% url 'account_logout' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-gold px-5 py-3" style="font-weight:800;margin-bottom:12px;width:100%">
+      <i class="fas fa-sign-out-alt me-2"></i>Yes, Sign Out
+    </button>
+    <a href="/" style="display:block;color:#7a6e5f;font-size:.85rem;text-decoration:none">Cancel</a>
+  </form>
+</div>
+{% endblock %}
