@@ -192,7 +192,7 @@ AUTHENTICATION_BACKENDS = [
 
 # ── django-allauth config ─────────────────────────────────────────────────────
 ACCOUNT_LOGIN_METHODS           = {'email', 'username'}
-ACCOUNT_EMAIL_VERIFICATION      = 'mandatory'
+ACCOUNT_EMAIL_VERIFICATION           = 'none'     # Re-enable to 'optional' once Gmail app password is fixed
 ACCOUNT_SESSION_REMEMBER        = True
 ACCOUNT_UNIQUE_EMAIL            = True
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
@@ -210,13 +210,14 @@ SOCIALACCOUNT_AUTO_SIGNUP   = True
 SOCIALACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_EMAIL_VERIFICATION = "none"  # Google already verifies
 SOCIALACCOUNT_ADAPTER       = 'accounts.adapters.CustomSocialAccountAdapter'
+SOCIALACCOUNT_LOGIN_ON_GET   = True              # Skip extra confirm step after OAuth
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
 
 # ── MFA / TOTP config ─────────────────────────────────────────────────────────
 MFA_TOTP_PERIOD           = 30
 MFA_TOTP_DIGITS           = 6
 MFA_TOTP_ISSUER           = 'T&TG Trade Corporation'
 MFA_RECOVERY_CODE_COUNT   = 8
-MFA_TOTP_PERIOD           = 30
 
 # ── django-axes config ────────────────────────────────────────────────────────
 AXES_FAILURE_LIMIT          = 5
