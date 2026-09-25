@@ -21,8 +21,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    # Third party
+    'allauth',
+    'allauth.account',
+    'allauth.mfa',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.microsoft',
+    'axes',
     'cloudinary_storage',
     'cloudinary',
+    # Local
     'core',
     'marketplace',
     'accounts',
@@ -40,6 +50,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
+    'axes.middleware.AxesMiddleware',
+    'accounts.middleware.EnforceMFAForStaffMiddleware',
 ]
 
 ROOT_URLCONF = 'tntg_corp.urls'
@@ -166,3 +179,51 @@ CACHES = {
         'TIMEOUT': 3600,  # 1 hour
     }
 }
+
+# ── Site ID (required by allauth) ─────────────────────────────────────────────
+SITE_ID = 1
+
+# ── Authentication backends ───────────────────────────────────────────────────
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesStandaloneBackend',
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+# ── django-allauth config ─────────────────────────────────────────────────────
+ACCOUNT_LOGIN_METHODS           = {'email', 'username'}
+ACCOUNT_EMAIL_VERIFICATION      = 'mandatory'
+ACCOUNT_SESSION_REMEMBER        = True
+ACCOUNT_UNIQUE_EMAIL            = True
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+ACCOUNT_SIGNUP_FIELDS = [
+    'first_name',
+    'last_name',
+    'email*',
+    'username*',
+    'password1*',
+    'password2*',
+]
+ACCOUNT_ADAPTER             = 'accounts.adapters.CustomAccountAdapter'
+ACCOUNT_FORMS               = {'signup': 'accounts.forms.CustomSignupForm'}
+SOCIALACCOUNT_AUTO_SIGNUP   = False
+SOCIALACCOUNT_EMAIL_REQUIRED = True
+SOCIALACCOUNT_ADAPTER       = 'accounts.adapters.CustomSocialAccountAdapter'
+
+# ── MFA / TOTP config ─────────────────────────────────────────────────────────
+MFA_TOTP_PERIOD           = 30
+MFA_TOTP_DIGITS           = 6
+MFA_TOTP_ISSUER           = 'T&TG Trade Corporation'
+MFA_RECOVERY_CODE_COUNT   = 8
+MFA_TOTP_PERIOD           = 30
+
+# ── django-axes config ────────────────────────────────────────────────────────
+AXES_FAILURE_LIMIT          = 5
+AXES_COOLOFF_TIME           = 1          # 1 hour lockout
+AXES_RESET_ON_SUCCESS       = True
+AXES_LOCKOUT_TEMPLATE       = 'accounts/lockout.html'
+AXES_ENABLE_ADMIN           = True
+AXES_VERBOSE                = False
+
+# ── Role groups ───────────────────────────────────────────────────────────────
+TNTG_GROUPS = ['Admin', 'Staff', 'B2B Partner', 'Consumer']
