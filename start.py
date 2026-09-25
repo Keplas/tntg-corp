@@ -12,6 +12,10 @@ print(f"DB Name:  {os.environ.get('DB_NAME', 'NOT SET')}")
 print("\n--- Waiting 3s for Cloud SQL proxy ---")
 time.sleep(3)
 
+# Create cache table
+print("Creating cache table...")
+subprocess.run([sys.executable, "manage.py", "createcachetable"], capture_output=False)
+
 # Run migrations with retry
 for attempt in range(3):
     print(f"\n--- Migration attempt {attempt + 1}/3 ---")

@@ -140,23 +140,38 @@ def get_rate(from_currency, to_currency):
 
 def _fetch_frankfurter():
     """
-    https://api.frankfurter.app — ECB data, free, no key required.
-    Base is EUR so we convert to USD base.
+    Try multiple free forex APIs with no key required.
     """
-    try:
-        resp = requests.get(
-            'https://api.frankfurter.app/latest',
-            params={'from': 'USD', 'to': ','.join(TARGET_CURRENCIES)},
-            timeout=6
-        )
-        data = resp.json()
-        if 'rates' in data:
-            rates = {'USD': 1.0}
-            rates.update({k: float(v) for k, v in data['rates'].items()})
-            logger.info('Frankfurter rates fetched successfully')
-            return rates
-    except Exception as e:
-        logger.warning(f'Frankfurter API error: {e}')
+    apis = [
+        {
+            'url': 'https://api.frankfurter.app/latest',
+            'params': {'from': 'USD', 'to': ','.join(TARGET_CURRENCIES)},
+            'key': 'rates',
+            'name': 'Frankfurter',
+        },
+        {
+            'url': 'https://open.er-api.com/v6/latest/USD',
+            'params': {},
+            'key': 'rates',
+            'name': 'OpenER',
+        },
+    ]
+    for api in apis:
+        try:
+            resp = requests.get(api['url'], params=api['params'], timeout=8)
+            if resp.status_code == 200:
+                data = resp.json()
+                raw = data.get(api['key'], {})
+                if raw:
+                    rates = {'USD': 1.0}
+                    for cur in TARGET_CURRENCIES:
+                        if cur in raw:
+                            rates[cur] = float(raw[cur])
+                    if len(rates) >= 4:
+                        logger.info(f"{api['name']} rates fetched")
+                        return rates
+        except Exception as e:
+            logger.warning(f"{api['name']} error: {e}")
     return None
 
 
