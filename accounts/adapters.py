@@ -51,12 +51,12 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         """Connect social account to existing account if email matches"""
         if sociallogin.is_existing:
             return
-        from allauth.account.models import EmailAddress
         try:
-            email = sociallogin.account.extra_data.get('email', '').lower()
-            if not email:
-                return
-            existing = EmailAddress.objects.get(email__iexact=email)
-            sociallogin.connect(request, existing.user)
-        except EmailAddress.DoesNotExist:
-            pass
+            from allauth.account.models import EmailAddress
+            email = sociallogin.account.extra_data.get('email', '') or ''
+            email = email.lower().strip()
+            if email:
+                existing = EmailAddress.objects.get(email__iexact=email)
+                sociallogin.connect(request, existing.user)
+        except Exception:
+            pass  # New user - proceed to signup

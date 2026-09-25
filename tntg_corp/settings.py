@@ -206,8 +206,9 @@ ACCOUNT_SIGNUP_FIELDS = [
 ]
 ACCOUNT_ADAPTER             = 'accounts.adapters.CustomAccountAdapter'
 ACCOUNT_FORMS               = {'signup': 'accounts.forms.CustomSignupForm'}
-SOCIALACCOUNT_AUTO_SIGNUP   = False
+SOCIALACCOUNT_AUTO_SIGNUP   = True
 SOCIALACCOUNT_EMAIL_REQUIRED = True
+SOCIALACCOUNT_EMAIL_VERIFICATION = "none"  # Google already verifies
 SOCIALACCOUNT_ADAPTER       = 'accounts.adapters.CustomSocialAccountAdapter'
 
 # ── MFA / TOTP config ─────────────────────────────────────────────────────────

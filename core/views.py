@@ -23,7 +23,10 @@ def home(request):
         training_programs = list(TrainingProgram.objects.filter(is_active=True)[:3])
         tv_programs       = list(TVProgram.objects.filter(is_active=True)[:3])
         forex_rates       = list(ForexRate.objects.all()[:3])
-    except Exception:
+    except Exception as e:
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f'Home view DB error: {e}')
         featured_products = []
         latest_products   = []
         training_programs = []
