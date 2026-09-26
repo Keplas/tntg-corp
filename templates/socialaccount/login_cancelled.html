@@ -1,9 +1,12 @@
-{% extends 'allauth/layouts/base.html' %}
-{% block allauth_content %}
-<div style="text-align:center">
-  <i class="fas fa-times-circle" style="font-size:2.5rem;color:#fb923c;margin-bottom:16px"></i>
-  <h3 style="color:#fff;font-weight:900;margin-bottom:12px">Login Cancelled</h3>
-  <p style="color:#b0a898;margin-bottom:24px">You cancelled the login process. You can try again whenever you are ready.</p>
-  <a href="{% url 'account_login' %}" class="btn btn-gold px-5 py-3" style="font-weight:700">Back to Sign In</a>
+{% extends 'auth_base.html' %}
+{% block title %}Login Cancelled | T&TG{% endblock %}
+{% block auth_content %}
+<div style="text-align:center;padding:12px 0">
+  <div style="width:72px;height:72px;border-radius:50%;background:rgba(251,191,36,.1);border:2px solid rgba(251,191,36,.25);display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
+    <i class="fas fa-times-circle" style="font-size:1.8rem;color:#fbbf24"></i>
+  </div>
+  <h2 style="color:#fff;font-weight:900;margin-bottom:10px">Login Cancelled</h2>
+  <p style="color:#7a6e5f;margin-bottom:28px;font-size:.87rem">You cancelled the login process. Try again whenever you are ready.</p>
+  <a href="{% url 'account_login' %}" class="auth-btn" style="display:block;text-align:center;text-decoration:none;padding:13px">Back to Sign In</a>
 </div>
 {% endblock %}

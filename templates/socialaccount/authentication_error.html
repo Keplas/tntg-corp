@@ -1,13 +1,12 @@
-{% extends 'allauth/layouts/base.html' %}
-{% block allauth_content %}
-<div style="text-align:center">
-  <i class="fas fa-exclamation-triangle" style="font-size:2.5rem;color:#f87171;margin-bottom:16px"></i>
-  <h3 style="color:#fff;font-weight:900;margin-bottom:12px">Authentication Error</h3>
-  <p style="color:#b0a898;line-height:1.8;margin-bottom:24px">
-    An error occurred during social authentication. Please try again or sign in with your email and password.
-  </p>
-  <a href="{% url 'account_login' %}" class="btn btn-gold px-5 py-3" style="font-weight:700">
-    Back to Sign In
-  </a>
+{% extends 'auth_base.html' %}
+{% block title %}Authentication Error | T&TG{% endblock %}
+{% block auth_content %}
+<div style="text-align:center;padding:12px 0">
+  <div style="width:72px;height:72px;border-radius:50%;background:rgba(239,68,68,.1);border:2px solid rgba(239,68,68,.25);display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
+    <i class="fas fa-exclamation-triangle" style="font-size:1.8rem;color:#f87171"></i>
+  </div>
+  <h2 style="color:#fff;font-weight:900;margin-bottom:10px">Authentication Error</h2>
+  <p style="color:#7a6e5f;margin-bottom:28px;font-size:.87rem;line-height:1.8">An error occurred during social sign-in. Please try again or sign in with your email and password.</p>
+  <a href="{% url 'account_login' %}" class="auth-btn" style="display:block;text-align:center;text-decoration:none;padding:13px">Back to Sign In</a>
 </div>
 {% endblock %}

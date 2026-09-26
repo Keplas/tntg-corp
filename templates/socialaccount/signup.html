@@ -1,34 +1,31 @@
-{% extends 'allauth/layouts/base.html' %}
-{% load allauth %}
-{% block allauth_content %}
-<h3 style="color:#fff;font-weight:900;margin-bottom:6px">Almost There</h3>
-<p style="color:#7a6e5f;font-size:.85rem;margin-bottom:24px">
-  Complete your T&TG account to continue with {{ sociallogin.account.get_provider.name }}
-</p>
-{% if form.errors %}
-<div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:12px;padding:12px 16px;color:#fca5a5;font-size:.82rem;margin-bottom:20px">
-  <i class="fas fa-exclamation-circle me-2"></i>Please correct the errors below.
+{% extends 'auth_base.html' %}
+{% block title %}Complete Registration | T&TG{% endblock %}
+{% block auth_content %}
+<div class="auth-title">
+  <h2>Almost There</h2>
+  <p>Complete your T&TG account to continue with {{ sociallogin.account.get_provider.name }}.</p>
 </div>
+{% if form.errors %}
+<div class="auth-alert auth-err"><i class="fas fa-exclamation-circle"></i><span>Please correct the errors below.</span></div>
 {% endif %}
 <form method="post" action="{% url 'socialaccount_signup' %}">
   {% csrf_token %}
-  <div class="mb-3">
-    <label style="color:#b0a898;font-size:.82rem;font-weight:600;margin-bottom:6px;display:block">Username *</label>
-    <input type="text" name="username" class="form-control"
-           style="background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.2);color:#fff;border-radius:10px;padding:10px 14px"
-           placeholder="Choose a username" value="{{ form.username.value|default:'' }}" required>
-    {% if form.username.errors %}<div style="color:#fca5a5;font-size:.76rem;margin-top:4px">{{ form.username.errors.0 }}</div>{% endif %}
+  <div class="auth-field">
+    <label class="ai-label">Username *</label>
+    <div class="input-group">
+      <span class="ai-pre"><i class="fas fa-at fa-sm"></i></span>
+      <input type="text" name="username" class="form-control ai ai-joined" placeholder="Choose a username" value="{{ form.username.value|default:'' }}" required>
+    </div>
+    {% if form.username.errors %}<div style="color:#fca5a5;font-size:.74rem;margin-top:4px">{{ form.username.errors.0 }}</div>{% endif %}
   </div>
-  <div class="mb-4">
-    <label style="color:#b0a898;font-size:.82rem;font-weight:600;margin-bottom:6px;display:block">Email *</label>
-    <input type="email" name="email" class="form-control"
-           style="background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.2);color:#fff;border-radius:10px;padding:10px 14px"
-           value="{{ form.email.value|default:'' }}" required>
-    {% if form.email.errors %}<div style="color:#fca5a5;font-size:.76rem;margin-top:4px">{{ form.email.errors.0 }}</div>{% endif %}
+  <div class="auth-field">
+    <label class="ai-label">Email *</label>
+    <div class="input-group">
+      <span class="ai-pre"><i class="fas fa-envelope fa-sm"></i></span>
+      <input type="email" name="email" class="form-control ai ai-joined" value="{{ form.email.value|default:'' }}" required>
+    </div>
   </div>
   {% if redirect_field_value %}<input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">{% endif %}
-  <button type="submit" class="btn btn-gold w-100 py-3" style="font-weight:800">
-    <i class="fas fa-user-check me-2"></i>Complete Registration
-  </button>
+  <button type="submit" class="auth-btn"><i class="fas fa-user-check me-2"></i>Complete Registration</button>
 </form>
 {% endblock %}
