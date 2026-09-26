@@ -229,3 +229,24 @@ AXES_VERBOSE                = False
 
 # ── Role groups ───────────────────────────────────────────────────────────────
 TNTG_GROUPS = ['Admin', 'Staff', 'B2B Partner', 'Consumer']
+
+# ── Loyalty and Account Security ─────────────────────────────────────────────
+ACCOUNT_EMAIL_NOTIFICATIONS     = True   # Email on login, password change, new device
+MFA_SUPPORTED_TYPES             = ['totp', 'recovery_codes']
+MFA_PASSKEY_LOGIN_ENABLED       = False  # Enable when WebAuthn is configured
+
+# Rate limiting (django-axes + allauth)
+ACCOUNT_RATE_LIMITS = {
+    'login_failed':     '5/5m',   # 5 failures per 5 minutes
+    'signup':           '5/h',    # 5 signups per hour per IP
+    'send_email':       '3/5m',   # 3 emails per 5 minutes
+    'password_reset':   '3/h',    # 3 reset requests per hour
+    'change_password':  '3/h',
+    'confirm_login_code': '3/5m',
+}
+
+# Loyalty fraud controls
+LOYALTY_DAILY_REDEEM_LIMIT      = 10000  # Max points redeemable per day
+LOYALTY_DAILY_TXN_LIMIT         = 5      # Max transactions per day
+LOYALTY_COOLOFF_HOURS           = 48     # Hours before loyalty use after account changes
+LOYALTY_REAUTH_WINDOW           = 600    # Seconds (10 min) before re-auth required

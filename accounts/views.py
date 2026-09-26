@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
+from accounts.decorators import mfa_required, loyalty_reauth_required, check_loyalty_cooloff, check_daily_limit
 from django.contrib import messages
 from django.utils import timezone
 from django.db.models import Sum
@@ -330,7 +331,7 @@ def profile(request):
     return redirect(reverse('dashboard') + '#profile')
 
 
-@login_required
+@mfa_required
 def loyalty_dashboard(request):
     """T&TG Trade Loyalty Platform — Points, Promotions, Referral, Reward."""
     user     = request.user
@@ -533,7 +534,7 @@ def set_withdrawal_pin(request):
 # MULTI-CURRENCY WALLET
 # ════════════════════════════════════════════════════════════════════════
 
-@login_required
+@mfa_required
 def wallet_view(request):
     """User wallet — balances, transactions, convert, withdraw."""
     from .models import Wallet, WalletTransaction
@@ -583,7 +584,8 @@ def wallet_view(request):
     return render(request, 'accounts/wallet.html', ctx)
 
 
-@login_required
+@mfa_required
+@loyalty_reauth_required
 def wallet_convert(request):
     """Convert between currencies using live rates."""
     from .models import Wallet, WalletTransaction
@@ -638,7 +640,8 @@ def wallet_convert(request):
     return redirect('wallet')
 
 
-@login_required
+@mfa_required
+@loyalty_reauth_required
 def wallet_withdraw(request):
     """Request a withdrawal from wallet."""
     from .models import Wallet
@@ -739,3 +742,22 @@ def analytics_dashboard(request):
         'recent_notifs':  Notification.objects.order_by('-created_at')[:6],
     }
     return render(request, 'accounts/analytics_dashboard.html', ctx)
+
+
+@login_required
+def loyalty_reauth(request):
+    """Re-confirm identity before sensitive loyalty operations."""
+    from django.utils import timezone
+
+    if request.method == 'POST':
+        password = request.POST.get('password','')
+        from django.contrib.auth import authenticate
+        user = authenticate(request, username=request.user.username, password=password)
+        if user:
+            request.session['loyalty_reauth_time'] = timezone.now().timestamp()
+            next_url = request.session.pop('loyalty_reauth_next', '/accounts/wallet/')
+            return redirect(next_url)
+        else:
+            return render(request, 'accounts/loyalty_reauth.html', {'error': 'Incorrect password. Please try again.'})
+
+    return render(request, 'accounts/loyalty_reauth.html', {})

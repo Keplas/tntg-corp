@@ -222,3 +222,47 @@ class WalletTransaction(models.Model):
 
     def __str__(self):
         return f"{self.get_transaction_type_display()} {self.currency} {self.amount}"
+
+
+class PointsAuditLog(models.Model):
+    """
+    Append-only audit log for all loyalty points movements.
+    Never edited or deleted — full traceability for every transaction.
+    """
+    ACTION_CHOICES = [
+        ('earn',      'Points Earned'),
+        ('redeem',    'Points Redeemed'),
+        ('transfer',  'Points Transferred'),
+        ('referral',  'Referral Bonus'),
+        ('expire',    'Points Expired'),
+        ('admin',     'Admin Adjustment'),
+    ]
+
+    user           = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='points_audit')
+    action         = models.CharField(max_length=20, choices=ACTION_CHOICES)
+    points_amount  = models.DecimalField(max_digits=12, decimal_places=2)
+    balance_before = models.DecimalField(max_digits=12, decimal_places=2)
+    balance_after  = models.DecimalField(max_digits=12, decimal_places=2)
+    description    = models.CharField(max_length=255, blank=True)
+    ip_address     = models.GenericIPAddressField(null=True, blank=True)
+    user_agent     = models.CharField(max_length=255, blank=True)
+    order_ref      = models.CharField(max_length=50, blank=True)
+    created_at     = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['user', 'created_at']),
+            models.Index(fields=['action', 'created_at']),
+        ]
+
+    def __str__(self):
+        return f"{self.user.username} | {self.action} | {self.points_amount} pts | {self.created_at.date()}"
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            raise ValueError("PointsAuditLog entries are immutable — they cannot be edited.")
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        raise ValueError("PointsAuditLog entries cannot be deleted — audit integrity must be maintained.")
