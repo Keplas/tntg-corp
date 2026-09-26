@@ -70,9 +70,17 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
 
 class CustomMFAAdapter:
     """
-    Override allauth MFA adapter to disable 2FA challenge on login.
-    2FA is only enforced at the wallet/loyalty layer via our custom decorator.
+    Disables the 2FA prompt during sign in.
+    2FA is enforced only at the wallet layer via the mfa_required decorator.
     """
+    def __init__(self, request=None):
+        self.request = request
+
     def is_mfa_enabled(self, user, types=None):
-        # Return False to skip 2FA prompt during login
         return False
+
+    def __getattr__(self, name):
+        from allauth.mfa.adapter import DefaultMFAAdapter
+        base = DefaultMFAAdapter.__new__(DefaultMFAAdapter)
+        base.request = self.request
+        return getattr(base, name)
