@@ -31,6 +31,10 @@ for attempt in range(3):
     time.sleep(5)
 
 
+# Verify all existing email addresses (required for 2FA activation)
+print("\n--- Verifying email addresses ---")
+subprocess.run([sys.executable, "manage.py", "verify_emails"], capture_output=False)
+
 # Setup auth providers
 print("\n--- Setting up auth providers ---")
 subprocess.run(
