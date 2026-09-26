@@ -1,14 +1,10 @@
-{% extends 'allauth/layouts/base.html' %}
-{% block allauth_content %}
-<div style="text-align:center">
-  <i class="fas fa-envelope-open-text" style="font-size:3rem;color:#c9a84c;margin-bottom:20px"></i>
-  <h3 style="color:#fff;font-weight:900;margin-bottom:10px">Verify Your Email</h3>
-  <p style="color:#b0a898;line-height:1.8;margin-bottom:8px">
-    A verification link has been sent to your email address.
-  </p>
-  <p style="color:#7a6e5f;font-size:.83rem;margin-bottom:28px">
-    Click the link in the email to activate your T&TG account. Check your spam folder if you do not see it within a few minutes.
-  </p>
-  <a href="{% url 'account_login' %}" style="color:#c9a84c;font-size:.85rem;text-decoration:none">Back to Sign In</a>
-</div>
-{% endblock %}
+{% extends 'auth_base.html' %}
+{% block title %}Verify Your Email | T&TG{% endblock %}
+{% block auth_content %}
+<div style="text-align:center;padding:16px 0">
+  <div style="width:70px;height:70px;border-radius:50%;background:rgba(96,165,250,.1);border:2px solid rgba(96,165,250,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 20px"><i class="fas fa-envelope" style="font-size:1.8rem;color:#60a5fa"></i></div>
+  <h2 style="color:#fff;font-weight:900;margin-bottom:8px">Check Your Inbox</h2>
+  <p style="color:#7a6e5f;margin-bottom:8px;font-size:.87rem;line-height:1.8">A verification link has been sent to your email. Click it to activate your T&TG account.</p>
+  <p style="color:#5a5248;font-size:.78rem;margin-bottom:28px">Check your spam folder if you do not see it.</p>
+  <a href="{% url 'account_login' %}" style="color:#c9a84c;font-size:.85rem;text-decoration:none"><i class="fas fa-arrow-left me-1"></i>Back to Sign In</a>
+</div>{% endblock %}

@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+.au-bg { min-height:100vh; background:#060f1e; display:flex; align-items:stretch; }
+.au-left { width:360px; min-height:100vh; background:linear-gradient(160deg,#0a1823 0%,#060f1e 100%);
+           border-right:1px solid rgba(201,168,76,.1); display:flex; flex-direction:column;
+           justify-content:space-between; padding:44px 36px; flex-shrink:0; position:relative; overflow:hidden; }
+.au-left::before { content:''; position:absolute; top:-80px; right:-60px; width:260px; height:260px;
+                   border-radius:50%; background:radial-gradient(circle,rgba(201,168,76,.07),transparent 70%); }
+.au-left::after  { content:''; position:absolute; bottom:-60px; left:-50px; width:200px; height:200px;
+                   border-radius:50%; background:radial-gradient(circle,rgba(96,165,250,.04),transparent 70%); }
+.au-right { flex:1; display:flex; align-items:center; justify-content:center;
+            padding:48px 32px; overflow-y:auto; }
+.au-box { width:100%; max-width:460px; }
+.au-card { background:rgba(255,255,255,.025); border:1px solid rgba(201,168,76,.12);
+           border-radius:20px; padding:36px; }
+.au-input { background:rgba(255,255,255,.04)!important; border:1px solid rgba(201,168,76,.18)!important;
+            color:#fff!important; border-radius:10px!important; padding:11px 14px!important;
+            font-size:.9rem!important; transition:border-color .2s; }
+.au-input:focus { border-color:rgba(201,168,76,.5)!important; box-shadow:none!important;
+                  background:rgba(255,255,255,.06)!important; }
+.au-input::placeholder { color:#5a5248!important; }
+.au-pre { background:rgba(255,255,255,.04); border:1px solid rgba(201,168,76,.18); border-right:none;
+          color:#c9a84c; padding:0 14px; display:flex; align-items:center;
+          border-radius:10px 0 0 10px; }
+.au-suf { background:rgba(255,255,255,.04); border:1px solid rgba(201,168,76,.18); border-left:none;
+          color:#7a6e5f; padding:0 14px; display:flex; align-items:center;
+          cursor:pointer; border-radius:0 10px 10px 0; transition:color .2s; }
+.au-suf:hover { color:#c9a84c; }
+.au-joined { border-radius:0 10px 10px 0!important; border-left:none!important; }
+.au-lbl { color:#b0a898; font-size:.8rem; font-weight:600; margin-bottom:5px; display:block; }
+.au-field { margin-bottom:18px; }
+.au-btn { background:linear-gradient(135deg,#c9a84c,#a8863c); color:#060f1e; border:none;
+          border-radius:12px; font-weight:800; font-size:.93rem; padding:13px 24px;
+          width:100%; cursor:pointer; transition:all .2s; }
+.au-btn:hover { transform:translateY(-1px); box-shadow:0 6px 24px rgba(201,168,76,.3); }
+.au-ghost { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.2);
+            color:#c9a84c; border-radius:12px; font-weight:700; font-size:.88rem;
+            padding:11px 24px; width:100%; cursor:pointer; transition:all .2s;
+            text-decoration:none; display:block; text-align:center; }
+.au-ghost:hover { background:rgba(201,168,76,.07); color:#c9a84c; }
+.au-social { display:flex; align-items:center; justify-content:center; gap:10px; padding:11px 16px;
+             border-radius:12px; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.03);
+             color:#e0d5c0; font-weight:600; font-size:.87rem; text-decoration:none; transition:all .2s; }
+.au-social:hover { background:rgba(255,255,255,.07); color:#fff; }
+.au-div { display:flex; align-items:center; gap:12px; margin:18px 0; }
+.au-div::before,.au-div::after { content:''; flex:1; height:1px; background:rgba(255,255,255,.07); }
+.au-div span { color:#5a5248; font-size:.72rem; white-space:nowrap; font-weight:600; letter-spacing:.5px; }
+.au-err  { background:rgba(239,68,68,.08);  border:1px solid rgba(239,68,68,.2);  color:#fca5a5; border-radius:12px; padding:11px 15px; font-size:.82rem; margin-bottom:18px; display:flex; align-items:center; gap:10px; }
+.au-ok   { background:rgba(34,197,94,.08);  border:1px solid rgba(34,197,94,.2);  color:#86efac; border-radius:12px; padding:11px 15px; font-size:.82rem; margin-bottom:18px; display:flex; align-items:center; gap:10px; }
+.au-info { background:rgba(96,165,250,.08); border:1px solid rgba(96,165,250,.2); color:#93c5fd; border-radius:12px; padding:11px 15px; font-size:.82rem; margin-bottom:18px; display:flex; align-items:center; gap:10px; }
+.au-warn { background:rgba(251,191,36,.08); border:1px solid rgba(251,191,36,.2); color:#fde68a; border-radius:12px; padding:11px 15px; font-size:.82rem; margin-bottom:18px; display:flex; align-items:center; gap:10px; }
+.au-otp  { font-size:2rem; text-align:center; letter-spacing:12px; font-family:monospace; font-weight:700;
+           background:rgba(255,255,255,.04)!important; border:2px solid rgba(201,168,76,.25)!important;
+           border-radius:14px!important; padding:16px!important; color:#fff!important; }
+.au-otp:focus { border-color:rgba(201,168,76,.6)!important; }
+.pw-bar  { height:4px; border-radius:100px; background:rgba(255,255,255,.08); margin:7px 0 4px; }
+.pw-fill { height:100%; border-radius:100px; transition:all .3s; width:0; }
+.au-country { display:flex; align-items:center; gap:10px; padding:9px 0;
+              border-bottom:1px solid rgba(255,255,255,.05); font-size:.78rem; }
+.au-country:last-child { border-bottom:none; }
+@media (max-width:768px) { .au-left { display:none; } .au-right { padding:32px 16px; } }
+</style>
+
+<div class="au-bg">
+  <!-- Left brand panel -->
+  <div class="au-left">
+    <div style="position:relative;z-index:1">
+      <img src="{% static 'images/logo.jpg' %}" alt="T&TG"
+           style="width:52px;height:52px;border-radius:13px;object-fit:cover;border:2px solid rgba(201,168,76,.3);margin-bottom:22px">
+      <div style="font-size:.6rem;font-weight:900;letter-spacing:4px;color:#c9a84c;text-transform:uppercase;margin-bottom:8px">Official Platform</div>
+      <h2 style="color:#fff;font-weight:900;font-size:1.3rem;line-height:1.25;margin-bottom:10px">T&TG Trade<br>Corporation</h2>
+      <p style="color:#7a6e5f;font-size:.78rem;line-height:1.8;margin-bottom:28px">Import and Export (RM0001) Registered. Trade and e-Commerce platform connecting six countries.</p>
+      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:4px 16px">
+        <div class="au-country"><span>🇨🇦</span><span style="color:#e0d5c0">Canada</span><span style="color:#5a5248;margin-left:auto;font-size:.68rem">HQ</span></div>
+        <div class="au-country"><span>🇺🇸</span><span style="color:#e0d5c0">USA</span><span style="color:#5a5248;margin-left:auto;font-size:.68rem">Ohio</span></div>
+        <div class="au-country"><span>🇺🇬</span><span style="color:#e0d5c0">Uganda</span><span style="color:#5a5248;margin-left:auto;font-size:.68rem">Kampala</span></div>
+        <div class="au-country"><span>🇰🇪</span><span style="color:#e0d5c0">Kenya</span><span style="color:#5a5248;margin-left:auto;font-size:.68rem">Nairobi</span></div>
+        <div class="au-country"><span>🇳🇱</span><span style="color:#e0d5c0">Netherlands</span><span style="color:#5a5248;margin-left:auto;font-size:.68rem">Amsterdam</span></div>
+        <div class="au-country"><span>🇯🇵</span><span style="color:#e0d5c0">Japan</span><span style="color:#5a5248;margin-left:auto;font-size:.68rem">Tokyo</span></div>
+      </div>
+    </div>
+    <div style="position:relative;z-index:1;border-top:1px solid rgba(255,255,255,.06);padding-top:18px;margin-top:28px">
+      <div style="font-size:.63rem;color:#5a5248;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">CONNECT · TRADE · GROW · EARN</div>
+      <div style="font-size:.7rem;color:#5a5248">tomtradecorp.com</div>
+    </div>
+  </div>
+
+  <!-- Right form panel -->
+  <div class="au-right">
+    <div class="au-box">
+      {% block auth_content %}{% endblock %}
+    </div>
+  </div>
+</div>
+
+<script>
+function auTogglePw(id) {
+  var i = document.getElementById(id), b = document.querySelector('[data-pw="'+id+'"]');
+  i.type = i.type==='password' ? 'text' : 'password';
+  b.innerHTML = i.type==='password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+}
+function auPwStrength(pw) {
+  var f=document.getElementById('au-pw-fill'), t=document.getElementById('au-pw-txt');
+  if(!f) return;
+  if(!pw){f.style.width='0';t.textContent='';return;}
+  var s=0;
+  if(pw.length>=8)s++;if(pw.length>=12)s++;
+  if(/[A-Z]/.test(pw))s++;if(/[0-9]/.test(pw))s++;if(/[^A-Za-z0-9]/.test(pw))s++;
+  var l=[{w:'20%',c:'#f87171',t:'Too short'},{w:'40%',c:'#fb923c',t:'Weak'},
+         {w:'60%',c:'#fbbf24',t:'Fair'},{w:'80%',c:'#a3e635',t:'Strong'},
+         {w:'100%',c:'#4ade80',t:'Very strong'}][Math.max(0,s-1)];
+  f.style.width=l.w;f.style.background=l.c;t.textContent=l.t;t.style.color=l.c;
+}
+function auGoStep(n,total) {
+  for(var i=1;i<=total;i++){
+    var p=document.getElementById('au-panel-'+i), s=document.getElementById('au-si-'+i);
+    if(p) p.style.display=i===n?'block':'none';
+    if(s){s.classList.remove('active','done');if(i<n)s.classList.add('done');if(i===n)s.classList.add('active');}
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+{% endblock %}

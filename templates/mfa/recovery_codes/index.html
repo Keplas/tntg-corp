@@ -1,30 +1,22 @@
-{% extends 'allauth/layouts/base.html' %}
-{% block allauth_content %}
-<h3 style="color:#fff;font-weight:900;margin-bottom:8px">Recovery Codes</h3>
-<p style="color:#7a6e5f;font-size:.83rem;margin-bottom:20px">
-  Save these codes somewhere safe. Each code can only be used once to access your account if you lose your authenticator.
-</p>
+{% extends 'auth_base.html' %}
+{% block title %}Recovery Codes | T&TG{% endblock %}
+{% block auth_content %}
+<h2 style="color:#fff;font-weight:900;font-size:1.4rem;margin-bottom:6px">Recovery Codes</h2>
+<p style="color:#7a6e5f;font-size:.85rem;margin-bottom:20px">Save these codes. Each works once if you lose your authenticator.</p>
 {% if unused_codes %}
-<div style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.15);border-radius:14px;padding:20px;margin-bottom:20px">
+<div style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.15);border-radius:14px;padding:18px;margin-bottom:16px">
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
     {% for code in unused_codes %}
-    <code style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.15);border-radius:8px;padding:8px 12px;color:#c9a84c;font-size:.82rem;text-align:center;letter-spacing:2px">{{ code }}</code>
+    <code style="background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.15);border-radius:8px;padding:9px 12px;color:#c9a84c;font-size:.82rem;text-align:center;letter-spacing:2px;font-family:monospace">{{ code }}</code>
     {% endfor %}
   </div>
 </div>
-<form method="post" action="{% url 'mfa_recovery_codes_generate' %}">
-  {% csrf_token %}
-  <button type="submit" class="btn w-100 py-3" style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);color:#c9a84c;font-weight:700;border-radius:12px">
-    <i class="fas fa-sync me-2"></i>Generate New Codes
-  </button>
+<div class="au-warn"><i class="fas fa-exclamation-triangle"></i><span style="font-size:.79rem">These will not be shown again. Save them in a safe place.</span></div>
+<form method="post" action="{% url 'mfa_recovery_codes_generate' %}">{% csrf_token %}
+  <button type="submit" class="au-ghost" style="padding:11px"><i class="fas fa-sync me-2"></i>Generate New Codes</button>
 </form>
 {% else %}
-<div style="text-align:center;padding:20px;color:#7a6e5f;margin-bottom:20px">No unused recovery codes remaining.</div>
-<form method="post" action="{% url 'mfa_recovery_codes_generate' %}">
-  {% csrf_token %}
-  <button type="submit" class="btn btn-gold w-100 py-3" style="font-weight:800">
-    <i class="fas fa-key me-2"></i>Generate Recovery Codes
-  </button>
-</form>
-{% endif %}
-{% endblock %}
+<div class="au-err"><i class="fas fa-times-circle"></i><span>No unused codes remaining.</span></div>
+<form method="post" action="{% url 'mfa_recovery_codes_generate' %}">{% csrf_token %}
+  <button type="submit" class="au-btn"><i class="fas fa-key me-2"></i>Generate Recovery Codes</button>
+</form>{% endif %}{% endblock %}

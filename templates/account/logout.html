@@ -1,15 +1,12 @@
-{% extends 'allauth/layouts/base.html' %}
-{% block allauth_content %}
-<div style="text-align:center">
-  <i class="fas fa-sign-out-alt" style="font-size:2.5rem;color:#c9a84c;margin-bottom:16px"></i>
-  <h3 style="color:#fff;font-weight:900;margin-bottom:10px">Sign Out</h3>
-  <p style="color:#b0a898;margin-bottom:28px">Are you sure you want to sign out of your T&TG account?</p>
-  <form method="post" action="{% url 'account_logout' %}">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-gold px-5 py-3" style="font-weight:800;margin-bottom:12px;width:100%">
-      <i class="fas fa-sign-out-alt me-2"></i>Yes, Sign Out
-    </button>
-    <a href="/" style="display:block;color:#7a6e5f;font-size:.85rem;text-decoration:none">Cancel</a>
+{% extends 'auth_base.html' %}
+{% block title %}Sign Out | T&TG{% endblock %}
+{% block auth_content %}
+<div style="text-align:center;padding:16px 0">
+  <div style="width:70px;height:70px;border-radius:50%;background:rgba(201,168,76,.1);border:2px solid rgba(201,168,76,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 20px"><i class="fas fa-sign-out-alt" style="font-size:1.8rem;color:#c9a84c"></i></div>
+  <h2 style="color:#fff;font-weight:900;margin-bottom:8px">Sign Out</h2>
+  <p style="color:#7a6e5f;margin-bottom:28px;font-size:.87rem">Are you sure you want to sign out?</p>
+  <form method="post" action="{% url 'account_logout' %}">{% csrf_token %}
+    <button type="submit" class="au-btn" style="margin-bottom:12px"><i class="fas fa-sign-out-alt me-2"></i>Yes, Sign Out</button>
   </form>
-</div>
-{% endblock %}
+  <a href="/" style="color:#7a6e5f;font-size:.84rem;text-decoration:none">Cancel</a>
+</div>{% endblock %}
