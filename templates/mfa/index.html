@@ -16,5 +16,5 @@
 </div>
 {% empty %}<div class="au-warn"><i class="fas fa-exclamation-triangle"></i><span>No 2FA method active. Your account is not fully protected.</span></div>{% endfor %}
 <a href="{% url 'mfa_activate_totp' %}" class="au-btn" style="display:block;text-align:center;text-decoration:none;padding:13px;margin-top:8px"><i class="fas fa-plus me-2"></i>Add Authenticator App</a>
-<a href="{% url 'mfa_recovery_codes_index' %}" class="au-ghost" style="margin-top:10px;padding:11px"><i class="fas fa-key me-2"></i>Manage Recovery Codes</a>
+<a href="{% url 'mfa_view_recovery_codes' %}" class="au-ghost" style="margin-top:10px;padding:11px"><i class="fas fa-key me-2"></i>Manage Recovery Codes</a>
 {% endblock %}
