@@ -232,6 +232,7 @@ TNTG_GROUPS = ['Admin', 'Staff', 'B2B Partner', 'Consumer']
 
 # ── Loyalty and Account Security ─────────────────────────────────────────────
 ACCOUNT_EMAIL_NOTIFICATIONS     = True   # Email on login, password change, new device
+MFA_ADAPTER                     = 'accounts.adapters.CustomMFAAdapter'
 MFA_SUPPORTED_TYPES             = ['totp', 'recovery_codes']
 MFA_TOTP_PERIOD                 = 30
 MFA_EMAIL_VERIFICATION_REQUIRED = False  # Do not block 2FA setup on email verification status

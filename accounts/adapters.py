@@ -66,3 +66,13 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
                 sociallogin.connect(request, existing.user)
         except Exception:
             pass  # New user - proceed to signup
+
+
+class CustomMFAAdapter:
+    """
+    Override allauth MFA adapter to disable 2FA challenge on login.
+    2FA is only enforced at the wallet/loyalty layer via our custom decorator.
+    """
+    def is_mfa_enabled(self, user, types=None):
+        # Return False to skip 2FA prompt during login
+        return False
