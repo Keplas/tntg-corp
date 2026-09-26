@@ -1,18 +1,29 @@
-{% extends 'auth_base.html' %}
-{% block title %}Account Locked | T&TG{% endblock %}
-{% block auth_content %}
-<div style="text-align:center;padding:12px 0">
-  <div style="width:72px;height:72px;border-radius:50%;background:rgba(239,68,68,.1);border:2px solid rgba(239,68,68,.25);display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
-    <i class="fas fa-lock" style="font-size:1.8rem;color:#f87171"></i>
+{% extends 'base.html' %}
+{% block title %}Account Locked | T&TG Trade Corporation{% endblock %}
+{% block content %}
+<div style="min-height:100vh;display:flex;align-items:center;background:linear-gradient(135deg,#060f1e,#0a1a35);padding:48px 0">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 text-center">
+        <div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:24px;padding:48px 40px">
+          <i class="fas fa-lock" style="font-size:3rem;color:#f87171;margin-bottom:20px"></i>
+          <h2 style="color:#fff;font-weight:900;margin-bottom:12px">Account Temporarily Locked</h2>
+          <p style="color:#b0a898;line-height:1.8;margin-bottom:24px">
+            Too many failed login attempts have been detected on this account.
+            For your security, access has been temporarily restricted for <strong style="color:#c9a84c">1 hour</strong>.
+          </p>
+          <p style="color:#7a6e5f;font-size:.85rem;margin-bottom:28px">
+            If you believe this is an error or need immediate access, contact T&TG support.
+          </p>
+          <a href="https://wa.me/14168323512" target="_blank" class="btn btn-gold px-5 py-3" style="font-weight:700">
+            <i class="fab fa-whatsapp me-2"></i>Contact Support
+          </a>
+          <div style="margin-top:20px">
+            <a href="/" style="color:#7a6e5f;font-size:.82rem;text-decoration:none">Return to Homepage</a>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <h2 style="color:#fff;font-weight:900;margin-bottom:10px">Account Temporarily Locked</h2>
-  <p style="color:#b0a898;line-height:1.8;margin-bottom:8px;font-size:.87rem">
-    Too many failed login attempts detected. For your security, access has been restricted for <strong style="color:#c9a84c">1 hour</strong>.
-  </p>
-  <p style="color:#7a6e5f;font-size:.8rem;margin-bottom:28px">If you believe this is an error, contact T&TG support immediately.</p>
-  <a href="https://wa.me/14168323512" target="_blank" class="auth-btn" style="display:block;text-align:center;text-decoration:none;padding:13px;margin-bottom:12px">
-    <i class="fab fa-whatsapp me-2"></i>Contact Support on WhatsApp
-  </a>
-  <a href="/" style="color:#7a6e5f;font-size:.82rem;text-decoration:none">Return to Homepage</a>
 </div>
 {% endblock %}
