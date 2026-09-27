@@ -46,10 +46,12 @@ def loyalty_reauth_required(view_func):
     def wrapper(request, *args, **kwargs):
         last_auth = request.session.get('loyalty_reauth_time')
         now = timezone.now().timestamp()
-        REAUTH_WINDOW = 600  # 10 minutes
+        REAUTH_WINDOW = 1800  # 30 minutes
 
         if not last_auth or (now - last_auth) > REAUTH_WINDOW:
             request.session['loyalty_reauth_next'] = request.path
+            request.session.modified = True
+            request.session.save()
             messages.info(
                 request,
                 'Please confirm your identity to continue with this loyalty operation.'

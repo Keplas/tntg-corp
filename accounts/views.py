@@ -331,7 +331,7 @@ def profile(request):
     return redirect(reverse('dashboard') + '#profile')
 
 
-@mfa_required
+@login_required
 def loyalty_dashboard(request):
     """T&TG Trade Loyalty Platform — Points, Promotions, Referral, Reward."""
     user     = request.user
@@ -534,7 +534,7 @@ def set_withdrawal_pin(request):
 # MULTI-CURRENCY WALLET
 # ════════════════════════════════════════════════════════════════════════
 
-@mfa_required
+@login_required
 def wallet_view(request):
     """User wallet — balances, transactions, convert, withdraw."""
     from .models import Wallet, WalletTransaction
@@ -755,6 +755,8 @@ def loyalty_reauth(request):
         user = authenticate(request, username=request.user.username, password=password)
         if user:
             request.session['loyalty_reauth_time'] = timezone.now().timestamp()
+            request.session.modified = True
+            request.session.save()
             next_url = request.session.pop('loyalty_reauth_next', '/accounts/wallet/')
             return redirect(next_url)
         else:
