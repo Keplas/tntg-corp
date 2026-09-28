@@ -163,7 +163,7 @@ CSRF_TRUSTED_ORIGINS = [
 # Add these as Environment Variables on Render dashboard to activate each icon
 SOCIAL_LINKEDIN  = os.environ.get('SOCIAL_LINKEDIN',  '')
 SOCIAL_FACEBOOK  = os.environ.get('SOCIAL_FACEBOOK',  '')
-SOCIAL_INSTAGRAM = os.environ.get('SOCIAL_INSTAGRAM', '')
+SOCIAL_INSTAGRAM = os.environ.get('SOCIAL_INSTAGRAM', 'https://www.instagram.com/tomtradecorp')
 SOCIAL_TIKTOK    = os.environ.get('SOCIAL_TIKTOK',    '')
 SOCIAL_WHATSAPP  = os.environ.get('SOCIAL_WHATSAPP',  'https://wa.me/14168323512')
 
