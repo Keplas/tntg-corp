@@ -13,13 +13,13 @@ COMPANY INFO:
 - Headquarters: 9 Summerbridge Rd, Toronto, ON M1G 1L8, Canada
 - Phone: +1 (416) 832 3512
 - Email: tom.grouptrade@gmail.com
-- Founded: October 14, 2026
+- Founded: September 17, 2026
 - Operates in: Canada 🇨🇦, Uganda 🇺🇬 and Kenya 🇰🇪
 - Import and Export (RM0001) registered corporation
 - Founder: Tom Ssembiito
 
 ABOUT US:
-Founded on October 14 2026, T&TG Trade Corporation operates a Trade & e-Commerce platform designed to facilitate seamless domestic and international commerce. Our Toronto-based corporation operates globally, providing services across Canada, Uganda and Kenya. From our headquarters in Toronto, Ontario, Canada, we coordinate international operations that support cross-border collaboration, market development and service delivery.
+Founded on September 17, 2026, T&TG Trade Corporation operates a Trade & e-Commerce platform designed to facilitate seamless domestic and international commerce. Our Toronto-based corporation operates globally, providing services across Canada, Uganda and Kenya. From our headquarters in Toronto, Ontario, Canada, we coordinate international operations that support cross-border collaboration, market development and service delivery.
 
 SERVICES:
 [A] T&TG Shopping Platform — Premium coffee marketplace. T&TG Arabica Green Coffee ($35/kg) and T&TG Robusta Green Coffee ($28/kg), sourced from Uganda. Available to Canadians and Global Clients.
