@@ -1,293 +1,293 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Live Exchange Rates — T&TG Trade Corp{% endblock %}
+{% block title %}Live Exchange Rates | T&TG Trade Corporation{% endblock %}
 
 {% block content %}
-
 <style>
-  .fx-hero { background:url('/static/images/forex_chart.png') center/cover no-repeat; padding:60px 0 40px; border-bottom:1px solid rgba(201,168,76,.15); position:relative; }
-  .fx-card  { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.18); border-radius:18px; padding:28px 24px; position:relative; overflow:hidden; transition:border-color .3s, transform .25s; }
-  .fx-card:hover { border-color:rgba(201,168,76,.5); transform:translateY(-3px); }
-  .fx-pair  { font-size:.75rem; font-weight:800; letter-spacing:2px; color:#7a6e5f; text-transform:uppercase; margin-bottom:6px; }
-  .fx-rate  { font-family:'Manrope','Inter',sans-serif; font-size:2rem; font-weight:900; color:#c9a84c; line-height:1; }
-  .fx-sub   { font-size:.75rem; color:#7a6e5f; margin-top:6px; }
-  .fx-badge-live { background:rgba(34,197,94,.15); color:#4ade80; border:1px solid rgba(34,197,94,.25); padding:3px 10px; border-radius:100px; font-size:.68rem; font-weight:700; }
-  .fx-badge-cached { background:rgba(251,191,36,.1); color:#fbbf24; border:1px solid rgba(251,191,36,.2); padding:3px 10px; border-radius:100px; font-size:.68rem; font-weight:700; }
-  .fx-change-up   { color:#4ade80; font-size:.72rem; font-weight:700; }
-  .fx-change-down { color:#f87171; font-size:.72rem; font-weight:700; }
-  .pulse { animation: pulseDot 1.8s ease-in-out infinite; }
-  @keyframes pulseDot { 0%,100%{opacity:1} 50%{opacity:.3} }
+  /* ── Hero ── */
+  .fx-hero { background:url('/static/images/forex_chart.png') center/cover no-repeat; padding:64px 0 44px; position:relative; }
+  .fx-hero::after { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(4,10,22,.92) 0%,rgba(8,20,44,.85) 100%); }
 
-  /* Live ticker strip */
-  .fx-ticker { background:#040d1c; border-top:1px solid rgba(201,168,76,.12); border-bottom:1px solid rgba(201,168,76,.12); overflow:hidden; padding:10px 0; }
-  .fx-ticker-track { display:flex; gap:48px; white-space:nowrap; animation:tickerRoll 30s linear infinite; width:max-content; }
-  .fx-ticker-track:hover { animation-play-state:paused; }
-  .fx-ticker-item { font-size:.78rem; font-weight:700; color:#c9a84c; display:flex; align-items:center; gap:8px; }
-  .fx-ticker-item span { color:rgba(244,239,228,.45); font-weight:400; }
+  /* ── Ticker ── */
+  .fx-ticker { background:#040d1c; border-top:1px solid rgba(201,168,76,.1); border-bottom:1px solid rgba(201,168,76,.1); padding:10px 0; overflow:hidden; }
+  .fx-track  { display:flex; gap:52px; white-space:nowrap; animation:tickerRoll 28s linear infinite; width:max-content; }
+  .fx-track:hover { animation-play-state:paused; }
+  .fx-tick   { font-size:.78rem; font-weight:700; color:#c9a84c; display:flex; align-items:center; gap:8px; }
+  .fx-tick span { color:rgba(255,255,255,.35); font-weight:400; }
   @keyframes tickerRoll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
-  /* Converter widget */
-  .fx-input { background:rgba(255,255,255,.05); border:1px solid rgba(201,168,76,.25); color:#e0d5c0; border-radius:10px; padding:12px 16px; font-size:1rem; font-weight:700; width:100%; }
-  .fx-input:focus { border-color:rgba(201,168,76,.6); outline:none; }
-  .fx-select { background:rgba(255,255,255,.05); border:1px solid rgba(201,168,76,.25); color:#e0d5c0; border-radius:10px; padding:12px; width:100%; cursor:pointer; }
+  /* ── Rate cards ── */
+  .fx-card { background:rgba(255,255,255,.025); border:1px solid rgba(201,168,76,.12); border-radius:18px; padding:26px 22px; position:relative; overflow:hidden; transition:all .25s; }
+  .fx-card:hover { border-color:rgba(201,168,76,.4); transform:translateY(-4px); box-shadow:0 16px 40px rgba(0,0,0,.25); }
+  .fx-card::before { content:attr(data-pair); position:absolute; right:16px; top:50%; transform:translateY(-50%); font-size:2.2rem; font-weight:900; color:rgba(201,168,76,.05); letter-spacing:1px; pointer-events:none; }
+  .fx-pair  { font-size:.68rem; font-weight:800; letter-spacing:2.5px; color:#7a6e5f; text-transform:uppercase; margin-bottom:8px; }
+  .fx-rate  { font-size:2rem; font-weight:900; color:#c9a84c; line-height:1; margin-bottom:6px; }
+  .fx-sub   { font-size:.76rem; color:#7a6e5f; }
+  .fx-badge-live   { background:rgba(34,197,94,.12); color:#4ade80; border:1px solid rgba(34,197,94,.25); padding:4px 12px; border-radius:100px; font-size:.68rem; font-weight:700; display:inline-flex; align-items:center; gap:6px; }
+  .fx-badge-stored { background:rgba(251,191,36,.1); color:#fbbf24; border:1px solid rgba(251,191,36,.2); padding:4px 12px; border-radius:100px; font-size:.68rem; font-weight:700; }
+  .pulse { animation:pulseDot 1.8s ease-in-out infinite; }
+  @keyframes pulseDot { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  /* ── Converter ── */
+  .fx-conv-wrap { background:rgba(255,255,255,.025); border:1px solid rgba(201,168,76,.18); border-radius:22px; padding:36px; }
+  .fx-inp  { background:rgba(255,255,255,.05); border:1px solid rgba(201,168,76,.22); color:#e0d5c0; border-radius:12px; padding:13px 16px; font-size:1.05rem; font-weight:700; width:100%; }
+  .fx-inp:focus { border-color:rgba(201,168,76,.55); outline:none; background:rgba(255,255,255,.07); }
+  .fx-sel  { background:rgba(255,255,255,.05); border:1px solid rgba(201,168,76,.22); color:#e0d5c0; border-radius:12px; padding:13px; width:100%; cursor:pointer; }
+  .fx-sel:focus { outline:none; border-color:rgba(201,168,76,.55); }
+  .fx-result { background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(201,168,76,.03)); border:1px solid rgba(201,168,76,.2); border-radius:14px; padding:22px; text-align:center; }
+  .fx-lbl  { color:#7a6e5f; font-size:.76rem; margin-bottom:5px; font-weight:600; display:block; text-transform:uppercase; letter-spacing:.5px; }
+
+  /* ── Corridor cards ── */
+  .fx-corridor { background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.06); border-radius:14px; padding:16px; text-align:center; }
 </style>
 
 <!-- Hero -->
 <section class="fx-hero">
-  <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(6,15,30,.88),rgba(13,31,60,.82));z-index:0"></div>
-  <div class="container">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
-      <div>
-        <div style="font-size:.68rem;font-weight:800;letter-spacing:3px;color:#c9a84c;text-transform:uppercase;margin-bottom:8px">T&TG Trade Corp</div>
-        <h1 style="color:#fff;font-weight:900;font-size:clamp(1.6rem,4vw,2.4rem);margin:0">Live Exchange Rates</h1>
-        <p style="color:#7a6e5f;margin-top:8px;font-size:.9rem">Real-time currency rates for T&TG trade corridors: Canada, USA, Uganda, Kenya, Netherlands and Japan</p>
+  <div class="container" style="position:relative;z-index:1">
+    <div class="row align-items-end g-4">
+      <div class="col-lg-8">
+        <div style="font-size:.62rem;font-weight:900;letter-spacing:4px;color:#c9a84c;text-transform:uppercase;margin-bottom:10px">T&TG Trade Corporation</div>
+        <h1 style="color:#fff;font-weight:900;font-size:clamp(1.8rem,5vw,2.8rem);line-height:1.2;margin-bottom:12px">
+          Live Exchange Rates
+        </h1>
+        <p style="color:rgba(255,255,255,.6);font-size:.92rem;line-height:1.8;max-width:560px;margin-bottom:20px">
+          Real-time currency rates across T&TG trade corridors connecting Canada, USA, Uganda, Kenya, Netherlands and Japan.
+        </p>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+          {% if is_live %}
+          <span class="fx-badge-live">
+            <span class="pulse" style="width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block"></span>
+            Live rates
+          </span>
+          {% else %}
+          <span class="fx-badge-stored">Stored rates</span>
+          {% endif %}
+          <span id="lastUpdated" style="color:rgba(255,255,255,.3);font-size:.72rem">Updates every hour</span>
+        </div>
       </div>
-      <div class="text-end">
-        {% if is_live %}
-        <span class="fx-badge-live"><span class="pulse" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#4ade80;margin-right:5px"></span>Live rates: updated {{ last_updated }}</span>
-        {% else %}
-        <span class="fx-badge-cached">Stored rates: live feed activates automatically</span>
-        {% endif %}
-        <div id="lastUpdated" style="color:#7a6e5f;font-size:.7rem;margin-top:6px">Updating every 5 minutes</div>
+      <div class="col-lg-4">
+        <!-- Mini stat cards -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          {% for p in pairs|slice:":4" %}
+          <div style="background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.15);border-radius:12px;padding:12px">
+            <div style="color:#7a6e5f;font-size:.65rem;font-weight:700;letter-spacing:1px;margin-bottom:4px">{{ p.pair }}</div>
+            <div style="color:#c9a84c;font-weight:900;font-size:1.05rem">{{ p.display }}</div>
+          </div>
+          {% endfor %}
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Live ticker strip -->
+<!-- Ticker -->
 <div class="fx-ticker">
-  <div class="fx-ticker-track" id="tickerTrack">
-    {% for p in pairs %}
-    <div class="fx-ticker-item">{{ p.pair }} <span>{{ p.display }}</span></div>
-    {% empty %}
-    <div class="fx-ticker-item">CAD/UGX <span>–</span></div>
-    <div class="fx-ticker-item">CAD/KES <span>–</span></div>
-    <div class="fx-ticker-item">USD/UGX <span>–</span></div>
-    <div class="fx-ticker-item">USD/KES <span>–</span></div>
-    {% endfor %}
-    <!-- duplicate for seamless loop -->
-    {% for p in pairs %}
-    <div class="fx-ticker-item">{{ p.pair }} <span>{{ p.display }}</span></div>
-    {% empty %}
-    <div class="fx-ticker-item">CAD/UGX <span>–</span></div>
-    <div class="fx-ticker-item">CAD/KES <span>–</span></div>
-    <div class="fx-ticker-item">USD/UGX <span>–</span></div>
-    <div class="fx-ticker-item">USD/KES <span>–</span></div>
-    {% endfor %}
+  <div class="fx-track">
+    {% for p in pairs %}<div class="fx-tick">{{ p.pair }} <span id="rate-{{ p.from_code }}-{{ p.to_code }}">{{ p.display }}</span></div>{% empty %}<div class="fx-tick">Loading rates...</div>{% endfor %}
+    {% for p in pairs %}<div class="fx-tick">{{ p.pair }} <span>{{ p.display }}</span></div>{% endfor %}
   </div>
 </div>
 
-<!-- Rate cards -->
-<section style="background:#060f1e; padding:60px 0">
-  <div class="container">
-    
-<!-- ── Legal Disclaimer (Ontario Consumer Protection Act) ─────────────── -->
-<div style="background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:16px;padding:28px 32px;margin-bottom:48px">
-  <div style="display:flex;align-items:flex-start;gap:14px">
-    <div style="flex-shrink:0;width:36px;height:36px;border-radius:8px;background:rgba(201,168,76,.15);display:flex;align-items:center;justify-content:center">
-      <i class="fas fa-balance-scale" style="color:#c9a84c;font-size:.9rem"></i>
+<!-- Main content -->
+<section style="background:#060f1e;padding:64px 0 80px">
+<div class="container">
+  <div class="row g-5">
+
+    <!-- Left: Rate cards + converter -->
+    <div class="col-lg-8">
+
+      <!-- Section header -->
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:28px">
+        <div>
+          <h2 style="color:#fff;font-weight:900;font-size:1.3rem;margin-bottom:4px">Exchange Rate Cards</h2>
+          <p style="color:#7a6e5f;font-size:.82rem">Sourced from the European Central Bank via Frankfurter API</p>
+        </div>
+        {% if is_live %}
+        <span class="fx-badge-live"><span class="pulse" style="width:6px;height:6px;border-radius:50%;background:#4ade80;display:inline-block"></span>Live</span>
+        {% endif %}
+      </div>
+
+      <!-- Rate cards grid -->
+      <div class="row g-3 mb-5" id="rateCards">
+        {% for p in pairs %}
+        <div class="col-sm-6 col-lg-4">
+          <div class="fx-card" data-pair="{{ p.pair }}">
+            <div class="fx-pair">{{ p.from_code }} / {{ p.to_code }}</div>
+            <div class="fx-rate" id="rate-card-{{ p.from_code }}-{{ p.to_code }}">{{ p.display }}</div>
+            <div class="fx-sub">1 {{ p.from_label }}<br><span style="color:#e0d5c0;font-weight:700">= <span id="rate-label-{{ p.from_code }}-{{ p.to_code }}">{{ p.display }}</span> {{ p.to_label }}</span></div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+          <i class="fas fa-sync-alt fa-spin" style="font-size:2rem;color:rgba(201,168,76,.3);margin-bottom:12px"></i>
+          <p style="color:#7a6e5f">Loading exchange rates. Please wait a moment.</p>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Currency Converter -->
+      <div class="fx-conv-wrap">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px">
+          <div style="width:44px;height:44px;border-radius:12px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);display:flex;align-items:center;justify-content:center">
+            <i class="fas fa-exchange-alt" style="color:#c9a84c"></i>
+          </div>
+          <div>
+            <h3 style="color:#fff;font-weight:900;font-size:1.15rem;margin-bottom:2px">Currency Converter</h3>
+            <p style="color:#7a6e5f;font-size:.78rem;margin:0">T&TG trade corridor rates</p>
+          </div>
+        </div>
+        <div class="row g-3 align-items-end">
+          <div class="col-12">
+            <label class="fx-lbl">Amount</label>
+            <input type="number" id="convAmount" class="fx-inp" value="1" min="0" step="any" placeholder="Enter amount">
+          </div>
+          <div class="col-5">
+            <label class="fx-lbl">From</label>
+            <select id="convFrom" class="fx-sel">
+              <option value="CAD" selected>CAD: Canadian Dollar</option>
+              <option value="USD">USD: US Dollar</option>
+              <option value="UGX">UGX: Ugandan Shilling</option>
+              <option value="KES">KES: Kenyan Shilling</option>
+              <option value="EUR">EUR: Euro</option>
+              <option value="JPY">JPY: Japanese Yen</option>
+            </select>
+          </div>
+          <div class="col-2 text-center" style="padding-bottom:3px">
+            <button id="swapBtn" style="background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.28);color:#c9a84c;border-radius:50%;width:42px;height:42px;cursor:pointer;font-size:1.1rem;transition:all .2s" onmouseover="this.style.background='rgba(201,168,76,.22)'" onmouseout="this.style.background='rgba(201,168,76,.12)'">⇄</button>
+          </div>
+          <div class="col-5">
+            <label class="fx-lbl">To</label>
+            <select id="convTo" class="fx-sel">
+              <option value="CAD">CAD: Canadian Dollar</option>
+              <option value="USD" selected>USD: US Dollar</option>
+              <option value="UGX">UGX: Ugandan Shilling</option>
+              <option value="KES">KES: Kenyan Shilling</option>
+              <option value="EUR">EUR: Euro</option>
+              <option value="JPY">JPY: Japanese Yen</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <div class="fx-result">
+              <div style="color:#7a6e5f;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Converted Amount</div>
+              <div id="convResult" style="color:#c9a84c;font-weight:900;font-size:2rem;margin-bottom:6px">–</div>
+              <div id="convDetail" style="color:#7a6e5f;font-size:.8rem">Enter an amount above</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div>
-      <div style="color:#c9a84c;font-weight:800;font-size:.85rem;letter-spacing:.5px;margin-bottom:12px">
-        LEGAL DISCLAIMER — FOR INFORMATIONAL PURPOSES ONLY
-      </div>
-      <div style="color:#e0d5c0;font-size:.82rem;line-height:1.8">
-        The exchange rates displayed on this page are provided <strong>for viewing and informational purposes only</strong>.
-        They are sourced from the Frankfurter API (European Central Bank data) and updated every hour. These rates are
-        <strong>approximate estimates</strong> and do not represent the final rate that will be applied to your transaction.
-      </div>
-      <div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px">
 
-        <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:16px">
-          <div style="color:#c9a84c;font-size:.72rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">
-            (A) Consumer Protection Act (Ontario)
+    <!-- Right: Info sidebar -->
+    <div class="col-lg-4">
+
+      <!-- Trade corridors -->
+      <div style="background:rgba(255,255,255,.025);border:1px solid rgba(201,168,76,.12);border-radius:18px;padding:24px;margin-bottom:20px">
+        <h5 style="color:#c9a84c;font-weight:800;margin-bottom:18px;font-size:.92rem"><i class="fas fa-route me-2"></i>T&TG Trade Corridors</h5>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          {% for corridor in corridors %}
+          <div class="fx-corridor">
+            <div style="color:#7a6e5f;font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">{{ corridor.label }}</div>
+            <div style="color:#e0d5c0;font-weight:700;font-size:.88rem">{{ corridor.route }}</div>
           </div>
-          <div style="color:#b0a898;font-size:.78rem;line-height:1.7">
-            Under the <em>Ontario Consumer Protection Act, 2002, S.O. 2002, c. 30, Sched. A</em>,
-            all final charges and fees applied to your purchase will be <strong>transparently displayed
-            before your transaction is completed</strong> at checkout. The price you confirm is the
-            price you pay.
+          {% empty %}
+          <div class="fx-corridor"><div style="color:#7a6e5f;font-size:.72rem">Canada to Uganda</div><div style="color:#e0d5c0;font-weight:700">CAD / UGX</div></div>
+          <div class="fx-corridor"><div style="color:#7a6e5f;font-size:.72rem">Canada to Kenya</div><div style="color:#e0d5c0;font-weight:700">CAD / KES</div></div>
+          <div class="fx-corridor"><div style="color:#7a6e5f;font-size:.72rem">USA to Uganda</div><div style="color:#e0d5c0;font-weight:700">USD / UGX</div></div>
+          <div class="fx-corridor"><div style="color:#7a6e5f;font-size:.72rem">Europe to Uganda</div><div style="color:#e0d5c0;font-weight:700">EUR / UGX</div></div>
+          <div class="fx-corridor"><div style="color:#7a6e5f;font-size:.72rem">Japan to Uganda</div><div style="color:#e0d5c0;font-weight:700">JPY / UGX</div></div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Data source -->
+      <div style="background:rgba(255,255,255,.025);border:1px solid rgba(201,168,76,.12);border-radius:18px;padding:24px;margin-bottom:20px">
+        <h5 style="color:#c9a84c;font-weight:800;margin-bottom:16px;font-size:.92rem"><i class="fas fa-database me-2"></i>Data Source</h5>
+        <div style="display:flex;flex-direction:column;gap:12px;font-size:.8rem">
+          <div style="display:flex;gap:10px;align-items:flex-start">
+            <i class="fas fa-check-circle" style="color:#4ade80;margin-top:2px;flex-shrink:0"></i>
+            <span style="color:#b0a898">European Central Bank data via Frankfurter API</span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start">
+            <i class="fas fa-check-circle" style="color:#4ade80;margin-top:2px;flex-shrink:0"></i>
+            <span style="color:#b0a898">Updated every hour automatically</span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start">
+            <i class="fas fa-check-circle" style="color:#4ade80;margin-top:2px;flex-shrink:0"></i>
+            <span style="color:#b0a898">6 currencies: CAD, USD, UGX, KES, EUR, JPY</span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start">
+            <i class="fas fa-info-circle" style="color:#c9a84c;margin-top:2px;flex-shrink:0"></i>
+            <span style="color:#7a6e5f">Rates shown are indicative. Final transaction rates depend on your payment provider.</span>
           </div>
         </div>
-
-        <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:16px">
-          <div style="color:#c9a84c;font-size:.72rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">
-            Final Rate Disclaimer
-          </div>
-          <div style="color:#b0a898;font-size:.78rem;line-height:1.7">
-            Example: <em>"0 USD is an approximate rate."</em> The actual exchange rate applied
-            to your purchase is determined solely by your <strong>credit card issuer or payment
-            processor</strong> (Stripe / Flutterwave) at the time of the transaction.
-            T&TG Trade Corp is not responsible for rate differences applied by your financial institution.
-          </div>
-        </div>
-
-        <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:16px">
-          <div style="color:#c9a84c;font-size:.72rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">
-            CRA Accounting — Bank of Canada Rate
-          </div>
-          <div style="color:#b0a898;font-size:.78rem;line-height:1.7">
-            For Canadian tax and accounting purposes, all T&TG revenue is converted to
-            <strong>Canadian Dollars (CAD)</strong> using the official rate from the
-            <a href="https://www.bankofcanada.ca/rates/exchange/daily-exchange-rates/"
-               target="_blank" rel="noopener"
-               style="color:#c9a84c;text-decoration:none">Bank of Canada Daily Exchange Rates Lookup Tool</a>,
-            as required by the <em>Canada Revenue Agency (CRA)</em> for GST/HST and income
-            tax reporting.
-          </div>
-        </div>
-
       </div>
-      <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.06);color:#7a6e5f;font-size:.72rem">
-        T&TG Trade Corporation &nbsp;|&nbsp; 9 Summerbridge Rd, Toronto, ON M1G 1L8, Canada &nbsp;|&nbsp;
-        Registered Import and Export (RM0001) Corporation &nbsp;|&nbsp;
-        Governed by the laws of Ontario and Canada &nbsp;|&nbsp;
-        <a href="/privacy-policy/" style="color:rgba(201,168,76,.6);text-decoration:none">Privacy Policy</a> &nbsp;|&nbsp;
-        <a href="/terms/" style="color:rgba(201,168,76,.6);text-decoration:none">Terms & Conditions</a>
+
+      <!-- Contact -->
+      <div style="background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(201,168,76,.02));border:1px solid rgba(201,168,76,.2);border-radius:18px;padding:24px;text-align:center">
+        <i class="fas fa-handshake" style="font-size:1.6rem;color:#c9a84c;margin-bottom:12px"></i>
+        <h6 style="color:#fff;font-weight:800;margin-bottom:6px">Trade at T&TG Rates</h6>
+        <p style="color:#7a6e5f;font-size:.78rem;margin-bottom:16px;line-height:1.7">Start importing or exporting coffee with competitive T&TG trade rates.</p>
+        <a href="{% url 'trade_apply' %}" class="btn btn-gold w-100" style="font-weight:700;font-size:.88rem">Apply for Trade Account</a>
       </div>
+
     </div>
   </div>
 </div>
-<div class="row g-4 mb-5" id="rateCards">
-      {% for p in pairs %}
-      <div class="col-md-6 col-lg-4">
-        <div class="fx-card" data-pair="{{ p.pair }}">
-          <div class="fx-pair">{{ p.from_code }} / {{ p.to_code }}</div>
-          <div class="fx-rate" id="rate-{{ p.from_code }}-{{ p.to_code }}">{{ p.display }}</div>
-          <div class="fx-sub">1 {{ p.from_label }} = <span id="rate-label-{{ p.from_code }}-{{ p.to_code }}">{{ p.display }}</span> {{ p.to_label }}</div>
-          <div style="margin-top:12px;font-size:.72rem;color:#7a6e5f">{{ p.from_code }} → {{ p.to_code }}</div>
-          <div style="position:absolute;top:16px;right:16px;font-size:1.8rem;opacity:.06;font-weight:900">{{ p.pair }}</div>
-        </div>
-      </div>
-      {% empty %}
-      <div class="col-12 text-center py-5">
-        <div style="color:#7a6e5f;font-size:1rem">
-          Rates are loading. Please refresh the page.
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-
-    <!-- Currency Converter Widget -->
-    <div style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.2);border-radius:20px;padding:36px;max-width:580px;margin:0 auto">
-      <h4 style="color:#c9a84c;font-weight:800;margin-bottom:24px;text-align:center">Currency Converter</h4>
-      <div class="row g-3 align-items-center">
-        <div class="col-12">
-          <label style="color:#7a6e5f;font-size:.78rem;display:block;margin-bottom:6px">Amount</label>
-          <input type="number" id="convAmount" class="fx-input" value="1" min="0" step="any">
-        </div>
-        <div class="col-5">
-          <label style="color:#7a6e5f;font-size:.78rem;display:block;margin-bottom:6px">From</label>
-          <select id="convFrom" class="fx-select">
-            <option value="USD">USD: US Dollar</option>
-            <option value="CAD" selected>CAD: Canadian Dollar</option>
-            <option value="UGX">UGX: Ugandan Shilling</option>
-            <option value="KES">KES: Kenyan Shilling</option>
-          </select>
-        </div>
-        <div class="col-2 text-center">
-          <button id="swapBtn" style="background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.3);color:#c9a84c;border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:1rem;margin-top:22px">⇄</button>
-        </div>
-        <div class="col-5">
-          <label style="color:#7a6e5f;font-size:.78rem;display:block;margin-bottom:6px">To</label>
-          <select id="convTo" class="fx-select">
-            <option value="USD" selected>USD: US Dollar</option>
-            <option value="CAD">CAD: Canadian Dollar</option>
-            <option value="UGX">UGX: Ugandan Shilling</option>
-            <option value="KES">KES: Kenyan Shilling</option>
-          </select>
-        </div>
-        <div class="col-12">
-          <div style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:18px;text-align:center;margin-top:8px">
-            <div id="convResult" style="color:#c9a84c;font-weight:900;font-size:1.6rem">–</div>
-            <div id="convDetail" style="color:#7a6e5f;font-size:.78rem;margin-top:4px">Enter amount above</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- API info box -->
-    <div style="text-align:center;margin-top:48px;color:#7a6e5f;font-size:.75rem">
-      Powered by <a href="https://openexchangerates.org" target="_blank" style="color:rgba(201,168,76,.6);text-decoration:none">Open Exchange Rates</a> &nbsp;·&nbsp;
-      Rates update every hour &nbsp;·&nbsp; Base currency: USD
-    </div>
-  </div>
 </section>
-
 {% endblock %}
 
 {% block extra_js %}
 <script>
-// ── Store rates from server render ─────────────────────────────────────────
 var RATES = {};
 {% for p in pairs %}
 RATES['{{ p.from_code }}'] = RATES['{{ p.from_code }}'] || {};
 RATES['{{ p.from_code }}']['{{ p.to_code }}'] = {{ p.rate }};
 {% endfor %}
 
-// ── Currency converter ─────────────────────────────────────────────────────
 function convert() {
   var amt  = parseFloat(document.getElementById('convAmount').value) || 0;
   var from = document.getElementById('convFrom').value;
   var to   = document.getElementById('convTo').value;
   var res  = document.getElementById('convResult');
   var det  = document.getElementById('convDetail');
-
-  if (from === to) {
-    res.textContent = amt.toLocaleString(undefined, {maximumFractionDigits:4});
-    det.textContent = '1 ' + from + ' = 1 ' + to;
-    return;
-  }
-
-  var rate = (RATES[from] && RATES[from][to]) ? RATES[from][to] :
-             (RATES[to] && RATES[to][from]) ? 1/RATES[to][from] : null;
-
+  if (from === to) { res.textContent = amt.toLocaleString(undefined,{maximumFractionDigits:4}); det.textContent = '1 '+from+' = 1 '+to; return; }
+  var rate = (RATES[from]&&RATES[from][to]) ? RATES[from][to] : (RATES[to]&&RATES[to][from]) ? 1/RATES[to][from] : null;
   if (rate) {
     var result = amt * rate;
-    res.textContent = result.toLocaleString(undefined, {maximumFractionDigits: result > 100 ? 2 : 4}) + ' ' + to;
-    det.textContent = '1 ' + from + ' = ' + rate.toLocaleString(undefined, {maximumFractionDigits: rate > 100 ? 2 : 6}) + ' ' + to;
-  } else {
-    res.textContent = '–';
-    det.textContent = 'Rate not available';
-  }
+    res.textContent = result.toLocaleString(undefined,{maximumFractionDigits:result>100?2:4})+' '+to;
+    det.textContent = '1 '+from+' = '+rate.toLocaleString(undefined,{maximumFractionDigits:rate>100?2:6})+' '+to;
+  } else { res.textContent='–'; det.textContent='Rate not available for this pair'; }
 }
 
 document.getElementById('convAmount').addEventListener('input', convert);
 document.getElementById('convFrom').addEventListener('change', convert);
 document.getElementById('convTo').addEventListener('change', convert);
 document.getElementById('swapBtn').addEventListener('click', function(){
-  var f = document.getElementById('convFrom');
-  var t = document.getElementById('convTo');
-  var tmp = f.value; f.value = t.value; t.value = tmp;
-  convert();
+  var f=document.getElementById('convFrom'), t=document.getElementById('convTo'), tmp=f.value;
+  f.value=t.value; t.value=tmp; convert();
 });
 convert();
 
-// ── Live refresh every 5 minutes ──────────────────────────────────────────
 function refreshRates() {
   fetch('{% url "exchange_rates_api" %}')
     .then(function(r){ return r.json(); })
     .then(function(data) {
-      if (!data.pairs || !data.pairs.length) return;
-      // Update rate cards
+      if (!data.pairs||!data.pairs.length) return;
       data.pairs.forEach(function(p) {
-        var el = document.getElementById('rate-' + p.from_code + '-' + p.to_code);
-        var el2 = document.getElementById('rate-label-' + p.from_code + '-' + p.to_code);
-        if (el)  { el.textContent  = p.display; el.style.color = '#c9a84c'; }
-        if (el2) { el2.textContent = p.display; }
-        // Update local RATES for converter
+        var el  = document.getElementById('rate-card-'+p.from_code+'-'+p.to_code);
+        var el2 = document.getElementById('rate-label-'+p.from_code+'-'+p.to_code);
+        var el3 = document.getElementById('rate-'+p.from_code+'-'+p.to_code);
+        if(el)  el.textContent  = p.display;
+        if(el2) el2.textContent = p.display;
+        if(el3) el3.textContent = p.display;
         RATES[p.from_code] = RATES[p.from_code] || {};
         RATES[p.from_code][p.to_code] = parseFloat(p.rate);
       });
       convert();
-      var ts = new Date(data.timestamp);
       var el = document.getElementById('lastUpdated');
-      if (el) el.textContent = 'Last updated: ' + ts.toLocaleTimeString();
-    })
-    .catch(function(){});
+      if(el) el.textContent = 'Updated: '+new Date(data.timestamp).toLocaleTimeString();
+    }).catch(function(){});
 }
-
-// Refresh on load and every 5 minutes
 refreshRates();
 setInterval(refreshRates, 300000);
 </script>
