@@ -46,7 +46,7 @@ products = [
 for p in products:
     obj, created = Product.objects.get_or_create(
         name=p['name'],
-        defaults={**p, 'seller': seller, 'is_active': True, 'stock': 100}
+        defaults={**p, 'seller': seller, 'is_active': True, 'stock': 100, 'currency': 'CAD'}
     )
     print(f"{'Created' if created else 'Exists'}: {obj.name}")
 

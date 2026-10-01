@@ -151,7 +151,8 @@
 
 <script>
 // Static fallback rates (USD base) — updated by live API call
-var RATES = { CAD:1.36, USD:1.0, UGX:3750, KES:129, EUR:0.92, JPY:157 };
+var RATES = { CAD:1.0, USD:0.74, UGX:2750, KES:95, EUR:0.68, JPY:114 }; // CAD base fallback
+var PRODUCT_BASE_CURRENCY = 'CAD'; // All T&TG products priced in CAD
 var SYMBOLS = { CAD:'CA$', USD:'US$', UGX:'UGX ', KES:'KES ', EUR:'€', JPY:'¥' };
 var SELECTED = 'CAD';
 var ratesLoaded = false;
@@ -161,7 +162,14 @@ fetch('/api/rates/')
   .then(function(r){ return r.json(); })
   .then(function(data){
     if(data && data.rates){
-      RATES = data.rates;
+      // API returns USD-base rates, convert to CAD-base
+      var usdRates = data.rates;
+      var cadPerUsd = usdRates['CAD'] || 1.36;
+      var cadBase = { CAD: 1.0 };
+      for(var cur in usdRates){
+        if(cur !== 'CAD') cadBase[cur] = usdRates[cur] / cadPerUsd;
+      }
+      RATES = cadBase;
       ratesLoaded = true;
     }
     updatePrices(SELECTED);
@@ -187,11 +195,13 @@ function getCookie(name){
 }
 
 function convert(amount, fromCurrency, toCurrency){
+  if(!fromCurrency) fromCurrency = 'CAD';
   if(fromCurrency === toCurrency) return amount;
+  // Convert to CAD first, then to target
   var fromRate = RATES[fromCurrency] || 1;
   var toRate   = RATES[toCurrency]   || 1;
-  var usd = amount / fromRate;
-  return usd * toRate;
+  var cad = amount / fromRate;
+  return cad * toRate;
 }
 
 function fmt(amount, currency){
