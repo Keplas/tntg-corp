@@ -52,7 +52,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'axes.middleware.AxesMiddleware',
-    'accounts.middleware.EnforceMFAForStaffMiddleware',
 ]
 
 ROOT_URLCONF = 'tntg_corp.urls'
