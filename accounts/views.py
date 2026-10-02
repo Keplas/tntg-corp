@@ -744,20 +744,75 @@ def analytics_dashboard(request):
 
 @login_required
 def loyalty_reauth(request):
-    """Re-confirm identity before sensitive loyalty operations."""
+    """Re-confirm identity using wallet PIN before sensitive loyalty operations."""
     from django.utils import timezone
+    from django.contrib.auth.hashers import check_password
+
+    user = request.user
+
+    # If no PIN set yet, redirect to create one first
+    if not user.wallet_pin:
+        messages.info(request, 'Please create a wallet PIN before accessing your wallet.')
+        return redirect('wallet_pin_setup')
 
     if request.method == 'POST':
-        password = request.POST.get('password','')
-        from django.contrib.auth import authenticate
-        user = authenticate(request, username=request.user.username, password=password)
-        if user:
+        pin = request.POST.get('pin', '').strip()
+        if check_password(pin, user.wallet_pin):
             request.session['loyalty_reauth_time'] = timezone.now().timestamp()
             request.session.modified = True
             request.session.save()
             next_url = request.session.pop('loyalty_reauth_next', '/accounts/wallet/')
             return redirect(next_url)
         else:
-            return render(request, 'accounts/loyalty_reauth.html', {'error': 'Incorrect password. Please try again.'})
+            return render(request, 'accounts/loyalty_reauth.html', {'error': 'Incorrect PIN. Please try again.'})
 
     return render(request, 'accounts/loyalty_reauth.html', {})
+
+
+@login_required
+def wallet_pin_setup(request):
+    """Create or change wallet PIN."""
+    from django.contrib.auth.hashers import make_password, check_password
+    from django.utils import timezone
+
+    user = request.user
+    has_pin = bool(user.wallet_pin)
+
+    if request.method == 'POST':
+        action = request.POST.get('action', 'set')
+
+        # Verify current PIN if changing
+        if has_pin and action == 'change':
+            current = request.POST.get('current_pin', '')
+            if not check_password(current, user.wallet_pin):
+                return render(request, 'accounts/wallet_pin_setup.html', {
+                    'has_pin': has_pin,
+                    'error': 'Current PIN is incorrect.'
+                })
+
+        new_pin     = request.POST.get('new_pin', '')
+        confirm_pin = request.POST.get('confirm_pin', '')
+
+        if len(new_pin) < 4 or len(new_pin) > 6:
+            return render(request, 'accounts/wallet_pin_setup.html', {
+                'has_pin': has_pin,
+                'error': 'PIN must be 4 to 6 digits.'
+            })
+        if not new_pin.isdigit():
+            return render(request, 'accounts/wallet_pin_setup.html', {
+                'has_pin': has_pin,
+                'error': 'PIN must contain digits only.'
+            })
+        if new_pin != confirm_pin:
+            return render(request, 'accounts/wallet_pin_setup.html', {
+                'has_pin': has_pin,
+                'error': 'PINs do not match.'
+            })
+
+        user.wallet_pin = make_password(new_pin)
+        user.save()
+        messages.success(request, 'Wallet PIN {} successfully.'.format('updated' if has_pin else 'created'))
+        return redirect('wallet')
+
+    return render(request, 'accounts/wallet_pin_setup.html', {'has_pin': has_pin})
+

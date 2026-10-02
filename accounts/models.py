@@ -47,6 +47,8 @@ class CustomUser(AbstractUser):
     partner_id            = models.CharField(max_length=50, blank=True)
     has_certificate       = models.BooleanField(default=False)
     saved_cart            = models.JSONField(default=dict, blank=True)
+    wallet_pin            = models.CharField(max_length=128, blank=True, null=True)  # hashed 4-6 digit wallet PIN
+    loyalty_cooloff_until = models.DateTimeField(null=True, blank=True)
     is_registered_company = models.BooleanField(default=False)
     avon_points           = models.DecimalField(
         max_digits=12, decimal_places=2, default=0,
