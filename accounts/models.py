@@ -260,7 +260,8 @@ class PointsAuditLog(models.Model):
         return f"{self.user.username} | {self.action} | {self.points_amount} pts | {self.created_at.date()}"
 
     def save(self, *args, **kwargs):
-        if self.pk:
+        # Allow Django migration framework to create the table
+        if self.pk and not kwargs.get('force_insert', False):
             raise ValueError("PointsAuditLog entries are immutable — they cannot be edited.")
         super().save(*args, **kwargs)
 
