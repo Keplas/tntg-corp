@@ -49,6 +49,13 @@ subprocess.run(
     capture_output=False
 )
 
+# Collect static files (no --clear for speed)
+print("\n--- Collecting static files ---")
+subprocess.run(
+    [sys.executable, "manage.py", "collectstatic", "--noinput"],
+    capture_output=False
+)
+
 # Start gunicorn
 print("\n--- Starting Gunicorn ---")
 port = os.environ.get("PORT", "8080")

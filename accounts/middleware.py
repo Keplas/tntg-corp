@@ -13,7 +13,7 @@ EXEMPT_URLS = [
     '/accounts/logout/',
     '/accounts/email/',
     '/accounts/confirm-email/',
-    '/admin/login/',
+    '/admin/',    # Full admin exempted — uses Django built-in auth
 ]
 
 
