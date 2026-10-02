@@ -97,3 +97,9 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUTH_PARAMS': {'prompt': 'select_account'},
     },
 }
+
+# ── Neon PostgreSQL support (DATABASE_URL format) ─────────────────────────
+import dj_database_url as _dj_db
+_neon_url = os.environ.get('DATABASE_URL', '')
+if _neon_url and _neon_url.startswith('postgresql'):
+    DATABASES = {'default': _dj_db.parse(_neon_url, conn_max_age=600, ssl_require=True)}
