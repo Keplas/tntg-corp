@@ -238,6 +238,7 @@ ACCOUNT_EMAIL_NOTIFICATIONS     = True   # Email on login, password change, new 
 MFA_ADAPTER                     = 'accounts.adapters.CustomMFAAdapter'
 MFA_SUPPORTED_TYPES             = ['totp', 'recovery_codes']
 MFA_TOTP_PERIOD                 = 30
+MFA_TOTP_TOLERANCE              = 2   # Accept codes 2 windows before/after (handles clock drift)
 MFA_EMAIL_VERIFICATION_REQUIRED = False  # Do not block 2FA setup on email verification status
 MFA_PASSKEY_LOGIN_ENABLED       = False  # Enable when WebAuthn is configured
 
