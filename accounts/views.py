@@ -584,7 +584,6 @@ def wallet_view(request):
     return render(request, 'accounts/wallet.html', ctx)
 
 
-@mfa_required
 @loyalty_reauth_required
 def wallet_convert(request):
     """Convert between currencies using live rates."""
@@ -640,7 +639,6 @@ def wallet_convert(request):
     return redirect('wallet')
 
 
-@mfa_required
 @loyalty_reauth_required
 def wallet_withdraw(request):
     """Request a withdrawal from wallet."""
