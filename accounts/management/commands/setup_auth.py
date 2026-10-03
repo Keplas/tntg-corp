@@ -12,13 +12,18 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         # Update default site
-        site, _ = Site.objects.update_or_create(
-            id=1,
-            defaults={
-                'domain': 'tomtradecorp.com',
-                'name':   'T&TG Trade Corporation',
-            }
-        )
+        # Update ALL site records to use tomtradecorp.com
+Site.objects.all().update(domain='tomtradecorp.com', name='T&TG Trade Corporation')
+site, _ = Site.objects.get_or_create(
+    id=1,
+    defaults={
+        'domain': 'tomtradecorp.com',
+        'name':   'T&TG Trade Corporation',
+    }
+)
+site.domain = 'tomtradecorp.com'
+site.name   = 'T&TG Trade Corporation'
+site.save()
         self.stdout.write(f'Site updated: {site.domain}')
 
         # Create Google social app

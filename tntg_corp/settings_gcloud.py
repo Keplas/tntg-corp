@@ -6,7 +6,7 @@ from .settings import *
 import os
 
 # ── Security ──────────────────────────────────────────────────────────────────
-DEBUG = True  # Temp: show errors
+DEBUG = False
 SECRET_KEY = os.environ.get('SECRET_KEY', SECRET_KEY)
 ALLOWED_HOSTS = [
     'tomtradecorp.com',
@@ -77,6 +77,7 @@ LOGGING = {
 
 # Tell Django it is behind HTTPS proxy (Cloud Run)
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'  # Ensure allauth uses https for callbacks
 
 # ── Security Headers ──────────────────────────────────────────────────────────
 SECURE_SSL_REDIRECT              = False  # Cloud Run handles SSL externally
