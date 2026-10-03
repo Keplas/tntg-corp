@@ -9,10 +9,12 @@ from services.models import ContactInquiry, ForexRate
 from .models import Notification, LoyaltySettings
 
 OPERATION_COUNTRIES = [
-    {'code': 'CA', 'name': 'Canada', 'flag': '🇨🇦'},
-    {'code': 'UG', 'name': 'Uganda', 'flag': '🇺🇬'},
-    {'code': 'KE', 'name': 'Kenya',  'flag': '🇰🇪'},
-    {'code': 'US', 'name': 'USA',    'flag': '🇺🇸'},
+    {'code': 'CA', 'name': 'Canada',      'flag': '🇨🇦'},
+    {'code': 'US', 'name': 'USA',         'flag': '🇺🇸'},
+    {'code': 'UG', 'name': 'Uganda',      'flag': '🇺🇬'},
+    {'code': 'KE', 'name': 'Kenya',       'flag': '🇰🇪'},
+    {'code': 'NL', 'name': 'Netherlands', 'flag': '🇳🇱'},
+    {'code': 'JP', 'name': 'Japan',       'flag': '🇯🇵'},
 ]
 
 
