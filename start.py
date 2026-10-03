@@ -26,7 +26,11 @@ for attempt in range(3):
 # Create cache table — essential
 subprocess.run([sys.executable, "manage.py", "createcachetable"], capture_output=False)
 
-# Run setup tasks in background so gunicorn starts fast
+# Setup auth providers (Google OAuth, Microsoft OAuth, groups)
+print("\n--- Setting up auth providers ---")
+subprocess.run([sys.executable, "manage.py", "setup_auth"], capture_output=False)
+
+# Run remaining tasks in background
 subprocess.Popen([sys.executable, "setup_tasks.py"])
 
 # Start gunicorn immediately
