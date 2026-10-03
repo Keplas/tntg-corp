@@ -11,19 +11,22 @@ class Command(BaseCommand):
     help = 'Set up allauth Site and social auth providers'
 
     def handle(self, *args, **kwargs):
-        # Update default site
-        # Update ALL site records to use tomtradecorp.com
-Site.objects.all().update(domain='tomtradecorp.com', name='T&TG Trade Corporation')
-site, _ = Site.objects.get_or_create(
-    id=1,
-    defaults={
-        'domain': 'tomtradecorp.com',
-        'name':   'T&TG Trade Corporation',
-    }
-)
-site.domain = 'tomtradecorp.com'
-site.name   = 'T&TG Trade Corporation'
-site.save()
+        # Force correct domain on ALL sites, then ensure id=1 exists
+        Site.objects.all().update(
+            domain='tomtradecorp.com',
+            name='T&TG Trade Corporation'
+        )
+        site, created = Site.objects.get_or_create(
+            id=1,
+            defaults={
+                'domain': 'tomtradecorp.com',
+                'name':   'T&TG Trade Corporation',
+            }
+        )
+        if not created:
+            site.domain = 'tomtradecorp.com'
+            site.name   = 'T&TG Trade Corporation'
+            site.save(update_fields=['domain', 'name'])
         self.stdout.write(f'Site updated: {site.domain}')
 
         # Create Google social app

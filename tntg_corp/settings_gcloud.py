@@ -77,7 +77,12 @@ LOGGING = {
 
 # Tell Django it is behind HTTPS proxy (Cloud Run)
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'  # Ensure allauth uses https for callbacks
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
+# Force Django Sites framework to use correct domain
+SITE_ID = 1
+# Override allauth to use the correct domain directly
+ACCOUNT_SIGNUP_REDIRECT_URL = '/accounts/dashboard/'
+
 
 # ── Security Headers ──────────────────────────────────────────────────────────
 SECURE_SSL_REDIRECT              = False  # Cloud Run handles SSL externally
