@@ -816,3 +816,117 @@ def wallet_pin_setup(request):
 
     return render(request, 'accounts/wallet_pin_setup.html', {'has_pin': has_pin})
 
+
+@login_required
+def admin_panel(request):
+    """Unified admin panel — staff only. Bootstraps React UI from serialized JSON."""
+    import json
+    import decimal
+    from marketplace.models import Order, Product
+    from core.models import Notification
+    from accounts.models import CustomUser
+    from django.db.models import Sum, Count
+
+    if not request.user.is_staff:
+        messages.error(request, 'Access denied.')
+        return redirect('dashboard')
+
+    class _Enc(json.JSONEncoder):
+        def default(self, o):
+            if isinstance(o, decimal.Decimal):
+                return float(o)
+            if hasattr(o, 'isoformat'):
+                return o.isoformat()
+            return super().default(o)
+
+    # ── Products ──────────────────────────────────────────────────────────────
+    products_qs = Product.objects.all().order_by('name')
+    products_data = []
+    for p in products_qs:
+        img = ''
+        if p.image:
+            try: img = p.image.url
+            except Exception: img = ''
+        elif p.image_url:
+            img = p.image_url
+        products_data.append({
+            'id':       p.pk,
+            'name':     p.name,
+            'category': p.category,
+            'price':    float(p.price),
+            'currency': p.currency or 'USD',
+            'stock':    p.quantity_available,
+            'unit':     p.unit,
+            'active':   p.is_active,
+            'featured': p.is_featured,
+            'image':    img,
+        })
+
+    # ── Orders ────────────────────────────────────────────────────────────────
+    orders_qs = Order.objects.select_related('buyer', 'product').order_by('-created_at')[:200]
+    orders_data = []
+    for o in orders_qs:
+        orders_data.append({
+            'id':           o.pk,
+            'buyer':        o.buyer.get_full_name() or o.buyer.username,
+            'buyer_email':  o.buyer.email,
+            'product':      o.product.name if o.product else '',
+            'qty':          o.quantity,
+            'total':        float(o.total_price),
+            'currency':     o.display_currency or 'USD',
+            'status':       o.status,
+            'payment':      o.payment_status,
+            'country':      o.destination_country,
+            'created':      o.created_at.isoformat() if o.created_at else '',
+        })
+
+    # ── Users ─────────────────────────────────────────────────────────────────
+    users_qs = CustomUser.objects.order_by('-date_joined')[:100]
+    users_data = []
+    for u in users_qs:
+        users_data.append({
+            'id':       u.pk,
+            'name':     u.get_full_name() or u.username,
+            'email':    u.email,
+            'country':  getattr(u, 'country', '') or '',
+            'staff':    u.is_staff,
+            'joined':   u.date_joined.isoformat() if u.date_joined else '',
+        })
+
+    # ── Stats ─────────────────────────────────────────────────────────────────
+    try: total_revenue = float(Order.objects.aggregate(s=Sum('total_price'))['s'] or 0)
+    except: total_revenue = 0.0
+
+    stats = {
+        'total_orders':   Order.objects.count(),
+        'pending_orders': Order.objects.filter(status='pending').count(),
+        'total_users':    CustomUser.objects.count(),
+        'total_products': Product.objects.count(),
+        'active_products':Product.objects.filter(is_active=True).count(),
+        'total_revenue':  total_revenue,
+    }
+
+    # ── Notifications ─────────────────────────────────────────────────────────
+    notifs_qs = Notification.objects.order_by('-created_at')[:30]
+    notifs_data = []
+    for n in notifs_qs:
+        notifs_data.append({
+            'id':      n.pk,
+            'title':   n.title,
+            'message': n.message,
+            'read':    n.is_read,
+            'link':    n.link or '',
+            'created': n.created_at.isoformat() if n.created_at else '',
+        })
+
+    data_json = json.dumps({
+        'products':      products_data,
+        'orders':        orders_data,
+        'users':         users_data,
+        'stats':         stats,
+        'notifications': notifs_data,
+        'csrf':          '',   # injected in template via {{ csrf_token }}
+    }, cls=_Enc)
+
+    return render(request, 'accounts/admin_panel.html', {'data_json': data_json})
+

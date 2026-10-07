@@ -810,3 +810,96 @@ def set_currency(request):
             request.session['display_currency'] = currency
         return JsonResponse({'currency': request.session.get('display_currency','CAD')})
     return JsonResponse({'currency': request.session.get('display_currency','CAD')})
+
+
+# ─── Admin Panel API ───────────────────────────────────────────────────────────
+
+@login_required
+def admin_api_toggle_product(request, pk):
+    """POST — toggle product is_active. Staff only."""
+    from django.http import JsonResponse
+    if not request.user.is_staff:
+        return JsonResponse({'error': 'forbidden'}, status=403)
+    if request.method != 'POST':
+        return JsonResponse({'error': 'method'}, status=405)
+    product = get_object_or_404(Product, pk=pk)
+    product.is_active = not product.is_active
+    product.save(update_fields=['is_active'])
+    return JsonResponse({'id': product.pk, 'active': product.is_active})
+
+
+@login_required
+def admin_api_save_product(request, pk=None):
+    """POST — create (pk=None) or update product fields. Staff only."""
+    import json, decimal
+    from django.http import JsonResponse
+    if not request.user.is_staff:
+        return JsonResponse({'error': 'forbidden'}, status=403)
+    if request.method != 'POST':
+        return JsonResponse({'error': 'method'}, status=405)
+    try:
+        body = json.loads(request.body)
+    except Exception:
+        return JsonResponse({'error': 'bad json'}, status=400)
+
+    if pk:
+        product = get_object_or_404(Product, pk=pk)
+    else:
+        product = Product()
+        # New products need a seller — use the staff user
+        product.seller = request.user
+
+    ALLOWED = ['name', 'category', 'unit', 'currency', 'is_active', 'is_featured',
+               'quantity_available', 'image_url']
+    for field in ALLOWED:
+        if field in body:
+            setattr(product, field, body[field])
+    if 'price' in body:
+        try:
+            product.price = decimal.Decimal(str(body['price']))
+        except Exception:
+            pass
+    if 'stock' in body:
+        try:
+            product.quantity_available = int(body['stock'])
+        except Exception:
+            pass
+    if 'active' in body:
+        product.is_active = bool(body['active'])
+
+    # description is required on the model — supply a blank if missing
+    if not pk and not product.description:
+        product.description = body.get('description', '')
+
+    product.save()
+    return JsonResponse({'id': product.pk, 'ok': True})
+
+
+@login_required
+def admin_api_update_order(request, pk):
+    """POST — update order status / payment_status. Staff only."""
+    import json
+    from django.http import JsonResponse
+    if not request.user.is_staff:
+        return JsonResponse({'error': 'forbidden'}, status=403)
+    if request.method != 'POST':
+        return JsonResponse({'error': 'method'}, status=405)
+    try:
+        body = json.loads(request.body)
+    except Exception:
+        return JsonResponse({'error': 'bad json'}, status=400)
+
+    order = get_object_or_404(Order, pk=pk)
+    VALID_STATUS  = ['pending','processing','accepted','not_accepted','shipped','delivered']
+    VALID_PAYMENT = ['unpaid','pending','paid','failed','refunded']
+
+    changed = []
+    if 'status' in body and body['status'] in VALID_STATUS:
+        order.status = body['status']
+        changed.append('status')
+    if 'payment' in body and body['payment'] in VALID_PAYMENT:
+        order.payment_status = body['payment']
+        changed.append('payment_status')
+    if changed:
+        order.save(update_fields=changed)
+    return JsonResponse({'id': order.pk, 'status': order.status, 'payment': order.payment_status})
