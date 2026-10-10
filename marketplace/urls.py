@@ -28,9 +28,4 @@ urlpatterns = [
     path('manage/<int:pk>/prices/', views.manage_product_prices, name='manage_product_prices'),
     path('manage/<int:pk>/image/', views.update_product_image, name='update_product_image'),
     path('bulk-order/', views.bulk_order_request, name='bulk_order_request'),
-    # Admin panel API
-    path('api/products/<int:pk>/toggle/', views.admin_api_toggle_product, name='admin_api_toggle_product'),
-    path('api/products/<int:pk>/save/',   views.admin_api_save_product,   name='admin_api_save_product'),
-    path('api/products/new/',             views.admin_api_save_product,   name='admin_api_new_product'),
-    path('api/orders/<int:pk>/update/',   views.admin_api_update_order,   name='admin_api_update_order'),
 ]

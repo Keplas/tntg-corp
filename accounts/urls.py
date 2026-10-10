@@ -17,7 +17,6 @@ urlpatterns = [
     path('reset-password/<str:token>/',           views.reset_password,   name='reset_password'),
     path('verify-email/<str:token>/',             views.verify_email,     name='verify_email'),
     path('analytics/', views.analytics_dashboard, name='analytics_dashboard'),
-    path('admin-panel/', views.admin_panel, name='admin_panel'),
     path('wallet/pin/', views.wallet_pin_setup, name='wallet_pin_setup'),
     path('wallet/',          views.wallet_view,     name='wallet'),
     path('wallet/convert/',  views.wallet_convert,  name='wallet_convert'),
