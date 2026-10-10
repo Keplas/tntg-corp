@@ -822,10 +822,15 @@ def admin_panel(request):
     """Unified admin panel — staff only. Bootstraps React UI from serialized JSON."""
     import json
     import decimal
+    import logging
+    import traceback
+    from django.http import HttpResponse
     from marketplace.models import Order, Product
     from core.models import Notification
     from accounts.models import CustomUser
     from django.db.models import Sum, Count
+
+    logger = logging.getLogger(__name__)
 
     if not request.user.is_staff:
         messages.error(request, 'Access denied.')
@@ -839,94 +844,111 @@ def admin_panel(request):
                 return o.isoformat()
             return super().default(o)
 
-    # ── Products ──────────────────────────────────────────────────────────────
-    products_qs = Product.objects.all().order_by('name')
-    products_data = []
-    for p in products_qs:
-        img = ''
-        if p.image:
-            try: img = p.image.url
-            except Exception: img = ''
-        elif p.image_url:
-            img = p.image_url
-        products_data.append({
-            'id':       p.pk,
-            'name':     p.name,
-            'category': p.category,
-            'price':    float(p.price),
-            'currency': p.currency or 'USD',
-            'stock':    p.quantity_available,
-            'unit':     p.unit,
-            'active':   p.is_active,
-            'featured': p.is_featured,
-            'image':    img,
-        })
+    try:
+        # ── Products ──────────────────────────────────────────────────────────
+        products_data = []
+        for p in Product.objects.all().order_by('name'):
+            img = ''
+            try:
+                if p.image:
+                    img = str(p.image.url)
+            except Exception:
+                pass
+            if not img and p.image_url:
+                img = p.image_url
+            products_data.append({
+                'id':       p.pk,
+                'name':     p.name,
+                'category': p.category,
+                'price':    float(p.price or 0),
+                'currency': p.currency or 'USD',
+                'stock':    p.quantity_available or 0,
+                'unit':     p.unit or 'unit',
+                'active':   p.is_active,
+                'featured': p.is_featured,
+                'image':    img,
+            })
 
-    # ── Orders ────────────────────────────────────────────────────────────────
-    orders_qs = Order.objects.select_related('buyer', 'product').order_by('-created_at')[:200]
-    orders_data = []
-    for o in orders_qs:
-        orders_data.append({
-            'id':           o.pk,
-            'buyer':        o.buyer.get_full_name() or o.buyer.username,
-            'buyer_email':  o.buyer.email,
-            'product':      o.product.name if o.product else '',
-            'qty':          o.quantity,
-            'total':        float(o.total_price),
-            'currency':     o.display_currency or 'USD',
-            'status':       o.status,
-            'payment':      o.payment_status,
-            'country':      o.destination_country,
-            'created':      o.created_at.isoformat() if o.created_at else '',
-        })
+        # ── Orders ────────────────────────────────────────────────────────────
+        orders_data = []
+        for o in Order.objects.select_related('buyer', 'product').order_by('-created_at')[:200]:
+            try:
+                orders_data.append({
+                    'id':           o.pk,
+                    'buyer':        (o.buyer.get_full_name() or o.buyer.username) if o.buyer else '—',
+                    'buyer_email':  o.buyer.email if o.buyer else '',
+                    'product':      o.product.name if o.product else '',
+                    'qty':          o.quantity or 1,
+                    'total':        float(o.total_price or 0),
+                    'currency':     o.display_currency or 'USD',
+                    'status':       o.status or 'pending',
+                    'payment':      o.payment_status or 'unpaid',
+                    'country':      o.destination_country or '',
+                    'created':      o.created_at.isoformat() if o.created_at else '',
+                })
+            except Exception as e:
+                logger.warning(f'admin_panel: skipping order {o.pk}: {e}')
 
-    # ── Users ─────────────────────────────────────────────────────────────────
-    users_qs = CustomUser.objects.order_by('-date_joined')[:100]
-    users_data = []
-    for u in users_qs:
-        users_data.append({
-            'id':       u.pk,
-            'name':     u.get_full_name() or u.username,
-            'email':    u.email,
-            'country':  getattr(u, 'country', '') or '',
-            'staff':    u.is_staff,
-            'joined':   u.date_joined.isoformat() if u.date_joined else '',
-        })
+        # ── Users ─────────────────────────────────────────────────────────────
+        users_data = []
+        for u in CustomUser.objects.order_by('-date_joined')[:100]:
+            try:
+                users_data.append({
+                    'id':     u.pk,
+                    'name':   u.get_full_name() or u.username,
+                    'email':  u.email,
+                    'country': getattr(u, 'country', '') or '',
+                    'staff':  u.is_staff,
+                    'joined': u.date_joined.isoformat() if u.date_joined else '',
+                })
+            except Exception as e:
+                logger.warning(f'admin_panel: skipping user {u.pk}: {e}')
 
-    # ── Stats ─────────────────────────────────────────────────────────────────
-    try: total_revenue = float(Order.objects.aggregate(s=Sum('total_price'))['s'] or 0)
-    except: total_revenue = 0.0
+        # ── Stats ─────────────────────────────────────────────────────────────
+        try:
+            total_revenue = float(Order.objects.aggregate(s=Sum('total_price'))['s'] or 0)
+        except Exception:
+            total_revenue = 0.0
 
-    stats = {
-        'total_orders':   Order.objects.count(),
-        'pending_orders': Order.objects.filter(status='pending').count(),
-        'total_users':    CustomUser.objects.count(),
-        'total_products': Product.objects.count(),
-        'active_products':Product.objects.filter(is_active=True).count(),
-        'total_revenue':  total_revenue,
-    }
+        stats = {
+            'total_orders':    Order.objects.count(),
+            'pending_orders':  Order.objects.filter(status='pending').count(),
+            'total_users':     CustomUser.objects.count(),
+            'total_products':  Product.objects.count(),
+            'active_products': Product.objects.filter(is_active=True).count(),
+            'total_revenue':   total_revenue,
+        }
 
-    # ── Notifications ─────────────────────────────────────────────────────────
-    notifs_qs = Notification.objects.order_by('-created_at')[:30]
-    notifs_data = []
-    for n in notifs_qs:
-        notifs_data.append({
-            'id':      n.pk,
-            'title':   n.title,
-            'message': n.message,
-            'read':    n.is_read,
-            'link':    n.link or '',
-            'created': n.created_at.isoformat() if n.created_at else '',
-        })
+        # ── Notifications ─────────────────────────────────────────────────────
+        notifs_data = []
+        for n in Notification.objects.order_by('-created_at')[:30]:
+            notifs_data.append({
+                'id':      n.pk,
+                'title':   n.title,
+                'message': n.message,
+                'read':    n.is_read,
+                'link':    n.link or '',
+                'created': n.created_at.isoformat() if n.created_at else '',
+            })
 
-    data_json = json.dumps({
-        'products':      products_data,
-        'orders':        orders_data,
-        'users':         users_data,
-        'stats':         stats,
-        'notifications': notifs_data,
-        'csrf':          '',   # injected in template via {{ csrf_token }}
-    }, cls=_Enc)
+        data_json = json.dumps({
+            'products':      products_data,
+            'orders':        orders_data,
+            'users':         users_data,
+            'stats':         stats,
+            'notifications': notifs_data,
+            'csrf':          '',
+        }, cls=_Enc)
+
+    except Exception:
+        tb = traceback.format_exc()
+        logger.error(f'admin_panel error:\n{tb}')
+        # Surface the traceback to staff in dev; in prod Cloud Run logs capture it
+        return HttpResponse(
+            f'<pre style="background:#111;color:#f87171;padding:20px;font-size:.8rem">'
+            f'Admin panel error (staff-only view):\n\n{tb}</pre>',
+            status=500
+        )
 
     return render(request, 'accounts/admin_panel.html', {'data_json': data_json})
 
