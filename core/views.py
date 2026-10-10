@@ -369,7 +369,7 @@ def blog_detail(request, slug):
         {'url': reverse('forex'),         'icon': 'fas fa-chart-line',   'label': 'Live Forex Rates'},
         {'url': reverse('loyalty_info'),  'icon': 'fas fa-coins',        'label': 'Loyalty Programme'},
         {'url': reverse('event_list'),    'icon': 'fas fa-ticket-alt',   'label': 'Training Events'},
-        {'url': reverse('trade_apply'),   'icon': 'fas fa-handshake',    'label': 'B2B Trade Application'},
+        {'url': reverse('franchise_apply'), 'icon': 'fas fa-store',        'label': 'Franchise Application'},
         {'url': reverse('blog_list'),     'icon': 'fas fa-newspaper',    'label': 'All Blog Posts'},
     ]
     return render(request, 'core/blog_detail.html', {'post': post, 'related': related, 'links': links})

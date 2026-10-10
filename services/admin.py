@@ -24,3 +24,18 @@ class TradeInquiryAdmin(admin.ModelAdmin):
         ('Trade Details', {'fields': ('direction','origin_country','destination_country','coffee_type','quantity_kg','frequency','notes')}),
         ('Admin', {'fields': ('status','admin_notes','created_at','updated_at')}),
     )
+
+from .models import FranchiseApplication
+
+@admin.register(FranchiseApplication)
+class FranchiseApplicationAdmin(admin.ModelAdmin):
+    list_display  = ['ref', 'full_name', 'email', 'franchise_type', 'investment_budget', 'country', 'status', 'created_at']
+    list_filter   = ['franchise_type', 'status', 'investment_budget', 'start_timeline']
+    list_editable = ['status']
+    search_fields = ['full_name', 'email', 'company_name', 'country', 'proposed_location']
+    readonly_fields = ['created_at', 'updated_at']
+    fieldsets = (
+        ('Applicant', {'fields': ('full_name', 'email', 'phone', 'country', 'city', 'company_name', 'user')}),
+        ('Franchise Details', {'fields': ('franchise_type', 'investment_budget', 'business_experience', 'proposed_location', 'start_timeline', 'why_tntg', 'additional_notes', 'casl_consent')}),
+        ('Admin', {'fields': ('status', 'admin_notes', 'created_at', 'updated_at')}),
+    )

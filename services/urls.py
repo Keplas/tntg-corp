@@ -6,12 +6,10 @@ urlpatterns = [
     path('join/', views.join_program, name='join_program'),
     path('cooperation-program/', views.cooperation_program, name='cooperation_program'),
     path('import-export/', views.import_export, name='import_export'),
-    path('forex/', views.forex,     name='forex'),
-    # Legacy URLs — still accessible in admin, just not shown in nav
-    path('trade/apply/',            views.trade_apply,         name='trade_apply'),
-    path('trade/dashboard/',        views.trade_dashboard,     name='trade_dashboard'),
-    path('trade/<int:pk>/status/',  views.trade_update_status, name='trade_update_status'),
-    path('trade/my-inquiries/',        views.my_trade_inquiries,  name='my_trade_inquiries'),
-    path('trade/<int:pk>/detail/',     views.trade_inquiry_detail,  name='trade_inquiry_detail'),
-    path('trade/form/download/',        views.trade_form_download,   name='trade_form_download'),
+    path('forex/', views.forex, name='forex'),
+    # Franchise
+    path('franchise/apply/',                views.franchise_apply,          name='franchise_apply'),
+    path('franchise/dashboard/',            views.franchise_dashboard,       name='franchise_dashboard'),
+    path('franchise/<int:pk>/status/',      views.franchise_update_status,   name='franchise_update_status'),
+    path('franchise/my-applications/',      views.my_franchise_applications, name='my_franchise_applications'),
 ]

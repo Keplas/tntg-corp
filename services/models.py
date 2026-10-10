@@ -135,3 +135,84 @@ class TradeInquiry(models.Model):
 
     def __str__(self):
         return f"{self.full_name} — {self.get_direction_display()} — {self.status}"
+
+
+# ════════════════════════════════════════════════════════════════════════
+# FRANCHISE APPLICATION
+# ════════════════════════════════════════════════════════════════════════
+
+class FranchiseApplication(models.Model):
+
+    FRANCHISE_TYPE_CHOICES = [
+        ('cafe_kiosk',       'Café / Kiosk Franchise'),
+        ('distribution',     'Distribution Partner'),
+        ('online_reseller',  'Online Reseller'),
+        ('corporate_supply', 'Corporate & Institutional Supply'),
+        ('mobile_unit',      'Mobile Coffee Unit'),
+    ]
+    BUDGET_CHOICES = [
+        ('under_10k',    'Under $10,000 CAD'),
+        ('10k_25k',      '$10,000 – $25,000 CAD'),
+        ('25k_50k',      '$25,000 – $50,000 CAD'),
+        ('50k_100k',     '$50,000 – $100,000 CAD'),
+        ('over_100k',    'Over $100,000 CAD'),
+    ]
+    EXPERIENCE_CHOICES = [
+        ('none',         'No prior business experience'),
+        ('some',         '1–3 years in business or retail'),
+        ('experienced',  '3–7 years in business or retail'),
+        ('expert',       '7+ years or existing franchise owner'),
+    ]
+    TIMELINE_CHOICES = [
+        ('asap',         'As soon as possible'),
+        ('3_months',     'Within 3 months'),
+        ('6_months',     'Within 6 months'),
+        ('1_year',       'Within 1 year'),
+        ('exploring',    'Just exploring'),
+    ]
+    STATUS_CHOICES = [
+        ('pending',    'Pending Review'),
+        ('reviewing',  'Under Review'),
+        ('approved',   'Approved'),
+        ('rejected',   'Rejected'),
+        ('on_hold',    'On Hold'),
+    ]
+
+    # Applicant info
+    full_name       = models.CharField(max_length=200)
+    email           = models.EmailField()
+    phone           = models.CharField(max_length=30, blank=True)
+    country         = models.CharField(max_length=100)
+    city            = models.CharField(max_length=100, blank=True)
+    company_name    = models.CharField(max_length=200, blank=True)
+
+    # Franchise details
+    franchise_type      = models.CharField(max_length=30, choices=FRANCHISE_TYPE_CHOICES)
+    investment_budget   = models.CharField(max_length=20, choices=BUDGET_CHOICES)
+    business_experience = models.CharField(max_length=20, choices=EXPERIENCE_CHOICES)
+    proposed_location   = models.CharField(max_length=300, help_text='City / territory / address where you plan to operate')
+    start_timeline      = models.CharField(max_length=20, choices=TIMELINE_CHOICES)
+    why_tntg            = models.TextField(help_text='Why do you want to franchise with T&TG?')
+    additional_notes    = models.TextField(blank=True)
+    casl_consent        = models.BooleanField(default=False)
+
+    # Admin
+    status       = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    admin_notes  = models.TextField(blank=True)
+    created_at   = models.DateTimeField(auto_now_add=True)
+    updated_at   = models.DateTimeField(auto_now=True)
+    user         = models.ForeignKey(
+        'accounts.CustomUser', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='franchise_applications'
+    )
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name        = 'Franchise Application'
+        verbose_name_plural = 'Franchise Applications'
+
+    def __str__(self):
+        return f"{self.full_name} — {self.get_franchise_type_display()} — {self.status}"
+
+    def ref(self):
+        return f'FA-{self.pk:04d}'

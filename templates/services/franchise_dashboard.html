@@ -1,0 +1,415 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Franchise Dashboard — T&TG Trade Corp{% endblock %}
+
+{% block content %}
+<style>
+:root {
+  --gold: #c9a84c;
+  --gold-lt: #e8c96a;
+  --dark: #060f1e;
+  --card: #0d1a26;
+  --border: rgba(201,168,76,.18);
+  --muted: #7a8fa8;
+}
+
+.dash-header {
+  background: linear-gradient(135deg, #060f1e 0%, #0d1f35 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 36px 0 28px;
+}
+.dash-header h1 {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+  color: #fff;
+  font-size: 1.8rem;
+  margin: 0;
+}
+.dash-header p { color: var(--muted); font-size: .88rem; margin: 4px 0 0; }
+
+.dash-body { background: #060f1e; min-height: 80vh; padding: 36px 0; }
+
+/* KPI tiles */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 14px;
+  margin-bottom: 32px;
+}
+.kpi-tile {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 16px;
+  text-align: center;
+}
+.kpi-tile .num {
+  font-family: 'Manrope', sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.kpi-tile .lbl {
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  margin-top: 4px;
+}
+
+/* Filter bar */
+.filter-bar {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 22px;
+}
+.filter-bar select {
+  background: #0a1929;
+  border: 1px solid rgba(201,168,76,.22);
+  color: #c8d8e8;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: .85rem;
+}
+.filter-bar select:focus {
+  border-color: var(--gold);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(201,168,76,.15);
+}
+.btn-filter {
+  background: var(--gold);
+  color: #080c10;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 20px;
+  font-weight: 700;
+  font-size: .85rem;
+  cursor: pointer;
+}
+.btn-filter-clear {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid rgba(201,168,76,.2);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: .85rem;
+  text-decoration: none;
+}
+.btn-filter-clear:hover { color: #fff; }
+
+/* Table */
+.table-wrap {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.fa-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .84rem;
+}
+.fa-table thead th {
+  background: rgba(201,168,76,.07);
+  color: var(--gold);
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.fa-table tbody tr {
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  transition: background .15s;
+}
+.fa-table tbody tr:last-child { border-bottom: none; }
+.fa-table tbody tr:hover { background: rgba(201,168,76,.04); }
+.fa-table td { padding: 14px 16px; color: #c8d8e8; vertical-align: middle; }
+
+.ref-code { color: var(--gold); font-weight: 700; font-family: monospace; }
+
+.status-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: .72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.s-pending   { background: rgba(234,179,8,.15);  color: #fbbf24; }
+.s-reviewing { background: rgba(59,130,246,.15); color: #7dd3fc; }
+.s-approved  { background: rgba(34,197,94,.15);  color: #6ee7a0; }
+.s-rejected  { background: rgba(239,68,68,.15);  color: #fca5a5; }
+.s-on_hold   { background: rgba(168,85,247,.15); color: #d8b4fe; }
+
+/* Update form */
+.update-form {
+  display: none;
+  background: #0a1929;
+  border-top: 1px solid var(--border);
+  padding: 18px 20px;
+}
+.update-form.open { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.update-form select, .update-form input {
+  background: #060f1e;
+  border: 1px solid rgba(201,168,76,.22);
+  color: #c8d8e8;
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: .84rem;
+  flex: 1; min-width: 150px;
+}
+.btn-save {
+  background: var(--gold);
+  color: #080c10;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 20px;
+  font-weight: 700;
+  font-size: .84rem;
+  white-space: nowrap;
+}
+.btn-toggle {
+  background: transparent;
+  border: 1px solid rgba(201,168,76,.3);
+  color: var(--gold);
+  border-radius: 7px;
+  padding: 4px 12px;
+  font-size: .75rem;
+  cursor: pointer;
+}
+.btn-toggle:hover { background: rgba(201,168,76,.08); }
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+}
+.empty-state i { font-size: 2.5rem; margin-bottom: 12px; color: rgba(201,168,76,.3); }
+
+.detail-row { display: none; }
+.detail-row td {
+  background: #060f1e;
+  padding: 0 !important;
+}
+.detail-inner {
+  padding: 18px 20px;
+  color: #a8bdd0;
+  font-size: .84rem;
+  border-top: 1px dashed rgba(201,168,76,.1);
+}
+.detail-inner strong { color: var(--gold); }
+
+@media(max-width:900px){
+  .fa-table thead { display: none; }
+  .fa-table tr { display: block; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; }
+  .fa-table td { display: flex; justify-content: space-between; padding: 9px 14px; border-bottom: 1px solid rgba(255,255,255,.04); }
+  .fa-table td::before { content: attr(data-label); font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+  .table-wrap { border-radius: 0; border: none; background: transparent; }
+}
+</style>
+
+<!-- Header -->
+<div class="dash-header">
+  <div class="container d-flex align-items-center justify-content-between flex-wrap gap-3">
+    <div>
+      <h1><i class="fas fa-store-alt me-2" style="color:var(--gold)"></i>Franchise Applications</h1>
+      <p>Review and manage all franchise applications</p>
+    </div>
+    <a href="{% url 'franchise_apply' %}" class="btn btn-sm" style="background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);color:var(--gold);border-radius:9px;font-weight:600;font-size:.82rem;">
+      <i class="fas fa-external-link-alt me-1"></i> View Apply Form
+    </a>
+  </div>
+</div>
+
+<div class="dash-body">
+  <div class="container">
+
+    <!-- KPI tiles -->
+    <div class="kpi-row">
+      <div class="kpi-tile">
+        <div class="num">{{ counts.total }}</div>
+        <div class="lbl" style="color:var(--muted)">Total</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="num" style="color:#fbbf24">{{ counts.pending }}</div>
+        <div class="lbl" style="color:#fbbf24">Pending</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="num" style="color:#7dd3fc">{{ counts.reviewing }}</div>
+        <div class="lbl" style="color:#7dd3fc">Reviewing</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="num" style="color:#6ee7a0">{{ counts.approved }}</div>
+        <div class="lbl" style="color:#6ee7a0">Approved</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="num" style="color:#fca5a5">{{ counts.rejected }}</div>
+        <div class="lbl" style="color:#fca5a5">Rejected</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="num" style="color:#d8b4fe">{{ counts.on_hold }}</div>
+        <div class="lbl" style="color:#d8b4fe">On Hold</div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <form method="get" class="filter-bar">
+      <select name="status">
+        <option value="">All Statuses</option>
+        <option value="pending"   {% if status_filter == 'pending'   %}selected{% endif %}>Pending</option>
+        <option value="reviewing" {% if status_filter == 'reviewing' %}selected{% endif %}>Reviewing</option>
+        <option value="approved"  {% if status_filter == 'approved'  %}selected{% endif %}>Approved</option>
+        <option value="rejected"  {% if status_filter == 'rejected'  %}selected{% endif %}>Rejected</option>
+        <option value="on_hold"   {% if status_filter == 'on_hold'   %}selected{% endif %}>On Hold</option>
+      </select>
+      <select name="type">
+        <option value="">All Types</option>
+        <option value="cafe_kiosk"       {% if type_filter == 'cafe_kiosk'       %}selected{% endif %}>Café / Kiosk</option>
+        <option value="distribution"     {% if type_filter == 'distribution'     %}selected{% endif %}>Distribution</option>
+        <option value="online_reseller"  {% if type_filter == 'online_reseller'  %}selected{% endif %}>Online Reseller</option>
+        <option value="corporate_supply" {% if type_filter == 'corporate_supply' %}selected{% endif %}>Corporate Supply</option>
+        <option value="mobile_unit"      {% if type_filter == 'mobile_unit'      %}selected{% endif %}>Mobile Unit</option>
+      </select>
+      <button type="submit" class="btn-filter"><i class="fas fa-filter me-1"></i>Filter</button>
+      {% if status_filter or type_filter %}
+      <a href="{% url 'franchise_dashboard' %}" class="btn-filter-clear">
+        <i class="fas fa-times me-1"></i>Clear
+      </a>
+      {% endif %}
+    </form>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      {% if applications %}
+      <table class="fa-table">
+        <thead>
+          <tr>
+            <th>Ref</th>
+            <th>Applicant</th>
+            <th>Franchise Type</th>
+            <th>Location</th>
+            <th>Budget</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for app in applications %}
+          <tr id="row-{{ app.pk }}">
+            <td data-label="Ref"><span class="ref-code">{{ app.ref }}</span></td>
+            <td data-label="Applicant">
+              <div style="font-weight:600;color:#fff;">{{ app.full_name }}</div>
+              <div style="font-size:.75rem;color:var(--muted);">{{ app.email }}</div>
+              {% if app.company_name %}
+              <div style="font-size:.75rem;color:#7dd3fc;">{{ app.company_name }}</div>
+              {% endif %}
+            </td>
+            <td data-label="Type">{{ app.get_franchise_type_display }}</td>
+            <td data-label="Location" style="max-width:160px;">
+              {{ app.proposed_location }}{% if app.city %}, {{ app.city }}{% endif %}
+              <div style="font-size:.75rem;color:var(--muted);">{{ app.country }}</div>
+            </td>
+            <td data-label="Budget" style="font-size:.8rem;">{{ app.get_investment_budget_display }}</td>
+            <td data-label="Status">
+              <span class="status-badge s-{{ app.status }}">{{ app.get_status_display }}</span>
+            </td>
+            <td data-label="Date" style="font-size:.78rem;color:var(--muted);">
+              {{ app.created_at|date:"d M Y" }}
+            </td>
+            <td data-label="Actions">
+              <button class="btn-toggle" onclick="toggleDetail({{ app.pk }})">
+                <i class="fas fa-chevron-down"></i>
+              </button>
+            </td>
+          </tr>
+
+          <!-- Expandable detail / update row -->
+          <tr class="detail-row" id="detail-{{ app.pk }}">
+            <td colspan="8">
+              <div class="detail-inner">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <strong>Why T&TG:</strong><br>
+                    <span>{{ app.why_tntg }}</span>
+                  </div>
+                  <div class="col-md-3">
+                    <strong>Experience:</strong> {{ app.get_business_experience_display }}<br>
+                    <strong>Timeline:</strong> {{ app.get_start_timeline_display }}<br>
+                    <strong>Phone:</strong> {{ app.phone|default:"—" }}<br>
+                    <strong>CASL:</strong> {% if app.casl_consent %}✅ Yes{% else %}❌ No{% endif %}
+                  </div>
+                  <div class="col-md-3">
+                    {% if app.admin_notes %}
+                    <strong>Admin Notes:</strong><br>
+                    <span style="color:#c8d8e8;">{{ app.admin_notes }}</span>
+                    {% endif %}
+                    {% if app.additional_notes %}
+                    <strong>Applicant Notes:</strong><br>
+                    <span>{{ app.additional_notes }}</span>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <!-- Update form -->
+                <form method="post" action="{% url 'franchise_update_status' app.pk %}"
+                      class="update-form open mt-3" id="upform-{{ app.pk }}">
+                  {% csrf_token %}
+                  <select name="status">
+                    <option value="pending"   {% if app.status == 'pending'   %}selected{% endif %}>Pending</option>
+                    <option value="reviewing" {% if app.status == 'reviewing' %}selected{% endif %}>Under Review</option>
+                    <option value="approved"  {% if app.status == 'approved'  %}selected{% endif %}>Approved</option>
+                    <option value="rejected"  {% if app.status == 'rejected'  %}selected{% endif %}>Rejected</option>
+                    <option value="on_hold"   {% if app.status == 'on_hold'   %}selected{% endif %}>On Hold</option>
+                  </select>
+                  <input type="text" name="admin_notes" placeholder="Admin notes (optional)"
+                         value="{{ app.admin_notes }}">
+                  <button type="submit" class="btn-save">
+                    <i class="fas fa-save me-1"></i>Save
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      {% else %}
+      <div class="empty-state">
+        <i class="fas fa-inbox d-block"></i>
+        <p class="mt-2 mb-0">No applications found
+          {% if status_filter or type_filter %}for this filter{% endif %}.
+        </p>
+        {% if status_filter or type_filter %}
+        <a href="{% url 'franchise_dashboard' %}" style="color:var(--gold);font-size:.85rem;">Clear filters</a>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+
+<script>
+function toggleDetail(pk) {
+  var row = document.getElementById('detail-' + pk);
+  var btn = document.querySelector('#row-' + pk + ' .btn-toggle i');
+  var isOpen = row.style.display === 'table-row';
+  row.style.display = isOpen ? 'none' : 'table-row';
+  btn.className = isOpen ? 'fas fa-chevron-down' : 'fas fa-chevron-up';
+}
+</script>
+{% endblock %}

@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Franchise Applications — T&TG Trade Corp{% endblock %}
+
+{% block content %}
+<style>
+:root {
+  --gold: #c9a84c;
+  --card: #0d1a26;
+  --border: rgba(201,168,76,.18);
+  --muted: #7a8fa8;
+}
+
+.page-header {
+  background: linear-gradient(135deg, #060f1e 0%, #0d1f35 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 40px 0 28px;
+}
+.page-header h1 {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+  color: #fff;
+  font-size: 1.7rem;
+  margin: 0;
+}
+.page-header p { color: var(--muted); font-size: .88rem; margin: 4px 0 0; }
+
+.page-body { background: #060f1e; min-height: 80vh; padding: 40px 0; }
+
+.app-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.app-card:hover { border-color: rgba(201,168,76,.35); }
+
+.app-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 24px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.ref-tag {
+  font-family: monospace;
+  font-weight: 700;
+  color: var(--gold);
+  font-size: .95rem;
+}
+.app-type {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  color: #fff;
+  font-size: 1rem;
+  margin: 2px 0;
+}
+.app-meta { color: var(--muted); font-size: .82rem; }
+
+.status-badge {
+  display: inline-block;
+  padding: 5px 14px;
+  border-radius: 99px;
+  font-size: .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  flex-shrink: 0;
+}
+.s-pending   { background: rgba(234,179,8,.15);  color: #fbbf24; }
+.s-reviewing { background: rgba(59,130,246,.15); color: #7dd3fc; }
+.s-approved  { background: rgba(34,197,94,.15);  color: #6ee7a0; }
+.s-rejected  { background: rgba(239,68,68,.15);  color: #fca5a5; }
+.s-on_hold   { background: rgba(168,85,247,.15); color: #d8b4fe; }
+
+.app-card-body {
+  border-top: 1px solid rgba(255,255,255,.05);
+  padding: 16px 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  background: rgba(255,255,255,.02);
+}
+.app-detail-item .label {
+  font-size: .7rem;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+.app-detail-item .value { color: #c8d8e8; font-size: .88rem; }
+
+.status-message {
+  padding: 12px 24px;
+  font-size: .85rem;
+  border-top: 1px dashed rgba(201,168,76,.1);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--muted);
+}
+.empty-state i { font-size: 3rem; color: rgba(201,168,76,.25); display: block; margin-bottom: 16px; }
+
+.apply-cta {
+  background: linear-gradient(135deg, rgba(201,168,76,.08) 0%, rgba(201,168,76,.04) 100%);
+  border: 1px solid rgba(201,168,76,.2);
+  border-radius: 16px;
+  padding: 28px 24px;
+  text-align: center;
+  margin-top: 8px;
+}
+</style>
+
+<div class="page-header">
+  <div class="container d-flex align-items-center justify-content-between flex-wrap gap-3">
+    <div>
+      <h1><i class="fas fa-folder-open me-2" style="color:var(--gold)"></i>My Franchise Applications</h1>
+      <p>Track the status of your franchise applications</p>
+    </div>
+    <a href="{% url 'franchise_apply' %}" class="btn btn-sm"
+       style="background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#080c10;font-weight:700;border-radius:9px;padding:9px 20px;">
+      <i class="fas fa-plus me-1"></i> New Application
+    </a>
+  </div>
+</div>
+
+<div class="page-body">
+  <div class="container" style="max-width:860px;">
+
+    {% if applications %}
+      {% for app in applications %}
+      <div class="app-card">
+        <div class="app-card-head">
+          <div>
+            <div class="ref-tag">{{ app.ref }}</div>
+            <div class="app-type">{{ app.get_franchise_type_display }}</div>
+            <div class="app-meta">
+              {{ app.proposed_location }}
+              &nbsp;·&nbsp; Applied {{ app.created_at|date:"d M Y" }}
+            </div>
+          </div>
+          <span class="status-badge s-{{ app.status }}">{{ app.get_status_display }}</span>
+        </div>
+
+        <div class="app-card-body">
+          <div class="app-detail-item">
+            <div class="label">Investment Budget</div>
+            <div class="value">{{ app.get_investment_budget_display }}</div>
+          </div>
+          <div class="app-detail-item">
+            <div class="label">Start Timeline</div>
+            <div class="value">{{ app.get_start_timeline_display }}</div>
+          </div>
+          <div class="app-detail-item">
+            <div class="label">Country</div>
+            <div class="value">{{ app.country }}{% if app.city %}, {{ app.city }}{% endif %}</div>
+          </div>
+          <div class="app-detail-item">
+            <div class="label">Last Updated</div>
+            <div class="value">{{ app.updated_at|date:"d M Y" }}</div>
+          </div>
+        </div>
+
+        {% if app.status == 'approved' %}
+        <div class="status-message" style="color:#6ee7a0;background:rgba(34,197,94,.04);">
+          <i class="fas fa-check-circle me-2"></i>
+          Congratulations! Your application has been approved. Our team will be in touch soon.
+        </div>
+        {% elif app.status == 'reviewing' %}
+        <div class="status-message" style="color:#7dd3fc;background:rgba(59,130,246,.04);">
+          <i class="fas fa-search me-2"></i>
+          Your application is currently under review. We'll update you shortly.
+        </div>
+        {% elif app.status == 'on_hold' %}
+        <div class="status-message" style="color:#d8b4fe;background:rgba(168,85,247,.04);">
+          <i class="fas fa-pause-circle me-2"></i>
+          Your application has been placed on hold. We'll follow up with next steps.
+        </div>
+        {% elif app.status == 'rejected' %}
+        <div class="status-message" style="color:#fca5a5;background:rgba(239,68,68,.04);">
+          <i class="fas fa-times-circle me-2"></i>
+          We were unable to proceed with this application at this time. Contact us at
+          <a href="mailto:tom.grouptrade@gmail.com" style="color:#fca5a5;">tom.grouptrade@gmail.com</a> for details.
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      {% if applications.count > 0 %}
+      <div class="apply-cta">
+        <p style="color:#a8bdd0;margin:0 0 12px;font-size:.9rem;">
+          Want to apply for a different franchise type or location?
+        </p>
+        <a href="{% url 'franchise_apply' %}"
+           style="color:var(--gold);font-weight:700;font-size:.9rem;text-decoration:none;">
+          <i class="fas fa-plus-circle me-1"></i> Submit Another Application
+        </a>
+      </div>
+      {% endif %}
+
+    {% else %}
+    <div class="empty-state">
+      <i class="fas fa-store"></i>
+      <h4 style="color:#c8d8e8;font-family:'Manrope',sans-serif;">No applications yet</h4>
+      <p style="max-width:360px;margin:0 auto 24px;">
+        Apply to franchise with T&TG Trade Corporation — café kiosks, distribution, online reselling and more.
+      </p>
+      <a href="{% url 'franchise_apply' %}"
+         style="background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#080c10;font-weight:800;border-radius:12px;padding:12px 32px;text-decoration:none;display:inline-block;">
+        <i class="fas fa-store me-2"></i>Apply Now
+      </a>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}
