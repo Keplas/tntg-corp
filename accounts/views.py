@@ -942,13 +942,21 @@ def admin_panel(request):
 
     except Exception:
         tb = traceback.format_exc()
-        logger.error(f'admin_panel error:\n{tb}')
-        # Surface the traceback to staff in dev; in prod Cloud Run logs capture it
+        logger.error(f'admin_panel data error:\n{tb}')
         return HttpResponse(
             f'<pre style="background:#111;color:#f87171;padding:20px;font-size:.8rem">'
-            f'Admin panel error (staff-only view):\n\n{tb}</pre>',
-            status=500
+            f'[DATA ERROR]\n\n{tb}</pre>',
+            status=200  # 200 so Django 500 handler doesn't intercept it
         )
 
-    return render(request, 'accounts/admin_panel.html', {'data_json': data_json})
+    try:
+        return render(request, 'accounts/admin_panel.html', {'data_json': data_json})
+    except Exception:
+        tb = traceback.format_exc()
+        logger.error(f'admin_panel render error:\n{tb}')
+        return HttpResponse(
+            f'<pre style="background:#111;color:#f87171;padding:20px;font-size:.8rem">'
+            f'[RENDER ERROR]\n\n{tb}</pre>',
+            status=200
+        )
 
