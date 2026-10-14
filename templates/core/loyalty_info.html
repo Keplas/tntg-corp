@@ -40,7 +40,7 @@
       <!-- A: Points -->
       <div class="col-md-6 col-lg-3" id="points">
         <div class="card h-100 border-0 shadow-sm text-center p-4" style="border-radius:16px;transition:.3s" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
-          <div class="mb-3" style="font-size:2.5rem">🏆</div>
+          <div class="mb-3" style="font-size:2.5rem"><i class="fas fa-trophy"></i></div>
           <div class="badge mb-2" style="background:rgba(201,168,76,.15);color:#c9a84c;font-size:.75rem;padding:4px 12px;border-radius:100px">A</div>
           <h4 class="fw-700 mb-2" style="color:#0a2540">Points</h4>
           <p class="text-muted small mb-3">Earn T&TG Loyalty Points automatically on every purchase on the online shopping platform.</p>
@@ -55,7 +55,7 @@
       <!-- B: Promotions -->
       <div class="col-md-6 col-lg-3" id="promotions">
         <div class="card h-100 border-0 shadow-sm text-center p-4" style="border-radius:16px;transition:.3s" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
-          <div class="mb-3" style="font-size:2.5rem">🎁</div>
+          <div class="mb-3" style="font-size:2.5rem"><i class="fas fa-gift"></i></div>
           <div class="badge mb-2" style="background:rgba(201,168,76,.15);color:#c9a84c;font-size:.75rem;padding:4px 12px;border-radius:100px">B</div>
           <h4 class="fw-700 mb-2" style="color:#0a2540">Promotions</h4>
           <p class="text-muted small mb-3">Seasonal promotions and partner bonuses that multiply your loyalty points on selected products.</p>
@@ -70,7 +70,7 @@
       <!-- C: Referral -->
       <div class="col-md-6 col-lg-3" id="referral">
         <div class="card h-100 border-0 shadow-sm text-center p-4" style="border-radius:16px;transition:.3s" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
-          <div class="mb-3" style="font-size:2.5rem">🤝</div>
+          <div class="mb-3" style="font-size:2.5rem"><i class="fas fa-handshake"></i></div>
           <div class="badge mb-2" style="background:rgba(201,168,76,.15);color:#c9a84c;font-size:.75rem;padding:4px 12px;border-radius:100px">C</div>
           <h4 class="fw-700 mb-2" style="color:#0a2540">Referral</h4>
           <p class="text-muted small mb-3">Introduce other buyers to the platform. When they purchase, you earn a higher referral reward automatically.</p>
@@ -85,7 +85,7 @@
       <!-- D: Reward / Withdrawal -->
       <div class="col-md-6 col-lg-3" id="reward">
         <div class="card h-100 border-0 shadow-sm text-center p-4" style="border-radius:16px;transition:.3s" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform=''">
-          <div class="mb-3" style="font-size:2.5rem">💸</div>
+          <div class="mb-3" style="font-size:2.5rem"><i class="fas fa-money-bill-wave"></i></div>
           <div class="badge mb-2" style="background:rgba(201,168,76,.15);color:#c9a84c;font-size:.75rem;padding:4px 12px;border-radius:100px">D</div>
           <h4 class="fw-700 mb-2" style="color:#0a2540">Reward</h4>
           <p class="text-muted small mb-3">Withdraw your T&TG Loyalty Points as funds. Payment is processed on Day 45 after your qualifying purchase.</p>
@@ -162,7 +162,7 @@
 <section style="background:linear-gradient(135deg,#0a2540,#1a3a5c);padding:60px 0" class="text-center">
   <div class="container">
     <h2 class="text-white fw-800 mb-3">Ready to Start Earning?</h2>
-    <p class="text-muted mb-4">Join T&TG Trade Corp: Canada 🇨🇦 · Uganda 🇺🇬 · Kenya 🇰🇪</p>
+    <p class="text-muted mb-4">Join T&TG Trade Corp: Canada  · Uganda  · Kenya </p>
     {% if user.is_authenticated %}
     <a href="{% url 'product_list' %}" class="btn btn-gold px-5 py-2 me-2">Shop Now</a>
     <a href="{% url 'loyalty_dashboard' %}" class="btn btn-outline-secondary px-5 py-2">My Dashboard</a>

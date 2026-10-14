@@ -30,10 +30,10 @@
               <div class="col-md-6">
                 <label class="form-label">Delivery Type *</label>
                 <select id="id_delivery_type" name="delivery_type" class="form-select">
-                  <option value="ordinary">🚢 Ordinary: Standard delivery</option>
-                  <option value="express">⚡ Express: Fast delivery</option>
+                  <option value="ordinary"><i class="fas fa-ship"></i> Ordinary: Standard delivery</option>
+                  <option value="express"><i class="fas fa-bolt"></i> Express: Fast delivery</option>
                 </select>
-                <div id="delivery-note" class="small text-info mt-1">🚢 Standard shipping costs apply.</div>
+                <div id="delivery-note" class="small text-info mt-1"><i class="fas fa-ship"></i> Standard shipping costs apply.</div>
               </div>
 
               <div class="col-md-6">
@@ -42,9 +42,9 @@
                   <option value="">Select Country</option>
                   <option value="Netherlands (Amsterdam)">Netherlands (Amsterdam)</option>
                     <option value="Japan (Tokyo)">Japan (Tokyo)</option>
-                    <option value="Canada">🇨🇦 Canada</option>
-                  <option value="Uganda">🇺🇬 Uganda</option>
-                  <option value="Kenya">🇰🇪 Kenya</option>
+                    <option value="Canada"> Canada</option>
+                  <option value="Uganda"> Uganda</option>
+                  <option value="Kenya"> Kenya</option>
                   <option value="Other">Other</option>
                 </select>
               </div>
@@ -192,8 +192,8 @@ document.addEventListener('DOMContentLoaded', function(){
   qtyInput.addEventListener('input', update);
   delivSelect.addEventListener('change', function(){
     delivNote.innerHTML = this.value === 'express'
-      ? '⚡ Express delivery — faster shipping, higher cost.'
-      : '🚢 Ordinary delivery: standard shipping costs.';
+      ? '<i class="fas fa-bolt"></i> Express delivery — faster shipping, higher cost.'
+      : '<i class="fas fa-ship"></i> Ordinary delivery: standard shipping costs.';
   });
   update();
 });

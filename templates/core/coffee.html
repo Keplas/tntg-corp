@@ -9,15 +9,15 @@
         <h1>Premium <span class="text-gold">Organic Arabica</span> Coffee</h1>
         <p class="text-muted mt-3" style="line-height:1.8">Roasted to perfection and sold directly to consumers, intermediaries, and businesses. Our coffee is 100% organic with exceptional texture and flavour.</p>
         <div class="d-flex gap-3 mt-4 flex-wrap">
-          <div class="glass-card p-3 text-center flex-fill"><div style="font-size:1.3rem;margin-bottom:.5rem">🌿</div><div class="text-gold fw-bold" style="font-size:.85rem">Organic</div></div>
-          <div class="glass-card p-3 text-center flex-fill"><div style="font-size:1.3rem;margin-bottom:.5rem">🏔️</div><div class="text-gold fw-bold" style="font-size:.85rem">Arabica</div></div>
-          <div class="glass-card p-3 text-center flex-fill"><div style="font-size:1.3rem;margin-bottom:.5rem">🔥</div><div class="text-gold fw-bold" style="font-size:.85rem">Roasted</div></div>
-          <div class="glass-card p-3 text-center flex-fill"><div style="font-size:1.3rem;margin-bottom:.5rem">🌍</div><div class="text-gold fw-bold" style="font-size:.85rem">Direct</div></div>
+          <div class="glass-card p-3 text-center flex-fill"><div style="font-size:1.3rem;margin-bottom:.5rem"><i class="fas fa-leaf"></i></div><div class="text-gold fw-bold" style="font-size:.85rem">Organic</div></div>
+          <div class="glass-card p-3 text-center flex-fill"><div style="font-size:1.3rem;margin-bottom:.5rem"><i class="fas fa-mountain"></i></div><div class="text-gold fw-bold" style="font-size:.85rem">Arabica</div></div>
+          <div class="glass-card p-3 text-center flex-fill"><div style="font-size:1.3rem;margin-bottom:.5rem"><i class="fas fa-fire"></i></div><div class="text-gold fw-bold" style="font-size:.85rem">Roasted</div></div>
+          <div class="glass-card p-3 text-center flex-fill"><div style="font-size:1.3rem;margin-bottom:.5rem"><i class="fas fa-globe-africa"></i></div><div class="text-gold fw-bold" style="font-size:.85rem">Direct</div></div>
         </div>
         <a href="{% url 'product_list' %}?category=coffee" class="btn btn-gold btn-lg mt-4"><i class="fas fa-shopping-cart me-2"></i>Shop Coffee</a>
       </div>
       <div class="col-lg-6 text-center">
-        <div style="font-size:12rem;opacity:.8;animation:float 4s ease-in-out infinite">☕</div>
+        <div style="font-size:12rem;opacity:.8;animation:float 4s ease-in-out infinite"><i class="fas fa-mug-hot"></i></div>
       </div>
     </div>
   </div>
@@ -50,7 +50,7 @@
         {% for product in coffee_products %}
         <div class="col-sm-6 col-lg-3">
           <div class="product-card">
-            <div class="product-img-wrap">{% if product.safe_image_url %}<img src="{{ product.safe_image_url }}" alt="{{ product.name }}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.parentElement.innerHTML+='<div class=&quot;product-placeholder&quot;>📦</div>'">{% else %}<div class="product-placeholder">☕</div>{% endif %}</div>
+            <div class="product-img-wrap">{% if product.safe_image_url %}<img src="{{ product.safe_image_url }}" alt="{{ product.name }}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.parentElement.innerHTML+='<div class=&quot;product-placeholder&quot;><i class="fas fa-box"></i></div>'">{% else %}<div class="product-placeholder"><i class="fas fa-mug-hot"></i></div>{% endif %}</div>
             <div class="product-body"><div class="product-name">{{ product.name }}</div><div class="product-price">{{ product.currency }} {{ product.price }}/kg</div></div>
             <div class="product-foot"><a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-gold btn-sm flex-fill">View</a><a href="{% url 'place_order' product.pk %}" class="btn btn-gold btn-sm flex-fill">Order</a></div>
           </div>

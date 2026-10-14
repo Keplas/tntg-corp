@@ -33,7 +33,7 @@
             {% for product in products %}
             <div class="col-md-6">
               <div class="product-card">
-                <div class="product-img-wrap" style="height:150px">{% if product.safe_image_url %}<img src="{{ product.safe_image_url }}" alt="{{ product.name }}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.parentElement.innerHTML+='<div class=&quot;product-placeholder&quot;>📦</div>'">{% else %}<div class="product-placeholder" style="font-size:3rem">📦</div>{% endif %}</div>
+                <div class="product-img-wrap" style="height:150px">{% if product.safe_image_url %}<img src="{{ product.safe_image_url }}" alt="{{ product.name }}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.parentElement.innerHTML+='<div class=&quot;product-placeholder&quot;><i class="fas fa-box"></i></div>'">{% else %}<div class="product-placeholder" style="font-size:3rem"><i class="fas fa-box"></i></div>{% endif %}</div>
                 <div class="product-body" style="padding:1rem">
                   <div class="product-name" style="font-size:.9rem">{{ product.name }}</div>
                   <div class="product-price" style="font-size:1.1rem">{{ product.currency }} {{ product.price }}</div>

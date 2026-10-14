@@ -349,7 +349,7 @@
                     <strong>Experience:</strong> {{ app.get_business_experience_display }}<br>
                     <strong>Timeline:</strong> {{ app.get_start_timeline_display }}<br>
                     <strong>Phone:</strong> {{ app.phone|default:"—" }}<br>
-                    <strong>CASL:</strong> {% if app.casl_consent %}✅ Yes{% else %}❌ No{% endif %}
+                    <strong>CASL:</strong> {% if app.casl_consent %}<i class="fas fa-check-circle" style="color:#4ade80"></i> Yes{% else %}<i class="fas fa-times-circle" style="color:#f87171"></i> No{% endif %}
                   </div>
                   <div class="col-md-3">
                     {% if app.admin_notes %}

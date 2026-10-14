@@ -73,21 +73,21 @@
       <div class="ed-card" style="position:sticky;top:100px">
         {% if already_registered %}
         <div style="text-align:center;padding:20px 0">
-          <div style="font-size:2.5rem;margin-bottom:12px">🎟️</div>
+          <div style="font-size:2.5rem;margin-bottom:12px"><i class="fas fa-ticket-alt"></i></div>
           <h5 style="color:#4ade80;font-weight:800">You're Registered!</h5>
           <p style="color:#7a6e5f;font-size:.82rem;margin-bottom:20px">You already have a confirmed ticket for this event. Check your email for ticket details.</p>
           <a href="{% url 'my_tickets' %}" class="btn btn-gold w-100">View My Tickets</a>
         </div>
         {% elif event.is_full %}
         <div style="text-align:center;padding:20px 0">
-          <div style="font-size:2.5rem;margin-bottom:12px">😔</div>
+          <div style="font-size:2.5rem;margin-bottom:12px"></div>
           <h5 style="color:#f87171;font-weight:800">Fully Booked</h5>
           <p style="color:#7a6e5f;font-size:.82rem">This event is fully booked. Check other upcoming events.</p>
           <a href="{% url 'event_list' %}" class="btn btn-gold w-100 mt-3">See Other Events</a>
         </div>
         {% else %}
         <div style="text-align:center;margin-bottom:20px">
-          <div style="font-size:2rem;margin-bottom:8px">🎟️</div>
+          <div style="font-size:2rem;margin-bottom:8px"><i class="fas fa-ticket-alt"></i></div>
           <h5 style="color:#fff;font-weight:900;margin-bottom:4px">Reserve Your Spot</h5>
           <p style="color:#7a6e5f;font-size:.78rem">Free · Instant confirmation · Ticket sent to your email</p>
         </div>
@@ -101,7 +101,7 @@
               <label style="cursor:pointer">
                 <input type="radio" name="spot_type" value="in_person" required style="display:none" class="spot-radio">
                 <div class="spot-card" style="border:2px solid rgba(201,168,76,.2);border-radius:12px;padding:14px;text-align:center;transition:all .2s">
-                  <div style="font-size:1.5rem;margin-bottom:6px">🏢</div>
+                  <div style="font-size:1.5rem;margin-bottom:6px"><i class="fas fa-building"></i></div>
                   <div style="color:#fff;font-weight:800;font-size:.8rem">Reserve a Spot</div>
                   <div style="color:#7a6e5f;font-size:.68rem;margin-top:3px">In-Person</div>
                 </div>
@@ -109,7 +109,7 @@
               <label style="cursor:pointer">
                 <input type="radio" name="spot_type" value="online" required style="display:none" class="spot-radio" checked>
                 <div class="spot-card" style="border:2px solid rgba(201,168,76,.5);border-radius:12px;padding:14px;text-align:center;background:rgba(201,168,76,.08);transition:all .2s">
-                  <div style="font-size:1.5rem;margin-bottom:6px">💻</div>
+                  <div style="font-size:1.5rem;margin-bottom:6px"><i class="fas fa-laptop"></i></div>
                   <div style="color:#fff;font-weight:800;font-size:.8rem">Online Spot</div>
                   <div style="color:#7a6e5f;font-size:.68rem;margin-top:3px">Virtual / Remote</div>
                 </div>

@@ -14,7 +14,7 @@
       <div class="row g-3">
         <div class="col-md-6"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Quantity</div><div class="fw-bold">{{ order.quantity }} {{ order.product.unit }}</div></div>
         <div class="col-md-6"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Total Price</div><div class="text-gold fw-bold" style="font-size:1.3rem">${{ order.total_price }}</div></div>
-        <div class="col-md-6"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Delivery Type</div><div>{% if order.delivery_type == 'express' %}⚡{% else %}🚢{% endif %} {{ order.get_delivery_type_display }}</div></div>
+        <div class="col-md-6"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Delivery Type</div><div>{% if order.delivery_type == 'express' %}<i class="fas fa-bolt"></i>{% else %}<i class="fas fa-ship"></i>{% endif %} {{ order.get_delivery_type_display }}</div></div>
         <div class="col-md-6"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">T&TG Loyalty Points Earned</div><div class="text-accent2 fw-bold">+{{ order.avon_points_earned }}</div></div>
         <div class="col-md-6"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Destination</div><div>{{ order.destination_country }}</div></div>
         <div class="col-md-6"><div class="text-muted" style="font-size:.72rem;text-transform:uppercase;letter-spacing:1px">Desired Arrival</div><div>{{ order.desired_arrival_date|date:"M d, Y" }}{% if order.desired_arrival_time %} at {{ order.desired_arrival_time }}{% endif %}</div></div>
@@ -56,7 +56,7 @@
 <div class="text-gold fw-bold mb-3" style="font-size:.8rem;text-transform:uppercase;letter-spacing:1px">Order Status</div>
       {% for status, label in order.STATUS_CHOICES %}
       <div class="d-flex align-items-center gap-2 mb-2" style="font-size:.85rem">
-        <div style="width:20px;height:20px;border-radius:50%;background:{% if order.status == status %}var(--gold){% else %}rgba(255,255,255,.1){% endif %};display:flex;align-items:center;justify-content:center;font-size:.6rem;flex-shrink:0">{% if order.status == status %}✓{% endif %}</div>
+        <div style="width:20px;height:20px;border-radius:50%;background:{% if order.status == status %}var(--gold){% else %}rgba(255,255,255,.1){% endif %};display:flex;align-items:center;justify-content:center;font-size:.6rem;flex-shrink:0">{% if order.status == status %}<i class="fas fa-check" style="font-size:.5rem"></i>{% endif %}</div>
         <span class="{% if order.status == status %}text-gold fw-bold{% else %}text-muted{% endif %}">{{ label }}</span>
       </div>
       {% endfor %}
