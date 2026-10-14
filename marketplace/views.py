@@ -205,8 +205,9 @@ def payment_select(request, pk):
     order = get_object_or_404(Order, pk=pk, buyer=request.user)
     return render(request, 'marketplace/payment_select.html', {
         'order': order,
-        'stripe_ready': payments.stripe_configured(),
+        'stripe_ready':      payments.stripe_configured(),
         'flutterwave_ready': payments.flutterwave_configured(),
+        'moneris_ready':     payments.moneris_configured(),
     })
 
 
@@ -225,6 +226,24 @@ def payment_start_card(request, pk):
     order.payment_status = 'pending'
     order.save(update_fields=['payment_method', 'payment_status'])
     return redirect(session_url)
+
+
+@login_required
+def payment_start_moneris(request, pk):
+    """Redirect buyer to Moneris hosted checkout."""
+    order = get_object_or_404(Order, pk=pk, buyer=request.user)
+    success_url = request.build_absolute_uri(reverse('payment_success', args=[order.pk]))
+    cancel_url  = request.build_absolute_uri(reverse('payment_select',  args=[order.pk]))
+
+    checkout_url, error = payments.create_moneris_checkout_session(order, success_url, cancel_url)
+    if error:
+        messages.error(request, error)
+        return redirect('payment_select', pk=order.pk)
+
+    order.payment_method = 'moneris'
+    order.payment_status = 'pending'
+    order.save(update_fields=['payment_method', 'payment_status'])
+    return redirect(checkout_url)
 
 
 @login_required
@@ -316,6 +335,10 @@ def payment_success(request, pk):
     elif order.payment_method == 'mobile_money':
         tx_id = request.GET.get('transaction_id', '')
         paid, ref = payments.verify_flutterwave_transaction(tx_id) if tx_id else (False, '')
+    elif order.payment_method == 'moneris':
+        # Moneris returns ?ticket=<ticket> or ?id=<ticket> on redirect
+        ticket = request.GET.get('ticket', '') or request.GET.get('id', '')
+        paid, ref = payments.verify_moneris_payment(ticket) if ticket else (False, '')
     else:
         paid, ref = False, ''
 

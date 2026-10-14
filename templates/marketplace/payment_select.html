@@ -54,24 +54,45 @@
 
   <div class="row g-4">
 
-    <!-- 1. Card (Stripe) -->
-    <div class="col-md-4">
-      <div class="pay-card">
+    <!-- 1. Moneris — Canadian card processing (primary for CA buyers) -->
+    <div class="col-md-3">
+      <div class="pay-card" {% if moneris_ready %}style="border-color:rgba(201,168,76,.4)"{% endif %}>
         <div class="pay-icon"><i class="fas fa-credit-card"></i></div>
-        <div class="pay-title">Pay by Card</div>
-        <div class="pay-desc">Visa, Mastercard, and major cards. Secured by Stripe. Instant confirmation.</div>
-        {% if stripe_ready %}
-        <a href="{% url 'payment_start_card' order.pk %}" class="btn btn-gold w-100 mt-auto">
+        <div class="pay-title">
           Pay by Card
+          <span style="display:inline-block;background:rgba(201,168,76,.15);color:#c9a84c;font-size:.6rem;font-weight:700;letter-spacing:.5px;padding:2px 6px;border-radius:4px;vertical-align:middle;margin-left:6px">CA</span>
+        </div>
+        <div class="pay-desc">Visa, Mastercard, Amex. Optimised for Canadian buyers. Secured by Moneris.</div>
+        {% if moneris_ready %}
+        <a href="{% url 'payment_start_moneris' order.pk %}" class="btn btn-gold w-100 mt-auto">
+          <i class="fas fa-lock me-2"></i>Pay with Moneris
         </a>
         {% else %}
-        <div class="pay-coming"><i class="fas fa-clock me-1"></i>Card payments: coming soon</div>
+        <div class="pay-coming"><i class="fas fa-clock me-1"></i>Canadian card: coming soon</div>
         {% endif %}
       </div>
     </div>
 
-    <!-- 2. Mobile Money (Flutterwave) -->
-    <div class="col-md-4">
+    <!-- 2. Card (Stripe) — international -->
+    <div class="col-md-3">
+      <div class="pay-card">
+        <div class="pay-icon"><i class="fas fa-globe"></i></div>
+        <div class="pay-title">Pay by Card
+          <span style="display:inline-block;background:rgba(255,255,255,.07);color:#7a8fa8;font-size:.6rem;font-weight:700;letter-spacing:.5px;padding:2px 6px;border-radius:4px;vertical-align:middle;margin-left:6px">INTL</span>
+        </div>
+        <div class="pay-desc">Visa, Mastercard, and major cards worldwide. Secured by Stripe. Instant confirmation.</div>
+        {% if stripe_ready %}
+        <a href="{% url 'payment_start_card' order.pk %}" class="btn btn-gold w-100 mt-auto">
+          <i class="fas fa-lock me-2"></i>Pay with Stripe
+        </a>
+        {% else %}
+        <div class="pay-coming"><i class="fas fa-clock me-1"></i>International card: coming soon</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- 3. Mobile Money (Flutterwave) -->
+    <div class="col-md-3">
       <div class="pay-card">
         <div class="pay-icon"><i class="fas fa-mobile-alt"></i></div>
         <div class="pay-title">Mobile Money</div>
@@ -88,8 +109,8 @@
       </div>
     </div>
 
-    <!-- 3. Manual / Bank Transfer: ALWAYS AVAILABLE -->
-    <div class="col-md-4">
+    <!-- 4. Manual / Bank Transfer: ALWAYS AVAILABLE -->
+    <div class="col-md-3">
       <div class="pay-card" style="border-color:rgba(201,168,76,.35)">
         <div class="pay-icon"><i class="fas fa-university"></i></div>
         <div class="pay-title">Bank Transfer / WhatsApp</div>
@@ -100,7 +121,7 @@
             <i class="fas fa-check me-2"></i>Confirm Order: Pay Later
           </button>
         </form>
-        <a href="https://wa.me/14168323512?text=Hi Tom, I just placed Order {{ order.pk }} for {{ order.product.name }}. I would like to arrange payment." target="_blank"
+        <a href="https://wa.me/14168323512?text=Hi Tom, I just placed Order {{order.pk}} for {{order.product.name}}. I would like to arrange payment." target="_blank"
           style="display:block;text-align:center;margin-top:10px;color:#25d366;font-size:.78rem;text-decoration:none">
           <i class="fab fa-whatsapp me-1"></i>WhatsApp Tom directly
         </a>

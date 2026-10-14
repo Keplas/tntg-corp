@@ -213,6 +213,8 @@ class Order(models.Model):
     PAYMENT_METHOD_CHOICES = [
         ('card',         'Card (Stripe)'),
         ('mobile_money', 'Mobile Money (Flutterwave)'),
+        ('moneris',      'Card — Canada (Moneris)'),
+        ('manual',       'Bank Transfer / Manual'),
     ]
 
     buyer               = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='orders')
