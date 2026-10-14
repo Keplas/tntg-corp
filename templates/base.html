@@ -524,7 +524,7 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  </a>
  </li>
  <li>
- <a class="tg-nl" href="{% url 'event_list' %}">Onboarding Program</a>
+ <a class="tg-nl {% if request.resolver_match.url_name in 'join_program,cooperation_program' %}tg-active{% endif %}" href="{% url 'join_program' %}">Onboarding Program</a>
  </li>
  <li>
  <button class="tg-nl">Company <i class="fas fa-chevron-down tg-caret"></i></button>
@@ -729,7 +729,7 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  Training <i class="fas fa-chevron-down tg-mob-caret"></i>
  </button>
  <div class="tg-mob-sub">
- <a href="{% url 'training_home' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Onboarding Program</a>
+ <a href="{% url 'join_program' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Onboarding Program</a>
  
  </div>
  </li>
