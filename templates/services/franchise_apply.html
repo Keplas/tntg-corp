@@ -197,7 +197,7 @@ textarea.form-control { resize: vertical; min-height: 110px; }
   <div class="container">
     <span class="badge-pill"><i class="fas fa-store me-1"></i> Franchise Opportunity</span>
     <h1>Partner with <span>T&TG Trade Corp</span></h1>
-    <p>Join a growing global coffee brand. Apply to open a franchise, become a distribution partner, or start as an online reseller.</p>
+    <p>Apply to franchise with T&TG across Canada, Uganda, Japan, Kenya, USA and Netherlands.</p>
 
     <div class="info-strip">
       <div class="chip"><i class="fas fa-globe"></i> Open to applicants worldwide</div>
@@ -224,26 +224,7 @@ textarea.form-control { resize: vertical; min-height: 110px; }
       <form method="post" novalidate>
         {% csrf_token %}
 
-        <!-- Franchise Type -->
-        <p class="section-title">Choose Your Franchise Type</p>
-
-        <div class="type-grid">
-          {% for val, label in franchise_types %}
-          <label class="type-card" for="ft_{{ val }}">
-            <input type="radio" name="franchise_type" id="ft_{{ val }}" value="{{ val }}"
-                   {% if forloop.first %}checked{% endif %}>
-            <span class="icon">
-              {% if val == 'cafe_kiosk' %}☕
-              {% elif val == 'distribution' %}📦
-              {% elif val == 'online_reseller' %}🛒
-              {% elif val == 'corporate_supply' %}🏢
-              {% elif val == 'mobile_unit' %}🚐
-              {% endif %}
-            </span>
-            <span class="label">{{ label }}</span>
-          </label>
-          {% endfor %}
-        </div>
+        <input type="hidden" name="franchise_type" value="online_reseller">
 
         <!-- Personal Info -->
         <p class="section-title">Your Information</p>
