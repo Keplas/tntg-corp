@@ -8,6 +8,7 @@ urlpatterns = [
     path('import-export/', views.import_export, name='import_export'),
     path('forex/', views.forex, name='forex'),
     # Franchise
+    path('franchise/',                       views.franchise_hub,            name='franchise_hub'),
     path('franchise/apply/',                views.franchise_apply,          name='franchise_apply'),
     path('franchise/dashboard/',            views.franchise_dashboard,       name='franchise_dashboard'),
     path('franchise/<int:pk>/status/',      views.franchise_update_status,   name='franchise_update_status'),

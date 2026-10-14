@@ -48,6 +48,14 @@ def brokerage(request):
 # FRANCHISE APPLICATION & DASHBOARD
 # ════════════════════════════════════════════════════════════════════════
 
+def franchise_hub(request):
+    """Franchise platform landing page — markets all 5 franchise types."""
+    from .models import FranchiseApplication
+    return render(request, 'services/franchise_hub.html', {
+        'franchise_types': FranchiseApplication.FRANCHISE_TYPE_CHOICES,
+    })
+
+
 def franchise_apply(request):
     """Public franchise application form — anyone can apply."""
     from .models import FranchiseApplication

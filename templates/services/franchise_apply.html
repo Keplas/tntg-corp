@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Franchise with T&TG Trade Corporation{% endblock %}
+{% block title %}Apply for a Franchise — T&TG Trade Corporation{% endblock %}
 
 {% block content %}
 <style>
@@ -9,78 +9,153 @@
   --gold: #c9a84c;
   --gold-lt: #e8c96a;
   --dark: #080c10;
+  --navy: #060f1e;
   --card-bg: #0d1a26;
   --border: rgba(201,168,76,.18);
   --muted: #8a9ab0;
+  --text: #c8d8e8;
 }
 
-.franchise-hero {
-  background: linear-gradient(135deg, #060f1e 0%, #0d1f35 50%, #060f1e 100%);
+/* ── HERO ── */
+.apply-hero {
+  background: linear-gradient(135deg, #060f1e 0%, #0d1f35 60%, #060f1e 100%);
   border-bottom: 1px solid var(--border);
-  padding: 72px 0 56px;
+  padding: 56px 0 44px;
   text-align: center;
+  position: relative;
+  overflow: hidden;
 }
-.franchise-hero .badge-pill {
-  display: inline-block;
-  background: rgba(201,168,76,.12);
+.apply-hero::before {
+  content: '';
+  position: absolute;
+  top: -80px; left: 50%;
+  transform: translateX(-50%);
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(201,168,76,.06) 0%, transparent 65%);
+  pointer-events: none;
+}
+.apply-hero .badge-pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(201,168,76,.1);
   border: 1px solid rgba(201,168,76,.3);
   color: var(--gold);
   padding: 6px 18px;
   border-radius: 99px;
-  font-size: .75rem;
+  font-size: .72rem;
   font-weight: 700;
-  letter-spacing: .08em;
+  letter-spacing: .09em;
   text-transform: uppercase;
   margin-bottom: 20px;
 }
-.franchise-hero h1 {
+.apply-hero h1 {
   font-family: 'Manrope', sans-serif;
-  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-size: clamp(1.9rem, 5vw, 2.8rem);
   font-weight: 800;
   color: #fff;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
+  text-wrap: balance;
 }
-.franchise-hero h1 span { color: var(--gold); }
-.franchise-hero p {
-  color: #a8bdd0;
-  font-size: 1.1rem;
-  max-width: 580px;
-  margin: 0 auto;
-}
+.apply-hero h1 span { color: var(--gold); }
+.apply-hero p { color: #a8bdd0; font-size: 1rem; max-width: 520px; margin: 0 auto; }
 
-/* Franchise type cards */
+.info-strip {
+  display: flex; flex-wrap: wrap; gap: 14px;
+  justify-content: center;
+  margin-top: 28px;
+}
+.info-strip .chip {
+  background: rgba(13,31,53,.7);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 7px 18px;
+  color: #a8bdd0;
+  font-size: .78rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.info-strip .chip i { color: var(--gold); }
+
+/* ── TYPE SELECTOR ── */
+.type-section {
+  background: #070d18;
+  border-bottom: 1px solid var(--border);
+  padding: 44px 0 36px;
+}
+.type-section-label {
+  text-align: center;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: .8rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
 .type-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
   gap: 12px;
-  margin-bottom: 32px;
+  max-width: 960px;
+  margin: 0 auto;
 }
 .type-card {
-  background: rgba(13,31,53,.6);
+  background: rgba(13,26,38,.7);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px 16px;
+  border-radius: 14px;
+  padding: 20px 16px 18px;
   text-align: center;
   cursor: pointer;
-  transition: border-color .2s, background .2s;
+  transition: border-color .2s, background .2s, transform .2s, box-shadow .2s;
   position: relative;
+  user-select: none;
 }
-.type-card input[type=radio] {
-  position: absolute; opacity: 0; width: 0; height: 0;
+.type-card:hover {
+  border-color: rgba(201,168,76,.4);
+  transform: translateY(-2px);
 }
-.type-card.selected,
-.type-card:has(input:checked) {
+.type-card.active {
   border-color: var(--gold);
-  background: rgba(201,168,76,.08);
+  background: rgba(201,168,76,.1);
+  box-shadow: 0 0 0 1px rgba(201,168,76,.18), 0 8px 24px rgba(0,0,0,.3);
 }
-.type-card .icon { font-size: 1.8rem; margin-bottom: 8px; display: block; }
-.type-card .label { font-size: .8rem; font-weight: 600; color: #c8d8e8; }
+.type-card.active::after {
+  content: '\f00c';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  position: absolute;
+  top: 10px; right: 12px;
+  color: var(--gold);
+  font-size: .72rem;
+}
+.type-card .tc-ico {
+  width: 44px; height: 44px;
+  background: rgba(201,168,76,.08);
+  border: 1px solid rgba(201,168,76,.2);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  color: var(--gold);
+  margin: 0 auto 12px;
+  transition: background .2s, transform .2s;
+}
+.type-card.active .tc-ico { background: rgba(201,168,76,.18); }
+.type-card:hover .tc-ico { transform: scale(1.08); }
+.type-card .tc-name {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  color: #fff;
+  font-size: .82rem;
+  margin-bottom: 5px;
+}
+.type-card .tc-invest {
+  color: var(--muted);
+  font-size: .72rem;
+}
 
-/* Form */
+/* ── FORM AREA ── */
 .form-wrap {
   background: #060f1e;
-  min-height: calc(100vh - 300px);
-  padding: 60px 0;
+  min-height: 60vh;
+  padding: 52px 0 80px;
 }
 .form-card {
   background: var(--card-bg);
@@ -94,7 +169,7 @@
 
 .section-title {
   font-family: 'Manrope', sans-serif;
-  font-size: 1rem;
+  font-size: .85rem;
   font-weight: 700;
   color: var(--gold);
   text-transform: uppercase;
@@ -102,35 +177,49 @@
   margin: 32px 0 16px;
   padding-bottom: 8px;
   border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
 }
 .section-title:first-child { margin-top: 0; }
 
 .form-label {
   color: #a8bdd0;
-  font-size: .82rem;
+  font-size: .8rem;
   font-weight: 600;
   letter-spacing: .04em;
   text-transform: uppercase;
   margin-bottom: 6px;
 }
-.form-control, .form-select, .form-control::placeholder {
+.form-control, .form-select {
   background: #0a1929;
   border: 1px solid rgba(201,168,76,.2);
   color: #e0eaf4;
   border-radius: 10px;
   padding: 11px 14px;
-  font-size: .93rem;
+  font-size: .92rem;
   transition: border-color .2s, box-shadow .2s;
 }
+.form-control::placeholder { color: #4a6070; }
 .form-control:focus, .form-select:focus {
   background: #0a1929;
   border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(201,168,76,.12);
+  box-shadow: 0 0 0 3px rgba(201,168,76,.1);
   color: #e0eaf4;
   outline: none;
 }
 .form-select option { background: #0d1f35; color: #e0eaf4; }
 textarea.form-control { resize: vertical; min-height: 110px; }
+
+.selected-type-banner {
+  background: rgba(201,168,76,.08);
+  border: 1px solid rgba(201,168,76,.25);
+  border-radius: 12px;
+  padding: 12px 18px;
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 28px;
+}
+.selected-type-banner i { color: var(--gold); font-size: 1rem; }
+.selected-type-banner .stb-label { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; }
+.selected-type-banner .stb-value { color: #fff; font-weight: 700; font-size: .95rem; font-family: 'Manrope', sans-serif; }
 
 .btn-apply {
   background: linear-gradient(135deg, #c9a84c, #e8c96a);
@@ -138,14 +227,20 @@ textarea.form-control { resize: vertical; min-height: 110px; }
   color: #080c10;
   font-weight: 800;
   font-size: 1rem;
-  padding: 14px 40px;
+  padding: 15px 40px;
   border-radius: 12px;
   width: 100%;
   margin-top: 8px;
-  transition: opacity .2s, transform .15s;
+  transition: opacity .2s, transform .15s, box-shadow .2s;
   letter-spacing: .03em;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
 }
-.btn-apply:hover { opacity: .9; transform: translateY(-1px); color: #080c10; }
+.btn-apply:hover {
+  opacity: .92;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(201,168,76,.35);
+  color: #080c10;
+}
 
 .consent-row {
   background: rgba(201,168,76,.05);
@@ -155,9 +250,8 @@ textarea.form-control { resize: vertical; min-height: 110px; }
   margin-top: 20px;
 }
 .consent-row .form-check-input:checked { background-color: var(--gold); border-color: var(--gold); }
-.consent-row label { color: #a8bdd0; font-size: .85rem; }
+.consent-row label { color: #a8bdd0; font-size: .84rem; }
 
-/* Alert overrides */
 .alert-success {
   background: rgba(34,197,94,.1);
   border-color: rgba(34,197,94,.3);
@@ -170,49 +264,64 @@ textarea.form-control { resize: vertical; min-height: 110px; }
   color: #fca5a5;
   border-radius: 12px;
 }
-
-.info-strip {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  justify-content: center;
-  margin-top: 36px;
-}
-.info-strip .chip {
-  background: rgba(13,31,53,.7);
-  border: 1px solid var(--border);
-  border-radius: 99px;
-  padding: 8px 20px;
-  color: #a8bdd0;
-  font-size: .8rem;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.info-strip .chip i { color: var(--gold); }
 </style>
 
-<!-- Hero -->
-<div class="franchise-hero">
+<!-- HERO -->
+<div class="apply-hero">
   <div class="container">
-    <span class="badge-pill"><i class="fas fa-store me-1"></i> Franchise Opportunity</span>
+    <span class="badge-pill"><i class="fas fa-store"></i> Franchise Application</span>
     <h1>Partner with <span>T&TG Trade Corp</span></h1>
-    <p>Apply to franchise with T&TG across Canada, Uganda, Japan, Kenya, USA and Netherlands.</p>
-
+    <p>Select your franchise model below, then complete the form. We review every application personally.</p>
     <div class="info-strip">
-      <div class="chip"><i class="fas fa-globe"></i> Open to applicants worldwide</div>
-      <div class="chip"><i class="fas fa-clock"></i> Response within 3 business days</div>
-      <div class="chip"><i class="fas fa-shield-alt"></i> Secure & confidential</div>
+      <div class="chip"><i class="fas fa-globe"></i> Open worldwide</div>
+      <div class="chip"><i class="fas fa-clock"></i> 3 business days response</div>
+      <div class="chip"><i class="fas fa-shield-alt"></i> Confidential</div>
+      <div class="chip"><i class="fas fa-tag"></i> No application fee</div>
     </div>
   </div>
 </div>
 
-<!-- Form -->
+<!-- FRANCHISE TYPE SELECTOR -->
+<div class="type-section">
+  <div class="container">
+    <p class="type-section-label"><i class="fas fa-hand-pointer me-1"></i> Step 1 — Choose Your Franchise Model</p>
+    <div class="type-grid">
+      <div class="type-card" data-type="cafe_kiosk" onclick="selectType(this)">
+        <div class="tc-ico"><i class="fas fa-coffee"></i></div>
+        <div class="tc-name">Café / Kiosk</div>
+        <div class="tc-invest">$25K – $100K</div>
+      </div>
+      <div class="type-card" data-type="distribution" onclick="selectType(this)">
+        <div class="tc-ico"><i class="fas fa-truck"></i></div>
+        <div class="tc-name">Distribution Partner</div>
+        <div class="tc-invest">$10K – $50K</div>
+      </div>
+      <div class="type-card" data-type="online_reseller" onclick="selectType(this)">
+        <div class="tc-ico"><i class="fas fa-laptop"></i></div>
+        <div class="tc-name">Online Reseller</div>
+        <div class="tc-invest">Under $10K</div>
+      </div>
+      <div class="type-card" data-type="corporate_supply" onclick="selectType(this)">
+        <div class="tc-ico"><i class="fas fa-building"></i></div>
+        <div class="tc-name">Corporate Supply</div>
+        <div class="tc-invest">$50K+</div>
+      </div>
+      <div class="type-card" data-type="mobile_unit" onclick="selectType(this)">
+        <div class="tc-ico"><i class="fas fa-truck-loading"></i></div>
+        <div class="tc-name">Mobile Coffee Unit</div>
+        <div class="tc-invest">$10K – $40K</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FORM -->
 <div class="form-wrap">
   <div class="container">
 
     {% for m in messages %}
-    <div class="alert alert-{{ m.tags }} alert-dismissible fade show mb-4 text-center" role="alert" style="max-width:820px;margin-left:auto;margin-right:auto;">
+    <div class="alert alert-{{ m.tags }} alert-dismissible fade show mb-4 text-center"
+         role="alert" style="max-width:820px;margin-left:auto;margin-right:auto;">
       <i class="fas {% if 'success' in m.tags %}fa-check-circle{% else %}fa-exclamation-circle{% endif %} me-2"></i>
       {{ m }}
       <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
@@ -221,13 +330,22 @@ textarea.form-control { resize: vertical; min-height: 110px; }
 
     <div class="form-card">
 
+      <!-- Selected type banner (updated by JS) -->
+      <div class="selected-type-banner" id="type-banner">
+        <i class="fas fa-store"></i>
+        <div>
+          <div class="stb-label">Applying for</div>
+          <div class="stb-value" id="type-banner-text">Select a franchise model above</div>
+        </div>
+      </div>
+
       <form method="post" novalidate>
         {% csrf_token %}
-
-        <input type="hidden" name="franchise_type" value="online_reseller">
+        <!-- Hidden franchise type — set by JS from type selector -->
+        <input type="hidden" name="franchise_type" id="franchise_type_input" value="cafe_kiosk">
 
         <!-- Personal Info -->
-        <p class="section-title">Your Information</p>
+        <p class="section-title"><i class="fas fa-user"></i> Your Information</p>
         <div class="row g-3">
           <div class="col-md-6">
             <label class="form-label">Full Name *</label>
@@ -256,7 +374,7 @@ textarea.form-control { resize: vertical; min-height: 110px; }
         </div>
 
         <!-- Franchise Details -->
-        <p class="section-title">Franchise Details</p>
+        <p class="section-title"><i class="fas fa-briefcase"></i> Franchise Details</p>
         <div class="row g-3">
           <div class="col-md-6">
             <label class="form-label">Investment Budget *</label>
@@ -295,7 +413,7 @@ textarea.form-control { resize: vertical; min-height: 110px; }
         </div>
 
         <!-- Motivation -->
-        <p class="section-title">Tell Us About Yourself</p>
+        <p class="section-title"><i class="fas fa-comment-alt"></i> Tell Us About Yourself</p>
         <div class="row g-3">
           <div class="col-12">
             <label class="form-label">Why do you want to franchise with T&TG? *</label>
@@ -321,29 +439,67 @@ textarea.form-control { resize: vertical; min-height: 110px; }
         </div>
 
         <button type="submit" class="btn btn-apply mt-4">
-          <i class="fas fa-paper-plane me-2"></i>Submit Franchise Application
+          <i class="fas fa-paper-plane"></i> Submit Franchise Application
         </button>
 
         <p class="text-center mt-3" style="color:var(--muted);font-size:.8rem;">
-          Your application is reviewed by Tom's team · We respond within 3 business days
+          Reviewed by Tom's team personally &middot; No application fee &middot; Response within 3 business days
           {% if user.is_authenticated %}
-          · <a href="{% url 'my_franchise_applications' %}" style="color:var(--gold);">View my applications</a>
+          &middot; <a href="{% url 'my_franchise_applications' %}" style="color:var(--gold);">View my applications</a>
           {% endif %}
         </p>
       </form>
-
     </div>
   </div>
 </div>
 
 <script>
-// Highlight type card on radio change
-document.querySelectorAll('.type-card input[type=radio]').forEach(function(radio) {
-  radio.addEventListener('change', function() {
-    document.querySelectorAll('.type-card').forEach(function(c){ c.classList.remove('selected'); });
-    if (this.checked) this.closest('.type-card').classList.add('selected');
-  });
-  if (radio.checked) radio.closest('.type-card').classList.add('selected');
-});
+(function() {
+  var TYPE_NAMES = {
+    cafe_kiosk:       'Café / Kiosk Franchise',
+    distribution:     'Distribution Partner',
+    online_reseller:  'Online Reseller',
+    corporate_supply: 'Corporate & Institutional Supply',
+    mobile_unit:      'Mobile Coffee Unit'
+  };
+
+  // Map URL shorthand params to model values
+  var TYPE_ALIASES = {
+    farm:         'distribution',
+    transport:    'distribution',
+    manufacturer: 'corporate_supply',
+    corporate:    'corporate_supply',
+    mobile:       'mobile_unit',
+    cafe:         'cafe_kiosk',
+    kiosk:        'cafe_kiosk',
+    reseller:     'online_reseller',
+    online:       'online_reseller'
+  };
+
+  window.selectType = function(card) {
+    document.querySelectorAll('.type-card').forEach(function(c){ c.classList.remove('active'); });
+    card.classList.add('active');
+    var val = card.dataset.type;
+    document.getElementById('franchise_type_input').value = val;
+    document.getElementById('type-banner-text').textContent = TYPE_NAMES[val] || val;
+  };
+
+  // Preselect from URL ?type= param
+  var params = new URLSearchParams(window.location.search);
+  var rawType = params.get('type') || '';
+  var resolvedType = rawType;
+  if (TYPE_ALIASES[rawType]) {
+    resolvedType = TYPE_ALIASES[rawType];
+  }
+  // Find matching card
+  var match = document.querySelector('.type-card[data-type="' + resolvedType + '"]');
+  if (match) {
+    selectType(match);
+  } else {
+    // Default to cafe_kiosk
+    var def = document.querySelector('.type-card[data-type="cafe_kiosk"]');
+    if (def) selectType(def);
+  }
+})();
 </script>
 {% endblock %}
