@@ -5,9 +5,13 @@ from django.contrib.auth.decorators import login_required
 
 
 def trade_ecommerce(request):
-    """Landing page for Trade & E-Commerce section."""
+    """Landing page for Trade & E-Commerce section — also franchise hub."""
+    from .models import FranchiseApplication
     forex_rates = ForexRate.objects.all()[:3]
-    return render(request, 'services/trade_ecommerce.html', {'forex_rates': forex_rates})
+    return render(request, 'services/trade_ecommerce.html', {
+        'forex_rates': forex_rates,
+        'franchise_types': FranchiseApplication.FRANCHISE_TYPE_CHOICES,
+    })
 
 
 def import_export(request):
