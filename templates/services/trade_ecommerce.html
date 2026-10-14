@@ -411,7 +411,7 @@
         Shop our products, explore live currency rates, or build your own business through a T&TG franchise — all from one platform, backed by a registered import-export corporation operating across 6 countries.
       </p>
       <div class="te-hero-btns">
-        <a href="#franchise" class="btn-gold">
+        <a href="{% url 'franchise_hub' %}" class="btn-gold">
           <i class="fas fa-store"></i> Explore Franchises
         </a>
         <a href="{% url 'marketplace' %}" class="btn-outline">
@@ -492,160 +492,49 @@
   </div>
 </section>
 
-<!-- FRANCHISE SECTION -->
-<section class="te-franchise" id="franchise">
+<!-- FRANCHISE PLATFORM NAVIGATION BAND -->
+<section class="te-franchise" id="franchise" style="background:linear-gradient(135deg,#060f1e 0%,#0d1a26 60%,#091420 100%);border-top:1px solid rgba(201,168,76,.12);border-bottom:1px solid rgba(201,168,76,.12);">
   <div class="container">
-    <div class="sec-label"><span><i class="fas fa-store me-1"></i> Franchise Opportunities</span></div>
-    <h2 class="sec-headline">Build Your Own Business With T&TG</h2>
-    <p class="sec-sub">Choose a franchise model that fits your market and investment level. Apply directly — no fees, no obligation.</p>
 
-    <div class="te-ftype-grid">
+    <!-- Section label -->
+    <div class="sec-label"><span><i class="fas fa-store me-1"></i> Franchise Platform</span></div>
+    <h2 class="sec-headline">Own a T&TG Franchise</h2>
+    <p class="sec-sub">5 franchise models across 6 countries — from café kiosks to corporate supply contracts. Starting from under $10K CAD.</p>
 
-      <!-- Café / Kiosk -->
-      <div class="te-ftype-card">
-        <div class="te-ftype-photo">
-          <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=700&q=80" alt="Café Kiosk" loading="lazy">
-          <span class="te-ftype-badge">Most Popular</span>
-        </div>
-        <div class="te-ftype-body">
-          <div class="te-ftype-head">
-            <div class="te-ftype-ico"><i class="fas fa-coffee"></i></div>
-            <div class="te-ftype-head-text">
-              <h3>Café / Kiosk Franchise</h3>
-              <div class="te-ftype-invest">$25,000 – $100,000 CAD</div>
-            </div>
-          </div>
-          <p>Your own branded T&TG café or kiosk serving premium specialty coffees and artisanal goods in high-traffic locations.</p>
-          <div class="te-ftype-apply">
-            <a href="{% url 'franchise_apply' %}?type=cafe_kiosk" class="te-apply-btn">
-              <i class="fas fa-paper-plane"></i> Apply Now
-            </a>
-            <a href="{% url 'franchise_hub' %}" class="te-ftype-more">
-              Learn more <i class="fas fa-chevron-right"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Distribution Partner -->
-      <div class="te-ftype-card">
-        <div class="te-ftype-photo">
-          <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=700&q=80" alt="Distribution" loading="lazy">
-        </div>
-        <div class="te-ftype-body">
-          <div class="te-ftype-head">
-            <div class="te-ftype-ico"><i class="fas fa-truck"></i></div>
-            <div class="te-ftype-head-text">
-              <h3>Distribution Partner</h3>
-              <div class="te-ftype-invest">$10,000 – $50,000 CAD</div>
-            </div>
-          </div>
-          <p>Exclusive regional distributor of T&TG products to retailers, restaurants, and wholesalers in your territory.</p>
-          <div class="te-ftype-apply">
-            <a href="{% url 'franchise_apply' %}?type=distribution" class="te-apply-btn">
-              <i class="fas fa-paper-plane"></i> Apply Now
-            </a>
-            <a href="{% url 'franchise_hub' %}" class="te-ftype-more">
-              Learn more <i class="fas fa-chevron-right"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Online Reseller -->
-      <div class="te-ftype-card">
-        <div class="te-ftype-photo">
-          <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=700&q=80" alt="Online Reseller" loading="lazy">
-        </div>
-        <div class="te-ftype-body">
-          <div class="te-ftype-head">
-            <div class="te-ftype-ico"><i class="fas fa-laptop"></i></div>
-            <div class="te-ftype-head-text">
-              <h3>Online Reseller</h3>
-              <div class="te-ftype-invest">Under $10,000 CAD</div>
-            </div>
-          </div>
-          <p>Sell T&TG products through your own e-commerce channels — website, Amazon, social media — with our supply and brand support.</p>
-          <div class="te-ftype-apply">
-            <a href="{% url 'franchise_apply' %}?type=online_reseller" class="te-apply-btn">
-              <i class="fas fa-paper-plane"></i> Apply Now
-            </a>
-            <a href="{% url 'franchise_hub' %}" class="te-ftype-more">
-              Learn more <i class="fas fa-chevron-right"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Corporate Supply -->
-      <div class="te-ftype-card">
-        <div class="te-ftype-photo">
-          <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=700&q=80" alt="Corporate Supply" loading="lazy">
-        </div>
-        <div class="te-ftype-body">
-          <div class="te-ftype-head">
-            <div class="te-ftype-ico"><i class="fas fa-building"></i></div>
-            <div class="te-ftype-head-text">
-              <h3>Corporate &amp; Institutional Supply</h3>
-              <div class="te-ftype-invest">$50,000 – $100,000+ CAD</div>
-            </div>
-          </div>
-          <p>Supply offices, hotels, hospitals, and institutions with T&TG specialty products on recurring B2B contracts.</p>
-          <div class="te-ftype-apply">
-            <a href="{% url 'franchise_apply' %}?type=corporate_supply" class="te-apply-btn">
-              <i class="fas fa-paper-plane"></i> Apply Now
-            </a>
-            <a href="{% url 'franchise_hub' %}" class="te-ftype-more">
-              Learn more <i class="fas fa-chevron-right"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Mobile Unit -->
-      <div class="te-ftype-card">
-        <div class="te-ftype-photo">
-          <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=700&q=80" alt="Mobile Unit" loading="lazy">
-        </div>
-        <div class="te-ftype-body">
-          <div class="te-ftype-head">
-            <div class="te-ftype-ico"><i class="fas fa-truck-loading"></i></div>
-            <div class="te-ftype-head-text">
-              <h3>Mobile Coffee Unit</h3>
-              <div class="te-ftype-invest">$10,000 – $40,000 CAD</div>
-            </div>
-          </div>
-          <p>A branded mobile van, pop-up kiosk, or market stall at events, farmers markets, and corporate parks. Low overhead, maximum flexibility.</p>
-          <div class="te-ftype-apply">
-            <a href="{% url 'franchise_apply' %}?type=mobile_unit" class="te-apply-btn">
-              <i class="fas fa-paper-plane"></i> Apply Now
-            </a>
-            <a href="{% url 'franchise_hub' %}" class="te-ftype-more">
-              Learn more <i class="fas fa-chevron-right"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-
+    <!-- 5 model chips -->
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin:32px 0 40px;">
+      <a href="{% url 'franchise_hub' %}#cafe_kiosk"     style="display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.25);color:#e8c96a;border-radius:99px;padding:10px 22px;font-size:.82rem;font-weight:700;text-decoration:none;transition:all .2s;" onmouseover="this.style.background='rgba(201,168,76,.18)'" onmouseout="this.style.background='rgba(201,168,76,.09)'">
+        <i class="fas fa-coffee"></i> Café / Kiosk
+      </a>
+      <a href="{% url 'franchise_hub' %}#distribution"   style="display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.25);color:#e8c96a;border-radius:99px;padding:10px 22px;font-size:.82rem;font-weight:700;text-decoration:none;transition:all .2s;" onmouseover="this.style.background='rgba(201,168,76,.18)'" onmouseout="this.style.background='rgba(201,168,76,.09)'">
+        <i class="fas fa-truck"></i> Distribution
+      </a>
+      <a href="{% url 'franchise_hub' %}#online_reseller" style="display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.25);color:#e8c96a;border-radius:99px;padding:10px 22px;font-size:.82rem;font-weight:700;text-decoration:none;transition:all .2s;" onmouseover="this.style.background='rgba(201,168,76,.18)'" onmouseout="this.style.background='rgba(201,168,76,.09)'">
+        <i class="fas fa-laptop"></i> Online Reseller
+      </a>
+      <a href="{% url 'franchise_hub' %}#corporate_supply" style="display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.25);color:#e8c96a;border-radius:99px;padding:10px 22px;font-size:.82rem;font-weight:700;text-decoration:none;transition:all .2s;" onmouseover="this.style.background='rgba(201,168,76,.18)'" onmouseout="this.style.background='rgba(201,168,76,.09)'">
+        <i class="fas fa-building"></i> Corporate Supply
+      </a>
+      <a href="{% url 'franchise_hub' %}#mobile_unit"    style="display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.25);color:#e8c96a;border-radius:99px;padding:10px 22px;font-size:.82rem;font-weight:700;text-decoration:none;transition:all .2s;" onmouseover="this.style.background='rgba(201,168,76,.18)'" onmouseout="this.style.background='rgba(201,168,76,.09)'">
+        <i class="fas fa-truck-loading"></i> Mobile Unit
+      </a>
     </div>
 
-    <!-- View full platform link -->
-    <p class="text-center mt-4" style="color:var(--muted);font-size:.88rem;">
-      Want the full picture?
-      <a href="{% url 'franchise_hub' %}" style="color:var(--gold);font-weight:700;text-decoration:none;">
-        <i class="fas fa-arrow-right me-1"></i>View the Franchise Platform
+    <!-- Main CTA row -->
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:16px;">
+      <a href="{% url 'franchise_hub' %}" style="display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#080c10;font-weight:800;font-size:.95rem;padding:15px 36px;border-radius:10px;text-decoration:none;letter-spacing:.02em;">
+        <i class="fas fa-arrow-right"></i> View the Franchise Platform
       </a>
-      &nbsp;&middot;&nbsp;
+      <a href="{% url 'franchise_apply' %}" style="display:inline-flex;align-items:center;gap:10px;background:transparent;border:1px solid rgba(201,168,76,.4);color:#e8c96a;font-weight:700;font-size:.88rem;padding:14px 28px;border-radius:10px;text-decoration:none;">
+        <i class="fas fa-paper-plane"></i> Apply Directly
+      </a>
       {% if user.is_authenticated %}
-      <a href="{% url 'my_franchise_applications' %}" style="color:var(--gold);font-weight:700;text-decoration:none;">
-        <i class="fas fa-folder-open me-1"></i>My Applications
-      </a>
-      {% else %}
-      <a href="{% url 'franchise_apply' %}" style="color:var(--gold);font-weight:700;text-decoration:none;">
-        <i class="fas fa-paper-plane me-1"></i>General Application
+      <a href="{% url 'my_franchise_applications' %}" style="display:inline-flex;align-items:center;gap:8px;color:#7a8fa8;font-size:.82rem;font-weight:600;text-decoration:none;">
+        <i class="fas fa-folder-open"></i> My Applications
       </a>
       {% endif %}
-    </p>
+    </div>
+
   </div>
 </section>
 
