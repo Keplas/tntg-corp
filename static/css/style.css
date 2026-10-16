@@ -548,14 +548,22 @@ input::placeholder, textarea::placeholder, select::placeholder {
 }
 .tg-hero {
   position: relative; min-height: calc(100vh - 70px);
-  background: var(--tg-navy); overflow: hidden;
+  overflow: hidden;
   display: flex; align-items: center;
+  background-color: var(--tg-navy);
+  background-image:
+    linear-gradient(135deg, rgba(6,15,30,.88) 0%, rgba(6,15,30,.55) 45%, rgba(6,15,30,.72) 100%),
+    url('/static/images/europe_distribution_bg.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
 }
 .tg-hero-glow {
   position: absolute; inset: 0; pointer-events: none;
   background:
-    radial-gradient(ellipse 55% 50% at 70% 40%, rgba(10,40,100,.22) 0%, transparent 70%),
-    radial-gradient(ellipse 35% 40% at 15% 65%, rgba(201,168,76,.05) 0%, transparent 70%);
+    radial-gradient(ellipse 55% 50% at 70% 40%, rgba(10,40,100,.18) 0%, transparent 70%),
+    radial-gradient(ellipse 35% 40% at 15% 65%, rgba(201,168,76,.06) 0%, transparent 70%);
 }
 .tg-hero-row { min-height: calc(100vh - 70px); }
 
