@@ -551,13 +551,9 @@ input::placeholder, textarea::placeholder, select::placeholder {
   overflow: hidden;
   display: flex; align-items: center;
   background-color: var(--tg-navy);
-  background-image:
-    linear-gradient(135deg, rgba(6,15,30,.88) 0%, rgba(6,15,30,.55) 45%, rgba(6,15,30,.72) 100%),
-    url('/static/images/europe_distribution_bg.jpg');
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
-  background-attachment: scroll;
 }
 .tg-hero-glow {
   position: absolute; inset: 0; pointer-events: none;
