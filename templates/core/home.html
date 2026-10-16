@@ -44,15 +44,22 @@
 
 {% block content %}
 
-<!-- ═══ HERO: World Map Edition ═══ -->
-<section class="tg-hero bg-shimmer orb-bg" id="heroTop"
- style="background-image: linear-gradient(135deg,rgba(6,15,30,.82) 0%,rgba(6,15,30,.48) 45%,rgba(6,15,30,.68) 100%), url('{% static 'images/europe_map_bg.webp' %}'); background-size:cover; background-position:center top;">
+<!-- ═══ HERO: Video Background Edition ═══ -->
+<section class="tg-hero bg-shimmer orb-bg" id="heroTop" style="isolation:isolate">
 
+ <!-- ── Motion background video ── -->
+ <video class="tg-hero-video" autoplay muted loop playsinline
+        poster="{% static 'images/europe_map_bg.webp' %}">
+   <source src="{% static 'videos/hero_bg.mp4' %}" type="video/mp4">
+ </video>
 
- <!-- subtle glow overlay -->
+ <!-- ── Dark gradient overlay (readability) ── -->
+ <div class="tg-hero-overlay"></div>
+
+ <!-- ── Radial glow overlay ── -->
  <div class="tg-hero-glow"></div>
 
- <div class="container-xl h-100">
+ <div class="container-xl h-100" style="position:relative;z-index:3">
  <div class="row align-items-center tg-hero-row g-0">
 
  <!-- ── LEFT: Copy ── -->
