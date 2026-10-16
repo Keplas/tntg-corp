@@ -1329,13 +1329,13 @@ body::before {
   backdrop-filter: blur(4px);
 }
 .mb-name {
-  font-size: .62rem;
+  font-size: .70rem;
   font-weight: 800;
   color: #c9a84c;
   line-height: 1.2;
 }
 .mb-role {
-  font-size: .54rem;
-  color: rgba(244,239,228,.5);
+  font-size: .60rem;
+  color: rgba(244,239,228,.6);
   line-height: 1.2;
 }

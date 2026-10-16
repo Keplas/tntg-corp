@@ -913,7 +913,7 @@
  if (!canvas || !box) return;
 
  W = box.clientWidth;
- H = Math.round(W * 0.58); // 58% aspect ratio
+ H = Math.round(W * 0.70); // 70% aspect ratio — taller map
  canvas.width = W;
  canvas.height = H;
  canvas.style.height = H + 'px';
@@ -1016,14 +1016,25 @@
      'map-badge-nl': CITIES.amsterdam,
      'map-badge-jp': CITIES.tokyo,
    };
+   /* Per-badge pixel offsets [dx, dy] relative to the projected city point.
+      Spread labels away from each other so they never overlap. */
+   var OFFSETS = {
+     'map-badge-ca': [-62,  -28],  /* Toronto  → upper-left  */
+     'map-badge-us': [ 60,   22],  /* Ohio     → lower-right */
+     'map-badge-ug': [-68,    8],  /* Kampala  → left        */
+     'map-badge-ke': [ 62,    8],  /* Nairobi  → right       */
+     'map-badge-nl': [  8,  -36],  /* Amsterdam→ above       */
+     'map-badge-jp': [ 12,  -30],  /* Tokyo    → above-right */
+   };
    Object.keys(BADGE_MAP).forEach(function(id){
      var el = document.getElementById(id);
      var city = BADGE_MAP[id];
      if (!el || !city) return;
      var p = projection(city);
      if (!p) return;
-     el.style.left = p[0] + 'px';
-     el.style.top  = p[1] + 'px';
+     var off = OFFSETS[id] || [0, 0];
+     el.style.left = (p[0] + off[0]) + 'px';
+     el.style.top  = (p[1] + off[1]) + 'px';
      el.style.display = 'flex';
    });
  }
