@@ -7,6 +7,8 @@ urlpatterns = [
     path('cooperation-program/', views.cooperation_program, name='cooperation_program'),
     path('import-export/', views.import_export, name='import_export'),
     path('forex/', views.forex, name='forex'),
+    # Partnership
+    path('partnership/apply/', views.partnership_apply, name='partnership_apply'),
     # Franchise
     path('franchise/',                       views.franchise_hub,            name='franchise_hub'),
     path('franchise/apply/',                views.franchise_apply,          name='franchise_apply'),

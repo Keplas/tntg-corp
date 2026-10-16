@@ -247,3 +247,102 @@ def cooperation_program(request):
 
 def join_program(request):
     return render(request, 'services/join_program.html')
+
+
+# ════════════════════════════════════════════════════════════════════════
+# PARTNERSHIP APPLICATION
+# ════════════════════════════════════════════════════════════════════════
+
+def partnership_apply(request):
+    """Public partnership application form — suppliers, manufacturers, logistics, etc."""
+    from .models import PartnershipApplication
+    from django.core.mail import send_mail
+    from django.conf import settings as djsettings
+
+    if request.method == 'POST':
+        d = request.POST
+        try:
+            app = PartnershipApplication.objects.create(
+                full_name           = d.get('full_name', '').strip(),
+                email               = d.get('email', '').strip(),
+                phone               = d.get('phone', '').strip(),
+                country             = d.get('country', '').strip(),
+                city                = d.get('city', '').strip(),
+                company_name        = d.get('company_name', '').strip(),
+                partnership_type    = d.get('partnership_type', 'other'),
+                company_description = d.get('company_description', '').strip(),
+                what_you_offer      = d.get('what_you_offer', '').strip(),
+                annual_capacity     = d.get('annual_capacity', 'na'),
+                start_timeline      = d.get('start_timeline', 'exploring'),
+                why_tntg            = d.get('why_tntg', '').strip(),
+                additional_notes    = d.get('additional_notes', '').strip(),
+                casl_consent        = d.get('casl_consent') == 'on',
+                user                = request.user if request.user.is_authenticated else None,
+            )
+        except Exception as e:
+            from django.contrib import messages as msg
+            msg.error(request, f'Submission failed: {e}. Please try again or contact tom.grouptrade@gmail.com.')
+            return redirect('partnership_apply')
+
+        # Email Tom
+        try:
+            send_mail(
+                subject=f'New Partnership Application #{app.ref()} — {app.get_partnership_type_display()} — {app.full_name}',
+                message=(
+                    f'New PARTNERSHIP APPLICATION received:\n\n'
+                    f'Name:         {app.full_name}\n'
+                    f'Company:      {app.company_name or "N/A"}\n'
+                    f'Email:        {app.email}\n'
+                    f'Phone:        {app.phone or "N/A"}\n'
+                    f'Country:      {app.country}\n'
+                    f'City:         {app.city or "N/A"}\n\n'
+                    f'Partnership:  {app.get_partnership_type_display()}\n'
+                    f'Capacity:     {app.get_annual_capacity_display()}\n'
+                    f'Timeline:     {app.get_start_timeline_display()}\n\n'
+                    f'About the company:\n{app.company_description}\n\n'
+                    f'What they offer:\n{app.what_you_offer}\n\n'
+                    f'Why T&TG:\n{app.why_tntg}\n\n'
+                    f'Notes:\n{app.additional_notes or "None"}\n'
+                ),
+                from_email=getattr(djsettings, 'DEFAULT_FROM_EMAIL', ''),
+                recipient_list=['tom.grouptrade@gmail.com'],
+                fail_silently=True,
+            )
+        except Exception:
+            pass
+
+        # Confirmation to applicant
+        try:
+            send_mail(
+                subject=f'Partnership Application {app.ref()} Received — T&TG Trade Corporation',
+                message=(
+                    f'Dear {app.full_name},\n\n'
+                    f'Thank you for your interest in partnering with T&TG Trade Corporation.\n\n'
+                    f'Your reference number is: {app.ref()}\n\n'
+                    f'Details submitted:\n'
+                    f'  Partnership Type: {app.get_partnership_type_display()}\n'
+                    f'  Timeline:         {app.get_start_timeline_display()}\n\n'
+                    f'Our team will review your application and reach out within 3 business days.\n\n'
+                    f'T&TG Trade Corporation\n'
+                    f'9 Summerbridge Rd, Toronto, ON M1G 1L8, Canada\n'
+                    f'tom.grouptrade@gmail.com | +1 (416) 832 3512'
+                ),
+                from_email=getattr(djsettings, 'DEFAULT_FROM_EMAIL', ''),
+                recipient_list=[app.email],
+                fail_silently=True,
+            )
+        except Exception:
+            pass
+
+        from django.contrib import messages as msg
+        msg.success(request,
+            f'Your partnership application {app.ref()} has been received! '
+            f'We will be in touch within 3 business days.')
+        return redirect('partnership_apply')
+
+    from .models import PartnershipApplication as PA
+    return render(request, 'services/partnership_apply.html', {
+        'partnership_types': PA.PARTNERSHIP_TYPE_CHOICES,
+        'capacity_choices':  PA.CAPACITY_CHOICES,
+        'timeline_choices':  PA.TIMELINE_CHOICES,
+    })

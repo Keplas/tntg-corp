@@ -1,0 +1,561 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Apply for Partnership — T&TG Trade Corporation{% endblock %}
+
+{% block content %}
+<style>
+:root {
+  --gold: #c9a84c;
+  --gold-lt: #e8c96a;
+  --dark: #080c10;
+  --navy: #060f1e;
+  --card-bg: #0d1a26;
+  --border: rgba(201,168,76,.18);
+  --muted: #8a9ab0;
+  --text: #c8d8e8;
+}
+
+/* ── HERO ── */
+.pa-hero {
+  background: linear-gradient(135deg, #060f1e 0%, #0d1f35 60%, #060f1e 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 56px 0 44px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.pa-hero::before {
+  content: '';
+  position: absolute;
+  top: -80px; left: 50%;
+  transform: translateX(-50%);
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(201,168,76,.06) 0%, transparent 65%);
+  pointer-events: none;
+}
+.pa-hero .badge-pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(201,168,76,.1);
+  border: 1px solid rgba(201,168,76,.3);
+  color: var(--gold);
+  padding: 6px 18px;
+  border-radius: 99px;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.pa-hero h1 {
+  font-size: clamp(1.9rem, 5vw, 2.8rem);
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 12px;
+  text-wrap: balance;
+}
+.pa-hero h1 span { color: var(--gold); }
+.pa-hero p { color: #a8bdd0; font-size: 1rem; max-width: 520px; margin: 0 auto; }
+
+.info-strip {
+  display: flex; flex-wrap: wrap; gap: 14px;
+  justify-content: center;
+  margin-top: 28px;
+}
+.info-strip .chip {
+  background: rgba(13,31,53,.7);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 7px 18px;
+  color: #a8bdd0;
+  font-size: .78rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.info-strip .chip i { color: var(--gold); }
+
+/* ── TYPE SELECTOR ── */
+.type-section {
+  background: #070d18;
+  border-bottom: 1px solid var(--border);
+  padding: 44px 0 36px;
+}
+.type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+  margin-top: 24px;
+}
+.type-card {
+  position: relative;
+  background: var(--card-bg);
+  border: 2px solid rgba(255,255,255,.07);
+  border-radius: 16px;
+  padding: 22px 18px 18px;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+  text-align: center;
+}
+.type-card input[type="radio"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  margin: 0;
+}
+.type-card:has(input:checked) {
+  border-color: var(--gold);
+  background: rgba(201,168,76,.07);
+}
+.type-card .tc-ico {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: rgba(201,168,76,.1);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 12px;
+  font-size: 1.1rem;
+  color: var(--gold);
+  position: relative;
+  z-index: 1;
+}
+.type-card .tc-label {
+  font-weight: 700;
+  font-size: .84rem;
+  color: #fff;
+  position: relative;
+  z-index: 1;
+}
+.type-card .tc-check {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.18);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .65rem;
+  color: transparent;
+  z-index: 1;
+  transition: all .2s;
+}
+.type-card:has(input:checked) .tc-check {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #000;
+}
+
+/* ── FORM SECTION ── */
+.form-section {
+  background: #060c15;
+  padding: 60px 0 80px;
+}
+.form-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 44px 48px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+@media (max-width: 600px) {
+  .form-card { padding: 28px 20px; }
+}
+.form-section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(201,168,76,.12);
+}
+.form-section-header .fsh-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(201,168,76,.12);
+  border: 1px solid rgba(201,168,76,.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .72rem;
+  font-weight: 800;
+  color: var(--gold);
+  flex-shrink: 0;
+}
+.form-section-header h4 {
+  font-size: .92rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.form-group label {
+  font-size: .78rem;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+  display: block;
+}
+.form-group label .req { color: var(--gold); margin-left: 2px; }
+
+.tg-input {
+  width: 100%;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 10px;
+  color: #fff;
+  padding: 11px 15px;
+  font-size: .9rem;
+  transition: border-color .2s, box-shadow .2s;
+  appearance: none;
+}
+.tg-input:focus {
+  outline: none;
+  border-color: rgba(201,168,76,.45);
+  box-shadow: 0 0 0 3px rgba(201,168,76,.08);
+}
+.tg-input::placeholder { color: rgba(255,255,255,.25); }
+
+select.tg-input { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238a9ab0' d='M6 8L0 0h12z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 38px; cursor: pointer; }
+select.tg-input option { background: #0d1a26; color: #fff; }
+
+textarea.tg-input { resize: vertical; min-height: 100px; }
+
+.char-hint { font-size: .72rem; color: var(--muted); margin-top: 5px; }
+
+.consent-box {
+  background: rgba(201,168,76,.04);
+  border: 1px solid rgba(201,168,76,.15);
+  border-radius: 12px;
+  padding: 20px 22px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.consent-box input[type="checkbox"] {
+  width: 18px; height: 18px;
+  accent-color: var(--gold);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.consent-box p {
+  font-size: .8rem;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.65;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #c9a84c, #a8822e);
+  color: #000;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: opacity .2s, transform .1s;
+}
+.submit-btn:hover { opacity: .9; transform: translateY(-1px); }
+.submit-btn:active { transform: translateY(0); }
+
+.trust-row {
+  display: flex; flex-wrap: wrap; gap: 18px;
+  justify-content: center;
+  margin-top: 28px;
+}
+.trust-row .tr-item {
+  display: flex; align-items: center; gap: 7px;
+  font-size: .75rem;
+  color: var(--muted);
+}
+.trust-row .tr-item i { color: var(--gold); font-size: .7rem; }
+</style>
+
+<!-- ══════════════════════════════════════════════════════════
+     HERO
+══════════════════════════════════════════════════════════ -->
+<section class="pa-hero">
+  <div class="container">
+    <div class="badge-pill">
+      <i class="fas fa-handshake"></i>
+      T&TG Partnership Network
+    </div>
+    <h1>Become a T&TG <span>Partner</span></h1>
+    <p>Suppliers, manufacturers, distributors and logistics providers — apply to join the T&TG trade network and grow together.</p>
+
+    <div class="info-strip">
+      <div class="chip"><i class="fas fa-clock"></i> 5-minute application</div>
+      <div class="chip"><i class="fas fa-reply"></i> Response within 3 business days</div>
+      <div class="chip"><i class="fas fa-globe-africa"></i> Africa · Canada · Japan</div>
+    </div>
+  </div>
+</section>
+
+{% if messages %}
+<div class="container" style="padding-top:24px">
+  {% for message in messages %}
+  <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} auto-dismiss"
+       style="border-radius:12px;background:{% if message.tags == 'success' %}rgba(74,222,128,.1){% else %}rgba(239,68,68,.1){% endif %};border:1px solid {% if message.tags == 'success' %}rgba(74,222,128,.25){% else %}rgba(239,68,68,.25){% endif %};color:#fff">
+    <i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-circle{% endif %} me-2" style="color:{% if message.tags == 'success' %}#4ade80{% else %}#ef4444{% endif %}"></i>
+    {{ message }}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- ══════════════════════════════════════════════════════════
+     PARTNERSHIP TYPE SELECTOR
+══════════════════════════════════════════════════════════ -->
+<section class="type-section">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:8px">
+      <p style="font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:8px">Step 1</p>
+      <h3 style="font-size:1.3rem;font-weight:800;color:#fff">Select Your Partnership Type</h3>
+      <p style="color:var(--muted);font-size:.85rem;max-width:460px;margin:6px auto 0">Choose the category that best describes your role in the supply chain.</p>
+    </div>
+
+    <div class="type-grid" id="typeGrid">
+      <label class="type-card">
+        <input type="radio" name="partnership_type_selector" value="supplier" onchange="setType(this.value)">
+        <div class="tc-ico"><i class="fas fa-seedling"></i></div>
+        <div class="tc-label">Coffee Supplier / Farm</div>
+        <div class="tc-check"><i class="fas fa-check"></i></div>
+      </label>
+      <label class="type-card">
+        <input type="radio" name="partnership_type_selector" value="distributor" onchange="setType(this.value)">
+        <div class="tc-ico"><i class="fas fa-route"></i></div>
+        <div class="tc-label">Distributor / Regional Manager</div>
+        <div class="tc-check"><i class="fas fa-check"></i></div>
+      </label>
+      <label class="type-card">
+        <input type="radio" name="partnership_type_selector" value="manufacturer" onchange="setType(this.value)">
+        <div class="tc-ico"><i class="fas fa-mug-hot"></i></div>
+        <div class="tc-label">Artisanal Manufacturer</div>
+        <div class="tc-check"><i class="fas fa-check"></i></div>
+      </label>
+      <label class="type-card">
+        <input type="radio" name="partnership_type_selector" value="co_manufacturer" onchange="setType(this.value)">
+        <div class="tc-ico"><i class="fas fa-industry"></i></div>
+        <div class="tc-label">Co-Manufacturing Partner</div>
+        <div class="tc-check"><i class="fas fa-check"></i></div>
+      </label>
+      <label class="type-card">
+        <input type="radio" name="partnership_type_selector" value="logistics" onchange="setType(this.value)">
+        <div class="tc-ico"><i class="fas fa-truck"></i></div>
+        <div class="tc-label">Logistics / Transportation</div>
+        <div class="tc-check"><i class="fas fa-check"></i></div>
+      </label>
+      <label class="type-card">
+        <input type="radio" name="partnership_type_selector" value="retail_agent" onchange="setType(this.value)">
+        <div class="tc-ico"><i class="fas fa-store"></i></div>
+        <div class="tc-label">Retail Agent / Shop Owner</div>
+        <div class="tc-check"><i class="fas fa-check"></i></div>
+      </label>
+      <label class="type-card">
+        <input type="radio" name="partnership_type_selector" value="corporate" onchange="setType(this.value)">
+        <div class="tc-ico"><i class="fas fa-building"></i></div>
+        <div class="tc-label">Corporate / Institutional Buyer</div>
+        <div class="tc-check"><i class="fas fa-check"></i></div>
+      </label>
+      <label class="type-card">
+        <input type="radio" name="partnership_type_selector" value="other" onchange="setType(this.value)">
+        <div class="tc-ico"><i class="fas fa-ellipsis-h"></i></div>
+        <div class="tc-label">Other / Not Listed</div>
+        <div class="tc-check"><i class="fas fa-check"></i></div>
+      </label>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     APPLICATION FORM
+══════════════════════════════════════════════════════════ -->
+<section class="form-section">
+  <div class="container">
+
+    <div style="text-align:center;margin-bottom:40px">
+      <p style="font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:8px">Step 2</p>
+      <h3 style="font-size:1.3rem;font-weight:800;color:#fff">Complete Your Application</h3>
+      <p style="color:var(--muted);font-size:.85rem">All fields marked <span style="color:var(--gold)">*</span> are required.</p>
+    </div>
+
+    <form method="post" action="{% url 'partnership_apply' %}" class="form-card">
+      {% csrf_token %}
+
+      <!-- Hidden partnership_type synced from selector -->
+      <input type="hidden" name="partnership_type" id="hiddenType" value="supplier">
+
+      <!-- ── Section 1: Contact Details ── -->
+      <div class="form-section-header">
+        <div class="fsh-num">1</div>
+        <h4>Contact Details</h4>
+      </div>
+      <div class="row g-3 mb-4">
+        <div class="col-md-6 form-group">
+          <label for="full_name">Full Name <span class="req">*</span></label>
+          <input type="text" id="full_name" name="full_name" class="tg-input" placeholder="Your full name" required>
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="email">Email Address <span class="req">*</span></label>
+          <input type="email" id="email" name="email" class="tg-input" placeholder="you@company.com" required>
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="phone">Phone / WhatsApp</label>
+          <input type="tel" id="phone" name="phone" class="tg-input" placeholder="+1 (416) 000 0000">
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="company_name">Company / Organisation Name</label>
+          <input type="text" id="company_name" name="company_name" class="tg-input" placeholder="Your registered business name">
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="country">Country of Operation <span class="req">*</span></label>
+          <input type="text" id="country" name="country" class="tg-input" placeholder="e.g. Uganda, Canada, Japan" required>
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="city">City / Region</label>
+          <input type="text" id="city" name="city" class="tg-input" placeholder="e.g. Kampala, Toronto">
+        </div>
+      </div>
+
+      <!-- ── Section 2: Partnership Details ── -->
+      <div class="form-section-header">
+        <div class="fsh-num">2</div>
+        <h4>Partnership Details</h4>
+      </div>
+      <div class="row g-3 mb-4">
+        <div class="col-12 form-group">
+          <label for="partnershipTypeSelect">Partnership Type <span class="req">*</span></label>
+          <select id="partnershipTypeSelect" name="partnership_type_display" class="tg-input" onchange="syncSelectType(this.value)">
+            {% for value, label in partnership_types %}
+            <option value="{{ value }}">{{ label }}</option>
+            {% endfor %}
+          </select>
+          <p class="char-hint">This will auto-fill from Step 1 above — or choose manually here.</p>
+        </div>
+        <div class="col-12 form-group">
+          <label for="company_description">About Your Company / Operation <span class="req">*</span></label>
+          <textarea id="company_description" name="company_description" class="tg-input" rows="4"
+                    placeholder="Briefly describe your company — what you do, how long you've been operating, and the scale of your business." required></textarea>
+        </div>
+        <div class="col-12 form-group">
+          <label for="what_you_offer">What You Bring to T&TG <span class="req">*</span></label>
+          <textarea id="what_you_offer" name="what_you_offer" class="tg-input" rows="4"
+                    placeholder="Describe the products, services or capacity you can offer T&TG — e.g. coffee variety, tonnage available, logistics routes covered, manufacturing capabilities." required></textarea>
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="annual_capacity">Monthly Capacity / Volume</label>
+          <select id="annual_capacity" name="annual_capacity" class="tg-input">
+            {% for value, label in capacity_choices %}
+            <option value="{{ value }}">{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="start_timeline">Preferred Start Timeline</label>
+          <select id="start_timeline" name="start_timeline" class="tg-input">
+            {% for value, label in timeline_choices %}
+            <option value="{{ value }}">{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <!-- ── Section 3: Why T&TG ── -->
+      <div class="form-section-header">
+        <div class="fsh-num">3</div>
+        <h4>Why T&TG?</h4>
+      </div>
+      <div class="row g-3 mb-4">
+        <div class="col-12 form-group">
+          <label for="why_tntg">Why do you want to partner with T&TG? <span class="req">*</span></label>
+          <textarea id="why_tntg" name="why_tntg" class="tg-input" rows="5"
+                    placeholder="Tell us what excites you about T&TG Trade Corporation and what you hope to achieve through this partnership." required></textarea>
+          <p class="char-hint">Be specific — this helps Tom understand your goals and match you to the right programme.</p>
+        </div>
+        <div class="col-12 form-group">
+          <label for="additional_notes">Additional Notes</label>
+          <textarea id="additional_notes" name="additional_notes" class="tg-input" rows="3"
+                    placeholder="Any other information you'd like us to know — certifications, existing contracts, special requirements, etc."></textarea>
+        </div>
+      </div>
+
+      <!-- ── Consent ── -->
+      <div class="consent-box mb-4">
+        <input type="checkbox" id="casl_consent" name="casl_consent" required>
+        <p>
+          I consent to T&TG Trade Corporation contacting me by email or phone regarding this application and related business opportunities.
+          I understand I can withdraw consent at any time. By submitting this form I confirm all information is accurate to the best of my knowledge.
+          <strong style="color:var(--gold)">*</strong>
+        </p>
+      </div>
+
+      <button type="submit" class="submit-btn">
+        <i class="fas fa-paper-plane"></i>
+        Submit Partnership Application
+      </button>
+
+      <div class="trust-row">
+        <div class="tr-item"><i class="fas fa-lock"></i> Secure submission</div>
+        <div class="tr-item"><i class="fas fa-user-tie"></i> Reviewed personally by Tom</div>
+        <div class="tr-item"><i class="fas fa-reply"></i> Response within 3 business days</div>
+      </div>
+    </form>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════
+     FOOTER CTA STRIP
+══════════════════════════════════════════════════════════ -->
+<section style="background:#060c15;padding:44px 0;border-top:1px solid var(--border)">
+  <div class="container text-center">
+    <p style="color:var(--muted);font-size:.88rem;margin-bottom:16px">
+      <i class="fas fa-question-circle me-2" style="color:var(--gold)"></i>
+      Not sure if partnership is right for you? Looking for a franchise instead?
+    </p>
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+      <a href="{% url 'join_program' %}"
+         style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);color:var(--gold);border-radius:10px;padding:9px 22px;font-size:.84rem;font-weight:700;text-decoration:none">
+        <i class="fas fa-th-large me-2"></i>View All Programmes
+      </a>
+      <a href="{% url 'franchise_apply' %}"
+         style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--text);border-radius:10px;padding:9px 22px;font-size:.84rem;font-weight:700;text-decoration:none">
+        <i class="fas fa-store me-2"></i>Apply for a Franchise
+      </a>
+      <a href="https://wa.me/14168323512" target="_blank" rel="noopener"
+         style="background:#25d366;border:none;color:#fff;border-radius:10px;padding:9px 22px;font-size:.84rem;font-weight:700;text-decoration:none">
+        <i class="fab fa-whatsapp me-2"></i>WhatsApp Tom
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+// Sync type selector → hidden input + visible select
+function setType(val) {
+  document.getElementById('hiddenType').value = val;
+  var sel = document.getElementById('partnershipTypeSelect');
+  sel.value = val;
+}
+function syncSelectType(val) {
+  document.getElementById('hiddenType').value = val;
+  var radios = document.querySelectorAll('[name="partnership_type_selector"]');
+  radios.forEach(function(r){ if (r.value === val) r.checked = true; });
+}
+
+// Pre-select from query string ?type=...
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var t = params.get('type');
+  if (!t) return;
+  var r = document.querySelector('[name="partnership_type_selector"][value="'+t+'"]');
+  if (r) { r.checked = true; setType(t); }
+})();
+</script>
+
+{% endblock %}

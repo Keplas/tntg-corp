@@ -216,3 +216,82 @@ class FranchiseApplication(models.Model):
 
     def ref(self):
         return f'FA-{self.pk:04d}'
+
+
+# ════════════════════════════════════════════════════════════════════════
+# PARTNERSHIP APPLICATION
+# ════════════════════════════════════════════════════════════════════════
+
+class PartnershipApplication(models.Model):
+
+    PARTNERSHIP_TYPE_CHOICES = [
+        ('supplier',        'Coffee Supplier / Farm'),
+        ('distributor',     'Distributor / Regional Manager'),
+        ('manufacturer',    'Artisanal Manufacturer / Roaster'),
+        ('co_manufacturer', 'Co-Manufacturing Partner'),
+        ('logistics',       'Logistics / Transportation Partner'),
+        ('retail_agent',    'Retail Agent / Shop Owner'),
+        ('corporate',       'Corporate / Institutional Buyer'),
+        ('other',           'Other / Not Listed'),
+    ]
+    CAPACITY_CHOICES = [
+        ('under_1t',     'Under 1 tonne / month'),
+        ('1t_5t',        '1 – 5 tonnes / month'),
+        ('5t_20t',       '5 – 20 tonnes / month'),
+        ('20t_50t',      '20 – 50 tonnes / month'),
+        ('over_50t',     'Over 50 tonnes / month'),
+        ('na',           'Not applicable'),
+    ]
+    TIMELINE_CHOICES = [
+        ('asap',        'As soon as possible'),
+        ('3_months',    'Within 3 months'),
+        ('6_months',    'Within 6 months'),
+        ('1_year',      'Within 1 year'),
+        ('exploring',   'Just exploring options'),
+    ]
+    STATUS_CHOICES = [
+        ('pending',    'Pending Review'),
+        ('reviewing',  'Under Review'),
+        ('approved',   'Approved'),
+        ('rejected',   'Rejected'),
+        ('on_hold',    'On Hold'),
+    ]
+
+    # Contact info
+    full_name       = models.CharField(max_length=200)
+    email           = models.EmailField()
+    phone           = models.CharField(max_length=30, blank=True)
+    country         = models.CharField(max_length=100)
+    city            = models.CharField(max_length=100, blank=True)
+    company_name    = models.CharField(max_length=200, blank=True)
+
+    # Partnership details
+    partnership_type    = models.CharField(max_length=30, choices=PARTNERSHIP_TYPE_CHOICES)
+    company_description = models.TextField(help_text='Brief description of your company or operation')
+    what_you_offer      = models.TextField(help_text='What products, services or capacity you bring to T&TG')
+    annual_capacity     = models.CharField(max_length=20, choices=CAPACITY_CHOICES, default='na')
+    start_timeline      = models.CharField(max_length=20, choices=TIMELINE_CHOICES, default='exploring')
+    why_tntg            = models.TextField(help_text='Why do you want to partner with T&TG Trade Corporation?')
+    additional_notes    = models.TextField(blank=True)
+    casl_consent        = models.BooleanField(default=False)
+
+    # Admin
+    status       = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    admin_notes  = models.TextField(blank=True)
+    created_at   = models.DateTimeField(auto_now_add=True)
+    updated_at   = models.DateTimeField(auto_now=True)
+    user         = models.ForeignKey(
+        'accounts.CustomUser', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='partnership_applications'
+    )
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name        = 'Partnership Application'
+        verbose_name_plural = 'Partnership Applications'
+
+    def __str__(self):
+        return f"{self.full_name} — {self.get_partnership_type_display()} — {self.status}"
+
+    def ref(self):
+        return f'PA-{self.pk:04d}'

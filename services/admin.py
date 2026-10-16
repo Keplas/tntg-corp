@@ -39,3 +39,18 @@ class FranchiseApplicationAdmin(admin.ModelAdmin):
         ('Franchise Details', {'fields': ('franchise_type', 'investment_budget', 'business_experience', 'proposed_location', 'start_timeline', 'why_tntg', 'additional_notes', 'casl_consent')}),
         ('Admin', {'fields': ('status', 'admin_notes', 'created_at', 'updated_at')}),
     )
+
+from .models import PartnershipApplication
+
+@admin.register(PartnershipApplication)
+class PartnershipApplicationAdmin(admin.ModelAdmin):
+    list_display  = ['ref', 'full_name', 'email', 'partnership_type', 'country', 'annual_capacity', 'status', 'created_at']
+    list_filter   = ['partnership_type', 'status', 'annual_capacity', 'start_timeline']
+    list_editable = ['status']
+    search_fields = ['full_name', 'email', 'company_name', 'country', 'city']
+    readonly_fields = ['created_at', 'updated_at']
+    fieldsets = (
+        ('Applicant', {'fields': ('full_name', 'email', 'phone', 'country', 'city', 'company_name', 'user')}),
+        ('Partnership Details', {'fields': ('partnership_type', 'company_description', 'what_you_offer', 'annual_capacity', 'start_timeline', 'why_tntg', 'additional_notes', 'casl_consent')}),
+        ('Admin', {'fields': ('status', 'admin_notes', 'created_at', 'updated_at')}),
+    )
