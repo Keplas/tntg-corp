@@ -688,7 +688,7 @@
 <section class="section" style="background:linear-gradient(135deg,#0a2540,#1a3a5c)">
  <div class="container">
  <div class="row g-5 align-items-center">
- <div class="col-lg-6">
+ <div class="col-lg-6" data-anim="slide-left">
  <div class="section-label">T&TG Trade Loyalty Platform</div>
  <h2 class="text-white">Earn Points. <span class="text-gold">Refer. Withdraw.</span></h2>
  <div class="divider-gold"></div>
@@ -729,7 +729,7 @@
  </a>
  {% endif %}
  </div>
- <div class="col-lg-6">
+ <div class="col-lg-6" data-anim="slide-right" style="transition-delay:.14s">
  <div class="glass-card p-4">
  <h5 class="text-gold mb-4"><i class="fas fa-calculator me-2"></i>Loyalty Points Example</h5>
  <div class="d-flex justify-content-between py-2 border-bottom border-secondary">
@@ -814,7 +814,7 @@
  </div>
  <div class="row g-4 justify-content-center">
  {% for country in countries %}
- <div class="col-md-4">
+ <div class="col-md-4" data-anim="fade-up">
  <div class="glass-card p-4 text-center">
  <div style="font-size:3.5rem">{{ country.flag }}</div>
  <h5 class="text-gold mt-3 mb-1">{{ country.name }}</h5>
@@ -839,7 +839,7 @@
  </div>
  <div class="row g-4">
  {% for prog in training_programs %}
- <div class="col-md-4">
+ <div class="col-md-4" data-anim="fade-up">
  <div class="glass-card p-4 h-100">
  <div class="d-flex align-items-center gap-3 mb-3">
  <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c96a);display:flex;align-items:center;justify-content:center;font-size:1.2rem"></div>
@@ -866,7 +866,7 @@
 
 <!-- ═══ CTA ═══ -->
 <section style="background:linear-gradient(135deg,#0a2540,#1a3a5c);padding:80px 0">
- <div class="container text-center">
+ <div class="container text-center" data-anim="fade-up">
  <h2 class="text-white fw-800 mb-3">Ready to Join T&TG Trade Corp?</h2>
  <p class="text-muted mb-4">Import · Export · Shop · Earn: Canada, USA, Uganda, Kenya, Netherlands and Japan </p>
  <a href="{% url 'register' %}" class="btn btn-gold btn-lg me-3">
@@ -1123,6 +1123,30 @@
    };
  })();
 
+})();
+</script>
+
+<script>
+/* ── data-anim IntersectionObserver ─────────────────────────────
+   Watches elements with data-anim="*" and adds .visible on entry.
+   Falls back gracefully: if no IO support, shows everything.
+   ──────────────────────────────────────────────────────────────── */
+(function(){
+  var els = document.querySelectorAll('[data-anim]');
+  if (!els.length) return;
+  if (!('IntersectionObserver' in window)) {
+    els.forEach(function(el){ el.classList.add('visible'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.10, rootMargin: '0px 0px -24px 0px' });
+  els.forEach(function(el){ io.observe(el); });
 })();
 </script>
 {% endblock %}

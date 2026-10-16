@@ -1339,3 +1339,59 @@ body::before {
   color: rgba(244,239,228,.6);
   line-height: 1.2;
 }
+
+/* ══ HERO ENTRANCE — staggered on page load ════════════════════════
+   Pure @keyframes so they fire without scroll, then settle for good.
+   ════════════════════════════════════════════════════════════════ */
+@keyframes heroFadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.tg-hero-eyebrow { animation: heroFadeUp .65s cubic-bezier(.2,.8,.2,1) .10s both; }
+.tg-hero-title   { animation: heroFadeUp .80s cubic-bezier(.2,.8,.2,1) .28s both; }
+.tg-hero-sub     { animation: heroFadeUp .65s cubic-bezier(.2,.8,.2,1) .50s both; }
+.tg-hero-ctas    { animation: heroFadeUp .65s cubic-bezier(.2,.8,.2,1) .65s both; }
+.tg-stats-bar    { animation: heroFadeUp .65s cubic-bezier(.2,.8,.2,1) .80s both; }
+.tg-map-col      { animation: heroFadeUp .80s cubic-bezier(.2,.8,.2,1) .38s both; }
+@media (prefers-reduced-motion: reduce) {
+  .tg-hero-eyebrow,.tg-hero-title,.tg-hero-sub,
+  .tg-hero-ctas,.tg-stats-bar,.tg-map-col { animation: none; }
+}
+
+/* ══ DATA-ANIM SCROLL TRANSITIONS ══════════════════════════════════
+   Elements marked data-anim="..." start hidden; JS observer
+   adds .visible when they enter the viewport.
+   ════════════════════════════════════════════════════════════════ */
+[data-anim="slide-left"] {
+  opacity: 0;
+  transform: translateX(-44px);
+  transition: opacity .75s cubic-bezier(.2,.8,.2,1), transform .75s cubic-bezier(.2,.8,.2,1);
+}
+[data-anim="slide-right"] {
+  opacity: 0;
+  transform: translateX(44px);
+  transition: opacity .75s cubic-bezier(.2,.8,.2,1), transform .75s cubic-bezier(.2,.8,.2,1);
+}
+[data-anim="fade-up"] {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity .65s ease, transform .65s ease;
+}
+[data-anim="scale-in"] {
+  opacity: 0;
+  transform: scale(.88) translateY(18px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+[data-anim].visible {
+  opacity: 1;
+  transform: none;
+}
+/* sibling stagger inside .row */
+.row > [data-anim]:nth-child(2) { transition-delay: .12s; }
+.row > [data-anim]:nth-child(3) { transition-delay: .24s; }
+.row > [data-anim]:nth-child(4) { transition-delay: .36s; }
+.row > [data-anim]:nth-child(5) { transition-delay: .48s; }
+.row > [data-anim]:nth-child(6) { transition-delay: .60s; }
+@media (prefers-reduced-motion: reduce) {
+  [data-anim] { opacity:1 !important; transform:none !important; transition:none !important; }
+}
