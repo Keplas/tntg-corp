@@ -690,7 +690,7 @@ input::placeholder, textarea::placeholder, select::placeholder {
 /* ── RIGHT MAP ── */
 .tg-map-col {
   display: flex; align-items: center; justify-content: center;
-  padding: 48px 0 48px 32px;
+  padding: 48px 0 48px 16px;
 }
 
 /* ── Map lazy-reveal button ── */
@@ -734,7 +734,7 @@ input::placeholder, textarea::placeholder, select::placeholder {
   line-height: 1.6; margin: 0; max-width: 230px;
 }
 .tg-map-box {
-  position: relative; width: 100%; max-width: 580px;
+  position: relative; width: 100%; max-width: none;
   border-radius: 20px; overflow: hidden;
   border: 1px solid rgba(201,168,76,.22);
   box-shadow: 0 24px 72px rgba(0,0,0,.55), 0 0 0 1px rgba(201,168,76,.07);
