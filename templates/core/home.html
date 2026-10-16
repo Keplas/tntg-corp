@@ -108,37 +108,57 @@
  </div>
  </div>
 
- <!-- ── RIGHT: Live World Map ── -->
+ <!-- ── RIGHT: Live World Map (lazy reveal) ── -->
  <div class="col-lg-6 tg-map-col">
- <div class="tg-map-box" id="tgMapBox">
 
- <!-- header bar -->
- <div class="tg-map-hdr">
- <span class="tg-map-title">
- <i class="fas fa-route" style="color:#c9a84c;margin-right:7px"></i>T&TG Trade Routes
- </span>
- <span class="tg-live-ind"><span class="tg-live-dot"></span>Live</span>
- </div>
+   <!-- ── Reveal button (shown by default) ── -->
+   <div id="mapRevealArea" class="tg-map-reveal-area">
+     <div class="tg-map-reveal-eyebrow">
+       <i class="fas fa-globe-africa"></i> Global Reach
+     </div>
+     <button class="tg-map-reveal-btn" onclick="tgRevealMap()">
+       <i class="fas fa-route"></i>
+       View Live Trade Routes
+       <i class="fas fa-chevron-right tg-mrb-arrow"></i>
+     </button>
+     <p class="tg-map-reveal-hint">
+       Real-time routes across Canada, USA,<br>Uganda, Kenya, Netherlands &amp; Japan
+     </p>
+   </div>
 
- <!-- map canvas -->
- <canvas id="worldMap" data-parallax="0.08"></canvas>
+   <!-- ── Map box (hidden until button clicked) ── -->
+   <div id="mapContainer" style="display:none;width:100%">
+     <div class="tg-map-box" id="tgMapBox">
 
- <!-- country badges: positioned via JS using D3 projection -->
- <div id="map-badge-ca"  class="map-badge" style="display:none"><div class="mb-dot"></div><div class="mb-label"><div class="mb-name">Canada</div><div class="mb-role">HQ · Toronto</div></div></div>
- <div id="map-badge-us"  class="map-badge" style="display:none"><div class="mb-dot"></div><div class="mb-label"><div class="mb-name">USA</div><div class="mb-role">Ohio</div></div></div>
- <div id="map-badge-ug"  class="map-badge" style="display:none"><div class="mb-dot"></div><div class="mb-label"><div class="mb-name">Uganda</div><div class="mb-role">Kampala</div></div></div>
- <div id="map-badge-ke"  class="map-badge" style="display:none"><div class="mb-dot"></div><div class="mb-label"><div class="mb-name">Kenya</div><div class="mb-role">Nairobi</div></div></div>
- <div id="map-badge-nl"  class="map-badge" style="display:none"><div class="mb-dot"></div><div class="mb-label"><div class="mb-name">Netherlands</div><div class="mb-role">Amsterdam</div></div></div>
- <div id="map-badge-jp"  class="map-badge" style="display:none"><div class="mb-dot"></div><div class="mb-label"><div class="mb-name">Japan</div><div class="mb-role">Tokyo</div></div></div>
+       <!-- header bar -->
+       <div class="tg-map-hdr">
+         <span class="tg-map-title">
+           <i class="fas fa-route" style="color:#c9a84c;margin-right:7px"></i>T&TG Trade Routes
+         </span>
+         <span class="tg-live-ind"><span class="tg-live-dot"></span>Live</span>
+       </div>
 
- <!-- footer bar -->
- <div class="tg-map-ftr">
- <span> CAD/UGX</span>
- <span> CAD/KES</span>
- <span> UGX/KES</span>
- </div>
+       <!-- map canvas -->
+       <canvas id="worldMap" data-parallax="0.08"></canvas>
 
- </div>
+       <!-- country badges -->
+       <div id="map-badge-ca"  class="map-badge" style="display:none"><div class="mb-dot"></div><div class="mb-label"><div class="mb-name">Canada</div><div class="mb-role">HQ · Toronto</div></div></div>
+       <div id="map-badge-us"  class="map-badge" style="display:none"><div class="mb-dot"></div><div class="mb-label"><div class="mb-name">USA</div><div class="mb-role">Ohio</div></div></div>
+       <div id="map-badge-ug"  class="map-badge" style="display:none"><div class="mb-dot"></div><div class="mb-label"><div class="mb-name">Uganda</div><div class="mb-role">Kampala</div></div></div>
+       <div id="map-badge-ke"  class="map-badge" style="display:none"><div class="mb-dot"></div><div class="mb-label"><div class="mb-name">Kenya</div><div class="mb-role">Nairobi</div></div></div>
+       <div id="map-badge-nl"  class="map-badge" style="display:none"><div class="mb-dot"></div><div class="mb-label"><div class="mb-name">Netherlands</div><div class="mb-role">Amsterdam</div></div></div>
+       <div id="map-badge-jp"  class="map-badge" style="display:none"><div class="mb-dot"></div><div class="mb-label"><div class="mb-name">Japan</div><div class="mb-role">Tokyo</div></div></div>
+
+       <!-- footer bar -->
+       <div class="tg-map-ftr">
+         <span><i class="fas fa-exchange-alt" style="margin-right:4px"></i>CAD/UGX</span>
+         <span><i class="fas fa-exchange-alt" style="margin-right:4px"></i>CAD/KES</span>
+         <span><i class="fas fa-exchange-alt" style="margin-right:4px"></i>UGX/KES</span>
+       </div>
+
+     </div>
+   </div>
+
  </div>
 
  </div>
@@ -1059,12 +1079,39 @@
  }, {passive:true});
  }
 
- /* start after page load so D3 scripts are ready */
- if (document.readyState === 'complete') {
- loadMap();
- } else {
- window.addEventListener('load', loadMap);
- }
+ /* Lazy init — triggered when user clicks the reveal button */
+ window.tgRevealMap = (function() {
+   var triggered = false;
+   return function() {
+     if (triggered) return;
+     triggered = true;
+     var area = document.getElementById('mapRevealArea');
+     var container = document.getElementById('mapContainer');
+     if (!container) return;
+     /* fade out button */
+     if (area) { area.style.transition = 'opacity .22s'; area.style.opacity = '0'; }
+     setTimeout(function() {
+       if (area) area.style.display = 'none';
+       /* show map container, then animate in */
+       container.style.display = 'block';
+       container.style.opacity = '0';
+       container.style.transform = 'translateY(18px)';
+       container.style.transition = 'opacity .45s ease, transform .45s ease';
+       requestAnimationFrame(function() {
+         requestAnimationFrame(function() {
+           container.style.opacity = '1';
+           container.style.transform = 'translateY(0)';
+         });
+       });
+       /* now init D3 — box is in DOM with real dimensions */
+       if (document.readyState === 'complete') {
+         loadMap();
+       } else {
+         window.addEventListener('load', loadMap, {once:true});
+       }
+     }, 250);
+   };
+ })();
 
 })();
 </script>

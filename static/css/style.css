@@ -692,6 +692,47 @@ input::placeholder, textarea::placeholder, select::placeholder {
   display: flex; align-items: center; justify-content: center;
   padding: 48px 0 48px 32px;
 }
+
+/* ── Map lazy-reveal button ── */
+.tg-map-reveal-area {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; gap: 20px;
+}
+.tg-map-reveal-eyebrow {
+  font-size: .65rem; font-weight: 800;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold); opacity: .7;
+}
+.tg-map-reveal-btn {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 15px 32px;
+  border: 1.5px solid rgba(201,168,76,.55);
+  border-radius: 100px;
+  background: rgba(201,168,76,.07);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: .92rem; font-weight: 700; letter-spacing: .5px;
+  cursor: pointer;
+  transition: background .25s, border-color .25s, box-shadow .25s, transform .2s;
+  box-shadow: 0 0 0 0 rgba(201,168,76,0);
+}
+.tg-map-reveal-btn:hover {
+  background: rgba(201,168,76,.16);
+  border-color: rgba(201,168,76,.9);
+  box-shadow: 0 0 28px rgba(201,168,76,.2);
+  transform: translateY(-2px);
+}
+.tg-map-reveal-btn i:first-child { color: #c9a84c; font-size: 1rem; }
+.tg-mrb-arrow {
+  font-size: .7rem; color: rgba(201,168,76,.55);
+  transition: transform .25s;
+}
+.tg-map-reveal-btn:hover .tg-mrb-arrow { transform: translateX(4px); }
+.tg-map-reveal-hint {
+  font-size: .72rem; color: var(--text-muted);
+  line-height: 1.6; margin: 0; max-width: 230px;
+}
 .tg-map-box {
   position: relative; width: 100%; max-width: 580px;
   border-radius: 20px; overflow: hidden;
