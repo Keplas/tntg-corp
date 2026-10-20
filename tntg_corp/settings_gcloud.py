@@ -12,6 +12,7 @@ ALLOWED_HOSTS = [
     'tomtradecorp.com',
     'www.tomtradecorp.com',
     '.run.app',
+    '.onrender.com',          # Render deployments
     '127.0.0.1',
     'localhost',
 ]
@@ -20,6 +21,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://tomtradecorp.com',
     'https://www.tomtradecorp.com',
     'https://*.run.app',
+    'https://*.onrender.com',  # Render deployments
 ]
 
 # ── Database — Cloud SQL (PostgreSQL) ─────────────────────────────────────────
@@ -108,4 +110,5 @@ SOCIALACCOUNT_PROVIDERS = {
 import dj_database_url as _dj_db
 _neon_url = os.environ.get('DATABASE_URL', '')
 if _neon_url and _neon_url.startswith('postgresql'):
-    DATABASES = {'default': _dj_db.parse(_neon_url, conn_max_age=600, ssl_require=True)}
+    # ssl_require is NOT set here — Supabase Session pooler encodes sslmode in the URL itself
+    DATABASES = {'default': _dj_db.parse(_neon_url, conn_max_age=600)}
