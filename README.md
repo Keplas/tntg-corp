@@ -35,6 +35,5 @@ python manage.py runserver
 - Partner Company registration
 
 ## Founder: Tom Ssembiito
-## Software Engineer: Edgar Kitayimbwa
 ## Headquarters: M1G 1L8, Toronto, ON, Canada
 ## Tel: +1 (416) 832 3512
