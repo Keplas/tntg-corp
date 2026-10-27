@@ -12,7 +12,8 @@ ALLOWED_HOSTS = [
     'tomtradecorp.com',
     'www.tomtradecorp.com',
     '.run.app',
-    '.onrender.com',          # Render deployments
+    '.a.run.app',             # Cloud Run service URLs (tntg-corp-xxxx-ue.a.run.app)
+    '.onrender.com',
     '127.0.0.1',
     'localhost',
 ]
@@ -21,7 +22,8 @@ CSRF_TRUSTED_ORIGINS = [
     'https://tomtradecorp.com',
     'https://www.tomtradecorp.com',
     'https://*.run.app',
-    'https://*.onrender.com',  # Render deployments
+    'https://*.a.run.app',    # Cloud Run service URLs (multi-level subdomain)
+    'https://*.onrender.com',
 ]
 
 # ── Database — Cloud SQL (PostgreSQL) ─────────────────────────────────────────
