@@ -6,7 +6,7 @@ from .settings import *
 import os
 
 # ── Security ──────────────────────────────────────────────────────────────────
-DEBUG = False
+DEBUG = os.environ.get('DJANGO_DEBUG', 'false').lower() == 'true'
 SECRET_KEY = os.environ.get('SECRET_KEY', SECRET_KEY)
 ALLOWED_HOSTS = [
     'tomtradecorp.com',
@@ -109,9 +109,12 @@ SOCIALACCOUNT_PROVIDERS = {
 # ── Neon/Supabase PostgreSQL support (DATABASE_URL format) ────────────────
 import dj_database_url as _dj_db
 _neon_url = os.environ.get('DATABASE_URL', '')
-if _neon_url and _neon_url.startswith('postgresql'):
-    # ssl_require is NOT set here — Supabase Session pooler encodes sslmode in the URL itself
-    DATABASES = {'default': _dj_db.parse(_neon_url, conn_max_age=600)}
+if _neon_url and _neon_url.startswith('postgres'):
+    # Matches both postgres:// and postgresql://
+    # conn_max_age=0 — safer with Supabase pooler (avoids stale-connection 500s)
+    DATABASES = {'default': _dj_db.parse(_neon_url, conn_max_age=0)}
+
+print(f"[settings] DATABASE_URL set: {bool(_neon_url)} | DB host: {DATABASES['default'].get('HOST','?')}")
 
 # ── Disable django-axes on Cloud Run ──────────────────────────────────────
 # login_view has its own lockout logic via CustomUser.locked_until.

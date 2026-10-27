@@ -472,6 +472,63 @@ def exchange_rates_api(request):
     })
 
 
+def db_health(request):
+    """Staff-only: shows DB connection + table status to diagnose 500s."""
+    from django.contrib.admin.views.decorators import staff_member_required
+    from django.db import connection
+    import traceback, os
+
+    # Allow unauthenticated access only with a secret token (env var) for first-run debugging
+    secret = os.environ.get('HEALTH_TOKEN', '')
+    token_ok = secret and request.GET.get('token') == secret
+
+    if not request.user.is_staff and not token_ok:
+        from django.http import HttpResponseForbidden
+        return HttpResponseForbidden("Staff only")
+
+    lines = []
+    lines.append(f"DB ENGINE : {connection.settings_dict.get('ENGINE')}")
+    lines.append(f"DB HOST   : {connection.settings_dict.get('HOST')}")
+    lines.append(f"DB NAME   : {connection.settings_dict.get('NAME')}")
+    lines.append("")
+
+    # Try a raw connection
+    try:
+        with connection.cursor() as cur:
+            cur.execute("SELECT version()")
+            version = cur.fetchone()[0]
+        lines.append(f"DB CONNECT: OK — {version}")
+    except Exception as e:
+        lines.append(f"DB CONNECT: FAILED — {e}")
+
+    lines.append("")
+
+    # Check key tables
+    tables_to_check = [
+        'django_session', 'django_migrations',
+        'accounts_customuser', 'accounts_avonpointtransaction',
+        'core_loyaltysettings', 'core_notification', 'core_blogpost',
+        'marketplace_product', 'marketplace_order',
+        'training_trainingprogram', 'training_trainingevent',
+        'axes_accessattempt', 'axes_accesslog',
+        'django_site', 'socialaccount_socialapp',
+    ]
+    try:
+        with connection.cursor() as cur:
+            cur.execute(
+                "SELECT tablename FROM pg_tables WHERE schemaname='public' ORDER BY tablename"
+            )
+            existing = {row[0] for row in cur.fetchall()}
+        for t in tables_to_check:
+            status = "OK" if t in existing else "MISSING"
+            lines.append(f"  {status:7}  {t}")
+    except Exception as e:
+        lines.append(f"Table check failed: {e}")
+        lines.append(traceback.format_exc())
+
+    return HttpResponse("\n".join(lines), content_type="text/plain")
+
+
 def error_404(request, exception=None):
     return render(request, '404.html', status=404)
 

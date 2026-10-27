@@ -32,4 +32,6 @@ urlpatterns = [
     path('set-language/', views.set_language,        name='set_language'),
     path('blog/',             views.blog_list,   name='blog_list'),
     path('blog/<slug:slug>/', views.blog_detail, name='blog_detail'),
+    # Staff-only diagnostics — shows DB table status, never cached
+    path('health/', views.db_health, name='db_health'),
 ]
