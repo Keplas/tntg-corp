@@ -17,18 +17,25 @@ for attempt in range(5):
     print(f"  Migration attempt {attempt + 1}/5 ...")
     result = subprocess.run(
         [sys.executable, "manage.py", "migrate", "--noinput"],
-        capture_output=False
+        capture_output=True,
+        text=True,
     )
     if result.returncode == 0:
         print("Migrations OK")
+        if result.stdout:
+            print(result.stdout[-2000:])  # last 2 KB of output
         migration_ok = True
         break
     wait = (attempt + 1) * 5   # 5, 10, 15, 20, 25 seconds
-    print(f"  Migration attempt {attempt+1} failed — retrying in {wait}s ...")
+    print(f"  Migration attempt {attempt+1} failed (exit {result.returncode}) — retrying in {wait}s ...")
+    if result.stdout:
+        print("STDOUT:", result.stdout[-1000:])
+    if result.stderr:
+        print("STDERR:", result.stderr[-1000:])
     time.sleep(wait)
 
 if not migration_ok:
-    print("WARNING: migrations could not be applied — starting anyway")
+    print("ERROR: all 5 migration attempts failed — starting anyway (tables may be missing)")
 
 # Create cache table — non-fatal
 subprocess.run([sys.executable, "manage.py", "createcachetable"], capture_output=False)

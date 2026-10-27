@@ -106,9 +106,20 @@ SOCIALACCOUNT_PROVIDERS = {
     },
 }
 
-# ── Neon PostgreSQL support (DATABASE_URL format) ─────────────────────────
+# ── Neon/Supabase PostgreSQL support (DATABASE_URL format) ────────────────
 import dj_database_url as _dj_db
 _neon_url = os.environ.get('DATABASE_URL', '')
 if _neon_url and _neon_url.startswith('postgresql'):
     # ssl_require is NOT set here — Supabase Session pooler encodes sslmode in the URL itself
     DATABASES = {'default': _dj_db.parse(_neon_url, conn_max_age=600)}
+
+# ── Disable django-axes on Cloud Run ──────────────────────────────────────
+# login_view has its own lockout logic via CustomUser.locked_until.
+# Axes needs its DB tables migrated before any request — remove it from the
+# request path so a failed/slow first migration doesn't 500 on sign-in.
+MIDDLEWARE = [m for m in MIDDLEWARE if m != 'axes.middleware.AxesMiddleware']
+AUTHENTICATION_BACKENDS = [
+    b for b in AUTHENTICATION_BACKENDS
+    if b != 'axes.backends.AxesStandaloneBackend'
+]
+# Keep 'axes' in INSTALLED_APPS so its migrations still run normally.
