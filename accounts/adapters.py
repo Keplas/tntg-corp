@@ -56,10 +56,11 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
     def pre_social_login(self, request, sociallogin):
         """Connect social account to existing account if email matches.
 
-        Runs before allauth creates a new user.  If the social login's email
-        already belongs to an existing account we connect them here, which
-        prevents allauth from trying to INSERT a second primary email row and
-        hitting the unique_primary_email constraint.
+        Runs before allauth creates a new user.  We need to:
+        1. Find the existing user by email
+        2. Ensure account_emailaddress has a row for them (get_or_create)
+        3. Connect the social login — this sets is_existing=True so allauth
+           skips process_signup() and never tries to INSERT a duplicate email.
         """
         import logging
         logger = logging.getLogger(__name__)
@@ -68,9 +69,8 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
             return
 
         # Prefer allauth's parsed email list (reliable for all providers).
-        # Fall back to extra_data only if the list is empty.
         email = None
-        for ea in sociallogin.email_addresses:
+        for ea in (sociallogin.email_addresses or []):
             if ea.primary or email is None:
                 email = ea.email
         if not email:
@@ -79,15 +79,38 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         if not email:
             return
 
+        from django.contrib.auth import get_user_model
+        from allauth.account.models import EmailAddress
+
+        User = get_user_model()
+
+        # Try to find via EmailAddress table first
         try:
-            from allauth.account.models import EmailAddress
-            existing = EmailAddress.objects.get(email__iexact=email)
-            sociallogin.connect(request, existing.user)
-            logger.info(f'pre_social_login: connected {email} to existing user {existing.user_id}')
+            ea = EmailAddress.objects.get(email__iexact=email, primary=True)
+            sociallogin.connect(request, ea.user)
+            logger.info(f'pre_social_login: connected {email} via EmailAddress to user {ea.user_id}')
+            return
         except EmailAddress.DoesNotExist:
-            pass  # New email — let allauth create the account normally
+            pass
         except Exception as exc:
-            logger.error(f'pre_social_login error for {email}: {exc}')
+            logger.error(f'pre_social_login EmailAddress lookup error: {exc}')
+            return
+
+        # Fall back: user exists in accounts_customuser but has no EmailAddress row
+        try:
+            user = User.objects.get(email__iexact=email)
+            # Ensure the EmailAddress row exists so allauth won't INSERT it
+            EmailAddress.objects.get_or_create(
+                user=user,
+                email=email,
+                defaults={'primary': True, 'verified': True},
+            )
+            sociallogin.connect(request, user)
+            logger.info(f'pre_social_login: connected {email} via CustomUser to user {user.pk}')
+        except User.DoesNotExist:
+            pass  # Genuinely new user — allauth handles signup normally
+        except Exception as exc:
+            logger.error(f'pre_social_login fallback error for {email}: {exc}')
 
 
 class CustomMFAAdapter:
