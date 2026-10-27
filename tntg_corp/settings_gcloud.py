@@ -26,18 +26,9 @@ CSRF_TRUSTED_ORIGINS = [
     'https://*.onrender.com',
 ]
 
-# ── Database — Cloud SQL (PostgreSQL) ─────────────────────────────────────────
-# Cloud SQL Database — overrides base settings.py
-DATABASES = {
-    'default': {
-        'ENGINE':   'django.db.backends.postgresql',
-        'NAME':     os.environ.get('DB_NAME',     'tntg_db'),
-        'USER':     os.environ.get('DB_USER',     'postgres'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-        'HOST':     os.environ.get('DB_HOST',     '/cloudsql/tomgrouptrade:us-east1:tntg-db'),
-        'PORT':     os.environ.get('DB_PORT',     '5432'),
-    }
-}
+# ── Database — Supabase (set DATABASE_URL in Cloud Run env vars) ──────────────
+# Cloud SQL was deleted; Supabase is now the only DB.
+# DATABASE_URL is parsed below after all other settings.
 
 # ── Static Files — Cloud Storage ──────────────────────────────────────────────
 GCS_BUCKET = os.environ.get('GCS_BUCKET_NAME', '')
