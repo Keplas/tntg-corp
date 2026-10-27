@@ -99,13 +99,27 @@ SOCIALACCOUNT_PROVIDERS = {
     },
 }
 
-# ── Neon/Supabase PostgreSQL support (DATABASE_URL format) ────────────────
+# ── Supabase PostgreSQL (DATABASE_URL is required) ────────────────────────
 import dj_database_url as _dj_db
 _neon_url = os.environ.get('DATABASE_URL', '')
 if _neon_url and _neon_url.startswith('postgres'):
-    # Matches both postgres:// and postgresql://
-    # conn_max_age=0 — safer with Supabase pooler (avoids stale-connection 500s)
+    # conn_max_age=0  — transaction pooler (port 5432) opens a new connection
+    #                   per request; persistent connections cause "prepared
+    #                   statement already exists" errors on the pooler.
     DATABASES = {'default': _dj_db.parse(_neon_url, conn_max_age=0)}
+    # Supabase transaction pooler does not support server-side cursors.
+    DATABASES['default']['DISABLE_SERVER_SIDE_CURSORS'] = True
+    # Force SSL — required by Supabase.
+    DATABASES['default'].setdefault('OPTIONS', {})['sslmode'] = 'require'
+else:
+    # DATABASE_URL missing — refuse to start silently on the wrong DB.
+    import sys
+    print("[settings] FATAL: DATABASE_URL env var is not set. "
+          "Set it in Cloud Run → Edit & Deploy → Variables & Secrets. "
+          "Value: postgresql://postgres.<ref>:<password>@aws-1-ca-central-1.pooler.supabase.com:5432/postgres",
+          file=sys.stderr)
+    # Leave DATABASES as whatever base settings.py gave us (SQLite fallback)
+    # so the process starts and the error is visible in Cloud Run logs.
 
 print(f"[settings] DATABASE_URL set: {bool(_neon_url)} | DB host: {DATABASES['default'].get('HOST','?')}")
 
