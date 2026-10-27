@@ -182,6 +182,8 @@ def _get_moneris_token():
     if _moneris_token_cache['token'] and now < _moneris_token_cache['expires_at']:
         return _moneris_token_cache['token']
 
+    import logging
+    logger = logging.getLogger(__name__)
     env = MONERIS_ENVIRONMENT if MONERIS_ENVIRONMENT in ('sandbox', 'production') else 'sandbox'
     resp = requests.post(
         _MONERIS_TOKEN_URL[env],
@@ -193,6 +195,7 @@ def _get_moneris_token():
         },
         timeout=10,
     )
+    logger.info(f'[Moneris] token status={resp.status_code} env={env} body={resp.text[:300]}')
     resp.raise_for_status()
     body = resp.json()
     token = body['access_token']
@@ -247,6 +250,8 @@ def create_moneris_checkout_session(order, success_url, cancel_url):
         'description': f'T&TG Order #{order.pk} — {order.product.name} x{order.quantity}',
     }
 
+    import logging
+    logger = logging.getLogger(__name__)
     try:
         resp = requests.post(
             f'{_MONERIS_API_BASE[env]}/checkout/v1/session',
@@ -254,6 +259,9 @@ def create_moneris_checkout_session(order, success_url, cancel_url):
             headers=headers,
             timeout=15,
         )
+        logger.info(f'[Moneris] checkout session status={resp.status_code} body={resp.text[:500]}')
+        if not resp.text.strip():
+            return None, f'Moneris returned empty response (HTTP {resp.status_code}). Check credentials and environment setting.'
         data = resp.json()
         # The ticket may be at top-level or nested under 'data'
         ticket = (data.get('ticket')
@@ -263,11 +271,12 @@ def create_moneris_checkout_session(order, success_url, cancel_url):
             msg = (data.get('message')
                    or data.get('error')
                    or data.get('data', {}).get('message')
-                   or f'Moneris returned: {resp.status_code}')
+                   or f'Moneris returned: {resp.status_code} {resp.text[:200]}')
             return None, f'Moneris checkout failed: {msg}'
         checkout_url = f'{_MONERIS_CHECKOUT_HOST[env]}?id={ticket}'
         return checkout_url, None
     except Exception as e:
+        logger.error(f'[Moneris] checkout exception: {e} | status={getattr(resp, "status_code", "?")} | body={getattr(resp, "text", "")[:300]}')
         return None, f'Moneris payment setup failed: {e}'
 
 
