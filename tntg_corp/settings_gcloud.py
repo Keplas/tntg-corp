@@ -122,9 +122,11 @@ print(f"[settings] DATABASE_URL set: {bool(_neon_url)} | DB host: {DATABASES['de
 # login_view has its own lockout logic via CustomUser.locked_until.
 # Axes needs its DB tables migrated before any request — remove it from the
 # request path so a failed/slow first migration doesn't 500 on sign-in.
+# Set backends explicitly so FlexAuthBackend (email/phone login) is included.
 MIDDLEWARE = [m for m in MIDDLEWARE if m != 'axes.middleware.AxesMiddleware']
 AUTHENTICATION_BACKENDS = [
-    b for b in AUTHENTICATION_BACKENDS
-    if b != 'axes.backends.AxesStandaloneBackend'
+    'accounts.backends.FlexAuthBackend',           # username / email / phone
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 # Keep 'axes' in INSTALLED_APPS so its migrations still run normally.

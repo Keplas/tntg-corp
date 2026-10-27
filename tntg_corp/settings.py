@@ -96,11 +96,7 @@ LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/accounts/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 
-# Allows login with username, email, or phone number.
-AUTHENTICATION_BACKENDS = [
-    'accounts.backends.FlexAuthBackend',
-    'django.contrib.auth.backends.ModelBackend',
-]
+# Full backends list is defined below (after allauth imports are settled).
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -183,8 +179,11 @@ CACHES = {
 SITE_ID = 1
 
 # ── Authentication backends ───────────────────────────────────────────────────
+# NOTE: FlexAuthBackend (line ~100) is the first definition; this one was
+# duplicating it without FlexAuth. Consolidated here — FlexAuth must come first.
 AUTHENTICATION_BACKENDS = [
-    'axes.backends.AxesStandaloneBackend',
+    'accounts.backends.FlexAuthBackend',          # username / email / phone
+    'axes.backends.AxesStandaloneBackend',         # rate-limiting (local/dev)
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
