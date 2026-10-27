@@ -54,18 +54,40 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         return user
 
     def pre_social_login(self, request, sociallogin):
-        """Connect social account to existing account if email matches"""
+        """Connect social account to existing account if email matches.
+
+        Runs before allauth creates a new user.  If the social login's email
+        already belongs to an existing account we connect them here, which
+        prevents allauth from trying to INSERT a second primary email row and
+        hitting the unique_primary_email constraint.
+        """
+        import logging
+        logger = logging.getLogger(__name__)
+
         if sociallogin.is_existing:
             return
+
+        # Prefer allauth's parsed email list (reliable for all providers).
+        # Fall back to extra_data only if the list is empty.
+        email = None
+        for ea in sociallogin.email_addresses:
+            if ea.primary or email is None:
+                email = ea.email
+        if not email:
+            email = sociallogin.account.extra_data.get('email', '') or ''
+        email = email.lower().strip()
+        if not email:
+            return
+
         try:
             from allauth.account.models import EmailAddress
-            email = sociallogin.account.extra_data.get('email', '') or ''
-            email = email.lower().strip()
-            if email:
-                existing = EmailAddress.objects.get(email__iexact=email)
-                sociallogin.connect(request, existing.user)
-        except Exception:
-            pass  # New user - proceed to signup
+            existing = EmailAddress.objects.get(email__iexact=email)
+            sociallogin.connect(request, existing.user)
+            logger.info(f'pre_social_login: connected {email} to existing user {existing.user_id}')
+        except EmailAddress.DoesNotExist:
+            pass  # New email — let allauth create the account normally
+        except Exception as exc:
+            logger.error(f'pre_social_login error for {email}: {exc}')
 
 
 class CustomMFAAdapter:

@@ -125,13 +125,20 @@ print(f"[settings] DATABASE_URL set: {bool(_neon_url)} | DB host: {DATABASES['de
 
 # ── Disable django-axes on Cloud Run ──────────────────────────────────────
 # login_view has its own lockout logic via CustomUser.locked_until.
-# Axes needs its DB tables migrated before any request — remove it from the
-# request path so a failed/slow first migration doesn't 500 on sign-in.
-# Set backends explicitly so FlexAuthBackend (email/phone login) is included.
-MIDDLEWARE = [m for m in MIDDLEWARE if m != 'axes.middleware.AxesMiddleware']
+# Axes is fully removed from Cloud Run — keeping it in INSTALLED_APPS while
+# disabling only the middleware still fires its Django signals (user_logged_in,
+# user_login_failed), which write to axes_accesslog with a broken sequence
+# and cause 500s on every login.  Migrations already ran so the tables exist.
+INSTALLED_APPS   = [a for a in INSTALLED_APPS if a != 'axes']
+MIDDLEWARE       = [m for m in MIDDLEWARE if m != 'axes.middleware.AxesMiddleware']
 AUTHENTICATION_BACKENDS = [
     'accounts.backends.FlexAuthBackend',           # username / email / phone
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
-# Keep 'axes' in INSTALLED_APPS so its migrations still run normally.
+
+# ── Google / social login: connect to existing account by email ───────────
+# Without these, allauth creates a second user for the Google email and then
+# hits the unique_primary_email constraint on account_emailaddress.
+SOCIALACCOUNT_EMAIL_AUTHENTICATION             = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
