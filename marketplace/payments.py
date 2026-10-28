@@ -33,6 +33,7 @@ FLUTTERWAVE_API_BASE = 'https://api.flutterwave.com/v3'
 # ── Moneris ───────────────────────────────────────────────────────────────────
 MONERIS_CLIENT_ID     = os.environ.get('MONERIS_CLIENT_ID', '')
 MONERIS_CLIENT_SECRET = os.environ.get('MONERIS_CLIENT_SECRET', '')
+MONERIS_STORE_ID      = os.environ.get('MONERIS_STORE_ID', '')      # Store/Merchant ID from portal
 MONERIS_ENVIRONMENT   = os.environ.get('MONERIS_ENVIRONMENT', 'sandbox')  # 'sandbox' or 'production'
 
 _MONERIS_TOKEN_URL = {
@@ -249,6 +250,10 @@ def create_moneris_checkout_session(order, success_url, cancel_url):
         },
         'description': f'T&TG Order #{order.pk} — {order.product.name} x{order.quantity}',
     }
+    # Store/Merchant ID is required by the production Checkout API to associate
+    # the session with the correct merchant account; include it when available.
+    if MONERIS_STORE_ID:
+        payload['store_id'] = MONERIS_STORE_ID
 
     import logging
     logger = logging.getLogger(__name__)
