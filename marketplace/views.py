@@ -199,6 +199,19 @@ def market_select(request):
 # PAYMENTS — card (Stripe) and mobile money (Flutterwave)
 # ═══════════════════════════════════════════════════════════════
 
+import os as _os
+from django.http import JsonResponse
+
+def debug_moneris(request):
+    """Temporary debug endpoint — shows which Moneris env vars are set (values masked)."""
+    return JsonResponse({
+        'MONERIS_STORE_ID':    bool(_os.environ.get('MONERIS_STORE_ID', '').strip()),
+        'MONERIS_API_TOKEN':   bool(_os.environ.get('MONERIS_API_TOKEN', '').strip()),
+        'MONERIS_CHECKOUT_ID': bool(_os.environ.get('MONERIS_CHECKOUT_ID', '').strip()),
+        'MONERIS_ENVIRONMENT': _os.environ.get('MONERIS_ENVIRONMENT', '(not set)'),
+        'moneris_configured':  payments.moneris_configured(),
+    })
+
 @login_required
 def payment_select(request, pk):
     """Let the buyer choose a payment method, or pay later (cash/manual)."""
