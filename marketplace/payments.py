@@ -13,8 +13,9 @@ Required environment variables (set these on Render/Cloud Run, never commit them
     STRIPE_WEBHOOK_SECRET    — starts with whsec_...
     FLUTTERWAVE_SECRET_KEY   — starts with FLWSECK_TEST-... or FLWSECK-...
     FLUTTERWAVE_PUBLIC_KEY   — starts with FLWPUBK_TEST-... or FLWPUBK-...
-    MONERIS_CLIENT_ID        — OAuth2 client ID from Moneris developer portal
-    MONERIS_CLIENT_SECRET    — OAuth2 client secret from Moneris developer portal
+    MONERIS_STORE_ID         — Store/Merchant ID (developer.moneris.com → Access & Credentials)
+    MONERIS_API_TOKEN        — API token (developer.moneris.com → Subscriptions / API key)
+    MONERIS_CHECKOUT_ID      — Checkout ID (Moneris Merchant Resource Centre → Admin → Moneris Checkout)
     MONERIS_ENVIRONMENT      — 'sandbox' (default) or 'production'
 """
 import os
@@ -31,27 +32,32 @@ FLUTTERWAVE_PUBLIC_KEY = os.environ.get('FLUTTERWAVE_PUBLIC_KEY', '')
 FLUTTERWAVE_API_BASE = 'https://api.flutterwave.com/v3'
 
 # ── Moneris ───────────────────────────────────────────────────────────────────
-MONERIS_CLIENT_ID     = os.environ.get('MONERIS_CLIENT_ID', '')
-MONERIS_CLIENT_SECRET = os.environ.get('MONERIS_CLIENT_SECRET', '')
-MONERIS_STORE_ID      = os.environ.get('MONERIS_STORE_ID', '')      # Store/Merchant ID from portal
-MONERIS_ENVIRONMENT   = os.environ.get('MONERIS_ENVIRONMENT', 'sandbox')  # 'sandbox' or 'production'
+# Moneris Checkout uses store_id + api_token + checkout_id directly in the
+# request body — NOT OAuth2.  OAuth2 is a separate Moneris API product.
+#
+# How to get each credential:
+#   MONERIS_STORE_ID    → developer.moneris.com → Access & Credentials
+#                         → Store/Merchant ID
+#   MONERIS_API_TOKEN   → developer.moneris.com → Access & Credentials
+#                         → Subscriptions (API key)
+#   MONERIS_CHECKOUT_ID → Moneris Merchant Resource Centre (moneris.com login)
+#                         → Admin → Moneris Checkout → generate a Checkout ID
+#   MONERIS_ENVIRONMENT → 'sandbox' (default) or 'production'
+MONERIS_STORE_ID      = os.environ.get('MONERIS_STORE_ID', '')
+MONERIS_API_TOKEN     = os.environ.get('MONERIS_API_TOKEN', '')
+MONERIS_CHECKOUT_ID   = os.environ.get('MONERIS_CHECKOUT_ID', '')
+MONERIS_ENVIRONMENT   = os.environ.get('MONERIS_ENVIRONMENT', 'sandbox')
 
-_MONERIS_TOKEN_URL = {
-    'sandbox':    'https://api.sb.moneris.io/oauth2/token',
-    'production': 'https://api.moneris.io/oauth2/token',
+# Preload endpoint — server-to-server call that returns a ticket
+_MONERIS_PRELOAD_URL = {
+    'sandbox':    'https://gatewayt.moneris.com/chktv2/request/request.php',
+    'production': 'https://gateway.moneris.com/chktv2/request/request.php',
 }
-_MONERIS_API_BASE = {
-    'sandbox':    'https://api.sb.moneris.io',
-    'production': 'https://api.moneris.io',
-}
-# Hosted checkout redirect base (buyer is sent here with ?id=<ticket>)
+# Hosted checkout page — buyer is redirected here with ?id=<ticket>
 _MONERIS_CHECKOUT_HOST = {
     'sandbox':    'https://gatewayt.moneris.com/chkt/request/request.php',
     'production': 'https://gateway.moneris.com/chkt/request/request.php',
 }
-
-# In-process token cache so we don't re-fetch for every request
-_moneris_token_cache = {'token': '', 'expires_at': 0}
 
 
 def stripe_configured():
@@ -166,150 +172,118 @@ def verify_flutterwave_transaction(transaction_id):
 
 
 # ════════════════════════════════════════════════════════════════════════════════
-# MONERIS — Canadian card processing (OAuth 2.0 + Hosted Checkout)
+# MONERIS — Canadian card processing (Hosted Checkout v2)
+#
+# Authentication: store_id + api_token + checkout_id in the request body.
+# No OAuth2 — that is a separate Moneris product.
 # ════════════════════════════════════════════════════════════════════════════════
 
 def moneris_configured():
-    return bool(MONERIS_CLIENT_ID and MONERIS_CLIENT_SECRET)
-
-
-def _get_moneris_token():
-    """
-    Fetch a Moneris OAuth2 access token using client_credentials.
-    Caches the token in-process until 60 seconds before expiry.
-    """
-    import time
-    now = time.time()
-    if _moneris_token_cache['token'] and now < _moneris_token_cache['expires_at']:
-        return _moneris_token_cache['token']
-
-    import logging
-    logger = logging.getLogger(__name__)
-    env = MONERIS_ENVIRONMENT if MONERIS_ENVIRONMENT in ('sandbox', 'production') else 'sandbox'
-    resp = requests.post(
-        _MONERIS_TOKEN_URL[env],
-        data={
-            'grant_type':    'client_credentials',
-            'client_id':     MONERIS_CLIENT_ID,
-            'client_secret': MONERIS_CLIENT_SECRET,
-            'scope':         'payment.write',
-        },
-        timeout=10,
-    )
-    logger.info(f'[Moneris] token status={resp.status_code} env={env} body={resp.text[:300]}')
-    resp.raise_for_status()
-    body = resp.json()
-    token = body['access_token']
-    expires_in = int(body.get('expires_in', 3600))
-    _moneris_token_cache['token'] = token
-    _moneris_token_cache['expires_at'] = now + expires_in - 60  # 60 s safety margin
-    return token
+    return bool(MONERIS_STORE_ID and MONERIS_API_TOKEN and MONERIS_CHECKOUT_ID)
 
 
 def create_moneris_checkout_session(order, success_url, cancel_url):
     """
-    Create a Moneris hosted-checkout session.
-    Returns (redirect_url, error).  On misconfiguration redirect_url is None.
+    Create a Moneris Hosted Checkout v2 preload ticket.
+    Returns (redirect_url, error).  redirect_url is None on failure.
 
-    The checkout page URL takes the form:
+    Buyer is redirected to:
         https://gatewayt.moneris.com/chkt/request/request.php?id=<ticket>  (sandbox)
         https://gateway.moneris.com/chkt/request/request.php?id=<ticket>   (production)
     """
     if not moneris_configured():
-        return None, ('Moneris card payments are not yet configured. '
-                      'Please choose Mobile Money or Bank Transfer.')
-    env = MONERIS_ENVIRONMENT if MONERIS_ENVIRONMENT in ('sandbox', 'production') else 'sandbox'
-    try:
-        token = _get_moneris_token()
-    except Exception as e:
-        return None, f'Moneris authentication failed: {e}'
-
-    currency = (order.display_currency or 'CAD').upper()
-    # Moneris only processes CAD and USD natively; fall back to CAD for others
-    if currency not in ('CAD', 'USD'):
-        currency = 'CAD'
-
-    amount = str(
-        order.display_total if order.display_currency == currency else order.total_price
-    )
-
-    headers = {
-        'Authorization': f'Bearer {token}',
-        'Content-Type':  'application/json',
-    }
-    payload = {
-        'amount':       amount,
-        'currency':     currency,
-        'order_id':     f'TNTG-{order.pk}',
-        'redirect_url': success_url,
-        'cancel_url':   cancel_url,
-        'billing': {
-            'email':      order.buyer.email or '',
-            'first_name': order.buyer.first_name or order.buyer.username,
-            'last_name':  order.buyer.last_name or '',
-        },
-        'description': f'T&TG Order #{order.pk} — {order.product.name} x{order.quantity}',
-    }
-    # Store/Merchant ID is required by the production Checkout API to associate
-    # the session with the correct merchant account; include it when available.
-    if MONERIS_STORE_ID:
-        payload['store_id'] = MONERIS_STORE_ID
+        return None, (
+            'Moneris card payments are not yet configured. '
+            'Set MONERIS_STORE_ID, MONERIS_API_TOKEN and MONERIS_CHECKOUT_ID '
+            'in Cloud Run env vars.'
+        )
 
     import logging
     logger = logging.getLogger(__name__)
+    env = MONERIS_ENVIRONMENT if MONERIS_ENVIRONMENT in ('sandbox', 'production') else 'sandbox'
+
+    # Moneris only processes CAD; format amount as "10.00"
+    try:
+        txn_total = f'{float(order.total_price):.2f}'
+    except Exception:
+        txn_total = str(order.total_price)
+
+    payload = {
+        'store_id':    MONERIS_STORE_ID,
+        'api_token':   MONERIS_API_TOKEN,
+        'checkout_id': MONERIS_CHECKOUT_ID,
+        'txn_total':   txn_total,
+        'environment': 'prod' if env == 'production' else 'qa',
+        'action':      'preload',
+        'order_no':    f'TNTG-{order.pk}',
+        'cust_id':     order.buyer.email or str(order.buyer.pk),
+        'dynamic_descriptor': f'T&TG Order #{order.pk}',
+        'language':    'en',
+        'return_url':  success_url,
+        'cancel_url':  cancel_url,
+        'bill_first_name': order.buyer.first_name or order.buyer.username,
+        'bill_last_name':  order.buyer.last_name or '',
+        'bill_email':      order.buyer.email or '',
+    }
+
     try:
         resp = requests.post(
-            f'{_MONERIS_API_BASE[env]}/checkout/v1/session',
+            _MONERIS_PRELOAD_URL[env],
             json=payload,
-            headers=headers,
+            headers={'Content-Type': 'application/json'},
             timeout=15,
         )
-        logger.info(f'[Moneris] checkout session status={resp.status_code} body={resp.text[:500]}')
+        logger.info(f'[Moneris] preload status={resp.status_code} env={env} body={resp.text[:500]}')
         if not resp.text.strip():
-            return None, f'Moneris returned empty response (HTTP {resp.status_code}). Check credentials and environment setting.'
+            return None, f'Moneris returned empty response (HTTP {resp.status_code}).'
         data = resp.json()
-        # The ticket may be at top-level or nested under 'data'
-        ticket = (data.get('ticket')
-                  or data.get('data', {}).get('ticket')
-                  or data.get('response', {}).get('ticket'))
-        if not ticket:
-            msg = (data.get('message')
-                   or data.get('error')
-                   or data.get('data', {}).get('message')
-                   or f'Moneris returned: {resp.status_code} {resp.text[:200]}')
-            return None, f'Moneris checkout failed: {msg}'
-        checkout_url = f'{_MONERIS_CHECKOUT_HOST[env]}?id={ticket}'
-        return checkout_url, None
+        # Response shape: {"response": {"success": "true", "ticket": "..."}}
+        response = data.get('response', data)
+        success = str(response.get('success', '')).lower()
+        ticket  = response.get('ticket', '')
+        if success == 'true' and ticket:
+            checkout_url = f'{_MONERIS_CHECKOUT_HOST[env]}?id={ticket}'
+            return checkout_url, None
+        error = (response.get('error')
+                 or response.get('message')
+                 or f'Moneris returned: {resp.status_code} {resp.text[:200]}')
+        logger.error(f'[Moneris] preload failed: {error}')
+        return None, f'Moneris checkout failed: {error}'
     except Exception as e:
-        logger.error(f'[Moneris] checkout exception: {e} | status={getattr(resp, "status_code", "?")} | body={getattr(resp, "text", "")[:300]}')
+        logger.error(f'[Moneris] preload exception: {e}')
         return None, f'Moneris payment setup failed: {e}'
 
 
 def verify_moneris_payment(ticket):
     """
-    Verify a Moneris hosted-checkout session by its ticket.
+    Verify a Moneris Hosted Checkout session by its ticket.
     Returns (paid: bool, reference: str).
     """
     if not moneris_configured() or not ticket:
         return False, ''
-    env = MONERIS_ENVIRONMENT if MONERIS_ENVIRONMENT in ('sandbox', 'production') else 'sandbox'
-    try:
-        token = _get_moneris_token()
-    except Exception:
-        return False, ''
 
-    headers = {'Authorization': f'Bearer {token}'}
+    import logging
+    logger = logging.getLogger(__name__)
+    env = MONERIS_ENVIRONMENT if MONERIS_ENVIRONMENT in ('sandbox', 'production') else 'sandbox'
+
+    payload = {
+        'store_id':    MONERIS_STORE_ID,
+        'api_token':   MONERIS_API_TOKEN,
+        'checkout_id': MONERIS_CHECKOUT_ID,
+        'ticket':      ticket,
+        'environment': 'prod' if env == 'production' else 'qa',
+        'action':      'receipt',
+    }
     try:
-        resp = requests.get(
-            f'{_MONERIS_API_BASE[env]}/checkout/v1/receipt/{ticket}',
-            headers=headers,
+        resp = requests.post(
+            _MONERIS_PRELOAD_URL[env],
+            json=payload,
+            headers={'Content-Type': 'application/json'},
             timeout=15,
         )
         data = resp.json()
-        # Receipt may be at top-level or nested under 'data' / 'receipt'
-        receipt = (data.get('receipt')
-                   or data.get('data', {}).get('receipt')
-                   or data)
+        response = data.get('response', data)
+        receipt  = response.get('receipt', response)
         if isinstance(receipt, dict):
             result = str(receipt.get('result', '')).lower()
             paid   = result in ('a', 'approved', '0', 'success', 'true')
@@ -319,5 +293,6 @@ def verify_moneris_payment(ticket):
                       or ticket)
             return paid, str(ref)
         return False, ''
-    except Exception:
+    except Exception as e:
+        logger.error(f'[Moneris] receipt exception: {e}')
         return False, ''
