@@ -37,6 +37,23 @@ steps:
       - '--update-env-vars'
       - 'DJANGO_SETTINGS_MODULE=tntg_corp.settings_gcloud'
 
+  # Prune old images — keep only the 3 most recent COMMIT_SHA tags.
+  # 'latest' is always overwritten in place so it doesn't accumulate.
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        set -e
+        IMAGE="gcr.io/$PROJECT_ID/tntg-corp"
+        # List all digest+tags sorted newest-first; skip 'latest' and the 3 most recent SHAs
+        gcloud container images list-tags $$IMAGE \
+          --filter="-tags:latest" \
+          --sort-by="~timestamp" \
+          --format="get(digest)" \
+          | tail -n +4 \
+          | xargs -I{} gcloud container images delete "$$IMAGE@{}" --quiet --force-delete-tags || true
+
 images:
   - 'gcr.io/$PROJECT_ID/tntg-corp:$COMMIT_SHA'
   - 'gcr.io/$PROJECT_ID/tntg-corp:latest'
