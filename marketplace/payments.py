@@ -179,7 +179,13 @@ def verify_flutterwave_transaction(transaction_id):
 # ════════════════════════════════════════════════════════════════════════════════
 
 def moneris_configured():
-    return bool(MONERIS_STORE_ID and MONERIS_API_TOKEN and MONERIS_CHECKOUT_ID)
+    # Re-read from os.environ each call — avoids stale module-level values
+    # if env vars were added after the first import.
+    return bool(
+        os.environ.get('MONERIS_STORE_ID', '').strip() and
+        os.environ.get('MONERIS_API_TOKEN', '').strip() and
+        os.environ.get('MONERIS_CHECKOUT_ID', '').strip()
+    )
 
 
 def create_moneris_checkout_session(order, success_url, cancel_url):
@@ -200,7 +206,13 @@ def create_moneris_checkout_session(order, success_url, cancel_url):
 
     import logging
     logger = logging.getLogger(__name__)
-    env = MONERIS_ENVIRONMENT if MONERIS_ENVIRONMENT in ('sandbox', 'production') else 'sandbox'
+    # Re-read credentials fresh — module-level vars may be stale
+    store_id    = os.environ.get('MONERIS_STORE_ID', '').strip()
+    api_token   = os.environ.get('MONERIS_API_TOKEN', '').strip()
+    checkout_id = os.environ.get('MONERIS_CHECKOUT_ID', '').strip()
+    env_setting = os.environ.get('MONERIS_ENVIRONMENT', 'sandbox').strip()
+    env = env_setting if env_setting in ('sandbox', 'production') else 'sandbox'
+    logger.info(f'[Moneris] config check: store_id={bool(store_id)} api_token={bool(api_token)} checkout_id={bool(checkout_id)} env={env}')
 
     # Moneris only processes CAD; format amount as "10.00"
     try:
@@ -209,9 +221,9 @@ def create_moneris_checkout_session(order, success_url, cancel_url):
         txn_total = str(order.total_price)
 
     payload = {
-        'store_id':    MONERIS_STORE_ID,
-        'api_token':   MONERIS_API_TOKEN,
-        'checkout_id': MONERIS_CHECKOUT_ID,
+        'store_id':    store_id,
+        'api_token':   api_token,
+        'checkout_id': checkout_id,
         'txn_total':   txn_total,
         'environment': 'prod' if env == 'production' else 'qa',
         'action':      'preload',
@@ -264,12 +276,16 @@ def verify_moneris_payment(ticket):
 
     import logging
     logger = logging.getLogger(__name__)
-    env = MONERIS_ENVIRONMENT if MONERIS_ENVIRONMENT in ('sandbox', 'production') else 'sandbox'
+    store_id    = os.environ.get('MONERIS_STORE_ID', '').strip()
+    api_token   = os.environ.get('MONERIS_API_TOKEN', '').strip()
+    checkout_id = os.environ.get('MONERIS_CHECKOUT_ID', '').strip()
+    env_setting = os.environ.get('MONERIS_ENVIRONMENT', 'sandbox').strip()
+    env = env_setting if env_setting in ('sandbox', 'production') else 'sandbox'
 
     payload = {
-        'store_id':    MONERIS_STORE_ID,
-        'api_token':   MONERIS_API_TOKEN,
-        'checkout_id': MONERIS_CHECKOUT_ID,
+        'store_id':    store_id,
+        'api_token':   api_token,
+        'checkout_id': checkout_id,
         'ticket':      ticket,
         'environment': 'prod' if env == 'production' else 'qa',
         'action':      'receipt',
