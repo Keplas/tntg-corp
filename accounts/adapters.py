@@ -99,12 +99,23 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         # Fall back: user exists in accounts_customuser but has no EmailAddress row
         try:
             user = User.objects.get(email__iexact=email)
-            # Ensure the EmailAddress row exists so allauth won't INSERT it
-            EmailAddress.objects.get_or_create(
-                user=user,
-                email=email,
-                defaults={'primary': True, 'verified': True},
-            )
+            # Use the canonical stored email casing.  get_or_create with our
+            # lowercased 'email' fails because allauth's unique_primary_email
+            # index uses Lower(), so: get("john@...") misses "John@...", then
+            # create("john@..") hits IntegrityError, then re-get also misses →
+            # Django re-raises DoesNotExist instead of returning the row.
+            canonical_email = user.email
+            from django.db import IntegrityError
+            if not EmailAddress.objects.filter(
+                user=user, email__iexact=canonical_email, primary=True
+            ).exists():
+                try:
+                    EmailAddress.objects.create(
+                        user=user, email=canonical_email,
+                        primary=True, verified=True,
+                    )
+                except IntegrityError:
+                    pass  # race condition or duplicate — row exists, safe to proceed
             sociallogin.connect(request, user)
             logger.info(f'pre_social_login: connected {email} via CustomUser to user {user.pk}')
         except User.DoesNotExist:
