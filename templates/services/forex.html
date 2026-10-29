@@ -62,7 +62,7 @@
           {% else %}
           <span class="fx-badge-stored">Stored rates</span>
           {% endif %}
-          <span id="lastUpdated" style="color:rgba(255,255,255,.3);font-size:.72rem">Updates every hour</span>
+          <span id="lastUpdated" style="color:rgba(255,255,255,.3);font-size:.72rem">Fetching live rates…</span>
         </div>
       </div>
       <div class="col-lg-4">
@@ -173,6 +173,13 @@
               <div id="convDetail" style="color:#7a6e5f;font-size:.8rem">Enter an amount above</div>
             </div>
           </div>
+          <div class="col-12" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:4px">
+            <span id="refreshCountdown" style="color:#555;font-size:.72rem"></span>
+            <button id="refreshBtn" onclick="refreshRates()"
+              style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);color:#c9a84c;border-radius:8px;padding:7px 16px;font-size:.78rem;font-weight:700;cursor:pointer">
+              <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -238,25 +245,51 @@
 
 {% block extra_js %}
 <script>
-var RATES = {};
-{% for p in pairs %}
-RATES['{{ p.from_code }}'] = RATES['{{ p.from_code }}'] || {};
-RATES['{{ p.from_code }}']['{{ p.to_code }}'] = {{ p.rate }};
+// USD-base rates — populated from live API, seeded from server render as fallback
+var USD_RATES = { USD:1.0 };
+{% for cur, rate in raw_rates.items %}USD_RATES['{{ cur }}'] = {{ rate }};
 {% endfor %}
 
+var NEXT_REFRESH = 300; // seconds countdown
+var refreshTimer;
+
+/* ── Compute any cross rate from USD base ── */
+function getCrossRate(from, to) {
+  if (from === to) return 1;
+  var f = USD_RATES[from], t = USD_RATES[to];
+  if (!f || !t) return null;
+  return t / f;
+}
+
+/* ── Format numbers nicely for each currency ── */
+function fmtAmount(val, cur) {
+  if (val === null || isNaN(val)) return '–';
+  var dp = (cur === 'UGX' || cur === 'JPY' || cur === 'KES') ? 0
+         : (val >= 100) ? 2 : 4;
+  return val.toLocaleString(undefined, {minimumFractionDigits:dp, maximumFractionDigits:dp});
+}
+function fmtRate(rate, toCur) {
+  var dp = (toCur === 'UGX' || toCur === 'KES' || toCur === 'JPY') ? 2 : 6;
+  return rate.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:dp});
+}
+
+/* ── Converter ── */
 function convert() {
-  var amt  = parseFloat(document.getElementById('convAmount').value) || 0;
+  var amt  = parseFloat(document.getElementById('convAmount').value);
   var from = document.getElementById('convFrom').value;
   var to   = document.getElementById('convTo').value;
   var res  = document.getElementById('convResult');
   var det  = document.getElementById('convDetail');
-  if (from === to) { res.textContent = amt.toLocaleString(undefined,{maximumFractionDigits:4}); det.textContent = '1 '+from+' = 1 '+to; return; }
-  var rate = (RATES[from]&&RATES[from][to]) ? RATES[from][to] : (RATES[to]&&RATES[to][from]) ? 1/RATES[to][from] : null;
-  if (rate) {
+  if (isNaN(amt) || amt === '') { res.textContent='–'; det.textContent='Enter an amount above'; return; }
+  var rate = getCrossRate(from, to);
+  if (rate !== null) {
     var result = amt * rate;
-    res.textContent = result.toLocaleString(undefined,{maximumFractionDigits:result>100?2:4})+' '+to;
-    det.textContent = '1 '+from+' = '+rate.toLocaleString(undefined,{maximumFractionDigits:rate>100?2:6})+' '+to;
-  } else { res.textContent='–'; det.textContent='Rate not available for this pair'; }
+    res.textContent = fmtAmount(result, to) + ' ' + to;
+    det.textContent = '1 ' + from + ' = ' + fmtRate(rate, to) + ' ' + to;
+  } else {
+    res.textContent = '–';
+    det.textContent = 'Rate not available — please refresh';
+  }
 }
 
 document.getElementById('convAmount').addEventListener('input', convert);
@@ -268,27 +301,56 @@ document.getElementById('swapBtn').addEventListener('click', function(){
 });
 convert();
 
+/* ── Live rate refresh ── */
 function refreshRates() {
+  var btn = document.getElementById('refreshBtn');
+  if (btn) { btn.disabled=true; btn.innerHTML='<i class="fas fa-sync-alt fa-spin"></i>'; }
   fetch('{% url "exchange_rates_api" %}')
     .then(function(r){ return r.json(); })
     .then(function(data) {
-      if (!data.pairs||!data.pairs.length) return;
-      data.pairs.forEach(function(p) {
-        var el  = document.getElementById('rate-card-'+p.from_code+'-'+p.to_code);
-        var el2 = document.getElementById('rate-label-'+p.from_code+'-'+p.to_code);
-        var el3 = document.getElementById('rate-'+p.from_code+'-'+p.to_code);
-        if(el)  el.textContent  = p.display;
-        if(el2) el2.textContent = p.display;
-        if(el3) el3.textContent = p.display;
-        RATES[p.from_code] = RATES[p.from_code] || {};
-        RATES[p.from_code][p.to_code] = parseFloat(p.rate);
-      });
+      // Update USD base rates for converter
+      if (data.rates && Object.keys(data.rates).length) {
+        USD_RATES = Object.assign({USD:1.0}, data.rates);
+      }
+      // Update rate cards + ticker
+      if (data.pairs && data.pairs.length) {
+        data.pairs.forEach(function(p) {
+          ['rate-card-','rate-label-','rate-'].forEach(function(pfx){
+            var el = document.getElementById(pfx+p.from_code+'-'+p.to_code);
+            if(el) el.textContent = p.display;
+          });
+        });
+      }
       convert();
+      var ts = new Date(data.timestamp);
       var el = document.getElementById('lastUpdated');
-      if(el) el.textContent = 'Updated: '+new Date(data.timestamp).toLocaleTimeString();
-    }).catch(function(){});
+      if(el) el.textContent = 'Live · refreshed ' + ts.toLocaleTimeString();
+      NEXT_REFRESH = 300;
+    })
+    .catch(function(){
+      var el = document.getElementById('lastUpdated');
+      if(el) el.textContent = 'Refresh failed — using cached rates';
+    })
+    .finally(function(){
+      if (btn) { btn.disabled=false; btn.innerHTML='<i class="fas fa-sync-alt"></i> Refresh'; }
+    });
 }
+
+/* ── Countdown ticker ── */
+function startCountdown() {
+  clearInterval(refreshTimer);
+  refreshTimer = setInterval(function(){
+    NEXT_REFRESH--;
+    var el = document.getElementById('refreshCountdown');
+    if (el) {
+      var m = Math.floor(NEXT_REFRESH/60), s = NEXT_REFRESH%60;
+      el.textContent = 'Next update in ' + m + ':' + (s<10?'0':'')+s;
+    }
+    if (NEXT_REFRESH <= 0) { NEXT_REFRESH=300; refreshRates(); }
+  }, 1000);
+}
+
 refreshRates();
-setInterval(refreshRates, 300000);
+startCountdown();
 </script>
 {% endblock %}
