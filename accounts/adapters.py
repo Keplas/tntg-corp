@@ -25,7 +25,7 @@ class CustomAccountAdapter(DefaultAccountAdapter):
     def get_login_redirect_url(self, request):
         user = request.user
         if user.is_staff or user.is_superuser:
-            return '/accounts/dashboard/'
+            return '/admin/'
         return '/accounts/dashboard/'
 
     def send_mail(self, template_prefix, email, context):

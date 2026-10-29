@@ -121,7 +121,12 @@ def login_view(request):
             user.locked_until   = None
             user.save(update_fields=['login_attempts', 'locked_until'])
             login(request, user, backend='accounts.backends.FlexAuthBackend')
-            return redirect(request.GET.get('next', 'dashboard'))
+            next_url = request.GET.get('next', '')
+            if next_url:
+                return redirect(next_url)
+            if user.is_staff or user.is_superuser:
+                return redirect('/admin/')
+            return redirect('dashboard')
 
         # Failed attempt
         if user_obj:
