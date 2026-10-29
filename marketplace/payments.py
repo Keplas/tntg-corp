@@ -19,6 +19,7 @@ Required environment variables (set these on Render/Cloud Run, never commit them
     MONERIS_ENVIRONMENT      — 'sandbox' (default) or 'production'
 """
 import os
+import time
 import requests
 from decimal import Decimal
 
@@ -237,7 +238,8 @@ def create_moneris_checkout_session(order, success_url, cancel_url):
         'txn_total':   txn_total,
         'action':      'preload',
         # NOTE: 'environment' is a JS-SDK field only — not sent in server-to-server preload
-        'order_no':    f'TNTG-{order.pk}',
+        # order_no must be unique per attempt — Moneris rejects reused IDs
+        'order_no':    f'TNTG-{order.pk}-{int(time.time())}',
         'cust_id':     order.buyer.email or str(order.buyer.pk),
         'dynamic_descriptor': f'T&TG Order #{order.pk}',
         'language':    'en',
