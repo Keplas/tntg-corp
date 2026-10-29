@@ -225,8 +225,8 @@ def create_moneris_checkout_session(order, success_url, cancel_url):
         'api_token':   api_token,
         'checkout_id': checkout_id,
         'txn_total':   txn_total,
-        'environment': 'prod' if env == 'production' else 'qa',
         'action':      'preload',
+        # NOTE: 'environment' is a JS-SDK field only — not sent in server-to-server preload
         'order_no':    f'TNTG-{order.pk}',
         'cust_id':     order.buyer.email or str(order.buyer.pk),
         'dynamic_descriptor': f'T&TG Order #{order.pk}',
@@ -287,7 +287,6 @@ def verify_moneris_payment(ticket):
         'api_token':   api_token,
         'checkout_id': checkout_id,
         'ticket':      ticket,
-        'environment': 'prod' if env == 'production' else 'qa',
         'action':      'receipt',
     }
     try:
