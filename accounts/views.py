@@ -11,20 +11,105 @@ from .models import CustomUser, AvonPointTransaction
 from marketplace.models import Order
 from core.models import Notification, LoyaltySettings
 
+# ── Known disposable / throwaway email domains ────────────────────────────────
+# Bots and spam accounts commonly use these free temporary services.
+# Add more as they appear in admin.
+_DISPOSABLE_DOMAINS = {
+    '10minutemail.com', '10minutemail.net', '20minutemail.com',
+    'discard.email', 'discardmail.com', 'discardmail.de',
+    'disposableemailaddresses.com', 'dispostable.com',
+    'fakeinbox.com', 'filzmail.com',
+    'getairmail.com', 'guerrillamail.com', 'guerrillamail.info',
+    'guerrillamail.net', 'guerrillamail.org', 'guerrillamailblock.com',
+    'grr.la', 'guerrillamail.biz', 'guerrillamail.de',
+    'inboxbear.com',
+    'mailinator.com', 'maildrop.cc', 'mailexpire.com',
+    'mailhazard.com', 'mailhazard.us', 'mailnull.com',
+    'mailsac.com', 'mailscrap.com', 'mailtemp.info',
+    'mailtome.de', 'minutemail.net', 'moakt.com', 'mohmal.com',
+    'mytrashmail.com',
+    'nwldx.com',
+    'owlpic.com',
+    'rmqkr.net',
+    'sharklasers.com', 'spam.la', 'spam.su',
+    'spam4.me', 'spambox.us', 'spamfighter.com',
+    'spamfree24.org', 'spamgourmet.com', 'spaml.com', 'spaml.de',
+    'spammotel.com', 'spamthisplease.com',
+    'temp-mail.org', 'tempail.com', 'tempemail.net',
+    'tempinbox.com', 'tempm.com', 'tempr.email',
+    'throwam.com', 'throwaway.email',
+    'tinyurl24.com', 'tmailweb.com',
+    'trashmail.at', 'trashmail.com', 'trashmail.io',
+    'trashmail.me', 'trashmail.net',
+    'trbvn.com',
+    'wegwerfmail.de', 'weg-werf-email.de', 'wh4f.org',
+    'xagloo.com', 'xemaps.com', 'xsmail.com',
+    'yodx.com', 'yopmail.com',
+    'zehnminutenmail.de', 'zippymail.info', 'zoemail.net',
+}
+
+
+def _get_client_ip(request):
+    forwarded = request.META.get('HTTP_X_FORWARDED_FOR', '')
+    return (forwarded.split(',')[0].strip()
+            if forwarded else request.META.get('REMOTE_ADDR', 'unknown'))
+
 
 def register(request):
     if request.method == 'POST':
         d = request.POST
+
+        # ── Honeypot: invisible field — humans leave it blank, bots fill it ──
+        if d.get('_hp_name', '').strip():
+            # Silently redirect — don't tell bots they were caught
+            return redirect('dashboard')
+
+        # ── IP rate limiting: max 3 registrations per IP per hour ────────────
+        from django.core.cache import cache
+        client_ip   = _get_client_ip(request)
+        rate_key    = f'reg_ip_{client_ip}'
+        rate_count  = cache.get(rate_key, 0)
+        if rate_count >= 3:
+            messages.error(request, 'Too many registrations from your connection. Try again in an hour.')
+            return render(request, 'accounts/register.html', {'post': d})
+
+        # ── Email validation ──────────────────────────────────────────────────
+        from django.core.validators import validate_email
+        from django.core.exceptions import ValidationError
+        email = d.get('email', '').lower().strip()
+        try:
+            validate_email(email)
+        except ValidationError:
+            messages.error(request, 'Please enter a valid email address.')
+            return render(request, 'accounts/register.html', {'post': d})
+
+        domain = email.split('@')[-1] if '@' in email else ''
+        if domain in _DISPOSABLE_DOMAINS:
+            messages.error(request,
+                'Temporary or disposable email addresses are not allowed. '
+                'Please use a real, active email.')
+            return render(request, 'accounts/register.html', {'post': d})
+
+        if CustomUser.objects.filter(email__iexact=email).exists():
+            messages.error(request, 'An account with this email address already exists.')
+            return render(request, 'accounts/register.html', {'post': d})
+
+        # ── Standard field checks ─────────────────────────────────────────────
         if d.get('password') != d.get('confirm_password'):
             messages.error(request, 'Passwords do not match.')
             return render(request, 'accounts/register.html', {'post': d})
         if CustomUser.objects.filter(username=d.get('username')).exists():
             messages.error(request, 'Username already taken.')
             return render(request, 'accounts/register.html', {'post': d})
+
+        # ── Increment rate counter before creating user ───────────────────────
+        cache.set(rate_key, rate_count + 1, 3600)
+
         user = CustomUser.objects.create_user(
             username=d.get('username'),
-            email=d.get('email'),
+            email=email,
             password=d.get('password'),
+            is_active=False,   # inactive until email is verified
             first_name=d.get('first_name', ''),
             last_name=d.get('last_name', ''),
             phone=d.get('phone', ''),
@@ -82,9 +167,12 @@ def register(request):
         except Exception:
             pass
 
-        login(request, user, backend="accounts.backends.FlexAuthBackend")
-        messages.success(request, f'Welcome to T&TG Trade Corp! Your ID is {user.unique_id}. Check your email to verify your account.')
-        return redirect('dashboard')
+        # Do NOT log in — account stays inactive until email is verified.
+        messages.success(request,
+            f'Account created! We sent a verification link to {email}. '
+            f'Click it to activate your account. '
+            f'Your T&TG ID will be {user.unique_id}.')
+        return redirect('registration_email_sent')
     return render(request, 'accounts/register.html')
 
 
@@ -130,6 +218,14 @@ def login_view(request):
 
         # Failed attempt
         if user_obj:
+            # Check if the account hasn't verified email yet
+            if not user_obj.is_active and not user_obj.email_verified:
+                resend_url = reverse('resend_verification_email')
+                messages.warning(request,
+                    f'Your account is not yet activated. Please check your email for the '
+                    f'verification link, or <a href="{resend_url}">click here to resend it</a>.')
+                return render(request, 'accounts/login.html')
+
             user_obj.login_attempts += 1
             max_att     = getattr(djsettings, 'MAX_LOGIN_ATTEMPTS', 5)
             lockout_min = getattr(djsettings, 'LOCKOUT_MINUTES', 30)
@@ -147,6 +243,11 @@ def login_view(request):
 
     return render(request, 'accounts/login.html')
 
+
+
+def registration_email_sent(request):
+    """Shown after registration — tells user to check their inbox."""
+    return render(request, 'accounts/registration_email_sent.html')
 
 
 @login_required
@@ -496,13 +597,56 @@ def verify_email(request, token):
     token_hash = hashlib.sha256(token.encode()).hexdigest()
     try:
         user = CustomUser.objects.get(email_verify_token=token_hash)
-        user.email_verified      = True
-        user.email_verify_token  = ''
-        user.save(update_fields=['email_verified', 'email_verify_token'])
-        messages.success(request, 'Email verified! Your account is now fully active.')
+        user.email_verified     = True
+        user.email_verify_token = ''
+        user.is_active          = True   # activate the account
+        user.save(update_fields=['email_verified', 'email_verify_token', 'is_active'])
+        login(request, user, backend='accounts.backends.FlexAuthBackend')
+        messages.success(request,
+            f'Email verified! Welcome to T&TG Trade Corp. Your ID is {user.unique_id}.')
+        return redirect('dashboard')
     except CustomUser.DoesNotExist:
-        messages.error(request, 'This verification link is invalid or already used.')
-    return redirect('dashboard')
+        messages.error(request, 'This verification link is invalid or has already been used.')
+        return redirect('login')
+
+
+def resend_verification_email(request):
+    """Allow users to request a new verification email if they missed the first one."""
+    if request.method == 'POST':
+        email = request.POST.get('email', '').lower().strip()
+        try:
+            user = CustomUser.objects.get(email__iexact=email, is_active=False, email_verified=False)
+            # Re-generate token and resend
+            import secrets, hashlib
+            from django.core.mail import send_mail
+            from django.conf import settings as djsettings
+            token = secrets.token_urlsafe(32)
+            user.email_verify_token = hashlib.sha256(token.encode()).hexdigest()
+            user.save(update_fields=['email_verify_token'])
+            verify_url = request.build_absolute_uri(
+                reverse('verify_email', kwargs={'token': token})
+            )
+            try:
+                send_mail(
+                    subject='Verify your T&TG Trade Corp email',
+                    message=(
+                        f'Hi {user.first_name or user.username},\n\n'
+                        f'Here is your new verification link:\n\n'
+                        f'{verify_url}\n\n'
+                        f'If you did not create this account, ignore this email.\n\nT&TG Trade Corp'
+                    ),
+                    from_email=getattr(djsettings, 'DEFAULT_FROM_EMAIL', ''),
+                    recipient_list=[user.email],
+                    fail_silently=True,
+                )
+            except Exception:
+                pass
+            messages.success(request, f'Verification email resent to {email}. Check your inbox.')
+        except CustomUser.DoesNotExist:
+            # Don't reveal whether the email exists or the account is already active
+            messages.success(request, f'If that email has a pending account, we\'ve resent the link.')
+        return redirect('registration_email_sent')
+    return render(request, 'accounts/resend_verification.html')
 
 
 # ── Withdrawal PIN ──────────────────────────────────────────────────────────────

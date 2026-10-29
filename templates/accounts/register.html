@@ -66,6 +66,11 @@
 
           <form method="post" enctype="multipart/form-data" id="reg-form">
             {% csrf_token %}
+            {# Honeypot: real users never see or fill this; bots do #}
+            <div style="position:absolute;left:-9999px;top:-9999px;opacity:0;" aria-hidden="true" tabindex="-1">
+              <label for="id_hp_name">Leave this empty</label>
+              <input type="text" name="_hp_name" id="id_hp_name" autocomplete="off" tabindex="-1">
+            </div>
 
             <!-- ── Step 1: Identity ── -->
             <div class="reg-step active" id="step-1">

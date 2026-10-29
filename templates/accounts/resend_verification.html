@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Resend Verification Email — T&TG Trade Corp{% endblock %}
+{% block content %}
+<section style="background:#0a0a0a;min-height:80vh;display:flex;align-items:center;padding:60px 0">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-5">
+
+        <div class="text-center" style="margin-bottom:32px">
+          <i class="fas fa-paper-plane" style="font-size:2.5rem;color:#c9a352;margin-bottom:16px;display:block"></i>
+          <h2 style="color:#fff;font-weight:800">Resend Verification</h2>
+          <p style="color:#888">Enter the email address you registered with.</p>
+        </div>
+
+        {% if messages %}
+          {% for msg in messages %}
+            <div class="alert" style="border-radius:8px;margin-bottom:20px;background:rgba(201,163,82,.1);border:1px solid #c9a352;color:#c9a352">
+              {{ msg }}
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        <form method="post" style="background:#111;border:1px solid #222;border-radius:12px;padding:28px">
+          {% csrf_token %}
+          <div style="margin-bottom:20px">
+            <label style="color:#aaa;font-size:.85rem;display:block;margin-bottom:6px">Email Address</label>
+            <input type="email" name="email" required
+              style="width:100%;background:#1a1a1a;border:1px solid #333;border-radius:8px;color:#fff;padding:12px 16px;font-size:.95rem"
+              placeholder="you@example.com">
+          </div>
+          <button type="submit"
+            style="width:100%;background:#c9a352;color:#000;border:none;border-radius:8px;padding:13px;font-weight:700;font-size:.95rem;cursor:pointer">
+            Send Verification Link
+          </button>
+        </form>
+
+        <p style="text-align:center;color:#555;font-size:.85rem;margin-top:20px">
+          <a href="{% url 'login' %}" style="color:#c9a352">Back to login</a>
+        </p>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

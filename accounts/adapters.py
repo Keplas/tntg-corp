@@ -12,6 +12,19 @@ class CustomAccountAdapter(DefaultAccountAdapter):
     def is_open_for_signup(self, request):
         return True
 
+    def clean_email(self, email):
+        """Block disposable / throwaway email domains at the allauth layer."""
+        from django.core.exceptions import ValidationError
+        from accounts.views import _DISPOSABLE_DOMAINS
+        email = super().clean_email(email)
+        domain = email.split('@')[-1].lower() if '@' in email else ''
+        if domain in _DISPOSABLE_DOMAINS:
+            raise ValidationError(
+                'Temporary or disposable email addresses are not allowed. '
+                'Please use a real, active email address.'
+            )
+        return email
+
     def save_user(self, request, user, form, commit=True):
         user = super().save_user(request, user, form, commit=False)
         # Assign to Consumer group by default

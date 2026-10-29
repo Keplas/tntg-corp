@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Check Your Email — T&TG Trade Corp{% endblock %}
+{% block content %}
+<section style="background:#0a0a0a;min-height:80vh;display:flex;align-items:center;padding:60px 0">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 text-center">
+
+        <div style="width:80px;height:80px;border-radius:50%;background:rgba(201,163,82,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 24px">
+          <i class="fas fa-envelope" style="font-size:2rem;color:#c9a352"></i>
+        </div>
+
+        <h2 style="color:#fff;font-weight:800;margin-bottom:12px">Check Your Inbox</h2>
+        <p style="color:#aaa;font-size:1rem;margin-bottom:28px">
+          We sent a verification link to your email address.<br>
+          Click the link to activate your T&TG Trade Corp account.
+        </p>
+
+        {% if messages %}
+          {% for msg in messages %}
+            <div class="alert alert-{{ msg.tags|default:'info' }}" style="border-radius:8px;margin-bottom:20px">
+              {{ msg }}
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        <div style="background:#111;border:1px solid #222;border-radius:12px;padding:24px;margin-bottom:28px;text-align:left">
+          <p style="color:#aaa;margin:0 0 8px;font-size:.9rem"><strong style="color:#fff">Didn't receive it?</strong></p>
+          <ul style="color:#888;font-size:.88rem;padding-left:18px;margin:0">
+            <li>Check your spam or junk folder</li>
+            <li>Make sure you entered your email correctly</li>
+            <li>Allow a few minutes for delivery</li>
+          </ul>
+        </div>
+
+        <a href="{% url 'resend_verification_email' %}"
+           style="display:inline-block;background:rgba(201,163,82,.1);border:1px solid #c9a352;color:#c9a352;padding:10px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin-bottom:16px">
+          <i class="fas fa-redo" style="margin-right:8px"></i>Resend Verification Email
+        </a>
+
+        <p style="color:#555;font-size:.85rem;margin-top:16px">
+          Already verified? <a href="{% url 'login' %}" style="color:#c9a352">Sign in here</a>
+        </p>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -12,10 +12,12 @@ urlpatterns = [
     path('avon/',                      views.avon_dashboard,     name='avon_dashboard'),
     path('profile/<str:username>/',    views.public_profile,     name='public_profile'),
 
-    # Security
-    path('forgot-password/',                      views.forgot_password,  name='forgot_password'),
-    path('reset-password/<str:token>/',           views.reset_password,   name='reset_password'),
-    path('verify-email/<str:token>/',             views.verify_email,     name='verify_email'),
+    # Security / email verification
+    path('forgot-password/',                      views.forgot_password,            name='forgot_password'),
+    path('reset-password/<str:token>/',           views.reset_password,             name='reset_password'),
+    path('verify-email/<str:token>/',             views.verify_email,               name='verify_email'),
+    path('resend-verification/',                  views.resend_verification_email,  name='resend_verification_email'),
+    path('email-sent/',                           views.registration_email_sent,    name='registration_email_sent'),
     path('analytics/', views.analytics_dashboard, name='analytics_dashboard'),
     path('wallet/pin/', views.wallet_pin_setup, name='wallet_pin_setup'),
     path('wallet/',          views.wallet_view,     name='wallet'),
