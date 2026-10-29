@@ -214,11 +214,21 @@ def create_moneris_checkout_session(order, success_url, cancel_url):
     env = env_setting if env_setting in ('sandbox', 'production') else 'sandbox'
     logger.info(f'[Moneris] config check: store_id={bool(store_id)} api_token={bool(api_token)} checkout_id={bool(checkout_id)} env={env}')
 
-    # Moneris only processes CAD; format amount as "10.00"
+    # Moneris only processes CAD — convert from product's currency if needed.
+    # Uses the live exchange rates from core/exchange_rates.py (Frankfurter → OXR → DB → static).
     try:
+        from core.exchange_rates import get_rate
+        from decimal import Decimal
+        product_currency = getattr(getattr(order, 'product', None), 'currency', 'CAD') or 'CAD'
+        amount = Decimal(str(order.total_price))
+        if product_currency != 'CAD':
+            rate = get_rate(product_currency, 'CAD')
+            amount = (amount * rate).quantize(Decimal('0.01'))
+            logger.info(f'[Moneris] converted {product_currency} {order.total_price} → CAD {amount} (rate={rate})')
+        txn_total = f'{float(amount):.2f}'
+    except Exception as exc:
+        logger.warning(f'[Moneris] currency conversion failed, using raw total: {exc}')
         txn_total = f'{float(order.total_price):.2f}'
-    except Exception:
-        txn_total = str(order.total_price)
 
     payload = {
         'store_id':    store_id,
