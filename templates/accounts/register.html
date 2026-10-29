@@ -66,6 +66,11 @@
 
           <form method="post" enctype="multipart/form-data" id="reg-form">
             {% csrf_token %}
+            {# Dummy fields: trick browser autofill away from real fields #}
+            <div style="display:none" aria-hidden="true">
+              <input type="text" name="_dummy_user" autocomplete="username" tabindex="-1">
+              <input type="password" name="_dummy_pass" autocomplete="current-password" tabindex="-1">
+            </div>
             {# Honeypot: real users never see or fill this; bots do #}
             <div style="position:absolute;left:-9999px;top:-9999px;opacity:0;" aria-hidden="true" tabindex="-1">
               <label for="id_hp_name">Leave this empty</label>
@@ -86,7 +91,7 @@
                 </div>
                 <div class="col-md-6">
                   <label class="auth-label">Username *</label>
-                  <input type="text" name="username" class="form-control auth-fc" placeholder="Choose a username" required value="{{ post.username|default:'' }}">
+                  <input type="text" name="username" class="form-control auth-fc" placeholder="Choose a username" required autocomplete="off" value="{{ post.username|default:'' }}">
                 </div>
                 <div class="col-md-6">
                   <label class="auth-label">Email Address *</label>
@@ -114,7 +119,7 @@
                   <div class="input-group">
                     <span class="input-group-text auth-igt" style="border-radius:10px 0 0 10px"><i class="fas fa-lock"></i></span>
                     <input type="password" name="password" id="regPw" class="form-control auth-fc auth-igc"
-                           placeholder="Create a password" required oninput="checkPw(this.value)">
+                           placeholder="Create a password" required autocomplete="new-password" oninput="checkPw(this.value)">
                     <span class="input-group-text auth-igs" onclick="togglePw('regPw',this)"><i class="fas fa-eye"></i></span>
                   </div>
                   <div id="pwBar" style="margin-top:8px;display:none">
@@ -128,7 +133,7 @@
                   <label class="auth-label">Confirm Password *</label>
                   <div class="input-group">
                     <span class="input-group-text auth-igt" style="border-radius:10px 0 0 10px"><i class="fas fa-lock"></i></span>
-                    <input type="password" name="confirm_password" id="confPw" class="form-control auth-fc auth-igc" placeholder="Repeat your password" required>
+                    <input type="password" name="confirm_password" id="confPw" class="form-control auth-fc auth-igc" placeholder="Repeat your password" required autocomplete="new-password">
                     <span class="input-group-text auth-igs" onclick="togglePw('confPw',this)"><i class="fas fa-eye"></i></span>
                   </div>
                 </div>
