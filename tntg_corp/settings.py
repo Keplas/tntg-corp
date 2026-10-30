@@ -116,6 +116,9 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Serve root-level files (e.g. Apple Pay domain association) via WhiteNoise
+# at their bare URL paths — bypasses Django URL routing entirely
+WHITENOISE_ROOT = BASE_DIR / 'public'
 
 # ── Media / Image Storage ──────────────────────────────────────────────────────
 MEDIA_ROOT = BASE_DIR / 'media'
