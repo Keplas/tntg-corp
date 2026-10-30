@@ -167,6 +167,31 @@ def sitemap_xml(request):
     return HttpResponse(xml, content_type='application/xml')
 
 
+def apple_pay_domain_association(request):
+    """
+    Apple Pay domain verification file.
+    Must be served at /.well-known/apple-developer-merchantid-domain-association
+    with no file extension and content-type application/octet-stream.
+
+    To activate Apple Pay on this domain:
+    1. Log into the Moneris Portal (or Apple Developer portal)
+    2. Under Apple Pay → Register Domain → download the domain association file
+    3. Replace static/.well-known/apple-developer-merchantid-domain-association
+       with the downloaded file content
+    4. Redeploy — Apple will verify this URL automatically
+    """
+    import os
+    file_path = os.path.join(settings.BASE_DIR, 'static', '.well-known',
+                             'apple-developer-merchantid-domain-association')
+    try:
+        with open(file_path, 'rb') as f:
+            content = f.read()
+        return HttpResponse(content, content_type='application/octet-stream')
+    except FileNotFoundError:
+        return HttpResponse('Apple Pay domain association file not configured.',
+                            status=404, content_type='text/plain')
+
+
 def robots_txt(request):
     """robots.txt — points crawlers to the sitemap, blocks admin/account areas."""
     domain = request.build_absolute_uri('/')[:-1]

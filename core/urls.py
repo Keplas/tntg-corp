@@ -34,4 +34,8 @@ urlpatterns = [
     path('blog/<slug:slug>/', views.blog_detail, name='blog_detail'),
     # Staff-only diagnostics — shows DB table status, never cached
     path('health/', views.db_health, name='db_health'),
+    # Apple Pay domain verification — must be at this exact path, no extension
+    path('.well-known/apple-developer-merchantid-domain-association',
+         views.apple_pay_domain_association,
+         name='apple_pay_domain_association'),
 ]
