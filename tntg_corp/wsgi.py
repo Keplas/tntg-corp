@@ -20,7 +20,7 @@ def application(environ, start_response):
         try:
             content = _APPLE_PAY_FILE.read_bytes()
             start_response('200 OK', [
-                ('Content-Type', 'application/json'),
+                ('Content-Type', 'application/octet-stream'),
                 ('Content-Length', str(len(content))),
                 ('Cache-Control', 'no-cache'),
             ])
