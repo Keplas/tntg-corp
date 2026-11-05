@@ -253,6 +253,10 @@ def create_moneris_checkout_session(order, success_url, cancel_url):
         'bill_email':      order.buyer.email or '',
     }
 
+    # Log payload without exposing api_token
+    safe_payload = {k: ('***' if k == 'api_token' else v) for k, v in payload.items()}
+    logger.info(f'[Moneris] preload payload={safe_payload}')
+
     try:
         resp = requests.post(
             _MONERIS_PRELOAD_URL[env],
