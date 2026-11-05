@@ -231,13 +231,16 @@ def create_moneris_checkout_session(order, success_url, cancel_url):
         logger.warning(f'[Moneris] currency conversion failed, using raw total: {exc}')
         txn_total = f'{float(order.total_price):.2f}'
 
+    # Moneris uses 'qa' for sandbox and 'prod' for production
+    moneris_env = 'prod' if env == 'production' else 'qa'
+
     payload = {
         'store_id':    store_id,
         'api_token':   api_token,
         'checkout_id': checkout_id,
         'txn_total':   txn_total,
+        'environment': moneris_env,  # required: 'qa' or 'prod'
         'action':      'preload',
-        # NOTE: 'environment' is a JS-SDK field only — not sent in server-to-server preload
         # order_no must be unique per attempt — Moneris rejects reused IDs
         'order_no':    f'TNTG-{order.pk}-{int(time.time())}',
         'cust_id':     order.buyer.email or str(order.buyer.pk),
