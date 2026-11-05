@@ -244,7 +244,8 @@ def create_moneris_checkout_session(order, success_url, cancel_url):
         # order_no must be unique per attempt — Moneris rejects reused IDs
         'order_no':    f'TNTG-{order.pk}-{int(time.time())}',
         'cust_id':     order.buyer.email or str(order.buyer.pk),
-        'dynamic_descriptor': f'T&TG Order #{order.pk}',
+        # dynamic_descriptor: alphanumeric only (max 20 chars) — no & # or special chars
+        'dynamic_descriptor': f'TNTG Order {order.pk}',
         'language':    'en',
         'return_url':  success_url,
         'cancel_url':  cancel_url,
