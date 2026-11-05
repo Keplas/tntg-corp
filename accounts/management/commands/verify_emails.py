@@ -20,7 +20,13 @@ class Command(BaseCommand):
         for user in users:
             if not user.email:
                 continue
-            obj, was_created = EmailAddress.objects.get_or_create(
+            # Demote any primary email that isn't this address (prevents unique constraint
+            # violation on (user_id, primary=True) when creating a new primary record).
+            EmailAddress.objects.filter(user=user, primary=True).exclude(
+                email=user.email
+            ).update(primary=False)
+
+            obj, was_created = EmailAddress.objects.update_or_create(
                 user=user,
                 email=user.email,
                 defaults={
@@ -32,9 +38,6 @@ class Command(BaseCommand):
                 created += 1
                 self.stdout.write(f'Created and verified: {user.email}')
             elif not obj.verified:
-                obj.verified = True
-                obj.primary  = True
-                obj.save()
                 verified += 1
                 self.stdout.write(f'Verified: {user.email}')
 
