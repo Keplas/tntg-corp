@@ -286,30 +286,20 @@ textarea.form-control { resize: vertical; min-height: 110px; }
   <div class="container">
     <p class="type-section-label"><i class="fas fa-hand-pointer me-1"></i> Step 1 — Choose Your Franchise Model</p>
     <div class="type-grid">
-      <div class="type-card" data-type="cafe_kiosk" onclick="selectType(this)">
-        <div class="tc-ico"><i class="fas fa-coffee"></i></div>
-        <div class="tc-name">Café / Kiosk</div>
-        <div class="tc-invest">$25K – $100K</div>
+      <div class="type-card" data-type="coffee_estate" onclick="selectType(this)">
+        <div class="tc-ico"><i class="fas fa-seedling"></i></div>
+        <div class="tc-name">Coffee Estates &amp; Farms</div>
+        <div class="tc-invest">Origin Partner</div>
       </div>
-      <div class="type-card" data-type="distribution" onclick="selectType(this)">
-        <div class="tc-ico"><i class="fas fa-truck"></i></div>
-        <div class="tc-name">Distribution Partner</div>
-        <div class="tc-invest">$10K – $50K</div>
+      <div class="type-card" data-type="ecommerce_distributor" onclick="selectType(this)">
+        <div class="tc-ico"><i class="fas fa-shopping-cart"></i></div>
+        <div class="tc-name">E-Commerce Distributors</div>
+        <div class="tc-invest">Digital Distribution</div>
       </div>
-      <div class="type-card" data-type="online_reseller" onclick="selectType(this)">
-        <div class="tc-ico"><i class="fas fa-laptop"></i></div>
-        <div class="tc-name">Online Reseller</div>
-        <div class="tc-invest">Under $10K</div>
-      </div>
-      <div class="type-card" data-type="corporate_supply" onclick="selectType(this)">
-        <div class="tc-ico"><i class="fas fa-building"></i></div>
-        <div class="tc-name">Corporate Supply</div>
-        <div class="tc-invest">$50K+</div>
-      </div>
-      <div class="type-card" data-type="mobile_unit" onclick="selectType(this)">
-        <div class="tc-ico"><i class="fas fa-truck-loading"></i></div>
-        <div class="tc-name">Mobile Coffee Unit</div>
-        <div class="tc-invest">$10K – $40K</div>
+      <div class="type-card" data-type="product_seller" onclick="selectType(this)">
+        <div class="tc-ico"><i class="fas fa-box-open"></i></div>
+        <div class="tc-name">Coffee-Based Product Sellers</div>
+        <div class="tc-invest">Retail / Pop-Up</div>
       </div>
     </div>
   </div>
@@ -342,7 +332,7 @@ textarea.form-control { resize: vertical; min-height: 110px; }
       <form method="post" novalidate>
         {% csrf_token %}
         <!-- Hidden franchise type — set by JS from type selector -->
-        <input type="hidden" name="franchise_type" id="franchise_type_input" value="cafe_kiosk">
+        <input type="hidden" name="franchise_type" id="franchise_type_input" value="coffee_estate">
 
         <!-- Personal Info -->
         <p class="section-title"><i class="fas fa-user"></i> Your Information</p>
@@ -456,24 +446,21 @@ textarea.form-control { resize: vertical; min-height: 110px; }
 <script>
 (function() {
   var TYPE_NAMES = {
-    cafe_kiosk:       'Café / Kiosk Franchise',
-    distribution:     'Distribution Partner',
-    online_reseller:  'Online Reseller',
-    corporate_supply: 'Corporate & Institutional Supply',
-    mobile_unit:      'Mobile Coffee Unit'
+    coffee_estate:         'Coffee Estates & Farms',
+    ecommerce_distributor: 'E-Commerce Distributors',
+    product_seller:        'Coffee-Based Product Sellers'
   };
 
   // Map URL shorthand params to model values
   var TYPE_ALIASES = {
-    farm:         'distribution',
-    transport:    'distribution',
-    manufacturer: 'corporate_supply',
-    corporate:    'corporate_supply',
-    mobile:       'mobile_unit',
-    cafe:         'cafe_kiosk',
-    kiosk:        'cafe_kiosk',
-    reseller:     'online_reseller',
-    online:       'online_reseller'
+    farm:         'coffee_estate',
+    estate:       'coffee_estate',
+    ecommerce:    'ecommerce_distributor',
+    distributor:  'ecommerce_distributor',
+    online:       'ecommerce_distributor',
+    seller:       'product_seller',
+    product:      'product_seller',
+    retail:       'product_seller'
   };
 
   window.selectType = function(card) {
@@ -496,8 +483,8 @@ textarea.form-control { resize: vertical; min-height: 110px; }
   if (match) {
     selectType(match);
   } else {
-    // Default to cafe_kiosk
-    var def = document.querySelector('.type-card[data-type="cafe_kiosk"]');
+    // Default to coffee_estate
+    var def = document.querySelector('.type-card[data-type="coffee_estate"]');
     if (def) selectType(def);
   }
 })();
