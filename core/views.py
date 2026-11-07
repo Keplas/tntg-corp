@@ -565,15 +565,18 @@ def search(request):
     from marketplace.models import Product
     from core.models import BlogPost
     from training.models import TrainingProgram, TVProgram
-    q = request.GET.get('q','').strip()
-    results = {'products':[],'blogs':[],'programs':[],'videos':[]}
-    if q:
-        results['products']  = list(Product.objects.filter(name__icontains=q, is_active=True)[:8])
-        results['blogs']     = list(BlogPost.objects.filter(title__icontains=q, is_published=True)[:5]) if hasattr(BlogPost,'is_published') else []
-        results['programs']  = list(TrainingProgram.objects.filter(title__icontains=q, is_active=True)[:5])
-        results['videos']    = list(TVProgram.objects.filter(title__icontains=q, is_active=True)[:5])
-    total = sum(len(v) for v in results.values())
-    return render(request, 'core/search.html', {'q': q, 'results': results, 'total': total})
+    query = request.GET.get('q', '').strip()
+    products = blogs = programs = tv = []
+    if query:
+        products = list(Product.objects.filter(name__icontains=query, is_active=True)[:8])
+        blogs    = list(BlogPost.objects.filter(title__icontains=query, is_published=True)[:5]) if hasattr(BlogPost, 'is_published') else []
+        programs = list(TrainingProgram.objects.filter(title__icontains=query, is_active=True)[:5])
+        tv       = list(TVProgram.objects.filter(title__icontains=query, is_active=True)[:5])
+    total = len(products) + len(blogs) + len(programs) + len(tv)
+    return render(request, 'core/search_results.html', {
+        'query': query, 'products': products, 'blogs': blogs,
+        'programs': programs, 'tv': tv, 'total': total,
+    })
 
 
 def set_cart_currency(request):
