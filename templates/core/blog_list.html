@@ -1,135 +1,649 @@
 {% extends 'base.html' %}
-{% block title %}Blog & News — T&TG Trade Corp{% endblock %}
-{% block content %}
+{% load video_tags %}
+{% block title %}Blog &amp; News — T&TG Trade Corp{% endblock %}
 
+{% block content %}
 {% include 'core/blog_live_feed.html' %}
+
 <style>
-  .bl-bg    { background:#0a0a0a; }
-  .bl-card  { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.15); border-radius:16px; overflow:hidden; transition:border-color .25s, transform .25s; text-decoration:none; display:block; }
-  .bl-card:hover { border-color:rgba(201,168,76,.4); transform:translateY(-4px); }
-  .bl-gold  { color:#c9a84c; }
-  .bl-muted { color:#7a6e5f; }
-  .bl-text  { color:#e0d5c0; }
-  .bl-tag   { display:inline-block; padding:3px 10px; border-radius:100px; font-size:.68rem; font-weight:700; background:rgba(201,168,76,.12); color:#c9a84c; border:1px solid rgba(201,168,76,.2); }
-  .bl-cat-btn { padding:7px 18px; border-radius:100px; font-size:.78rem; font-weight:600; border:1px solid rgba(201,168,76,.2); color:#7a6e5f; background:none; cursor:pointer; text-decoration:none; transition:all .2s; }
-  .bl-cat-btn:hover, .bl-cat-btn.active { background:rgba(201,168,76,.12); color:#c9a84c; border-color:rgba(201,168,76,.4); }
-  .bl-img   { width:100%; aspect-ratio:16/9; object-fit:cover; background:#111; }
-  .bl-feat-img { width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:16px; }
+/* ══════════════════════════════════════════════════
+   T&TG BLOG & NEWS — Full redesign with YouTube
+   ══════════════════════════════════════════════════ */
+
+/* Tokens */
+:root {
+  --bl-bg:      #07080d;
+  --bl-surface: #0e1117;
+  --bl-card:    #12161f;
+  --bl-border:  rgba(201,168,76,.14);
+  --bl-gold:    #c9a84c;
+  --bl-gold2:   #e8c96a;
+  --bl-muted:   #6b6358;
+  --bl-text:    #d8d0c0;
+  --bl-white:   #f0ece4;
+  --bl-yt:      #ff0000;
+}
+
+/* ── Page shell ───────────────────────────────── */
+.bl-page { background: var(--bl-bg); }
+
+/* ── Section labels ──────────────────────────── */
+.bl-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 5px 14px; border-radius: 100px;
+  background: rgba(201,168,76,.08); border: 1px solid rgba(201,168,76,.2);
+  font-size: .68rem; font-weight: 800; letter-spacing: 2px; color: var(--bl-gold);
+  text-transform: uppercase; margin-bottom: 18px;
+}
+
+/* ── Hero header strip ───────────────────────── */
+.bl-hero {
+  background: var(--bl-surface);
+  border-bottom: 1px solid var(--bl-border);
+  padding: 44px 0 36px;
+  position: relative; overflow: hidden;
+}
+.bl-hero::before {
+  content: '';
+  position: absolute; top: -120px; right: -60px;
+  width: 420px; height: 420px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,168,76,.06), transparent 70%);
+  pointer-events: none;
+}
+.bl-hero-title {
+  font-size: clamp(2rem,4.5vw,3rem); font-weight: 900;
+  color: var(--bl-white); letter-spacing: -1.5px; line-height: 1.1;
+  margin: 0 0 10px;
+}
+.bl-hero-title span { color: var(--bl-gold); }
+.bl-hero-sub { color: var(--bl-muted); font-size: .95rem; line-height: 1.7; max-width: 480px; }
+
+/* ── YouTube channel banner ──────────────────── */
+.yt-banner {
+  background: linear-gradient(135deg, #0f0a00 0%, #1a0f00 50%, #120000 100%);
+  border-top: 1px solid rgba(255,0,0,.12);
+  border-bottom: 1px solid rgba(255,0,0,.12);
+  padding: 28px 0;
+}
+.yt-banner-inner {
+  display: flex; align-items: center; gap: 24px;
+  flex-wrap: wrap;
+}
+.yt-logo-wrap {
+  width: 56px; height: 56px; border-radius: 14px;
+  background: rgba(255,0,0,.12); border: 1px solid rgba(255,0,0,.25);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; color: var(--bl-yt); flex-shrink: 0;
+}
+.yt-banner-info { flex: 1; min-width: 200px; }
+.yt-banner-info h4 {
+  color: var(--bl-white); font-weight: 800; font-size: 1rem; margin: 0 0 4px;
+}
+.yt-banner-info p { color: var(--bl-muted); font-size: .82rem; margin: 0; }
+.yt-subscribe-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--bl-yt); color: #fff;
+  padding: 10px 22px; border-radius: 100px;
+  font-size: .82rem; font-weight: 800; letter-spacing: .3px;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: background .2s, transform .15s;
+  flex-shrink: 0;
+}
+.yt-subscribe-btn:hover { background: #cc0000; transform: scale(1.03); color: #fff; }
+
+/* ── Video section ───────────────────────────── */
+.bl-yt-section {
+  background: var(--bl-surface);
+  padding: 60px 0;
+  border-bottom: 1px solid var(--bl-border);
+}
+.bl-yt-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 768px) { .bl-yt-grid { grid-template-columns: 1fr; } }
+
+.yt-featured-player {
+  border-radius: 18px; overflow: hidden;
+  border: 1px solid rgba(255,0,0,.2);
+  background: #000; aspect-ratio: 16/9;
+  box-shadow: 0 20px 60px rgba(0,0,0,.5);
+}
+.yt-featured-player iframe { width: 100%; height: 100%; border: none; display: block; }
+
+.yt-side-list { display: flex; flex-direction: column; gap: 12px; }
+.yt-side-card {
+  display: flex; gap: 12px; align-items: center;
+  background: var(--bl-card); border: 1px solid var(--bl-border);
+  border-radius: 12px; padding: 12px; text-decoration: none;
+  transition: border-color .2s, transform .15s; cursor: pointer;
+}
+.yt-side-card:hover { border-color: rgba(255,0,0,.35); transform: translateX(4px); }
+.yt-side-thumb {
+  width: 96px; height: 60px; border-radius: 8px; overflow: hidden;
+  background: #000; flex-shrink: 0; position: relative;
+}
+.yt-side-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.yt-side-thumb .yt-play-mini {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.45);
+}
+.yt-side-thumb .yt-play-mini i { color: #fff; font-size: 1.1rem; filter: drop-shadow(0 1px 4px rgba(0,0,0,.7)); }
+.yt-side-info { flex: 1; min-width: 0; }
+.yt-side-info h6 {
+  color: var(--bl-white); font-size: .82rem; font-weight: 700;
+  line-height: 1.35; margin: 0 0 5px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.yt-side-info .yt-meta { font-size: .68rem; color: var(--bl-muted); }
+.yt-side-card.active { border-color: rgba(255,0,0,.5); background: rgba(255,0,0,.05); }
+
+/* ── Category nav ────────────────────────────── */
+.bl-cat-nav {
+  background: var(--bl-surface);
+  border-bottom: 1px solid var(--bl-border);
+  position: sticky; top: 0; z-index: 20;
+  backdrop-filter: blur(12px);
+}
+.bl-cat-nav-inner {
+  display: flex; align-items: center; gap: 6px;
+  overflow-x: auto; padding: 14px 0;
+  scrollbar-width: none;
+}
+.bl-cat-nav-inner::-webkit-scrollbar { display: none; }
+.bl-cat-pill {
+  padding: 7px 18px; border-radius: 100px;
+  font-size: .78rem; font-weight: 600; white-space: nowrap;
+  border: 1px solid rgba(201,168,76,.18); color: var(--bl-muted);
+  background: none; cursor: pointer; text-decoration: none;
+  transition: all .2s; flex-shrink: 0;
+}
+.bl-cat-pill:hover, .bl-cat-pill.active {
+  background: rgba(201,168,76,.1); color: var(--bl-gold);
+  border-color: rgba(201,168,76,.4);
+}
+
+/* ── Main content area ───────────────────────── */
+.bl-main { background: var(--bl-bg); padding: 60px 0 80px; }
+
+/* ── Featured post ───────────────────────────── */
+.bl-featured {
+  display: grid; grid-template-columns: 1.1fr 1fr;
+  gap: 40px; align-items: center;
+  margin-bottom: 56px; padding-bottom: 56px;
+  border-bottom: 1px solid var(--bl-border);
+}
+@media (max-width: 768px) { .bl-featured { grid-template-columns: 1fr; gap: 24px; } }
+
+.bl-feat-cover {
+  border-radius: 18px; overflow: hidden; position: relative;
+  aspect-ratio: 16/9; background: #111;
+  box-shadow: 0 16px 48px rgba(0,0,0,.4);
+}
+.bl-feat-cover img { width: 100%; height: 100%; object-fit: cover; }
+.bl-feat-cover .bl-feat-yt-badge {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+}
+.bl-feat-yt-badge a {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: rgba(255,0,0,.85); display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; color: #fff; text-decoration: none;
+  box-shadow: 0 4px 20px rgba(255,0,0,.4);
+  transition: transform .2s, background .2s;
+}
+.bl-feat-yt-badge a:hover { transform: scale(1.1); background: var(--bl-yt); }
+
+.bl-feat-meta { display: flex; flex-direction: column; gap: 0; }
+.bl-feat-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.bl-feat-title {
+  font-size: clamp(1.3rem,2.5vw,1.9rem); font-weight: 900;
+  color: var(--bl-white); line-height: 1.25; margin: 0 0 14px; letter-spacing: -.3px;
+}
+.bl-feat-excerpt { color: var(--bl-muted); font-size: .9rem; line-height: 1.75; margin-bottom: 24px; }
+.bl-feat-info { display: flex; align-items: center; gap: 16px; font-size: .78rem; color: var(--bl-muted); margin-bottom: 24px; }
+.bl-feat-info i { color: var(--bl-gold); }
+
+/* ── Article grid ────────────────────────────── */
+.bl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+
+/* ── Article card ────────────────────────────── */
+.bl-card {
+  background: var(--bl-card); border: 1px solid var(--bl-border);
+  border-radius: 18px; overflow: hidden;
+  text-decoration: none; display: flex; flex-direction: column;
+  transition: border-color .25s, transform .25s, box-shadow .25s;
+}
+.bl-card:hover {
+  border-color: rgba(201,168,76,.4);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 50px rgba(0,0,0,.35);
+}
+.bl-card-cover {
+  position: relative; aspect-ratio: 16/9; background: #111; overflow: hidden;
+}
+.bl-card-cover img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
+.bl-card:hover .bl-card-cover img { transform: scale(1.05); }
+.bl-card-cover .bl-cover-placeholder {
+  width: 100%; height: 100%; background: linear-gradient(135deg,#111500,#1a1000);
+  display: flex; align-items: center; justify-content: center;
+}
+.bl-card-cover .bl-cover-placeholder i { font-size: 2.5rem; color: rgba(201,168,76,.2); }
+
+/* Video badge on card */
+.bl-yt-pill {
+  position: absolute; bottom: 10px; left: 10px;
+  background: rgba(255,0,0,.88); color: #fff;
+  font-size: .62rem; font-weight: 800; letter-spacing: .8px;
+  padding: 3px 10px; border-radius: 100px;
+  display: flex; align-items: center; gap: 5px;
+  backdrop-filter: blur(4px);
+}
+.bl-card-body { padding: 20px 22px 22px; display: flex; flex-direction: column; flex: 1; }
+.bl-card-tags { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.bl-card-title {
+  color: var(--bl-white); font-weight: 800; font-size: .97rem;
+  line-height: 1.4; margin: 0 0 10px;
+}
+.bl-card-excerpt {
+  color: var(--bl-muted); font-size: .82rem; line-height: 1.65;
+  margin-bottom: 16px; flex: 1;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.bl-card-foot {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: .73rem; color: var(--bl-muted); margin-top: auto;
+  padding-top: 14px; border-top: 1px solid rgba(201,168,76,.08);
+}
+.bl-card-foot i { color: var(--bl-gold); }
+
+/* ── Tags / badges ───────────────────────────── */
+.bl-tag {
+  display: inline-block; padding: 3px 10px; border-radius: 100px;
+  font-size: .66rem; font-weight: 800; letter-spacing: .6px;
+  background: rgba(201,168,76,.1); color: var(--bl-gold);
+  border: 1px solid rgba(201,168,76,.2);
+}
+.bl-tag-yt {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 100px;
+  font-size: .66rem; font-weight: 800;
+  background: rgba(255,0,0,.1); color: #ff5555;
+  border: 1px solid rgba(255,0,0,.2);
+}
+
+/* ── Buttons ─────────────────────────────────── */
+.btn-gold {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 26px; border-radius: 100px;
+  background: linear-gradient(135deg, var(--bl-gold), var(--bl-gold2));
+  color: #1a0a00; font-weight: 800; font-size: .85rem;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+}
+.btn-gold:hover { transform: scale(1.03); box-shadow: 0 8px 24px rgba(201,168,76,.3); color: #1a0a00; }
+
+.btn-outline-gold {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 24px; border-radius: 100px;
+  background: none; border: 1px solid rgba(201,168,76,.35);
+  color: var(--bl-gold); font-size: .85rem; font-weight: 700;
+  text-decoration: none; transition: all .2s;
+}
+.btn-outline-gold:hover { background: rgba(201,168,76,.1); border-color: rgba(201,168,76,.5); color: var(--bl-gold); }
+
+/* ── Newsletter CTA ──────────────────────────── */
+.bl-newsletter {
+  background: linear-gradient(135deg, #0e0e00, #0a0012);
+  border-top: 1px solid var(--bl-border);
+  border-bottom: 1px solid var(--bl-border);
+  padding: 60px 0;
+}
+.bl-newsletter-inner { max-width: 540px; margin: 0 auto; text-align: center; }
+.bl-newsletter h3 { color: var(--bl-white); font-weight: 900; font-size: 1.5rem; margin: 0 0 10px; }
+.bl-newsletter p { color: var(--bl-muted); font-size: .9rem; margin-bottom: 28px; }
+.bl-nl-form { display: flex; gap: 10px; max-width: 420px; margin: 0 auto; }
+.bl-nl-form input {
+  flex: 1; padding: 12px 18px; border-radius: 100px;
+  background: rgba(255,255,255,.05); border: 1px solid rgba(201,168,76,.2);
+  color: var(--bl-white); font-size: .88rem; outline: none;
+  transition: border-color .2s;
+}
+.bl-nl-form input:focus { border-color: rgba(201,168,76,.5); }
+.bl-nl-form input::placeholder { color: var(--bl-muted); }
+@media (max-width: 480px) { .bl-nl-form { flex-direction: column; } }
+
+/* ── Empty state ─────────────────────────────── */
+.bl-empty { text-align: center; padding: 60px 0; }
+.bl-empty i { font-size: 3.5rem; color: rgba(201,168,76,.15); display: block; margin-bottom: 16px; }
+.bl-empty h5 { color: var(--bl-white); font-weight: 800; margin-bottom: 8px; }
+.bl-empty p { color: var(--bl-muted); font-size: .88rem; }
+
+/* ── Pagination ──────────────────────────────── */
+.bl-pagination { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 50px; }
+.bl-page-btn {
+  padding: 10px 24px; border-radius: 100px;
+  border: 1px solid rgba(201,168,76,.25); color: var(--bl-gold);
+  background: none; font-size: .85rem; font-weight: 700;
+  text-decoration: none; transition: all .2s;
+}
+.bl-page-btn:hover { background: rgba(201,168,76,.1); color: var(--bl-gold); }
+.bl-page-info { font-size: .82rem; color: var(--bl-muted); }
+
+/* ── Divider ─────────────────────────────────── */
+.bl-divider { height: 1px; background: var(--bl-border); margin: 48px 0; }
+
 </style>
 
-<!-- HERO -->
-<section class="bl-bg" style="padding:70px 0 50px;position:relative;overflow:hidden">
-  <div style="position:absolute;top:-80px;right:-80px;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.07),transparent 70%);pointer-events:none"></div>
+<!-- ══ HERO HEADER ═════════════════════════════════════════════════════════ -->
+<section class="bl-hero bl-page">
   <div class="container">
-    <div class="d-inline-flex align-items-center gap-2 mb-4 px-3 py-1 rounded-pill" style="background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2)">
-      <i class="fas fa-newspaper bl-gold" style="font-size:.75rem"></i>
-      <span class="bl-gold" style="font-size:.7rem;font-weight:700;letter-spacing:2px">T&TG TRADE CORP</span>
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <div class="bl-eyebrow">
+          <i class="fas fa-newspaper"></i> T&TG Trade Corp
+        </div>
+        <h1 class="bl-hero-title">Blog &amp; <span>News</span></h1>
+        <p class="bl-hero-sub">Trade insights, coffee market updates, import tips and East African business news — plus our latest videos on YouTube.</p>
+      </div>
+      <div class="col-lg-5 d-flex justify-content-lg-end gap-3 flex-wrap">
+        <div style="text-align:center;padding:20px 28px;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.15);border-radius:16px;min-width:120px">
+          <div style="font-size:2rem;font-weight:900;color:var(--bl-gold);line-height:1">{{ page_obj.paginator.count|default:"0" }}</div>
+          <div style="font-size:.7rem;color:var(--bl-muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px">Articles</div>
+        </div>
+        <div style="text-align:center;padding:20px 28px;background:rgba(255,0,0,.06);border:1px solid rgba(255,0,0,.15);border-radius:16px;min-width:120px">
+          <div style="font-size:2rem;font-weight:900;color:#ff5555;line-height:1"><i class="fab fa-youtube"></i></div>
+          <div style="font-size:.7rem;color:var(--bl-muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px">On YouTube</div>
+        </div>
+      </div>
     </div>
-    <h1 style="font-size:clamp(2rem,5vw,3.2rem);font-weight:900;color:#fff;letter-spacing:-1px" class="mb-2">Blog &amp; <span class="bl-gold">News</span></h1>
-    <p class="bl-muted" style="max-width:520px;font-size:1rem;line-height:1.7">Trade insights, coffee market updates, import tips and East African business news, straight from the T&TG team.</p>
   </div>
 </section>
 
-<section class="bl-bg" style="padding:0 0 80px">
+<!-- ══ YOUTUBE CHANNEL BANNER ══════════════════════════════════════════════ -->
+<div class="yt-banner">
   <div class="container">
+    <div class="yt-banner-inner">
+      <div class="yt-logo-wrap">
+        <i class="fab fa-youtube"></i>
+      </div>
+      <div class="yt-banner-info">
+        <h4>T&TG Trade Corp on YouTube</h4>
+        <p>Watch trade guides, farm-to-cup stories, market analysis and business tips from East Africa to Canada.</p>
+      </div>
+      <a href="https://www.youtube.com/@TandTGTradeCorp" target="_blank" rel="noopener" class="yt-subscribe-btn">
+        <i class="fab fa-youtube"></i> Subscribe to our Channel
+      </a>
+    </div>
+  </div>
+</div>
 
-    <!-- Category filter -->
-    <div class="d-flex flex-wrap gap-2 mb-5 pb-4" style="border-bottom:1px solid rgba(201,168,76,.1)">
-      <a href="{% url 'blog_list' %}" class="bl-cat-btn {% if not current_cat %}active{% endif %}">All</a>
+<!-- ══ FEATURED VIDEOS ═════════════════════════════════════════════════════ -->
+<section class="bl-yt-section">
+  <div class="container">
+    <div class="bl-eyebrow"><i class="fab fa-youtube"></i> On Our Channel</div>
+    <h2 style="color:var(--bl-white);font-weight:900;font-size:1.5rem;margin:0 0 28px;letter-spacing:-.3px">Latest <span style="color:var(--bl-gold)">Videos</span></h2>
+
+    <div class="bl-yt-grid">
+      <!-- Main featured player (loads first video by default) -->
+      <div>
+        <div class="yt-featured-player" id="ytMainPlayer">
+          <iframe
+            id="ytMainIframe"
+            src="https://www.youtube.com/embed/videoseries?list=PLrEnWoR732-BHrPp_Pm8_VleD68f9s14-&autoplay=0&rel=0&modestbranding=1"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen title="T&TG Trade Corp YouTube">
+          </iframe>
+        </div>
+        <div style="margin-top:12px;display:flex;align-items:center;gap:10px">
+          <div id="ytMainTitle" style="color:var(--bl-white);font-weight:700;font-size:.92rem;flex:1">T&TG Trade Corp — Full Channel</div>
+          <a href="https://www.youtube.com/@TandTGTradeCorp" target="_blank" rel="noopener"
+             style="font-size:.75rem;color:var(--bl-muted);text-decoration:none;white-space:nowrap">
+            <i class="fab fa-youtube me-1" style="color:#ff5555"></i>Open on YouTube
+          </a>
+        </div>
+      </div>
+
+      <!-- Side playlist -->
+      <div class="yt-side-list">
+        <!-- These are static curated video links; update video IDs in Django admin or here -->
+        <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener" class="yt-side-card"
+           onclick="playVideo(event, 'dQw4w9WgXcQ', 'Uganda Arabica Coffee: From Farm to Export', this)">
+          <div class="yt-side-thumb">
+            <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg" alt="Video thumbnail" loading="lazy">
+            <div class="yt-play-mini"><i class="fas fa-play"></i></div>
+          </div>
+          <div class="yt-side-info">
+            <h6>Uganda Arabica Coffee: From Farm to Export</h6>
+            <div class="yt-meta"><span><i class="fab fa-youtube" style="color:#ff5555"></i> T&TG</span><span>Trade guides</span></div>
+          </div>
+        </a>
+        <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener" class="yt-side-card"
+           onclick="playVideo(event, 'dQw4w9WgXcQ', 'How to Import Coffee into Canada — Full Guide', this)">
+          <div class="yt-side-thumb">
+            <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg" alt="Video thumbnail" loading="lazy">
+            <div class="yt-play-mini"><i class="fas fa-play"></i></div>
+          </div>
+          <div class="yt-side-info">
+            <h6>How to Import Coffee into Canada — Full Guide</h6>
+            <div class="yt-meta"><span><i class="fab fa-youtube" style="color:#ff5555"></i> T&TG</span><span>Import tips</span></div>
+          </div>
+        </a>
+        <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener" class="yt-side-card"
+           onclick="playVideo(event, 'dQw4w9WgXcQ', 'T&TG Franchise: Coffee Estates & Farms Model Explained', this)">
+          <div class="yt-side-thumb">
+            <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg" alt="Video thumbnail" loading="lazy">
+            <div class="yt-play-mini"><i class="fas fa-play"></i></div>
+          </div>
+          <div class="yt-side-info">
+            <h6>T&TG Franchise: Coffee Estates &amp; Farms Model Explained</h6>
+            <div class="yt-meta"><span><i class="fab fa-youtube" style="color:#ff5555"></i> T&TG</span><span>Franchise</span></div>
+          </div>
+        </a>
+        <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener" class="yt-side-card"
+           onclick="playVideo(event, 'dQw4w9WgXcQ', 'East African Trade Routes: What Businesses Need to Know', this)">
+          <div class="yt-side-thumb">
+            <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg" alt="Video thumbnail" loading="lazy">
+            <div class="yt-play-mini"><i class="fas fa-play"></i></div>
+          </div>
+          <div class="yt-side-info">
+            <h6>East African Trade Routes: What Businesses Need to Know</h6>
+            <div class="yt-meta"><span><i class="fab fa-youtube" style="color:#ff5555"></i> T&TG</span><span>East Africa</span></div>
+          </div>
+        </a>
+        <div style="padding-top:4px">
+          <a href="https://www.youtube.com/@TandTGTradeCorp" target="_blank" rel="noopener" class="btn-outline-gold" style="width:100%;justify-content:center;border-radius:12px;font-size:.8rem">
+            <i class="fab fa-youtube"></i> View Full Channel
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CATEGORY NAV ════════════════════════════════════════════════════════ -->
+<div class="bl-cat-nav">
+  <div class="container">
+    <div class="bl-cat-nav-inner">
+      <a href="{% url 'blog_list' %}" class="bl-cat-pill {% if not current_cat %}active{% endif %}">
+        <i class="fas fa-th me-1"></i>All
+      </a>
       {% for val, label in categories %}
-      <a href="{% url 'blog_list' %}?category={{ val }}" class="bl-cat-btn {% if current_cat == val %}active{% endif %}">{{ label }}</a>
+      <a href="{% url 'blog_list' %}?category={{ val }}"
+         class="bl-cat-pill {% if current_cat == val %}active{% endif %}">{{ label }}</a>
       {% endfor %}
     </div>
+  </div>
+</div>
 
-    <!-- Featured article -->
-    {% if featured and not current_cat %}
-    <div class="row g-4 mb-5">
-      <div class="col-lg-7">
-        {% if featured.safe_cover_url %}
-        <img src="{{ featured.safe_cover_url }}" alt="{{ featured.title }}" class="bl-feat-img">
-        {% else %}
-        <div class="bl-feat-img d-flex align-items-center justify-content-center" style="background:linear-gradient(135deg,#1a1000,#2a1a00)">
-          <i class="fas fa-newspaper" style="font-size:4rem;color:rgba(201,168,76,.3)"></i>
-        </div>
-        {% endif %}
-      </div>
-      <div class="col-lg-5 d-flex flex-column justify-content-center">
-        <div class="d-flex align-items-center gap-2 mb-3">
-          <span class="bl-tag">⭐ Featured</span>
-          <span class="bl-tag">{{ featured.get_category_display }}</span>
-        </div>
-        <h2 style="color:#fff;font-weight:900;font-size:1.6rem;line-height:1.25" class="mb-3">{{ featured.title }}</h2>
-        <p class="bl-muted mb-4" style="line-height:1.7">{{ featured.excerpt }}</p>
-        <div class="d-flex align-items-center gap-3 mb-4" style="font-size:.8rem">
-          <span class="bl-muted"><i class="fas fa-user me-1"></i>{{ featured.author.get_full_name|default:"T&TG Team" }}</span>
-          <span class="bl-muted"><i class="fas fa-clock me-1"></i>{{ featured.reading_time }} min read</span>
-          <span class="bl-muted"><i class="fas fa-eye me-1"></i>{{ featured.views_count }}</span>
-        </div>
-        <a href="{{ featured.get_absolute_url }}" class="btn btn-gold px-4 py-2 align-self-start">
-          Read Article <i class="fas fa-arrow-right ms-2"></i>
-        </a>
-      </div>
-    </div>
-    <div style="border-top:1px solid rgba(201,168,76,.1);margin-bottom:40px"></div>
-    {% endif %}
+<!-- ══ MAIN ARTICLES ═══════════════════════════════════════════════════════ -->
+<section class="bl-main">
+  <div class="container">
 
-    <!-- Article grid -->
     {% if page_obj %}
-    <div class="row g-4">
-      {% for post in page_obj %}
-      <div class="col-md-6 col-lg-4">
-        <a href="{{ post.get_absolute_url }}" class="bl-card h-100">
-          <!-- Cover -->
-          {% if post.safe_cover_url %}
-          <img src="{{ post.safe_cover_url }}" alt="{{ post.title }}" class="bl-img">
+
+      <!-- Featured post -->
+      {% if featured and not current_cat %}
+      <div class="bl-featured">
+        <div class="bl-feat-cover">
+          {% if featured.safe_cover_url %}
+          <img src="{{ featured.safe_cover_url }}" alt="{{ featured.title }}" loading="lazy">
           {% else %}
-          <div class="bl-img d-flex align-items-center justify-content-center" style="background:linear-gradient(135deg,#1a1000,#2a1a00)">
-            <i class="fas fa-newspaper" style="font-size:2.5rem;color:rgba(201,168,76,.3)"></i>
+          <div style="width:100%;height:100%;background:linear-gradient(135deg,#1a1000,#0a1a2a);display:flex;align-items:center;justify-content:center">
+            <i class="fas fa-newspaper" style="font-size:5rem;color:rgba(201,168,76,.2)"></i>
           </div>
           {% endif %}
-          <!-- Content -->
-          <div class="p-4">
-            <div class="d-flex align-items-center gap-2 mb-2">
-              <span class="bl-tag">{{ post.get_category_display }}</span>
-              <span class="bl-muted ms-auto" style="font-size:.72rem"><i class="fas fa-clock me-1"></i>{{ post.reading_time }} min</span>
+          {% if featured.youtube_url %}
+          <div class="bl-feat-yt-badge">
+            <a href="{{ featured.youtube_url }}" target="_blank" rel="noopener" title="Watch video">
+              <i class="fas fa-play"></i>
+            </a>
+          </div>
+          {% endif %}
+        </div>
+        <div class="bl-feat-meta">
+          <div class="bl-feat-tags">
+            <span class="bl-tag" style="background:rgba(201,168,76,.2);font-size:.7rem">
+              <i class="fas fa-star me-1"></i>Featured
+            </span>
+            <span class="bl-tag">{{ featured.get_category_display }}</span>
+            {% if featured.youtube_url %}
+            <span class="bl-tag-yt"><i class="fab fa-youtube"></i> Video</span>
+            {% endif %}
+          </div>
+          <h2 class="bl-feat-title">{{ featured.title }}</h2>
+          <p class="bl-feat-excerpt">{{ featured.excerpt }}</p>
+          <div class="bl-feat-info">
+            <span><i class="fas fa-user me-1"></i>{{ featured.author.get_full_name|default:"T&TG Team" }}</span>
+            <span><i class="fas fa-clock me-1"></i>{{ featured.reading_time }} min read</span>
+            <span><i class="fas fa-eye me-1"></i>{{ featured.views_count }}</span>
+          </div>
+          <div class="d-flex gap-3 flex-wrap">
+            <a href="{{ featured.get_absolute_url }}" class="btn-gold">
+              Read Article <i class="fas fa-arrow-right"></i>
+            </a>
+            {% if featured.youtube_url %}
+            <a href="{{ featured.youtube_url }}" target="_blank" rel="noopener"
+               style="display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:100px;background:rgba(255,0,0,.12);border:1px solid rgba(255,0,0,.3);color:#ff5555;font-size:.85rem;font-weight:700;text-decoration:none;transition:all .2s">
+              <i class="fab fa-youtube"></i> Watch Video
+            </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="bl-divider"></div>
+      {% endif %}
+
+      <!-- Section heading -->
+      <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
+        <div>
+          <div class="bl-eyebrow"><i class="fas fa-newspaper"></i> Latest Articles</div>
+        </div>
+        {% if current_cat %}
+        <a href="{% url 'blog_list' %}" class="btn-outline-gold" style="font-size:.78rem;padding:7px 18px">
+          <i class="fas fa-arrow-left"></i> All Articles
+        </a>
+        {% endif %}
+      </div>
+
+      <!-- Article grid -->
+      <div class="bl-grid">
+        {% for post in page_obj %}
+        <a href="{{ post.get_absolute_url }}" class="bl-card">
+          <!-- Cover -->
+          <div class="bl-card-cover">
+            {% if post.safe_cover_url %}
+            <img src="{{ post.safe_cover_url }}" alt="{{ post.title }}" loading="lazy">
+            {% else %}
+            <div class="bl-cover-placeholder">
+              <i class="fas fa-newspaper"></i>
             </div>
-            <h5 style="color:#fff;font-weight:800;line-height:1.3;font-size:1rem" class="mb-2">{{ post.title }}</h5>
-            <p class="bl-muted mb-3" style="font-size:.83rem;line-height:1.6">{{ post.excerpt|truncatechars:120 }}</p>
-            <div class="d-flex align-items-center justify-content-between mt-auto" style="font-size:.75rem">
-              <span class="bl-muted">{{ post.author.get_full_name|default:"T&TG Team" }}</span>
-              <span class="bl-muted">{% if post.published_at %}{{ post.published_at|date:"d M Y" }}{% endif %}</span>
+            {% endif %}
+            {% if post.youtube_url %}
+            <div class="bl-yt-pill"><i class="fab fa-youtube"></i> Video</div>
+            {% endif %}
+          </div>
+          <!-- Body -->
+          <div class="bl-card-body">
+            <div class="bl-card-tags">
+              <span class="bl-tag">{{ post.get_category_display }}</span>
+              {% if post.youtube_url %}
+              <span class="bl-tag-yt"><i class="fab fa-youtube"></i></span>
+              {% endif %}
+              <span style="margin-left:auto;font-size:.7rem;color:var(--bl-muted)">
+                <i class="fas fa-clock" style="color:var(--bl-gold)"></i> {{ post.reading_time }}m
+              </span>
+            </div>
+            <h5 class="bl-card-title">{{ post.title }}</h5>
+            <p class="bl-card-excerpt">{{ post.excerpt|truncatechars:130 }}</p>
+            <div class="bl-card-foot">
+              <span><i class="fas fa-user me-1"></i>{{ post.author.get_full_name|default:"T&TG Team" }}</span>
+              <span>{% if post.published_at %}{{ post.published_at|date:"d M Y" }}{% endif %}</span>
             </div>
           </div>
         </a>
+        {% endfor %}
       </div>
-      {% endfor %}
-    </div>
 
-    <!-- Pagination -->
-    {% if page_obj.has_other_pages %}
-    <div class="d-flex justify-content-center gap-2 mt-5">
-      {% if page_obj.has_previous %}
-      <a href="?page={{ page_obj.previous_page_number }}{% if current_cat %}&category={{ current_cat }}{% endif %}" class="btn px-4" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:none;border-radius:10px">
-        <i class="fas fa-arrow-left me-2"></i>Previous
-      </a>
+      <!-- Pagination -->
+      {% if page_obj.has_other_pages %}
+      <div class="bl-pagination">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{% if current_cat %}&category={{ current_cat }}{% endif %}" class="bl-page-btn">
+          <i class="fas fa-arrow-left me-2"></i>Previous
+        </a>
+        {% endif %}
+        <span class="bl-page-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if current_cat %}&category={{ current_cat }}{% endif %}" class="bl-page-btn">
+          Next <i class="fas fa-arrow-right ms-2"></i>
+        </a>
+        {% endif %}
+      </div>
       {% endif %}
-      <span class="d-flex align-items-center px-3 bl-muted" style="font-size:.85rem">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-      {% if page_obj.has_next %}
-      <a href="?page={{ page_obj.next_page_number }}{% if current_cat %}&category={{ current_cat }}{% endif %}" class="btn px-4" style="border:1px solid rgba(201,168,76,.3);color:#c9a84c;background:none;border-radius:10px">
-        Next <i class="fas fa-arrow-right ms-2"></i>
-      </a>
-      {% endif %}
-    </div>
-    {% endif %}
 
     {% else %}
-    <div class="text-center py-5">
-      <div style="font-size:4rem;opacity:.2;margin-bottom:16px"><i class="fas fa-newspaper"></i></div>
-      <h5 style="color:#fff;font-weight:700">No articles yet</h5>
-      <p class="bl-muted">Check back soon: trade news and insights are coming.</p>
+    <div class="bl-empty">
+      <i class="fas fa-newspaper"></i>
+      <h5>No articles yet</h5>
+      <p>Check back soon — trade insights and market news are on their way.</p>
     </div>
     {% endif %}
 
   </div>
 </section>
+
+<!-- ══ NEWSLETTER CTA ═════════════════════════════════════════════════════ -->
+<section class="bl-newsletter">
+  <div class="container">
+    <div class="bl-newsletter-inner">
+      <div class="bl-eyebrow" style="justify-content:center"><i class="fas fa-envelope"></i> Stay Informed</div>
+      <h3>Get Trade News Delivered</h3>
+      <p>Coffee markets, East Africa trade updates, import tips — delivered straight to your inbox. No spam, unsubscribe anytime.</p>
+      <form method="POST" action="{% url 'newsletter_subscribe' %}" class="bl-nl-form">
+        {% csrf_token %}
+        <input type="email" name="email" placeholder="your@email.com" required>
+        <button type="submit" class="btn-gold" style="flex-shrink:0;white-space:nowrap">
+          Subscribe <i class="fas fa-paper-plane"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+function playVideo(e, videoId, title, card) {
+  e.preventDefault();
+  var iframe = document.getElementById('ytMainIframe');
+  var titleEl = document.getElementById('ytMainTitle');
+  iframe.src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0&modestbranding=1';
+  if (titleEl) titleEl.textContent = title;
+  document.querySelectorAll('.yt-side-card').forEach(function(c){ c.classList.remove('active'); });
+  if (card) card.classList.add('active');
+  document.getElementById('ytMainPlayer').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+</script>
+
 {% endblock %}

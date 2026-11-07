@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load video_tags %}
 {% block title %}{{ post.title }} — T&TG Trade Corp Blog{% endblock %}
 {% block content %}
 <style>
@@ -23,6 +24,21 @@
   .bd-body strong { color:#e0d5c0; }
   .bd-body hr { border-color:rgba(201,168,76,.15); margin:2rem 0; }
   .bd-body img { max-width:100%; border-radius:12px; margin:1rem 0; }
+
+  /* YouTube embed */
+  .bd-yt-wrap {
+    border-radius:16px; overflow:hidden; background:#000;
+    aspect-ratio:16/9; margin-bottom:2rem;
+    border:1px solid rgba(255,0,0,.2);
+    box-shadow:0 16px 48px rgba(0,0,0,.5);
+  }
+  .bd-yt-wrap iframe { width:100%; height:100%; border:none; display:block; }
+  .bd-yt-label {
+    display:inline-flex; align-items:center; gap:6px;
+    padding:4px 14px; border-radius:100px;
+    background:rgba(255,0,0,.12); border:1px solid rgba(255,0,0,.25);
+    color:#ff5555; font-size:.7rem; font-weight:800; letter-spacing:.4px;
+  }
 </style>
 
 <section class="bd-bg" style="padding:60px 0 80px">
@@ -40,6 +56,9 @@
         <!-- Tags + meta -->
         <div class="d-flex flex-wrap align-items-center gap-2 mb-4">
           <span class="bd-tag">{{ post.get_category_display }}</span>
+          {% if post.youtube_url %}
+          <span class="bd-yt-label"><i class="fab fa-youtube"></i> Video</span>
+          {% endif %}
           <span class="bd-muted" style="font-size:.8rem"><i class="fas fa-clock me-1"></i>{{ post.reading_time }} min read</span>
           <span class="bd-muted" style="font-size:.8rem"><i class="fas fa-eye me-1"></i>{{ post.views_count }} views</span>
         </div>
@@ -70,6 +89,28 @@
         <!-- Cover image -->
         {% if post.safe_cover_url %}
         <img src="{{ post.safe_cover_url }}" alt="{{ post.title }}" style="width:100%;border-radius:16px;margin-bottom:2rem;aspect-ratio:16/9;object-fit:cover">
+        {% endif %}
+
+        <!-- YouTube video embed -->
+        {% if post.youtube_url %}
+        {% with embed_url=post.youtube_url|youtube_embed_url %}
+        {% if embed_url %}
+        <div style="margin-bottom:2rem">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <span class="bd-yt-label"><i class="fab fa-youtube"></i> Watch the Video</span>
+            <a href="{{ post.youtube_url }}" target="_blank" rel="noopener"
+               style="font-size:.75rem;color:#7a6e5f;text-decoration:none;margin-left:auto">
+              <i class="fab fa-youtube me-1" style="color:#ff5555"></i>Open on YouTube
+            </a>
+          </div>
+          <div class="bd-yt-wrap">
+            <iframe src="{{ embed_url }}?rel=0&modestbranding=1"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen title="{{ post.title }}"></iframe>
+          </div>
+        </div>
+        {% endif %}
+        {% endwith %}
         {% endif %}
 
         <!-- Excerpt (lead) -->

@@ -91,6 +91,7 @@ class BlogPost(models.Model):
                       )
     cover_image     = models.ImageField(upload_to='blog/', blank=True, null=True)
     cover_image_url = models.URLField(blank=True, help_text='Stock photo URL used if no image is uploaded.')
+    youtube_url     = models.URLField(blank=True, help_text='YouTube video URL for this post (e.g. https://youtu.be/abc123). Embeds the video on the detail page and shows a video badge on the listing.')
     is_published    = models.BooleanField(default=False)
     is_featured     = models.BooleanField(default=False, help_text='Show in the featured slot at the top of the blog.')
     views_count     = models.PositiveIntegerField(default=0)
