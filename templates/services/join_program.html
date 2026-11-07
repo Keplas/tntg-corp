@@ -1,306 +1,500 @@
 {% extends 'base.html' %}
-{% block title %}Join T&TG — Choose Your Partnership{% endblock %}
+{% block title %}T&TG Field-to-Market Accelerator — Apply to the Next Cohort{% endblock %}
 {% block content %}
 <style>
-/* ── Tokens ─────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════
+   T&TG ONBOARDING — Field-to-Market Accelerator
+   ══════════════════════════════════════════════════ */
 :root {
-  --gold:   #c9a84c;
-  --gold2:  #e8c96a;
-  --dark:   #080C10;
-  --navy:   #060f1e;
-  --card:   #0d1a26;
-  --muted:  #7a8a99;
-  --text:   #d4c9b0;
-  --border: rgba(201,168,76,.14);
-  --glow:   rgba(201,168,76,.28);
+  --ob-bg:      #07080d;
+  --ob-surface: #0d1017;
+  --ob-card:    #111520;
+  --ob-gold:    #c9a84c;
+  --ob-gold2:   #e8c96a;
+  --ob-muted:   #6b6358;
+  --ob-text:    #d0c8b8;
+  --ob-white:   #f0ece4;
+  --ob-border:  rgba(201,168,76,.14);
+  --ob-glow:    rgba(201,168,76,.22);
 }
-.jp-page { background: var(--dark); color: var(--text); }
-.jp-label { font-size:.68rem; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--gold); }
-.jp-divider { width:48px; height:2px; background:linear-gradient(90deg,transparent,var(--gold),transparent); margin:14px auto 0; }
 
-/* ── Partnership cards ───────────────────────────────── */
-.jp-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 28px 24px;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  text-decoration: none;
-  color: inherit;
-  transition: border-color .3s, transform .3s, box-shadow .3s, background .3s;
-  position: relative;
+.ob-page { background: var(--ob-bg); color: var(--ob-text); }
+
+/* ── Eyebrow ──────────────────────────────────── */
+.ob-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 5px 16px; border-radius: 100px;
+  background: rgba(201,168,76,.08); border: 1px solid rgba(201,168,76,.22);
+  font-size: .68rem; font-weight: 800; letter-spacing: 2px;
+  color: var(--ob-gold); text-transform: uppercase; margin-bottom: 20px;
+}
+
+/* ── Track Cards ─────────────────────────────── */
+.ob-track {
+  background: var(--ob-card);
+  border: 1px solid var(--ob-border);
+  border-radius: 22px;
   overflow: hidden;
+  display: flex; flex-direction: column;
+  height: 100%;
+  transition: border-color .3s, transform .3s, box-shadow .3s;
+  position: relative;
 }
-.jp-card::before {
+.ob-track::after {
   content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--gold), var(--gold2));
-  opacity: 0;
-  transition: opacity .3s;
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  opacity: 0; transition: opacity .3s;
 }
-.jp-card:hover {
-  border-color: var(--glow);
-  background: rgba(13,26,38,.95);
-  transform: translateY(-5px);
-  box-shadow: 0 16px 48px rgba(0,0,0,.35), 0 0 0 1px rgba(201,168,76,.18);
-  color: inherit;
-  text-decoration: none;
-}
-.jp-card:hover::before { opacity: 1; }
-.jp-card:hover .jp-ico { background: rgba(201,168,76,.18); border-color: rgba(201,168,76,.45); transform: scale(1.08); }
-.jp-card:hover .jp-arrow { color: var(--gold2); gap: 10px; }
+.ob-track.track-agri::after  { background: linear-gradient(90deg,#4ade80,#22c55e); }
+.ob-track.track-artisan::after { background: linear-gradient(90deg,#c9a84c,#e8c96a); }
+.ob-track.track-digital::after { background: linear-gradient(90deg,#60a5fa,#818cf8); }
+.ob-track:hover { border-color: var(--ob-glow); transform: translateY(-6px); box-shadow: 0 20px 56px rgba(0,0,0,.4); }
+.ob-track:hover::after { opacity: 1; }
 
-.jp-ico {
-  width: 52px; height: 52px;
-  border-radius: 14px;
-  background: rgba(201,168,76,.08);
-  border: 1px solid rgba(201,168,76,.2);
+.ob-track-cover {
+  position: relative; aspect-ratio: 16/8; overflow: hidden;
+}
+.ob-track-cover img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s; }
+.ob-track:hover .ob-track-cover img { transform: scale(1.05); }
+.ob-track-cover-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(7,8,13,.1) 0%, rgba(7,8,13,.85) 100%);
+}
+.ob-track-cover-badge {
+  position: absolute; top: 14px; left: 14px;
+  padding: 4px 12px; border-radius: 100px; font-size: .64rem; font-weight: 800; letter-spacing: 1px;
+  backdrop-filter: blur(8px);
+}
+.badge-agri    { background: rgba(74,222,128,.2); border: 1px solid rgba(74,222,128,.4); color: #4ade80; }
+.badge-artisan { background: rgba(201,168,76,.2);  border: 1px solid rgba(201,168,76,.4);  color: var(--ob-gold2); }
+.badge-digital { background: rgba(96,165,250,.2);  border: 1px solid rgba(96,165,250,.4);  color: #93c5fd; }
+
+.ob-track-body { padding: 24px 26px 28px; display: flex; flex-direction: column; flex: 1; }
+
+.ob-track-ico {
+  width: 48px; height: 48px; border-radius: 14px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.3rem; color: var(--gold);
-  margin-bottom: 18px;
-  transition: background .3s, border-color .3s, transform .3s;
-  flex-shrink: 0;
+  font-size: 1.25rem; margin-bottom: 16px; flex-shrink: 0;
+  border: 1px solid;
 }
-.jp-title { color: #fff; font-weight: 800; font-size: .95rem; margin-bottom: 10px; line-height: 1.35; }
-.jp-desc  { color: var(--muted); font-size: .8rem; line-height: 1.7; flex: 1; }
-.jp-arrow { color: var(--gold); font-size: .78rem; font-weight: 700; margin-top: 18px; display: flex; align-items: center; gap: 7px; transition: gap .25s, color .25s; }
+.ico-agri    { background: rgba(74,222,128,.1);  border-color: rgba(74,222,128,.25);  color: #4ade80; }
+.ico-artisan { background: rgba(201,168,76,.1);  border-color: rgba(201,168,76,.25);  color: var(--ob-gold); }
+.ico-digital { background: rgba(96,165,250,.1);  border-color: rgba(96,165,250,.25);  color: #93c5fd; }
 
-/* badge variants */
-.badge-gold  { background:rgba(201,168,76,.12); color:var(--gold);  border:1px solid rgba(201,168,76,.25); }
-.badge-blue  { background:rgba(59,130,246,.1);  color:#7dd3fc;     border:1px solid rgba(59,130,246,.25); }
-.badge-green { background:rgba(74,222,128,.08); color:#4ade80;     border:1px solid rgba(74,222,128,.22); }
-.jp-badge { font-size:.58rem; font-weight:900; letter-spacing:1.8px; text-transform:uppercase; padding:3px 9px; border-radius:20px; display:inline-block; margin-bottom:12px; }
+.ob-track-label { font-size: .62rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+.label-agri    { color: #4ade80; }
+.label-artisan { color: var(--ob-gold); }
+.label-digital { color: #93c5fd; }
 
-/* ── Category section headers ───────────────────────── */
-.cat-header { margin-bottom: 24px; display: flex; align-items: center; gap: 16px; }
-.cat-header .cat-line { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(201,168,76,.3), transparent); }
-.cat-header .cat-label { font-size:.65rem; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--gold); white-space:nowrap; }
+.ob-track-title {
+  font-size: 1.1rem; font-weight: 900; color: var(--ob-white);
+  margin: 0 0 10px; line-height: 1.3; letter-spacing: -.2px;
+}
+.ob-track-quote {
+  font-size: .84rem; color: var(--ob-text); line-height: 1.72;
+  margin-bottom: 20px; flex: 1;
+  font-style: italic; border-left: 2px solid rgba(201,168,76,.2);
+  padding-left: 14px;
+}
+.ob-track-covers {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 22px;
+}
+.ob-covers-label { font-size: .66rem; color: var(--ob-muted); font-weight: 600; margin-bottom: 7px; letter-spacing: .5px; text-transform: uppercase; }
+.ob-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px; border-radius: 100px;
+  font-size: .68rem; font-weight: 600;
+  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1);
+  color: var(--ob-muted);
+}
+.ob-cta-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  padding: 12px 22px; border-radius: 12px;
+  font-size: .84rem; font-weight: 800; text-decoration: none;
+  transition: transform .15s, box-shadow .15s, opacity .2s;
+  border: none; cursor: pointer;
+}
+.ob-cta-btn:hover { transform: scale(1.03); text-decoration: none; }
+.btn-agri    { background: linear-gradient(135deg,#22c55e,#16a34a); color: #fff; box-shadow: 0 6px 20px rgba(34,197,94,.2); }
+.btn-artisan { background: linear-gradient(135deg,var(--ob-gold),var(--ob-gold2)); color: #1a0a00; box-shadow: 0 6px 20px rgba(201,168,76,.25); }
+.btn-digital { background: linear-gradient(135deg,#60a5fa,#818cf8); color: #fff; box-shadow: 0 6px 20px rgba(96,165,250,.2); }
 
-/* ── Trust bar ───────────────────────────────────────── */
-.trust-pill { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.09); border-radius:30px; padding:8px 18px; display:inline-flex; align-items:center; gap:8px; font-size:.78rem; }
+/* ── 4-Stage Funnel ──────────────────────────── */
+.ob-funnel { background: var(--ob-surface); padding: 72px 0; border-top: 1px solid var(--ob-border); border-bottom: 1px solid var(--ob-border); }
+
+.ob-stages { display: flex; gap: 0; position: relative; }
+.ob-stages::before {
+  content: '';
+  position: absolute; top: 28px; left: 28px; right: 28px; height: 2px;
+  background: linear-gradient(90deg, rgba(201,168,76,.4), rgba(201,168,76,.1), rgba(201,168,76,.4));
+  z-index: 0;
+}
+@media (max-width: 768px) {
+  .ob-stages { flex-direction: column; gap: 2px; }
+  .ob-stages::before { display: none; }
+}
+
+.ob-stage {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  text-align: center; padding: 0 16px; position: relative; z-index: 1;
+}
+.ob-stage-num {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--ob-card); border: 2px solid rgba(201,168,76,.4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; font-weight: 900; color: var(--ob-gold);
+  margin-bottom: 20px; flex-shrink: 0;
+  transition: border-color .3s, background .3s;
+}
+.ob-stage:hover .ob-stage-num { background: rgba(201,168,76,.1); border-color: var(--ob-gold); }
+.ob-stage-name { font-size: .7rem; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ob-gold); margin-bottom: 8px; }
+.ob-stage-title { font-size: .92rem; font-weight: 800; color: var(--ob-white); margin-bottom: 8px; }
+.ob-stage-desc { font-size: .78rem; color: var(--ob-muted); line-height: 1.65; }
+
+/* ── Language swap section ───────────────────── */
+.ob-shift { background: var(--ob-bg); padding: 60px 0; }
+.ob-shift-row {
+  display: flex; gap: 16px; align-items: stretch; margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.ob-shift-old, .ob-shift-new {
+  flex: 1; min-width: 220px; padding: 16px 20px; border-radius: 14px; font-size: .84rem; line-height: 1.65;
+}
+.ob-shift-old { background: rgba(255,0,0,.05); border: 1px solid rgba(255,0,0,.12); color: var(--ob-muted); text-decoration: line-through; opacity: .7; }
+.ob-shift-new { background: rgba(201,168,76,.06); border: 1px solid rgba(201,168,76,.18); color: var(--ob-text); }
+.ob-shift-arrow { display: flex; align-items: center; color: var(--ob-gold); font-size: .9rem; }
+
+/* ── Bottom CTA ──────────────────────────────── */
+.ob-bottom-cta {
+  background: linear-gradient(135deg, #0a0d02, #02081a);
+  border-top: 1px solid var(--ob-border);
+  padding: 72px 0;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.ob-bottom-cta::before {
+  content: '';
+  position: absolute; top: -100px; left: 50%; transform: translateX(-50%);
+  width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,168,76,.05), transparent 70%);
+  pointer-events: none;
+}
 </style>
 
-<div class="jp-page">
+<div class="ob-page">
 
-<!-- ═══════════════════════════════════════════════════════════════════
-     HERO
-══════════════════════════════════════════════════════════════════════ -->
-<section style="position:relative;min-height:62vh;display:flex;align-items:center;overflow:hidden">
+<!-- ══ HERO ═══════════════════════════════════════════════════════════════ -->
+<section style="position:relative;min-height:65vh;display:flex;align-items:center;overflow:hidden">
 
-  <!-- Background image -->
   <div style="position:absolute;inset:0;z-index:0">
-    <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1800&q=80"
+    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=1800&q=80"
          alt="" loading="eager"
-         style="width:100%;height:100%;object-fit:cover;object-position:center 35%;filter:brightness(.28) saturate(.75)">
-    <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(6,15,30,.95) 0%,rgba(8,12,16,.55) 65%,transparent 100%)"></div>
-    <div style="position:absolute;inset:0;background:linear-gradient(to top,var(--dark) 0%,transparent 50%)"></div>
+         style="width:100%;height:100%;object-fit:cover;object-position:center 40%;filter:brightness(.22) saturate(.6)">
+    <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(7,8,13,.97) 0%,rgba(7,8,13,.55) 60%,transparent 100%)"></div>
+    <div style="position:absolute;inset:0;background:linear-gradient(to top,var(--ob-bg) 0%,transparent 55%)"></div>
   </div>
 
-  <!-- Glow orb -->
-  <div style="position:absolute;top:15%;right:10%;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.07),transparent 70%);pointer-events:none;z-index:1"></div>
+  <!-- Glow orbs -->
+  <div style="position:absolute;top:10%;right:8%;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.06),transparent 70%);pointer-events:none;z-index:1"></div>
+  <div style="position:absolute;bottom:20%;left:5%;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(74,222,128,.04),transparent 70%);pointer-events:none;z-index:1"></div>
 
-  <div class="container" style="position:relative;z-index:2;padding-top:110px;padding-bottom:70px">
-    <!-- Back link -->
-    <a href="{% url 'cooperation_program' %}" style="color:var(--muted);font-size:.78rem;text-decoration:none;display:inline-flex;align-items:center;gap:7px;margin-bottom:28px;transition:color .2s"
-       onmouseover="this.style.color='#c9a84c'" onmouseout="this.style.color=''">
-      <i class="fas fa-arrow-left"></i> Cooperation Program
-    </a>
+  <div class="container" style="position:relative;z-index:2;padding-top:120px;padding-bottom:80px">
 
-    <div class="d-inline-flex align-items-center gap-2 mb-4 px-3 py-1 rounded-pill d-block"
-         style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);width:fit-content">
-      <i class="fas fa-handshake" style="color:var(--gold);font-size:.72rem"></i>
-      <span class="jp-label">T&TG Partnership Network</span>
+    <div class="ob-eyebrow">
+      <i class="fas fa-graduation-cap"></i> T&TG Onboarding Program
     </div>
 
-    <h1 style="font-size:clamp(2rem,5vw,3.6rem);font-weight:900;color:#fff;letter-spacing:-1.5px;line-height:1.08;margin-bottom:20px">
-      Choose Your<br>
-      <span style="color:var(--gold)">Partnership Path</span>
+    <h1 style="font-size:clamp(2.2rem,5.5vw,3.8rem);font-weight:900;color:var(--ob-white);letter-spacing:-2px;line-height:1.05;margin-bottom:20px">
+      The T&TG<br>
+      <span style="color:var(--ob-gold)">Field-to-Market</span><br>
+      Accelerator
     </h1>
-    <p style="font-size:.98rem;line-height:1.78;color:var(--text);max-width:500px;margin-bottom:36px">
-      Select the option that best describes your role in the T&TG trade network.
-      Each pathway leads to the right registration or agreement form for you.
+    <p style="font-size:1rem;line-height:1.8;color:var(--ob-text);max-width:520px;margin-bottom:14px">
+      Apply to our next cohort and launch your enterprise alongside T&TG regional mentors.
+      Three fellowship tracks. One mission: getting East African enterprise to global markets.
+    </p>
+    <p style="font-size:.82rem;color:var(--ob-muted);margin-bottom:40px;max-width:440px;line-height:1.7">
+      Not a corporate vendor portal — a structured growth track where you gain market access,
+      1-on-1 coaching, and an operational blueprint for your business.
     </p>
 
-    <!-- Trust badges -->
-    <div class="d-flex gap-3 flex-wrap">
-      <div class="trust-pill">
-        <i class="fas fa-check-circle" style="color:#4ade80;font-size:.75rem"></i>
-        <span style="color:var(--text)">9 Partnership Types</span>
+    <!-- Cohort trust chips -->
+    <div class="d-flex flex-wrap gap-3">
+      <div style="display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:100px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);font-size:.75rem;color:#4ade80">
+        <i class="fas fa-users"></i> 3 Fellowship Tracks
       </div>
-      <div class="trust-pill">
-        <i class="fas fa-globe-africa" style="color:var(--gold);font-size:.75rem"></i>
-        <span style="color:var(--text)">Africa · Canada · Japan</span>
+      <div style="display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:100px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);font-size:.75rem;color:var(--ob-gold)">
+        <i class="fas fa-chalkboard-teacher"></i> 1-on-1 Growth Coach
       </div>
-      <div class="trust-pill">
-        <i class="fas fa-ship" style="color:var(--gold);font-size:.75rem"></i>
-        <span style="color:var(--text)">Registered RM Corporation</span>
+      <div style="display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:100px;background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.2);font-size:.75rem;color:#93c5fd">
+        <i class="fas fa-rocket"></i> Quarterly Cohorts
       </div>
     </div>
   </div>
 </section>
 
 
-<!-- ═══════════════════════════════════════════════════════════════════
-     PARTNERSHIP CARDS — 3 grouped rows
-══════════════════════════════════════════════════════════════════════ -->
-<section style="padding:70px 0 90px;background:var(--dark)">
-<div class="container">
+<!-- ══ 3 FELLOWSHIP TRACKS ════════════════════════════════════════════════ -->
+<section style="padding:72px 0 80px;background:var(--ob-bg)">
+  <div class="container">
 
-  <!-- ── Row 1: Suppliers & Trade ─────────────────────── -->
-  <div class="cat-header">
-    <div class="cat-label">Suppliers &amp; Trade</div>
-    <div class="cat-line"></div>
+    <div class="text-center mb-5">
+      <div class="ob-eyebrow" style="justify-content:center"><i class="fas fa-layer-group"></i> Fellowship Tracks</div>
+      <h2 style="color:var(--ob-white);font-weight:900;font-size:clamp(1.5rem,3vw,2.1rem);letter-spacing:-.5px;margin:0 0 12px">
+        Choose Your <span style="color:var(--ob-gold)">Growth Track</span>
+      </h2>
+      <p style="color:var(--ob-muted);font-size:.9rem;max-width:480px;margin:0 auto;line-height:1.75">
+        Each track is designed as a structured growth pathway — not a form submission.
+        Your Growth Coach guides you through every stage.
+      </p>
+    </div>
+
+    <div class="row g-4">
+
+      <!-- ── Track 1: Agribusiness ───────────────────── -->
+      <div class="col-lg-4 col-md-6">
+        <div class="ob-track track-agri d-flex flex-column h-100">
+          <div class="ob-track-cover">
+            <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=700&q=80" alt="Agribusiness Track" loading="lazy">
+            <div class="ob-track-cover-overlay"></div>
+            <span class="ob-track-cover-badge badge-agri"><i class="fas fa-seedling me-1"></i>Agribusiness</span>
+          </div>
+          <div class="ob-track-body">
+            <div class="ob-track-ico ico-agri"><i class="fas fa-tractor"></i></div>
+            <div class="ob-track-label label-agri">Track 01 &mdash; Fellowship</div>
+            <h3 class="ob-track-title">Agribusiness &amp; Logistics Fellowship</h3>
+            <p class="ob-track-quote">
+              "Learn how to transition from local farming to global exporting. Our regional managers provide 1-on-1 coaching on export documentation, fair-pricing structures, and international quality standards."
+            </p>
+            <div class="mb-3">
+              <div class="ob-covers-label">This track covers</div>
+              <div class="ob-track-covers">
+                <span class="ob-chip"><i class="fas fa-leaf"></i> Farm Direct</span>
+                <span class="ob-chip"><i class="fas fa-file-signature"></i> Seller Agreements</span>
+                <span class="ob-chip"><i class="fas fa-truck"></i> Supply Chain Partners</span>
+              </div>
+            </div>
+            <a href="{% url 'partnership_apply' %}?type=supplier" class="ob-cta-btn btn-agri mt-auto">
+              Apply for the Agribusiness Fellowship <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Track 2: Artisan Maker ──────────────────── -->
+      <div class="col-lg-4 col-md-6">
+        <div class="ob-track track-artisan d-flex flex-column h-100">
+          <div class="ob-track-cover">
+            <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=700&q=80" alt="Artisan Maker Track" loading="lazy">
+            <div class="ob-track-cover-overlay"></div>
+            <span class="ob-track-cover-badge badge-artisan"><i class="fas fa-mug-hot me-1"></i>Artisan</span>
+          </div>
+          <div class="ob-track-body">
+            <div class="ob-track-ico ico-artisan"><i class="fas fa-paint-brush"></i></div>
+            <div class="ob-track-label label-artisan">Track 02 &mdash; Accelerator</div>
+            <h3 class="ob-track-title">Artisanal Product Accelerator</h3>
+            <p class="ob-track-quote">
+              "Are you making small-batch coffee soaps, gifts, or unique roasts? Partner with T&TG's production mentors to scale your recipe, design co-branded packaging, and leverage our shared production agreements to reach a global audience."
+            </p>
+            <div class="mb-3">
+              <div class="ob-covers-label">This track covers</div>
+              <div class="ob-track-covers">
+                <span class="ob-chip"><i class="fas fa-mug-hot"></i> Artisanal Manufacturers</span>
+                <span class="ob-chip"><i class="fas fa-industry"></i> Co-Manufacturing</span>
+              </div>
+            </div>
+            <a href="{% url 'partnership_apply' %}?type=manufacturer" class="ob-cta-btn btn-artisan mt-auto">
+              Pitch Your Product to the Accelerator <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Track 3: Digital Merchant ──────────────── -->
+      <div class="col-lg-4 col-md-12">
+        <div class="ob-track track-digital d-flex flex-column h-100">
+          <div class="ob-track-cover">
+            <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=700&q=80" alt="Digital Merchant Track" loading="lazy">
+            <div class="ob-track-cover-overlay"></div>
+            <span class="ob-track-cover-badge badge-digital"><i class="fas fa-bolt me-1"></i>Strongest Hook</span>
+          </div>
+          <div class="ob-track-body">
+            <div class="ob-track-ico ico-digital"><i class="fas fa-store"></i></div>
+            <div class="ob-track-label label-digital">Track 03 &mdash; Founder Program</div>
+            <h3 class="ob-track-title">E-Commerce Founder Program</h3>
+            <p class="ob-track-quote">
+              "Launch your e-commerce career with zero upfront inventory risk. You will be paired with a Digital Growth Coach to learn digital marketing, store optimization, and customer acquisition using the T&TG product catalog."
+            </p>
+            <div class="mb-3">
+              <div class="ob-covers-label">This track covers</div>
+              <div class="ob-track-covers">
+                <span class="ob-chip"><i class="fas fa-shopping-cart"></i> E-Commerce Franchise</span>
+                <span class="ob-chip"><i class="fas fa-box-open"></i> Product Sellers</span>
+              </div>
+            </div>
+            <a href="{% url 'franchise_apply' %}" class="ob-cta-btn btn-digital mt-auto">
+              Claim Your Digital Storefront &amp; Coach <i class="fas fa-arrow-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
-  <div class="row g-4 mb-5">
+</section>
 
-    <!-- Partner With Us -->
-    <div class="col-md-6 col-lg-4">
-      <a href="{% url 'partnership_apply' %}?type=distributor" class="jp-card">
-        <span class="jp-badge badge-gold">Most Popular</span>
-        <div class="jp-ico"><i class="fas fa-handshake"></i></div>
-        <div class="jp-title">Partner With Us</div>
-        <div class="jp-desc">Coffee suppliers, distributors and regional managers. Submit your B2B trade application and join the T&TG network.</div>
-        <div class="jp-arrow">Apply Now <i class="fas fa-arrow-right"></i></div>
-      </a>
+
+<!-- ══ 4-STAGE MENTORSHIP FUNNEL ══════════════════════════════════════════ -->
+<section class="ob-funnel">
+  <div class="container">
+
+    <div class="text-center mb-5">
+      <div class="ob-eyebrow" style="justify-content:center"><i class="fas fa-route"></i> The Onboarding Journey</div>
+      <h2 style="color:var(--ob-white);font-weight:900;font-size:clamp(1.4rem,2.8vw,2rem);letter-spacing:-.4px;margin:0 0 10px">
+        The 4-Stage <span style="color:var(--ob-gold)">Mentorship Funnel</span>
+      </h2>
+      <p style="color:var(--ob-muted);font-size:.88rem;max-width:460px;margin:0 auto;line-height:1.75">
+        Your enrolment journey is built like an application to a prestigious fellowship,
+        not a corporate vendor portal.
+      </p>
     </div>
 
-    <!-- Registered Farms -->
-    <div class="col-md-6 col-lg-4">
-      <a href="{% url 'partnership_apply' %}?type=supplier" class="jp-card">
-        <span class="jp-badge badge-green">Farm Direct</span>
-        <div class="jp-ico"><i class="fas fa-seedling"></i></div>
-        <div class="jp-title">Registered Farms</div>
-        <div class="jp-desc">Coffee farms in Uganda and Kenya. Register for direct purchase agreements, fair pricing and full export documentation support.</div>
-        <div class="jp-arrow">Register Farm <i class="fas fa-arrow-right"></i></div>
-      </a>
+    <div class="ob-stages">
+
+      <div class="ob-stage">
+        <div class="ob-stage-num">01</div>
+        <div class="ob-stage-name">Stage One</div>
+        <div class="ob-stage-title">The Discovery Pitch</div>
+        <div class="ob-stage-desc">A short, friendly intake form about your background, your farm/product/digital goals, and why you want to join the network.</div>
+      </div>
+
+      <div class="ob-stage">
+        <div class="ob-stage-num">02</div>
+        <div class="ob-stage-name">Stage Two</div>
+        <div class="ob-stage-title">Cohort Interview</div>
+        <div class="ob-stage-desc">A 15-minute "Strategy &amp; Fit Session" with a T&TG Regional Manager to map out your goals and assign your Growth Coach.</div>
+      </div>
+
+      <div class="ob-stage">
+        <div class="ob-stage-num">03</div>
+        <div class="ob-stage-name">Stage Three</div>
+        <div class="ob-stage-title">The Sandbox / Lab</div>
+        <div class="ob-stage-desc">Access your Student Dashboard to upload company details and seller agreements as "Programme Prerequisites" — not legal compliance.</div>
+      </div>
+
+      <div class="ob-stage">
+        <div class="ob-stage-num" style="background:linear-gradient(135deg,rgba(201,168,76,.15),rgba(232,201,106,.08));border-color:var(--ob-gold)">
+          <i class="fas fa-rocket" style="font-size:.9rem"></i>
+        </div>
+        <div class="ob-stage-name">Stage Four</div>
+        <div class="ob-stage-title">Launch &amp; Scale</div>
+        <div class="ob-stage-desc">Go live on T&TG's platform with weekly or monthly check-ins with your designated T&TG mentor. Your enterprise, our network.</div>
+      </div>
+
     </div>
 
-    <!-- Sell Your Coffee to T&TG -->
-    <div class="col-md-6 col-lg-4">
-      <a href="{% url 'import_export' %}" class="jp-card">
-        <div class="jp-ico"><i class="fas fa-leaf"></i></div>
-        <div class="jp-title">Sell Your Coffee to T&TG</div>
-        <div class="jp-desc">Source Arabica and Robusta directly to T&TG from farms across Uganda, Kenya and beyond. Learn how the process works.</div>
-        <div class="jp-arrow">Learn More <i class="fas fa-arrow-right"></i></div>
-      </a>
-    </div>
-
-  </div>
-
-  <!-- ── Row 2: Manufacturing & Production ────────────── -->
-  <div class="cat-header">
-    <div class="cat-label">Manufacturing &amp; Production</div>
-    <div class="cat-line"></div>
-  </div>
-  <div class="row g-4 mb-5">
-
-    <!-- Coffee Artisanal Manufacturers -->
-    <div class="col-md-6 col-lg-4">
-      <a href="{% url 'partnership_apply' %}?type=manufacturer" class="jp-card">
-        <div class="jp-ico"><i class="fas fa-mug-hot"></i></div>
-        <div class="jp-title">Coffee Artisanal Manufacturers</div>
-        <div class="jp-desc">Small-batch roasters, soap makers, gift producers. Join T&TG's supplier network and reach global markets under the brand.</div>
-        <div class="jp-arrow">Apply as Manufacturer <i class="fas fa-arrow-right"></i></div>
-      </a>
-    </div>
-
-    <!-- Artisanal Co-Manufacturing -->
-    <div class="col-md-6 col-lg-4">
-      <a href="{% url 'partnership_apply' %}?type=co_manufacturer" class="jp-card">
-        <div class="jp-ico"><i class="fas fa-industry"></i></div>
-        <div class="jp-title">Artisanal Co-Manufacturing</div>
-        <div class="jp-desc">Partner with T&TG for soaps, gift sets, instant blends and more under a shared production agreement.</div>
-        <div class="jp-arrow">Partner With Us <i class="fas fa-arrow-right"></i></div>
-      </a>
-    </div>
-
-    <!-- E-Commerce Franchise -->
-    <div class="col-md-6 col-lg-4">
-      <a href="{% url 'franchise_apply' %}" class="jp-card">
-        <span class="jp-badge badge-blue">Franchise</span>
-        <div class="jp-ico"><i class="fas fa-store"></i></div>
-        <div class="jp-title">E-Commerce Franchisee</div>
-        <div class="jp-desc">Sell T&TG products online and grow your own e-commerce business under the T&TG brand with full programme support.</div>
-        <div class="jp-arrow">Apply Now <i class="fas fa-arrow-right"></i></div>
-      </a>
-    </div>
-
-  </div>
-
-  <!-- ── Row 3: Agreements & Logistics ────────────────── -->
-  <div class="cat-header">
-    <div class="cat-label">Agreements &amp; Logistics</div>
-    <div class="cat-line"></div>
-  </div>
-  <div class="row g-4 mb-5">
-
-    <!-- Selling Company Details -->
-    <div class="col-md-6 col-lg-4">
-      <a href="{% url 'import_export' %}#seller-agreement" class="jp-card">
-        <div class="jp-ico"><i class="fas fa-building"></i></div>
-        <div class="jp-title">Selling Company Details</div>
-        <div class="jp-desc">Registered companies and individual sellers. Submit company profile, authorised signatures and commodity specifications for Arabica or Robusta coffee.</div>
-        <div class="jp-arrow">View Form <i class="fas fa-arrow-right"></i></div>
-      </a>
-    </div>
-
-    <!-- Active Seller Agreements Upload Log -->
-    <div class="col-md-6 col-lg-4">
-      <a href="{% url 'import_export' %}#seller-log" class="jp-card">
-        <div class="jp-ico"><i class="fas fa-file-signature"></i></div>
-        <div class="jp-title">Active Seller Agreements</div>
-        <div class="jp-desc">Existing T&TG partners. Upload signed seller agreement documents, track active contracts and manage your seller registration log.</div>
-        <div class="jp-arrow">Upload Documents <i class="fas fa-arrow-right"></i></div>
-      </a>
-    </div>
-
-    <!-- Transportation Company -->
-    <div class="col-md-6 col-lg-4">
-      <a href="{% url 'partnership_apply' %}?type=logistics" class="jp-card">
-        <div class="jp-ico"><i class="fas fa-truck"></i></div>
-        <div class="jp-title">Transportation Company</div>
-        <div class="jp-desc">Freight forwarders, cargo handlers and logistics providers. Register as an approved T&TG transportation partner for domestic and international shipments.</div>
-        <div class="jp-arrow">Register as Transporter <i class="fas fa-arrow-right"></i></div>
-      </a>
+    <!-- Cohort callout -->
+    <div class="mt-5 pt-4 d-flex flex-wrap align-items-center justify-content-between gap-3"
+         style="border-top:1px solid var(--ob-border)">
+      <div>
+        <div style="font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ob-gold);margin-bottom:5px"><i class="fas fa-calendar me-1"></i>Cohort Model</div>
+        <div style="color:var(--ob-white);font-weight:800;font-size:.95rem">Quarterly Enrolment Classes</div>
+        <div style="color:var(--ob-muted);font-size:.8rem;margin-top:4px">We onboard in cohorts — not one-by-one — to maintain mentorship quality and community.</div>
+      </div>
+      <div>
+        <div style="font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ob-gold);margin-bottom:5px"><i class="fas fa-certificate me-1"></i>Completion</div>
+        <div style="color:var(--ob-white);font-weight:800;font-size:.95rem">Certificate of Network Accreditation</div>
+        <div style="color:var(--ob-muted);font-size:.8rem;margin-top:4px">Issued on graduation. Not a degree — a T&TG partner credential.</div>
+      </div>
+      <div>
+        <div style="font-size:.7rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ob-gold);margin-bottom:5px"><i class="fas fa-chalkboard-teacher me-1"></i>Assigned Guides</div>
+        <div style="color:var(--ob-white);font-weight:800;font-size:.95rem">Growth Coaches &amp; Cohort Advisors</div>
+        <div style="color:var(--ob-muted);font-size:.8rem;margin-top:4px">Not auditors — they guide you through your enrolment portfolio.</div>
+      </div>
     </div>
 
   </div>
+</section>
 
-  <!-- ── Bottom CTA ─────────────────────────────────────── -->
-  <div style="background:linear-gradient(135deg,rgba(201,168,76,.07),rgba(201,168,76,.02));border:1px solid rgba(201,168,76,.2);border-radius:20px;padding:44px 36px;text-align:center;position:relative;overflow:hidden">
-    <!-- subtle corner glow -->
-    <div style="position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.08),transparent 70%);pointer-events:none"></div>
 
-    <i class="fas fa-comments" style="color:var(--gold);font-size:2rem;margin-bottom:16px;display:block"></i>
-    <h5 style="color:#fff;font-weight:900;font-size:1.2rem;margin-bottom:10px">Not sure which applies to you?</h5>
-    <p style="color:var(--muted);font-size:.86rem;margin-bottom:28px;max-width:420px;margin-left:auto;margin-right:auto;line-height:1.7">
-      Tom reviews every application personally and will guide you to the right programme.
+<!-- ══ ACADEMY TRACKS (renamed from corporate) ════════════════════════════ -->
+<section style="padding:60px 0;background:var(--ob-bg)">
+  <div class="container">
+
+    <div class="ob-eyebrow" style="display:block;text-align:center;width:fit-content;margin:0 auto 10px">
+      <i class="fas fa-university"></i> Academy Architecture
+    </div>
+    <h2 class="text-center" style="color:var(--ob-white);font-weight:900;font-size:1.5rem;letter-spacing:-.3px;margin-bottom:36px">
+      What We Call Each <span style="color:var(--ob-gold)">Partnership</span>
+    </h2>
+
+    <div class="row g-3 justify-content-center" style="max-width:860px;margin:0 auto">
+
+      {% with rows=1 %}
+      <div class="col-md-6 col-lg-3">
+        <div style="background:var(--ob-card);border:1px solid var(--ob-border);border-radius:16px;padding:20px;height:100%">
+          <div style="font-size:.62rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#93c5fd;margin-bottom:8px">Digital</div>
+          <div style="color:var(--ob-white);font-weight:800;font-size:.9rem;margin-bottom:6px">The Digital Merchant Fellowship</div>
+          <div style="color:var(--ob-muted);font-size:.75rem;line-height:1.6">Hands-on incubator. Launch Coach assigned to build your online storefront.</div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div style="background:var(--ob-card);border:1px solid var(--ob-border);border-radius:16px;padding:20px;height:100%">
+          <div style="font-size:.62rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#4ade80;margin-bottom:8px">Farm &amp; Supply</div>
+          <div style="color:var(--ob-white);font-weight:800;font-size:.9rem;margin-bottom:6px">The Sustainable Grower Cohort</div>
+          <div style="color:var(--ob-muted);font-size:.75rem;line-height:1.6">Fair-Trade Knowledge Exchange with agronomy and export mentors.</div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div style="background:var(--ob-card);border:1px solid var(--ob-border);border-radius:16px;padding:20px;height:100%">
+          <div style="font-size:.62rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--ob-gold);margin-bottom:8px">Production</div>
+          <div style="color:var(--ob-white);font-weight:800;font-size:.9rem;margin-bottom:6px">The Maker-to-Market Accelerator</div>
+          <div style="color:var(--ob-muted);font-size:.75rem;line-height:1.6">Masterclass partnership for small-batch producers scaling to global retail.</div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div style="background:var(--ob-card);border:1px solid var(--ob-border);border-radius:16px;padding:20px;height:100%">
+          <div style="font-size:.62rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#f97316;margin-bottom:8px">Logistics</div>
+          <div style="color:var(--ob-white);font-weight:800;font-size:.9rem;margin-bottom:6px">The Logistics Network Practicum</div>
+          <div style="color:var(--ob-muted);font-size:.75rem;line-height:1.6">Strategic Supply Chain Partners in Residence — not standard vendors.</div>
+        </div>
+      </div>
+      {% endwith %}
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══ BOTTOM CTA ══════════════════════════════════════════════════════════ -->
+<section class="ob-bottom-cta">
+  <div class="container" style="position:relative;z-index:1">
+
+    <div class="ob-eyebrow" style="justify-content:center;margin-bottom:16px"><i class="fas fa-comments"></i> Not sure which applies to you?</div>
+    <h2 style="color:var(--ob-white);font-weight:900;font-size:1.6rem;margin-bottom:12px">Tom reviews every application personally</h2>
+    <p style="color:var(--ob-muted);font-size:.9rem;max-width:440px;margin:0 auto 36px;line-height:1.75">
+      Reach out before applying. He'll guide you to the right fellowship track and help you build your best Discovery Pitch.
     </p>
 
-    <div class="d-flex gap-3 justify-content-center flex-wrap">
+    <div class="d-flex gap-3 justify-content-center flex-wrap mb-4">
       <a href="https://wa.me/14168323512" target="_blank" rel="noopener"
-         class="btn px-5 py-2"
-         style="background:#25d366;color:#fff;border:none;border-radius:12px;font-weight:800;font-size:.92rem;display:flex;align-items:center;gap:9px">
-        <i class="fab fa-whatsapp"></i>WhatsApp Tom
+         style="display:inline-flex;align-items:center;gap:9px;padding:13px 28px;border-radius:14px;background:#25d366;color:#fff;font-weight:800;font-size:.92rem;text-decoration:none;transition:transform .15s;box-shadow:0 6px 24px rgba(37,211,102,.25)"
+         onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform=''">
+        <i class="fab fa-whatsapp"></i> WhatsApp Tom
       </a>
       <a href="mailto:tom.grouptrade@gmail.com"
-         class="btn px-5 py-2"
-         style="background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.25);color:var(--gold);border-radius:12px;font-weight:700;font-size:.92rem">
-        <i class="fas fa-envelope me-2"></i>Send an Email
+         style="display:inline-flex;align-items:center;gap:9px;padding:13px 28px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(201,168,76,.25);color:var(--ob-gold);font-weight:700;font-size:.92rem;text-decoration:none;transition:transform .15s"
+         onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform=''">
+        <i class="fas fa-envelope"></i> Send an Email
       </a>
     </div>
 
-    <div style="margin-top:18px;color:var(--muted);font-size:.74rem">
+    <div style="font-size:.75rem;color:var(--ob-muted)">
       +1 (416) 832-3512 &nbsp;&middot;&nbsp; tom.grouptrade@gmail.com &nbsp;&middot;&nbsp; Toronto, Canada
     </div>
-  </div>
 
-</div>
+  </div>
 </section>
 
-</div><!-- /.jp-page -->
+</div><!-- /.ob-page -->
 {% endblock %}
