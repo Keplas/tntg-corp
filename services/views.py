@@ -242,7 +242,8 @@ def my_franchise_applications(request):
 
 
 def cooperation_program(request):
-    return render(request, 'services/cooperation_program.html')
+    # Page consolidated into the Onboarding Accelerator (/join/)
+    return redirect('join_program', permanent=True)
 
 
 def join_program(request):

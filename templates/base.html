@@ -610,7 +610,6 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  <button class="tg-nl">{% t "nav_trade" %} <i class="fas fa-chevron-down tg-caret"></i></button>
  <div class="tg-dd">
  <a href="{% url 'trade_ecommerce' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>Trade & e-Commerce</a>
- <a href="{% url 'cooperation_program' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-handshake"></i></span>Cooperation Program</a>
               <a href="{% url 'import_export' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>Import & Export</a>
  <a href="{% url 'forex' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>Live Exchange Rates</a>
  </div>
@@ -621,7 +620,7 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  </a>
  </li>
  <li>
- <a class="tg-nl {% if request.resolver_match.url_name in 'join_program,cooperation_program' %}tg-active{% endif %}" href="{% url 'join_program' %}">Onboarding Program</a>
+ <a class="tg-nl {% if request.resolver_match.url_name == 'join_program' %}tg-active{% endif %}" href="{% url 'join_program' %}">Onboarding Program</a>
  </li>
  <li>
  <button class="tg-nl">Company <i class="fas fa-chevron-down tg-caret"></i></button>
@@ -808,7 +807,6 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  </button>
  <div class="tg-mob-sub">
  <a href="{% url 'trade_ecommerce' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Trade & e-Commerce</a>
- <a href="{% url 'cooperation_program' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"><i class="fas fa-handshake"></i></span>Cooperation Program</a>
             <a href="{% url 'import_export' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Import & Export</a>
  <a href="{% url 'forex' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Live Exchange Rates</a>
  </div>
