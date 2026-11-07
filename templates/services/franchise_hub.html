@@ -514,108 +514,70 @@
 <section class="fh-types" id="franchise-types">
   <div class="container">
     <div class="sec-label"><span><i class="fas fa-th-large me-1"></i> Choose Your Model</span></div>
-    <h2 class="sec-headline">Five Ways to Franchise with T&TG</h2>
+    <h2 class="sec-headline">Three Ways to Franchise with T&TG</h2>
     <p class="sec-sub">Each model is tailored to a different market, investment level, and operational style. Pick the one that fits your vision.</p>
 
-    <div class="fh-type-grid">
+    <div class="fh-type-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); max-width: 1100px; margin: 0 auto;">
 
-      <!-- Café / Kiosk -->
-      <a href="{% url 'franchise_apply' %}?type=cafe_kiosk" class="fh-type-card">
+      <!-- Coffee Estates & Farms -->
+      <a href="{% url 'franchise_apply' %}?type=coffee_estate" class="fh-type-card">
         <div class="fh-type-photo">
-          <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=700&q=80" alt="Café Kiosk" loading="lazy">
-          <span class="fh-type-badge">Most Popular</span>
+          <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=700&q=80" alt="Coffee Estates and Farms" loading="lazy">
+          <span class="fh-type-badge">Origin Partner</span>
         </div>
         <div class="fh-type-body">
-          <div class="fh-type-ico"><i class="fas fa-coffee"></i></div>
-          <h3>Café / Kiosk Franchise</h3>
-          <p>Run your own branded T&TG café or kiosk serving premium African and Asian specialty coffees, teas, and artisanal goods in high-traffic locations.</p>
+          <div class="fh-type-ico"><i class="fas fa-seedling"></i></div>
+          <h3>Coffee Estates &amp; Farms</h3>
+          <p>Partner with T&TG as a certified coffee estate or farm supplier. Provide premium single-origin beans from Uganda, Kenya, Ethiopia, or Asia directly into our global supply chain.</p>
           <div class="fh-type-meta">
-            <span class="fh-meta-chip"><i class="fas fa-dollar-sign"></i> $25K – $100K CAD</span>
-            <span class="fh-meta-chip"><i class="fas fa-map-marker-alt"></i> Retail / Mall / Transit</span>
+            <span class="fh-meta-chip"><i class="fas fa-leaf"></i> Farm / Plantation</span>
+            <span class="fh-meta-chip"><i class="fas fa-globe-africa"></i> Africa / Asia Origins</span>
           </div>
           <div class="fh-type-cta">
             <span class="fh-apply-link">Apply for this model <i class="fas fa-arrow-right"></i></span>
-            <span class="fh-invest">Storefront format</span>
+            <span class="fh-invest">Source partnership</span>
           </div>
         </div>
       </a>
 
-      <!-- Distribution Partner -->
-      <a href="{% url 'franchise_apply' %}?type=distribution" class="fh-type-card">
+      <!-- E-Commerce Distributors -->
+      <a href="{% url 'franchise_apply' %}?type=ecommerce_distributor" class="fh-type-card">
         <div class="fh-type-photo">
-          <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=700&q=80" alt="Distribution Partner" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=700&q=80" alt="E-Commerce Distributors" loading="lazy">
+          <span class="fh-type-badge">Digital First</span>
         </div>
         <div class="fh-type-body">
-          <div class="fh-type-ico"><i class="fas fa-truck"></i></div>
-          <h3>Distribution Partner</h3>
-          <p>Become an exclusive regional distributor of T&TG products — specialty coffees, teas, and natural goods — to retailers, restaurants, and wholesalers in your territory.</p>
+          <div class="fh-type-ico"><i class="fas fa-shopping-cart"></i></div>
+          <h3>E-Commerce Distributors</h3>
+          <p>Distribute and resell T&TG products across digital platforms — your own website, Amazon, Jumia, or social commerce channels — with full branding, supply, and fulfillment backing.</p>
           <div class="fh-type-meta">
-            <span class="fh-meta-chip"><i class="fas fa-dollar-sign"></i> $10K – $50K CAD</span>
-            <span class="fh-meta-chip"><i class="fas fa-warehouse"></i> Warehouse / Logistics</span>
+            <span class="fh-meta-chip"><i class="fas fa-store"></i> Online / Digital</span>
+            <span class="fh-meta-chip"><i class="fas fa-dollar-sign"></i> Low Entry Cost</span>
           </div>
           <div class="fh-type-cta">
             <span class="fh-apply-link">Apply for this model <i class="fas fa-arrow-right"></i></span>
-            <span class="fh-invest">B2B format</span>
+            <span class="fh-invest">Digital distribution</span>
           </div>
         </div>
       </a>
 
-      <!-- Online Reseller -->
-      <a href="{% url 'franchise_apply' %}?type=online_reseller" class="fh-type-card">
+      <!-- Coffee-Based Product Sellers -->
+      <a href="{% url 'franchise_apply' %}?type=product_seller" class="fh-type-card">
         <div class="fh-type-photo">
-          <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=700&q=80" alt="Online Reseller" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=700&q=80" alt="Coffee-Based Product Sellers" loading="lazy">
+          <span class="fh-type-badge">Value-Added</span>
         </div>
         <div class="fh-type-body">
-          <div class="fh-type-ico"><i class="fas fa-laptop"></i></div>
-          <h3>Online Reseller</h3>
-          <p>Sell T&TG products through your own e-commerce channels — website, Amazon, social media, or local marketplace — with our supply, branding, and fulfillment support.</p>
+          <div class="fh-type-ico"><i class="fas fa-box-open"></i></div>
+          <h3>Coffee-Based Product Sellers</h3>
+          <p>Sell a curated range of T&TG coffee-based products — roasted blends, cold brews, extracts, wellness teas, and artisanal goods — through retail, pop-ups, or direct-to-consumer channels.</p>
           <div class="fh-type-meta">
-            <span class="fh-meta-chip"><i class="fas fa-dollar-sign"></i> Under $10K CAD</span>
-            <span class="fh-meta-chip"><i class="fas fa-store"></i> E-Commerce / Digital</span>
+            <span class="fh-meta-chip"><i class="fas fa-tags"></i> Retail / Pop-Up</span>
+            <span class="fh-meta-chip"><i class="fas fa-mug-hot"></i> Consumer Products</span>
           </div>
           <div class="fh-type-cta">
             <span class="fh-apply-link">Apply for this model <i class="fas fa-arrow-right"></i></span>
-            <span class="fh-invest">Lowest entry point</span>
-          </div>
-        </div>
-      </a>
-
-      <!-- Corporate Supply -->
-      <a href="{% url 'franchise_apply' %}?type=corporate_supply" class="fh-type-card">
-        <div class="fh-type-photo">
-          <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=700&q=80" alt="Corporate Supply" loading="lazy">
-        </div>
-        <div class="fh-type-body">
-          <div class="fh-type-ico"><i class="fas fa-building"></i></div>
-          <h3>Corporate &amp; Institutional Supply</h3>
-          <p>Supply offices, hotels, hospitals, universities, and government institutions with T&TG specialty coffee, wellness teas, and food products on recurring contracts.</p>
-          <div class="fh-type-meta">
-            <span class="fh-meta-chip"><i class="fas fa-dollar-sign"></i> $50K – $100K+ CAD</span>
-            <span class="fh-meta-chip"><i class="fas fa-briefcase"></i> Institutional / B2B</span>
-          </div>
-          <div class="fh-type-cta">
-            <span class="fh-apply-link">Apply for this model <i class="fas fa-arrow-right"></i></span>
-            <span class="fh-invest">Recurring contracts</span>
-          </div>
-        </div>
-      </a>
-
-      <!-- Mobile Unit -->
-      <a href="{% url 'franchise_apply' %}?type=mobile_unit" class="fh-type-card">
-        <div class="fh-type-photo">
-          <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=700&q=80" alt="Mobile Coffee Unit" loading="lazy">
-        </div>
-        <div class="fh-type-body">
-          <div class="fh-type-ico"><i class="fas fa-truck-loading"></i></div>
-          <h3>Mobile Coffee Unit</h3>
-          <p>Operate a branded mobile coffee van, pop-up kiosk, or market stall — events, farmers markets, corporate parks, and festivals. Low overhead, maximum flexibility.</p>
-          <div class="fh-type-meta">
-            <span class="fh-meta-chip"><i class="fas fa-dollar-sign"></i> $10K – $40K CAD</span>
-            <span class="fh-meta-chip"><i class="fas fa-calendar-alt"></i> Events / Markets</span>
-          </div>
-          <div class="fh-type-cta">
-            <span class="fh-apply-link">Apply for this model <i class="fas fa-arrow-right"></i></span>
-            <span class="fh-invest">High flexibility</span>
+            <span class="fh-invest">Product reseller</span>
           </div>
         </div>
       </a>
