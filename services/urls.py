@@ -15,4 +15,5 @@ urlpatterns = [
     path('franchise/dashboard/',            views.franchise_dashboard,       name='franchise_dashboard'),
     path('franchise/<int:pk>/status/',      views.franchise_update_status,   name='franchise_update_status'),
     path('franchise/my-applications/',      views.my_franchise_applications, name='my_franchise_applications'),
+    path('franchise/my-store/',             views.franchisee_store,          name='franchisee_store'),
 ]

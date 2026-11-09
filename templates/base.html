@@ -690,6 +690,10 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  <div style="color:#c9a84c;font-size:.7rem">{{ user.unique_id }}</div>
  </div>
  <a href="{% url 'dashboard' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>Dashboard</a>
+ {% if user.franchisee_profile %}
+ <a href="{% url 'franchisee_store' %}" class="tg-dd-item" style="color:#c9a84c;font-weight:600"><span class="tg-dd-ico"><i class="fas fa-store"></i></span>My Franchise Hub</a>
+ <div style="height:1px;background:rgba(201,168,76,.12);margin:6px 8px"></div>
+ {% endif %}
  <a href="{% url 'profile' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>My Profile</a>
  <a href="{% url 'loyalty_dashboard' %}" class="tg-dd-item">
  <span class="tg-dd-ico"></span>Loyalty Points
@@ -823,6 +827,19 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  <li class="tg-mob-li">
  <a class="tg-mob-link {% if request.resolver_match.url_name == 'join_program' %}tg-active{% endif %}" href="{% url 'join_program' %}">Onboarding Program</a>
  </li>
+
+ <!-- Franchise Hub (franchisees only) -->
+ {% if user.is_authenticated %}
+ {% with fp=user.franchisee_profile %}
+ {% if fp %}
+ <li class="tg-mob-li">
+ <a class="tg-mob-link {% if request.resolver_match.url_name == 'franchisee_store' %}tg-active{% endif %}" href="{% url 'franchisee_store' %}" style="color:#c9a84c;font-weight:600">
+ <i class="fas fa-store" style="margin-right:8px;font-size:.85rem"></i>My Franchise Hub
+ </a>
+ </li>
+ {% endif %}
+ {% endwith %}
+ {% endif %}
 
  <!-- Company -->
  <li class="tg-mob-li">

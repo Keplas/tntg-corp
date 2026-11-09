@@ -229,8 +229,67 @@ def franchise_update_status(request, pk):
             except Exception:
                 pass
 
+        # ── Auto-create FranchiseeProfile on first approval ──────────────────
+        if new_status == 'approved' and app.user:
+            from .models import FranchiseeProfile
+            profile, created = FranchiseeProfile.objects.get_or_create(
+                application=app,
+                defaults=dict(
+                    user          = app.user,
+                    franchise_type= app.franchise_type,
+                    territory     = app.proposed_location,
+                    country       = app.country,
+                    operational_status = 'setup',
+                ),
+            )
+            if created:
+                # Send franchisee welcome email
+                try:
+                    send_mail(
+                        subject=f'Welcome to T&TG Franchise Network — {profile.display_name()}',
+                        message=(
+                            f'Dear {app.full_name},\n\n'
+                            f'Your franchise application {app.ref()} has been approved and your '
+                            f'franchisee account is now active.\n\n'
+                            f'Your franchise details:\n'
+                            f'  Reference:  {profile.ref()}\n'
+                            f'  Type:       {profile.get_franchise_type_display()}\n'
+                            f'  Territory:  {profile.territory}\n'
+                            f'  Status:     {profile.get_operational_status_display()}\n\n'
+                            f'Log in to your T&TG account to access your Franchise Hub:\n'
+                            f'  https://tomtradecorp.com/franchise/my-store/\n\n'
+                            f'Our team will be in touch to guide your setup.\n\n'
+                            f'T&TG Trade Corporation\n'
+                            f'9 Summerbridge Rd, Toronto, ON M1G 1L8, Canada\n'
+                            f'tom.grouptrade@gmail.com | +1 (416) 832 3512'
+                        ),
+                        from_email=getattr(djsettings, 'DEFAULT_FROM_EMAIL', ''),
+                        recipient_list=[app.email],
+                        fail_silently=True,
+                    )
+                except Exception:
+                    pass
+
         messages.success(request, f'Application {app.ref()} updated to {new_status}.')
     return redirect('franchise_dashboard')
+
+
+# ════════════════════════════════════════════════════════════════════════
+# FRANCHISEE STORE — personal dashboard for each approved franchisee
+# ════════════════════════════════════════════════════════════════════════
+
+from .decorators import franchisee_required
+
+@franchisee_required
+def franchisee_store(request):
+    """Personal franchise hub — visible only to the account owner."""
+    from .models import FranchiseApplication
+    profile = request.user.franchisee_profile
+    ctx = {
+        'profile':  profile,
+        'app':      profile.application,
+    }
+    return render(request, 'services/franchisee_store.html', ctx)
 
 
 @login_required

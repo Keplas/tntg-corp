@@ -219,6 +219,68 @@ class FranchiseApplication(models.Model):
 
 
 # ════════════════════════════════════════════════════════════════════════
+# FRANCHISEE PROFILE  — created automatically on application approval
+# ════════════════════════════════════════════════════════════════════════
+
+class FranchiseeProfile(models.Model):
+
+    OPERATIONAL_STATUS = [
+        ('setup',       'Setting Up'),
+        ('active',      'Active'),
+        ('paused',      'Paused'),
+        ('terminated',  'Terminated'),
+    ]
+
+    # Core links
+    user        = models.OneToOneField(
+        'accounts.CustomUser', on_delete=models.CASCADE,
+        related_name='franchisee_profile'
+    )
+    application = models.OneToOneField(
+        FranchiseApplication, on_delete=models.PROTECT,
+        related_name='franchisee_profile'
+    )
+
+    # Identity
+    franchise_type   = models.CharField(max_length=30, choices=FranchiseApplication.FRANCHISE_TYPE_CHOICES)
+    business_name    = models.CharField(max_length=200, blank=True,
+                           help_text='Trading name e.g. "T&TG Kampala North". Leave blank to auto-generate.')
+    photo            = models.URLField(blank=True, help_text='Profile photo URL')
+
+    # Territory
+    territory        = models.CharField(max_length=200,
+                           help_text='Named region e.g. "Kampala North", "Toronto West"')
+    zone             = models.CharField(max_length=100, blank=True,
+                           help_text='Sub-division e.g. "Zone A", "Eastern Corridor"')
+    country          = models.CharField(max_length=100)
+
+    # Status
+    operational_status = models.CharField(max_length=20, choices=OPERATIONAL_STATUS, default='setup')
+    hq_notes           = models.TextField(blank=True, help_text='Internal notes — not visible to franchisee')
+
+    # Timestamps
+    approved_at  = models.DateTimeField(auto_now_add=True)
+    updated_at   = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-approved_at']
+        verbose_name        = 'Franchisee Profile'
+        verbose_name_plural = 'Franchisee Profiles'
+
+    def __str__(self):
+        return f"{self.display_name()} — {self.territory} [{self.get_operational_status_display()}]"
+
+    def display_name(self):
+        return self.business_name or f"T&TG {self.territory}"
+
+    def ref(self):
+        return f'FP-{self.pk:04d}'
+
+    def is_active(self):
+        return self.operational_status == 'active'
+
+
+# ════════════════════════════════════════════════════════════════════════
 # PARTNERSHIP APPLICATION
 # ════════════════════════════════════════════════════════════════════════
 

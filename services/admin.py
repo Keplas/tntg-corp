@@ -40,6 +40,22 @@ class FranchiseApplicationAdmin(admin.ModelAdmin):
         ('Admin', {'fields': ('status', 'admin_notes', 'created_at', 'updated_at')}),
     )
 
+from .models import FranchiseeProfile
+
+@admin.register(FranchiseeProfile)
+class FranchiseeProfileAdmin(admin.ModelAdmin):
+    list_display   = ['ref', 'display_name', 'franchise_type', 'territory', 'country', 'operational_status', 'approved_at']
+    list_filter    = ['franchise_type', 'operational_status', 'country']
+    list_editable  = ['operational_status']
+    search_fields  = ['user__username', 'user__email', 'business_name', 'territory', 'country']
+    readonly_fields = ['approved_at', 'updated_at']
+    fieldsets = (
+        ('Identity', {'fields': ('user', 'application', 'franchise_type', 'business_name', 'photo')}),
+        ('Territory', {'fields': ('territory', 'zone', 'country')}),
+        ('Status', {'fields': ('operational_status', 'hq_notes')}),
+        ('Timestamps', {'fields': ('approved_at', 'updated_at')}),
+    )
+
 from .models import PartnershipApplication
 
 @admin.register(PartnershipApplication)

@@ -1,0 +1,470 @@
+{% extends 'base.html' %}
+{% block title %}My Franchise Hub — T&TG Trade Corporation{% endblock %}
+
+{% block content %}
+<style>
+/* ═══════════════════════════════════════════════
+   FRANCHISEE STORE — dark-gold design system
+   ═══════════════════════════════════════════════ */
+.fs-wrap {
+  background: #0d0d0d;
+  min-height: 100vh;
+  padding: 0 0 4rem;
+  color: #e8e0d0;
+}
+
+/* ── Header banner ───────────────────────────── */
+.fs-header {
+  background: linear-gradient(135deg, #1a1200 0%, #2a1e00 60%, #1a1200 100%);
+  border-bottom: 2px solid #c9a84c;
+  padding: 2.5rem 2rem 2rem;
+}
+.fs-header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.fs-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 2px solid #c9a84c;
+  background: #2a1e00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  color: #c9a84c;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.fs-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.fs-header-text h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #e8c96a;
+  margin: 0 0 .25rem;
+}
+.fs-header-text p {
+  font-size: .9rem;
+  color: #c9a84c;
+  margin: 0;
+}
+.fs-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .3rem .9rem;
+  border-radius: 20px;
+  font-size: .78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-top: .5rem;
+}
+.fs-status-pill.setup      { background: #1e3a5f; color: #60a5fa; border: 1px solid #3b82f6; }
+.fs-status-pill.active     { background: #14300f; color: #4ade80; border: 1px solid #22c55e; }
+.fs-status-pill.paused     { background: #3a2200; color: #fb923c; border: 1px solid #f97316; }
+.fs-status-pill.terminated { background: #3a0f0f; color: #f87171; border: 1px solid #ef4444; }
+
+.fs-ref-badge {
+  margin-left: auto;
+  text-align: right;
+  color: #888;
+  font-size: .82rem;
+}
+.fs-ref-badge span {
+  display: block;
+  color: #c9a84c;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+/* ── Content area ────────────────────────────── */
+.fs-body {
+  max-width: 1100px;
+  margin: 2.5rem auto 0;
+  padding: 0 1.5rem;
+}
+
+/* ── Section heading ─────────────────────────── */
+.fs-section-title {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: #c9a84c;
+  margin: 2.5rem 0 1rem;
+  padding-bottom: .5rem;
+  border-bottom: 1px solid #2a1e00;
+}
+
+/* ── Stats row ───────────────────────────────── */
+.fs-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+.fs-stat-card {
+  background: #111;
+  border: 1px solid #2a1e00;
+  border-radius: 8px;
+  padding: 1.2rem 1rem;
+  text-align: center;
+  transition: border-color .2s;
+}
+.fs-stat-card:hover { border-color: #c9a84c; }
+.fs-stat-icon {
+  font-size: 1.4rem;
+  color: #c9a84c;
+  margin-bottom: .5rem;
+}
+.fs-stat-label {
+  font-size: .75rem;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: .3rem;
+}
+.fs-stat-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #e8c96a;
+}
+.fs-stat-sub {
+  font-size: .78rem;
+  color: #666;
+  margin-top: .2rem;
+}
+
+/* ── Info grid ───────────────────────────────── */
+.fs-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 600px) {
+  .fs-info-grid { grid-template-columns: 1fr; }
+  .fs-ref-badge { display: none; }
+}
+.fs-info-card {
+  background: #111;
+  border: 1px solid #2a1e00;
+  border-radius: 8px;
+  padding: 1.2rem 1.3rem;
+}
+.fs-info-card h3 {
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #c9a84c;
+  margin: 0 0 .9rem;
+}
+.fs-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: .5rem;
+  padding: .45rem 0;
+  border-bottom: 1px solid #1a1200;
+  font-size: .88rem;
+}
+.fs-info-row:last-child { border-bottom: none; }
+.fs-info-row .label { color: #888; white-space: nowrap; }
+.fs-info-row .value { color: #e8e0d0; text-align: right; }
+
+/* ── Action tiles ────────────────────────────── */
+.fs-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+.fs-action-tile {
+  background: #111;
+  border: 1px solid #2a1e00;
+  border-radius: 8px;
+  padding: 1.5rem 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  text-decoration: none;
+  transition: border-color .2s, background .2s;
+  cursor: pointer;
+}
+.fs-action-tile:hover {
+  border-color: #c9a84c;
+  background: #191200;
+  text-decoration: none;
+}
+.fs-action-tile.coming-soon {
+  opacity: .5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.fs-tile-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  background: #2a1e00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c9a84c;
+  font-size: 1.1rem;
+}
+.fs-tile-name {
+  font-weight: 600;
+  color: #e8c96a;
+  font-size: .95rem;
+}
+.fs-tile-desc {
+  font-size: .82rem;
+  color: #888;
+  line-height: 1.5;
+}
+.fs-tile-badge {
+  display: inline-block;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  padding: .15rem .5rem;
+  border-radius: 4px;
+  background: #1e3a5f;
+  color: #60a5fa;
+  align-self: flex-start;
+}
+.fs-tile-badge.soon { background: #2a1e00; color: #c9a84c; }
+
+/* ── Notice banner ───────────────────────────── */
+.fs-notice {
+  background: #1a1200;
+  border: 1px solid #c9a84c33;
+  border-left: 3px solid #c9a84c;
+  border-radius: 6px;
+  padding: 1rem 1.2rem;
+  display: flex;
+  gap: .8rem;
+  align-items: flex-start;
+  font-size: .88rem;
+  color: #c9a84c;
+  margin-bottom: 1.5rem;
+}
+.fs-notice i { margin-top: .1rem; flex-shrink: 0; }
+.fs-notice p { margin: 0; color: #d4b96a; }
+</style>
+
+<div class="fs-wrap">
+
+  <!-- ── Header ──────────────────────────────────── -->
+  <div class="fs-header">
+    <div class="fs-header-inner">
+      <div class="fs-avatar">
+        {% if profile.photo %}
+          <img src="{{ profile.photo }}" alt="{{ profile.display_name }}">
+        {% else %}
+          <i class="fas fa-store"></i>
+        {% endif %}
+      </div>
+
+      <div class="fs-header-text">
+        <h1>{{ profile.display_name }}</h1>
+        <p>{{ profile.get_franchise_type_display }} &nbsp;&middot;&nbsp; {{ profile.territory }}{% if profile.country %}, {{ profile.country }}{% endif %}</p>
+        <div class="fs-status-pill {{ profile.operational_status }}">
+          {% if profile.operational_status == 'setup' %}
+            <i class="fas fa-tools"></i> Setting Up
+          {% elif profile.operational_status == 'active' %}
+            <i class="fas fa-circle" style="font-size:.5rem"></i> Active
+          {% elif profile.operational_status == 'paused' %}
+            <i class="fas fa-pause-circle"></i> Paused
+          {% else %}
+            <i class="fas fa-times-circle"></i> Terminated
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="fs-ref-badge">
+        Franchise Reference
+        <span>{{ profile.ref }}</span>
+        <div style="color:#555;font-size:.75rem;margin-top:.3rem">
+          Since {{ profile.approved_at|date:"N j, Y" }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Body ───────────────────────────────────── -->
+  <div class="fs-body">
+
+    {% if profile.operational_status == 'setup' %}
+    <div class="fs-notice" style="margin-top:1.5rem">
+      <i class="fas fa-info-circle"></i>
+      <p>Your franchise is in the <strong>setup phase</strong>. Our team will contact you soon to complete your onboarding. Features below will unlock once your store is activated.</p>
+    </div>
+    {% endif %}
+
+    <!-- Stats -->
+    <div class="fs-section-title">Overview</div>
+    <div class="fs-stats">
+      <div class="fs-stat-card">
+        <div class="fs-stat-icon"><i class="fas fa-box-open"></i></div>
+        <div class="fs-stat-label">Products Listed</div>
+        <div class="fs-stat-value">—</div>
+        <div class="fs-stat-sub">Coming Phase 2</div>
+      </div>
+      <div class="fs-stat-card">
+        <div class="fs-stat-icon"><i class="fas fa-shopping-cart"></i></div>
+        <div class="fs-stat-label">Orders This Month</div>
+        <div class="fs-stat-value">—</div>
+        <div class="fs-stat-sub">Coming Phase 2</div>
+      </div>
+      <div class="fs-stat-card">
+        <div class="fs-stat-icon"><i class="fas fa-dollar-sign"></i></div>
+        <div class="fs-stat-label">Revenue (MTD)</div>
+        <div class="fs-stat-value">—</div>
+        <div class="fs-stat-sub">Coming Phase 2</div>
+      </div>
+      <div class="fs-stat-card">
+        <div class="fs-stat-icon"><i class="fas fa-users"></i></div>
+        <div class="fs-stat-label">Active Customers</div>
+        <div class="fs-stat-value">—</div>
+        <div class="fs-stat-sub">Coming Phase 2</div>
+      </div>
+    </div>
+
+    <!-- Franchise info -->
+    <div class="fs-section-title">Franchise Details</div>
+    <div class="fs-info-grid">
+      <div class="fs-info-card">
+        <h3><i class="fas fa-id-card" style="margin-right:.5rem"></i>Your Account</h3>
+        <div class="fs-info-row">
+          <span class="label">Reference</span>
+          <span class="value" style="color:#c9a84c;font-weight:700">{{ profile.ref }}</span>
+        </div>
+        <div class="fs-info-row">
+          <span class="label">Type</span>
+          <span class="value">{{ profile.get_franchise_type_display }}</span>
+        </div>
+        <div class="fs-info-row">
+          <span class="label">Status</span>
+          <span class="value">{{ profile.get_operational_status_display }}</span>
+        </div>
+        <div class="fs-info-row">
+          <span class="label">Approved</span>
+          <span class="value">{{ profile.approved_at|date:"j M Y" }}</span>
+        </div>
+        <div class="fs-info-row">
+          <span class="label">Account Owner</span>
+          <span class="value">{{ request.user.get_full_name|default:request.user.username }}</span>
+        </div>
+      </div>
+
+      <div class="fs-info-card">
+        <h3><i class="fas fa-map-marker-alt" style="margin-right:.5rem"></i>Territory</h3>
+        <div class="fs-info-row">
+          <span class="label">Territory</span>
+          <span class="value">{{ profile.territory }}</span>
+        </div>
+        {% if profile.zone %}
+        <div class="fs-info-row">
+          <span class="label">Zone</span>
+          <span class="value">{{ profile.zone }}</span>
+        </div>
+        {% endif %}
+        <div class="fs-info-row">
+          <span class="label">Country</span>
+          <span class="value">{{ profile.country }}</span>
+        </div>
+        <div class="fs-info-row">
+          <span class="label">Application Ref</span>
+          <span class="value">{{ app.ref }}</span>
+        </div>
+        {% if profile.business_name %}
+        <div class="fs-info-row">
+          <span class="label">Trading Name</span>
+          <span class="value">{{ profile.business_name }}</span>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Action tiles -->
+    <div class="fs-section-title">My Store</div>
+    <div class="fs-actions">
+
+      <div class="fs-action-tile coming-soon">
+        <div class="fs-tile-icon"><i class="fas fa-box-open"></i></div>
+        <div class="fs-tile-name">My Products</div>
+        <div class="fs-tile-desc">Manage your approved T&TG product catalogue for your territory.</div>
+        <span class="fs-tile-badge soon">Phase 2</span>
+      </div>
+
+      <div class="fs-action-tile coming-soon">
+        <div class="fs-tile-icon"><i class="fas fa-shopping-bag"></i></div>
+        <div class="fs-tile-name">Orders</div>
+        <div class="fs-tile-desc">View and fulfil customer orders placed through your franchise store.</div>
+        <span class="fs-tile-badge soon">Phase 2</span>
+      </div>
+
+      <div class="fs-action-tile coming-soon">
+        <div class="fs-tile-icon"><i class="fas fa-chart-line"></i></div>
+        <div class="fs-tile-name">Sales Reports</div>
+        <div class="fs-tile-desc">Monthly and annual revenue reports for your territory.</div>
+        <span class="fs-tile-badge soon">Phase 2</span>
+      </div>
+
+      <div class="fs-action-tile coming-soon">
+        <div class="fs-tile-icon"><i class="fas fa-truck"></i></div>
+        <div class="fs-tile-name">Inventory & Supply</div>
+        <div class="fs-tile-desc">Request stock replenishments directly from T&TG HQ.</div>
+        <span class="fs-tile-badge soon">Phase 2</span>
+      </div>
+
+      <div class="fs-action-tile coming-soon">
+        <div class="fs-tile-icon"><i class="fas fa-users"></i></div>
+        <div class="fs-tile-name">My Customers</div>
+        <div class="fs-tile-desc">CRM — contacts and purchase history for your territory.</div>
+        <span class="fs-tile-badge soon">Phase 3</span>
+      </div>
+
+      <a href="{% url 'join_program' %}" class="fs-action-tile">
+        <div class="fs-tile-icon"><i class="fas fa-graduation-cap"></i></div>
+        <div class="fs-tile-name">Onboarding Program</div>
+        <div class="fs-tile-desc">Complete the Field-to-Market Accelerator to fully activate your franchise.</div>
+        <span class="fs-tile-badge">Available Now</span>
+      </a>
+
+      <a href="{% url 'contact' %}" class="fs-action-tile">
+        <div class="fs-tile-icon"><i class="fas fa-headset"></i></div>
+        <div class="fs-tile-name">Contact HQ</div>
+        <div class="fs-tile-desc">Reach T&TG headquarters for support, questions or escalations.</div>
+        <span class="fs-tile-badge">Available Now</span>
+      </a>
+
+      <a href="{% url 'my_franchise_applications' %}" class="fs-action-tile">
+        <div class="fs-tile-icon"><i class="fas fa-file-alt"></i></div>
+        <div class="fs-tile-name">My Application</div>
+        <div class="fs-tile-desc">Review your original franchise application and submission history.</div>
+        <span class="fs-tile-badge">Available Now</span>
+      </a>
+
+    </div>
+
+    <!-- Footer note -->
+    <div class="fs-notice" style="margin-top:2.5rem">
+      <i class="fas fa-lock"></i>
+      <p>This is your private franchise dashboard. Only you and T&TG HQ administrators can view this page. For support contact <strong>tom.grouptrade@gmail.com</strong> or call <strong>+1 (416) 832 3512</strong>.</p>
+    </div>
+
+  </div><!-- /fs-body -->
+</div><!-- /fs-wrap -->
+{% endblock %}

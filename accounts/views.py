@@ -214,6 +214,12 @@ def login_view(request):
                 return redirect(next_url)
             if user.is_staff or user.is_superuser:
                 return redirect('/admin/')
+            # Franchisees go to their store hub
+            try:
+                if user.franchisee_profile:
+                    return redirect('franchisee_store')
+            except Exception:
+                pass
             return redirect('dashboard')
 
         # Failed attempt
