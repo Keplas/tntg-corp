@@ -264,7 +264,14 @@ def logout_view(request):
 
 @login_required
 def dashboard(request):
-    """Unified admin dashboard — Dashboard + Profile + Loyalty + Analytics + Notifications."""
+    """Unified dashboard — franchisees are forwarded to their store hub."""
+    # Franchisees have their own hub; redirect them transparently
+    try:
+        if request.user.franchisee_profile:
+            return redirect('franchisee_store')
+    except Exception:
+        pass
+
     from django.db.models import Sum, Count, Avg
     from django.db.models.functions import TruncDate
     from datetime import timedelta, date
