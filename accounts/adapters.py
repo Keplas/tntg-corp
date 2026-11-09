@@ -36,9 +36,18 @@ class CustomAccountAdapter(DefaultAccountAdapter):
         return user
 
     def get_login_redirect_url(self, request):
+        """
+        Email/password login redirect — staff go to admin, everyone else to dashboard.
+        (Google OAuth uses CustomSocialAccountAdapter.get_login_redirect_url instead.)
+        """
         user = request.user
         if user.is_staff or user.is_superuser:
             return '/admin/'
+        try:
+            if user.franchisee_profile:
+                return '/franchise/my-store/'
+        except Exception:
+            pass
         return '/accounts/dashboard/'
 
     def send_mail(self, template_prefix, email, context):
@@ -65,6 +74,19 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         group, _ = Group.objects.get_or_create(name='Consumer')
         user.groups.add(group)
         return user
+
+    def get_login_redirect_url(self, request):
+        """
+        Google / Microsoft OAuth redirect — never send to /admin/.
+        Staff who sign in via social should land on the dashboard like any user.
+        """
+        user = request.user
+        try:
+            if user.franchisee_profile:
+                return '/franchise/my-store/'
+        except Exception:
+            pass
+        return '/accounts/dashboard/'
 
     def pre_social_login(self, request, sociallogin):
         """Connect social account to existing account if email matches.
