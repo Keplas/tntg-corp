@@ -819,15 +819,9 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  </a>
  </li>
 
- <!-- Training -->
+ <!-- Onboarding -->
  <li class="tg-mob-li">
- <button class="tg-mob-link tg-mob-toggle">
- Training <i class="fas fa-chevron-down tg-mob-caret"></i>
- </button>
- <div class="tg-mob-sub">
- <a href="{% url 'join_program' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Onboarding Program</a>
- 
- </div>
+ <a class="tg-mob-link {% if request.resolver_match.url_name == 'join_program' %}tg-active{% endif %}" href="{% url 'join_program' %}">Onboarding Program</a>
  </li>
 
  <!-- Company -->
@@ -947,7 +941,7 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
               <a href="{% url 'about' %}" class="footer-link">About Us</a>
  <a href="{% url 'blog_list' %}" class="footer-link">Blog & News</a>
  <a href="{% url 'trade_ecommerce' %}" class="footer-link">Trade & e-Commerce</a>
- <a href="{% url 'training_home' %}" class="footer-link">Training</a>
+ <a href="{% url 'join_program' %}" class="footer-link">Onboarding Program</a>
  
  <a href="{% url 'contact' %}" class="footer-link">Contact</a>
  <a href="{% url 'faq' %}" class="footer-link"> FAQ</a>
