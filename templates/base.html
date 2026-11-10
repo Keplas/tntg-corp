@@ -34,7 +34,7 @@
  <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
 <style>
-/* ═══ T&TG NAVBAR — floating island design ══════════════════════ */
+/* ═══ T&TG NAVBAR — professional redesign ═══════════════════════ */
 :root {
  --tg-gold: #c9a84c;
  --tg-goldlt: #e8c96a;
@@ -43,10 +43,10 @@
  --tg-border: rgba(201,168,76,.18);
  --tg-muted: #c4cdd6;
  --tg-text: #c8d8e8;
- --tg-nav-h: 68px;
+ --tg-nav-h: 70px;
 }
 
-/* ── Keyframe animations ── */
+/* ── Keyframes ── */
 @keyframes navSlideIn {
  from { opacity: 0; transform: translateY(-20px); }
  to   { opacity: 1; transform: translateY(0); }
@@ -56,190 +56,209 @@
  100% { background-position:  200% center; }
 }
 
-/* ── Outer bar: sticky wrapper, transparent ── */
+/* ── Outer sticky wrapper ── */
 .tg-navbar {
  position: sticky; top: 0; z-index: 1040;
  padding: 0; background: transparent;
- transition: padding .45s cubic-bezier(.4,0,.2,1);
- animation: navSlideIn .55s cubic-bezier(.4,0,.2,1) both;
+ transition: padding .4s cubic-bezier(.4,0,.2,1);
+ animation: navSlideIn .5s cubic-bezier(.4,0,.2,1) both;
 }
 .tg-navbar.scrolled { padding: 10px 20px; }
 
-/* ── Island: the visible bar that morphs on scroll ── */
+/* ── Island ── */
 .tg-nav-island {
  position: relative;
  height: var(--tg-nav-h);
- background: rgba(6,15,30,.92);
- backdrop-filter: blur(24px);
- -webkit-backdrop-filter: blur(24px);
- border-bottom: 1px solid var(--tg-border);
- box-shadow: 0 2px 32px rgba(0,0,0,.3);
+ background: rgba(5,12,22,.93);
+ backdrop-filter: blur(26px);
+ -webkit-backdrop-filter: blur(26px);
+ border-bottom: 1px solid rgba(201,168,76,.14);
+ box-shadow: 0 1px 0 rgba(255,255,255,.04), 0 4px 24px rgba(0,0,0,.3);
  border-radius: 0;
- transition: all .45s cubic-bezier(.4,0,.2,1);
+ transition: all .4s cubic-bezier(.4,0,.2,1);
  overflow: visible;
 }
-
-/* Gold shimmer line at top — fades in when island is floating */
+/* Precision gold line — fades in when island floats */
 .tg-nav-island::before {
  content: '';
- position: absolute; top: 0; left: 12%; right: 12%; height: 1px;
- background: linear-gradient(90deg, transparent, rgba(201,168,76,.7) 40%, rgba(232,201,106,.95) 50%, rgba(201,168,76,.7) 60%, transparent);
- opacity: 0; transition: opacity .45s;
- border-radius: 1px; z-index: 1; pointer-events: none;
+ position: absolute; top: 0; left: 10%; right: 10%; height: 1px;
+ background: linear-gradient(90deg, transparent, rgba(201,168,76,.6) 35%, rgba(232,201,106,.9) 50%, rgba(201,168,76,.6) 65%, transparent);
+ opacity: 0; transition: opacity .4s ease;
+ z-index: 1; pointer-events: none;
 }
-
 .tg-navbar.scrolled .tg-nav-island {
  height: calc(var(--tg-nav-h) - 4px);
- border-radius: 20px;
- border: 1px solid rgba(201,168,76,.26);
- background: rgba(5,12,22,.97);
+ border-radius: 18px;
+ border: 1px solid rgba(201,168,76,.22);
+ background: rgba(4,10,20,.98);
  backdrop-filter: blur(32px);
  -webkit-backdrop-filter: blur(32px);
  box-shadow:
-   0 10px 56px rgba(0,0,0,.6),
-   0 0 0 1px rgba(201,168,76,.06) inset,
-   0 0 80px -20px rgba(201,168,76,.2);
+   0 12px 48px rgba(0,0,0,.65),
+   0 0 0 1px rgba(201,168,76,.05) inset,
+   0 0 70px -24px rgba(201,168,76,.22);
 }
 .tg-navbar.scrolled .tg-nav-island::before { opacity: 1; }
 
-/* inner flex row */
+/* Inner flex row */
 .tg-nav-inner {
  display: flex; align-items: center;
  height: 100%; gap: 0;
 }
 
-/* ── brand (left) ── */
+/* ── Brand ── */
 .tg-brand {
  display: flex; align-items: center; gap: 11px;
  text-decoration: none; flex-shrink: 0;
  padding: 0 20px 0 0;
- border-right: 1px solid rgba(201,168,76,.15);
- margin-right: 12px;
+ border-right: 1px solid rgba(201,168,76,.12);
+ margin-right: 14px;
 }
 .tg-brand-logo { position: relative; }
 .tg-brand-logo img {
  width: 40px; height: 40px; border-radius: 10px;
  object-fit: contain; background: #fff; padding: 3px;
- box-shadow: 0 4px 16px rgba(201,168,76,.28);
- transition: box-shadow .3s, transform .3s;
+ box-shadow: 0 2px 14px rgba(201,168,76,.22), 0 0 0 1px rgba(201,168,76,.18);
+ transition: box-shadow .28s ease, transform .28s ease;
  position: relative; z-index: 1;
 }
 .tg-brand:hover .tg-brand-logo img {
- box-shadow: 0 6px 28px rgba(201,168,76,.55);
- transform: scale(1.06);
+ box-shadow: 0 4px 24px rgba(201,168,76,.5), 0 0 0 1px rgba(201,168,76,.4);
+ transform: scale(1.05);
 }
-/* Animated glow ring on logo hover */
 .tg-brand-logo::after {
  content: '';
  position: absolute; inset: -4px; border-radius: 14px;
- border: 1.5px solid rgba(201,168,76,.55);
- opacity: 0; transform: scale(.8);
- transition: opacity .3s, transform .35s cubic-bezier(.34,1.56,.64,1);
+ border: 1.5px solid rgba(201,168,76,.5);
+ opacity: 0; transform: scale(.85);
+ transition: opacity .28s ease, transform .32s ease;
 }
 .tg-brand:hover .tg-brand-logo::after { opacity: 1; transform: scale(1); }
 
-/* Animated gold shimmer brand name */
+/* Brand name — sharp white by default; shimmer only on hover */
 .tg-brand-name {
  font-family: 'Manrope', 'Inter', sans-serif;
  font-size: .92rem; font-weight: 800;
- background: linear-gradient(90deg, #e0e0e0 10%, #e8c96a 38%, #c9a84c 50%, #e8c96a 62%, #e0e0e0 90%);
- background-size: 250%;
+ color: #fff;
+ letter-spacing: -.3px; line-height: 1.1;
+ transition: color .2s ease;
+}
+.tg-brand:hover .tg-brand-name {
+ background: linear-gradient(90deg, #e8e0d0 5%, #e8c96a 35%, #c9a84c 50%, #e8c96a 65%, #e8e0d0 95%);
+ background-size: 240%;
  -webkit-background-clip: text;
  -webkit-text-fill-color: transparent;
  background-clip: text;
- animation: brandShimmer 5s linear infinite;
- letter-spacing: -.3px; line-height: 1.1;
+ animation: brandShimmer 1.6s linear forwards;
 }
 .tg-brand-sub {
- font-size: .58rem; font-weight: 600;
- color: var(--tg-gold); letter-spacing: 1.8px; text-transform: uppercase;
+ font-size: .57rem; font-weight: 600;
+ color: rgba(201,168,76,.62); letter-spacing: 1.8px; text-transform: uppercase;
 }
 
-/* ── nav menu ── */
+/* ── Nav menu ── */
 .tg-nav-menu {
  display: flex; align-items: center;
- flex: 1; margin-left: 0; gap: 2px;
+ flex: 1; margin-left: 0; gap: 1px;
  justify-content: flex-start;
 }
 .tg-nav-list {
  display: flex; align-items: center;
- list-style: none; margin: 0; padding: 0; gap: 2px;
+ list-style: none; margin: 0; padding: 0; gap: 1px;
 }
 .tg-nav-list > li { position: relative; }
 
-/* every nav link/button */
+/* Nav links and buttons — heavier weight, crisper feel */
 .tg-nl {
- display: flex; align-items: center; gap: 4px;
- padding: 7px 13px; border-radius: 10px;
- font-size: .82rem; font-weight: 500;
- color: var(--tg-text); text-decoration: none;
+ display: flex; align-items: center; gap: 5px;
+ padding: 7px 13px; border-radius: 9px;
+ font-size: .83rem; font-weight: 600; letter-spacing: .01em;
+ color: rgba(200,216,232,.75); text-decoration: none;
  background: none; border: none; cursor: pointer;
  white-space: nowrap; position: relative; overflow: hidden;
- transition: color .18s;
+ transition: color .15s ease, background .15s ease;
 }
-/* Pill fill on hover — springs in */
-.tg-nl::before {
- content: '';
- position: absolute; inset: 0; border-radius: 10px;
- background: rgba(201,168,76,.09);
- opacity: 0; transform: scale(.8);
- transition: opacity .2s, transform .22s cubic-bezier(.34,1.4,.64,1);
- pointer-events: none;
+.tg-nl:hover {
+ color: #fff;
+ background: rgba(255,255,255,.05);
 }
-.tg-nl:hover::before,
-.tg-nl.tg-active::before { opacity: 1; transform: scale(1); }
-.tg-nl.tg-active::before { background: rgba(201,168,76,.14); }
+.tg-nl.tg-active {
+ color: var(--tg-goldlt);
+ background: rgba(201,168,76,.08);
+}
 
-/* Gold underline slide */
+/* Clean gold underline — slides in from left */
 .tg-nl::after {
  content: ''; position: absolute;
  bottom: 3px; left: 11px; right: 11px;
  height: 2px; border-radius: 2px;
  background: linear-gradient(90deg, var(--tg-gold), var(--tg-goldlt));
  transform: scaleX(0); transform-origin: left;
- transition: transform .22s cubic-bezier(.4,0,.2,1);
+ transition: transform .2s cubic-bezier(.4,0,.2,1);
 }
-.tg-nl:hover { color: #fff; }
 .tg-nl:hover::after { transform: scaleX(1); }
-.tg-nl.tg-active { color: var(--tg-goldlt); }
 .tg-nl.tg-active::after { transform: scaleX(1); }
 
-/* caret icon */
-.tg-caret { font-size: .62rem; opacity: .55; transition: transform .22s; }
+/* Caret */
+.tg-caret { font-size: .6rem; opacity: .45; transition: transform .2s ease, opacity .15s ease; }
 li:hover > .tg-nl > .tg-caret,
-li:focus-within > .tg-nl > .tg-caret { transform: rotate(180deg); opacity: 1; }
+li:focus-within > .tg-nl > .tg-caret { transform: rotate(180deg); opacity: .9; }
 
-/* loyalty pill */
+/* Loyalty pill (kept for legacy compat) */
 .tg-loyalty-tag {
  display: inline-flex; align-items: center; gap: 5px;
- padding: 4px 10px; border-radius: 100px;
- background: rgba(201,168,76,.1); border: 1px solid rgba(201,168,76,.28);
- color: var(--tg-gold); font-size: .77rem; font-weight: 700;
- transition: background .18s, box-shadow .18s;
+ padding: 3px 9px; border-radius: 100px;
+ background: rgba(201,168,76,.1); border: 1px solid rgba(201,168,76,.26);
+ color: var(--tg-gold); font-size: .76rem; font-weight: 700;
 }
-.tg-nl:hover .tg-loyalty-tag { background: rgba(201,168,76,.2); box-shadow: 0 0 14px rgba(201,168,76,.2); }
+.tg-nl:hover .tg-loyalty-tag { background: rgba(201,168,76,.18); }
 
-/* ── dropdowns ── */
+/* ── Dropdowns ── */
 .tg-dd {
- position: absolute; top: calc(100% + 12px); left: 50%;
- transform: translateX(-50%);
- background: rgba(8,18,34,.97);
- border: 1px solid rgba(201,168,76,.2);
- border-radius: 16px; padding: 8px;
- min-width: 200px;
- box-shadow: 0 24px 64px rgba(0,0,0,.65), 0 0 0 1px rgba(201,168,76,.04) inset;
+ position: absolute; top: calc(100% + 10px); left: 50%;
+ transform: translateX(-50%) translateY(-8px);
+ background: rgba(4,10,20,.99);
+ border: 1px solid rgba(201,168,76,.18);
+ border-top: 2px solid rgba(201,168,76,.5);
+ border-radius: 14px; padding: 6px;
+ min-width: 210px;
+ box-shadow:
+   0 20px 56px rgba(0,0,0,.7),
+   0 4px 16px rgba(0,0,0,.35);
  opacity: 0; pointer-events: none;
- transition: opacity .2s, transform .2s;
- transform: translateX(-50%) translateY(-10px);
+ transition: opacity .18s ease, transform .18s ease;
  z-index: 999;
 }
+/* Triangle connector pointing up at the gold border */
+.tg-dd::before {
+ content: '';
+ position: absolute; top: -9px; left: 50%; transform: translateX(-50%);
+ border-left: 8px solid transparent;
+ border-right: 8px solid transparent;
+ border-bottom: 8px solid rgba(201,168,76,.5);
+}
+.tg-dd::after {
+ content: '';
+ position: absolute; top: -6px; left: 50%; transform: translateX(-50%);
+ border-left: 6px solid transparent;
+ border-right: 6px solid transparent;
+ border-bottom: 6px solid rgba(4,10,20,.99);
+}
+
 .tg-dd.tg-mega {
  display: flex; gap: 0; min-width: 500px; left: 0;
- transform: translateY(-10px);
+ transform: translateY(-8px);
 }
-.tg-dd.tg-end { left: auto; right: 0; transform: translateY(-10px); }
+.tg-dd.tg-mega::before { left: 60px; transform: none; }
+.tg-dd.tg-mega::after  { left: 61px; transform: none; }
+.tg-dd.tg-end { left: auto; right: 0; transform: translateY(-8px); }
+.tg-dd.tg-end::before { left: auto; right: 24px; transform: none; }
+.tg-dd.tg-end::after  { left: auto; right: 25px; transform: none; }
+
 li:hover > .tg-dd,
-li:focus-within > .tg-dd { opacity: 1; pointer-events: all; transform: translateX(-50%) translateY(0); }
+li:focus-within > .tg-dd {
+ opacity: 1; pointer-events: all; transform: translateX(-50%) translateY(0);
+}
 li:hover > .tg-dd.tg-mega,
 li:hover > .tg-dd.tg-end,
 li:focus-within > .tg-dd.tg-mega,
@@ -247,89 +266,105 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
 
 .tg-dd-col { flex: 1; padding: 4px; }
 .tg-dd-sep { width: 1px; background: rgba(201,168,76,.1); margin: 6px 0; }
+.tg-dd-divider { height: 1px; background: rgba(201,168,76,.1); margin: 5px 8px; }
 .tg-dd-label {
- font-size: .6rem; font-weight: 700; letter-spacing: 2px;
- text-transform: uppercase; color: rgba(201,168,76,.65);
- padding: 6px 10px 4px;
+ font-size: .58rem; font-weight: 700; letter-spacing: .15em;
+ text-transform: uppercase; color: rgba(201,168,76,.5);
+ padding: 8px 10px 5px;
 }
 .tg-dd-item {
  display: flex; align-items: center; gap: 9px;
- padding: 9px 10px; border-radius: 10px;
- font-size: .82rem; font-weight: 500; color: var(--tg-text);
- text-decoration: none; transition: background .15s, color .15s;
+ padding: 9px 10px; border-radius: 9px;
+ font-size: .82rem; font-weight: 500; color: rgba(200,216,232,.82);
+ text-decoration: none; transition: background .13s ease, color .13s ease;
 }
 .tg-dd-item:hover { background: rgba(201,168,76,.1); color: #fff; }
-.tg-dd-item:hover .tg-dd-sub { color: #aaa; }
-.tg-dd-ico { font-size: .95rem; width: 20px; text-align: center; flex-shrink: 0; }
-/* Rich dropdown items with sub-description */
+.tg-dd-item:hover .tg-dd-sub { color: rgba(201,168,76,.5); }
+/* Icon chip — subtle container for every dropdown icon */
+.tg-dd-ico {
+ font-size: .82rem; width: 28px; height: 28px; border-radius: 7px;
+ background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.07);
+ display: flex; align-items: center; justify-content: center;
+ flex-shrink: 0; color: rgba(201,168,76,.7);
+ transition: background .13s ease, color .13s ease, border-color .13s ease;
+}
+.tg-dd-item:hover .tg-dd-ico {
+ background: rgba(201,168,76,.12); color: var(--tg-goldlt);
+ border-color: rgba(201,168,76,.2);
+}
 .tg-dd-item > div { display: flex; flex-direction: column; }
-.tg-dd-sub { font-size: .73rem; color: #666; margin-top: 1px; }
-.tg-dd-danger { color: #ff6b6b !important; }
-.tg-dd-danger:hover { background: rgba(255,107,107,.1) !important; }
-.tg-dd-uhead { padding: 10px 10px 4px; border-bottom: 1px solid rgba(201,168,76,.1); margin-bottom: 4px; }
+.tg-dd-sub { font-size: .72rem; color: rgba(255,255,255,.28); margin-top: 2px; }
+.tg-dd-danger { color: rgba(248,113,113,.85) !important; }
+.tg-dd-danger:hover { background: rgba(255,107,107,.08) !important; color: #f87171 !important; }
+.tg-dd-danger .tg-dd-ico { color: rgba(248,113,113,.7); }
+.tg-dd-uhead { padding: 10px 10px 6px; border-bottom: 1px solid rgba(201,168,76,.1); margin-bottom: 4px; }
 
-/* ── auth buttons ── */
+/* ── Auth area ── */
 .tg-nav-auth {
- display: flex; align-items: center; gap: 8px;
+ display: flex; align-items: center; gap: 7px;
  margin-left: auto;
  padding-left: 14px;
- border-left: 1px solid rgba(201,168,76,.15);
+ border-left: 1px solid rgba(255,255,255,.07);
 }
 .tg-btn-ghost {
- padding: 7px 16px; border-radius: 10px;
- border: 1px solid rgba(255,255,255,.14);
- color: #e8f0fe; font-size: .82rem; font-weight: 500;
+ padding: 7px 16px; border-radius: 9px;
+ border: 1px solid rgba(255,255,255,.12);
+ color: rgba(200,216,232,.8); font-size: .82rem; font-weight: 500;
  text-decoration: none; white-space: nowrap;
- transition: border-color .2s, color .2s, background .2s;
+ transition: border-color .2s ease, color .2s ease, background .2s ease;
 }
-.tg-btn-ghost:hover { border-color: var(--tg-gold); color: var(--tg-gold); background: rgba(201,168,76,.06); }
+.tg-btn-ghost:hover { border-color: rgba(201,168,76,.5); color: var(--tg-goldlt); background: rgba(201,168,76,.06); }
 .tg-btn-primary {
- padding: 7px 18px; border-radius: 10px;
- background: linear-gradient(135deg, var(--tg-gold), var(--tg-goldlt));
- color: #060f1e; font-size: .82rem; font-weight: 800;
+ padding: 7px 18px; border-radius: 9px;
+ background: linear-gradient(135deg, #b8922a, var(--tg-gold) 50%, var(--tg-goldlt));
+ color: #0d0800; font-size: .82rem; font-weight: 800;
  text-decoration: none; white-space: nowrap; border: none;
- box-shadow: 0 4px 16px rgba(201,168,76,.3);
- transition: transform .2s, box-shadow .2s;
+ box-shadow: 0 2px 14px rgba(201,168,76,.28), 0 0 0 1px rgba(201,168,76,.25) inset;
+ letter-spacing: .01em;
+ transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
 }
-.tg-btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 26px rgba(201,168,76,.5); color: #060f1e; }
+.tg-btn-primary:hover {
+ transform: translateY(-1px);
+ box-shadow: 0 6px 24px rgba(201,168,76,.42), 0 0 0 1px rgba(232,201,106,.4) inset;
+ filter: brightness(1.07); color: #0d0800;
+}
 
-/* user pill */
+/* User pill */
 .tg-user-pill {
  display: flex; align-items: center; gap: 7px;
- padding: 4px 12px 4px 4px; border-radius: 100px;
- border: 1px solid rgba(201,168,76,.2); background: rgba(255,255,255,.04);
- cursor: pointer; transition: border-color .2s, background .2s; white-space: nowrap;
- font-size: .82rem; color: var(--tg-text); font-weight: 500;
+ padding: 4px 10px 4px 4px; border-radius: 100px;
+ border: 1px solid rgba(201,168,76,.18); background: rgba(255,255,255,.03);
+ cursor: pointer; white-space: nowrap;
+ font-size: .82rem; color: rgba(200,216,232,.82); font-weight: 500;
+ transition: border-color .18s ease, background .18s ease;
 }
-.tg-user-pill:hover { border-color: rgba(201,168,76,.45); background: rgba(201,168,76,.06); }
+.tg-user-pill:hover { border-color: rgba(201,168,76,.42); background: rgba(201,168,76,.05); }
 .tg-avatar {
  width: 28px; height: 28px; border-radius: 50%;
  background: linear-gradient(135deg, var(--tg-gold), var(--tg-goldlt));
  display: flex; align-items: center; justify-content: center;
- font-weight: 800; font-size: .72rem; color: #060f1e; flex-shrink: 0;
+ font-weight: 800; font-size: .7rem; color: #0d0800; flex-shrink: 0;
 }
 .tg-avatar img { width:28px;height:28px;border-radius:50%;object-fit:cover; }
 
-/* points badge */
+/* Points badge */
 .tg-pts-badge {
- background: rgba(201,168,76,.15); color: var(--tg-gold);
- border: 1px solid rgba(201,168,76,.25); border-radius: 100px;
- font-size: .6rem; font-weight: 700; padding: 2px 7px; margin-left: auto;
+ background: rgba(201,168,76,.12); color: var(--tg-gold);
+ border: 1px solid rgba(201,168,76,.22); border-radius: 100px;
+ font-size: .58rem; font-weight: 700; padding: 2px 7px; margin-left: auto;
+ letter-spacing: .03em;
 }
 
-/* notif bell */
+/* Icon buttons in auth strip */
 .tg-bell {
- position: relative; width: 36px; height: 36px; border-radius: 10px;
- border: 1px solid rgba(201,168,76,.18); background: rgba(255,255,255,.04);
- color: var(--tg-text); display: flex; align-items: center; justify-content: center;
- text-decoration: none; font-size: .9rem;
- transition: border-color .2s, color .2s, background .2s, box-shadow .2s;
+ position: relative; width: 34px; height: 34px; border-radius: 9px;
+ border: 1px solid rgba(255,255,255,.1);
+ background: rgba(255,255,255,.03);
+ color: rgba(200,216,232,.65); display: flex; align-items: center; justify-content: center;
+ text-decoration: none; font-size: .88rem;
+ transition: border-color .15s ease, color .15s ease, background .15s ease;
 }
-.tg-bell:hover {
- border-color: var(--tg-gold); color: var(--tg-gold);
- background: rgba(201,168,76,.08);
- box-shadow: 0 0 18px rgba(201,168,76,.28);
-}
+.tg-bell:hover { border-color: rgba(201,168,76,.4); color: var(--tg-gold); background: rgba(201,168,76,.07); }
 .tg-bell-dot {
  position: absolute; top: 4px; right: 4px;
  width: 15px; height: 15px; border-radius: 50%;
@@ -338,32 +373,32 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  display: flex; align-items: center; justify-content: center;
 }
 
-/* install btn */
+/* Install btn */
 .tg-install-btn {
- width: 36px; height: 36px; border-radius: 10px;
- border: 1px solid rgba(201,168,76,.25); background: rgba(201,168,76,.07);
- color: var(--tg-gold); cursor: pointer; font-size: .88rem;
+ width: 34px; height: 34px; border-radius: 9px;
+ border: 1px solid rgba(201,168,76,.22); background: rgba(201,168,76,.06);
+ color: var(--tg-gold); cursor: pointer; font-size: .85rem;
  display: flex; align-items: center; justify-content: center;
- transition: background .2s, box-shadow .2s;
+ transition: background .15s ease, border-color .15s ease;
 }
-.tg-install-btn:hover { background: rgba(201,168,76,.18); box-shadow: 0 0 16px rgba(201,168,76,.2); }
+.tg-install-btn:hover { background: rgba(201,168,76,.16); border-color: rgba(201,168,76,.4); }
 
-/* ── hamburger ── */
+/* ── Hamburger ── */
 .tg-hamburger {
  display: none; flex-direction: column; gap: 5px;
- padding: 8px; border: 1px solid rgba(201,168,76,.2);
- border-radius: 10px; background: none; cursor: pointer;
+ padding: 8px; border: 1px solid rgba(255,255,255,.1);
+ border-radius: 9px; background: none; cursor: pointer;
  margin-left: 12px; flex-shrink: 0;
- transition: border-color .2s, background .2s;
+ transition: border-color .15s ease, background .15s ease;
 }
-.tg-hamburger:hover { border-color: rgba(201,168,76,.5); background: rgba(201,168,76,.08); }
+.tg-hamburger:hover { border-color: rgba(201,168,76,.4); background: rgba(201,168,76,.06); }
 .tg-hamburger span {
- display: block; width: 22px; height: 2px;
- background: var(--tg-text); border-radius: 2px; transition: .3s;
+ display: block; width: 20px; height: 1.5px;
+ background: rgba(200,216,232,.75); border-radius: 2px; transition: .25s ease;
 }
-.tg-hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+.tg-hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(4.5px,4.5px); }
 .tg-hamburger.open span:nth-child(2) { opacity: 0; }
-.tg-hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+.tg-hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(4.5px,-4.5px); }
 
 /* ── MOBILE (≤ 991px) ── */
 @media (max-width: 991px) {
@@ -373,94 +408,90 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  .tg-nav-auth { display: none !important; }
 }
 
-/* ── Standalone mobile overlay (outside <nav>, so backdrop-filter can't clip it) ── */
+/* ── Standalone mobile overlay ── */
 .tg-mob-overlay {
  display: none;
  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
- background: #0a0a0a;
+ background: rgba(3,7,15,.98);
  z-index: 99999;
  overflow-y: auto;
  flex-direction: column;
  -webkit-overflow-scrolling: touch;
 }
 .tg-mob-overlay.open { display: flex; }
-
-/* Only show on mobile */
 @media (min-width: 992px) {
  .tg-mob-overlay { display: none !important; }
 }
 
-/* Header row */
 .tg-mob-header {
  display: flex; align-items: center; justify-content: space-between;
- padding: 18px 20px;
- border-bottom: 1px solid rgba(201,168,76,.15);
+ padding: 18px 20px 16px;
+ border-bottom: 1px solid rgba(201,168,76,.12);
  flex-shrink: 0;
 }
 .tg-mob-close {
- width: 40px; height: 40px; border-radius: 50%;
- background: rgba(255,255,255,.06); border: none; cursor: pointer;
- display: flex; align-items: center; justify-content: center;
- color: #e0d5c0; font-size: 1.1rem;
+ width: 36px; height: 36px; border-radius: 9px;
+ background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+ cursor: pointer; display: flex; align-items: center; justify-content: center;
+ color: rgba(220,210,195,.8); font-size: 1rem;
+ transition: background .15s ease, border-color .15s ease;
 }
+.tg-mob-close:hover { background: rgba(255,255,255,.1); border-color: rgba(201,168,76,.3); }
 
-/* Nav list */
 .tg-mob-list {
- list-style: none; margin: 0; padding: 0 20px;
+ list-style: none; margin: 0; padding: 6px 20px;
  flex: 1;
 }
-.tg-mob-li {
- border-bottom: 1px solid rgba(255,255,255,.07);
-}
+.tg-mob-li { border-bottom: 1px solid rgba(255,255,255,.05); }
 .tg-mob-link {
  display: flex; justify-content: space-between; align-items: center;
- width: 100%; padding: 18px 0;
- font-size: 1.2rem; font-weight: 600; color: #e0d5c0;
+ width: 100%; padding: 16px 0;
+ font-size: 1.05rem; font-weight: 600; letter-spacing: .01em;
+ color: rgba(220,210,195,.88);
  background: none; border: none; text-align: left; text-decoration: none;
  cursor: pointer;
 }
-.tg-mob-link:hover { color: #c9a84c; }
-.tg-mob-caret { font-size: .75rem; transition: transform .2s; }
-.tg-mob-li.mob-open .tg-mob-caret { transform: rotate(180deg); }
+.tg-mob-link:hover { color: var(--tg-goldlt); }
+.tg-mob-caret { font-size: .68rem; opacity: .5; transition: transform .2s ease, opacity .15s ease; }
+.tg-mob-li.mob-open .tg-mob-caret { transform: rotate(180deg); opacity: .9; }
 
-/* Accordion sub-panel */
-.tg-mob-sub { display: none; padding: 4px 0 14px 4px; }
+.tg-mob-sub { display: none; padding: 2px 0 12px; }
 .tg-mob-li.mob-open .tg-mob-sub { display: block; }
 .tg-mob-sub-label {
- font-size: .68rem; letter-spacing: 2px; font-weight: 700;
- color: #c9a84c; padding: 8px 0 4px; text-transform: uppercase;
+ font-size: .58rem; letter-spacing: .15em; font-weight: 700;
+ color: rgba(201,168,76,.55); padding: 10px 10px 4px; text-transform: uppercase;
 }
 .tg-mob-sub-item {
  display: flex; align-items: center; gap: 10px;
- padding: 10px 12px; margin-bottom: 2px;
- font-size: .95rem; color: #7a6e5f;
+ padding: 10px 10px; margin-bottom: 1px;
+ font-size: .9rem; font-weight: 500; color: rgba(200,210,220,.6);
  border-radius: 8px; text-decoration: none;
- border-bottom: 1px solid rgba(255,255,255,.04);
 }
-.tg-mob-sub-item:hover { color: #e0d5c0; background: rgba(201,168,76,.06); }
+.tg-mob-sub-item:hover { color: rgba(220,215,205,.95); background: rgba(255,255,255,.04); }
+.tg-mob-sub-item.tg-active { color: var(--tg-goldlt); }
 
-/* Bottom CTA strip */
 .tg-mob-cta {
  display: flex; flex-direction: column; gap: 10px;
  padding: 20px; flex-shrink: 0;
- border-top: 1px solid rgba(201,168,76,.15);
+ border-top: 1px solid rgba(201,168,76,.12);
 }
 .tg-mob-cta-login {
- display: block; text-align: center; padding: 14px;
- border: 1px solid rgba(201,168,76,.35); border-radius: 12px;
- color: #c9a84c; font-weight: 700; font-size: .95rem;
+ display: block; text-align: center; padding: 13px;
+ border: 1px solid rgba(201,168,76,.3); border-radius: 10px;
+ color: rgba(201,168,76,.9); font-weight: 600; font-size: .93rem;
  text-decoration: none;
 }
 .tg-mob-cta-register {
- display: block; text-align: center; padding: 14px;
- background: linear-gradient(135deg,#c9a84c,#e8c96a); border-radius: 12px;
- color: #1a0a00; font-weight: 800; font-size: .95rem;
+ display: block; text-align: center; padding: 13px;
+ background: linear-gradient(135deg, #b8922a, var(--tg-gold), var(--tg-goldlt));
+ border-radius: 10px;
+ color: #0d0800; font-weight: 800; font-size: .93rem;
  text-decoration: none;
 }
 .tg-mob-cta-user {
  display: flex; align-items: center; gap: 12px;
- padding: 12px; border-radius: 12px;
- background: rgba(201,168,76,.07); border: 1px solid rgba(201,168,76,.15);
+ padding: 12px; border-radius: 10px;
+ background: rgba(201,168,76,.06); border: 1px solid rgba(201,168,76,.14);
 }
 </style>
 {% block extra_head %}{% endblock %}
@@ -596,17 +627,17 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  <div class="tg-dd tg-mega">
  <div class="tg-dd-col">
  <div class="tg-dd-label">Markets</div>
- <a href="{% url 'marketplace' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>All Coffee Products</a>
- <a href="{% url 'product_list' %}?market=local" class="tg-dd-item"><span class="tg-dd-ico"></span>Canadians</a>
- <a href="{% url 'product_list' %}?market=international" class="tg-dd-item"><span class="tg-dd-ico"></span>Global Clients</a>
+ <a href="{% url 'marketplace' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-store"></i></span>All Coffee Products</a>
+ <a href="{% url 'product_list' %}?market=local" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-users"></i></span>Canadians</a>
+ <a href="{% url 'product_list' %}?market=international" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-globe"></i></span>Global Clients</a>
  </div>
  <div class="tg-dd-sep"></div>
  <div class="tg-dd-col">
  <div class="tg-dd-label">Categories</div>
- <a href="{% url 'product_list' %}?category=coffee" class="tg-dd-item"><span class="tg-dd-ico"></span>All Coffee</a>
- <a href="{% url 'product_list' %}?category=coffee&name=arabica" class="tg-dd-item"><span class="tg-dd-ico"></span>Arabica Green Coffee</a>
- <a href="{% url 'product_list' %}?category=coffee&name=robusta" class="tg-dd-item"><span class="tg-dd-ico"></span>Robusta Green Coffee</a>
- <a href="{% url 'product_list' %}?category=coffee&name=artisanal" class="tg-dd-item"><span class="tg-dd-ico"></span>Artisanal Coffee Goods</a>
+ <a href="{% url 'product_list' %}?category=coffee" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-coffee"></i></span>All Coffee</a>
+ <a href="{% url 'product_list' %}?category=coffee&name=arabica" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-seedling"></i></span>Arabica Green Coffee</a>
+ <a href="{% url 'product_list' %}?category=coffee&name=robusta" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-leaf"></i></span>Robusta Green Coffee</a>
+ <a href="{% url 'product_list' %}?category=coffee&name=artisanal" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-award"></i></span>Artisanal Coffee Goods</a>
  </div>
  </div>
  </li>
@@ -727,23 +758,23 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  <div style="color:#e8f0fe;font-weight:700;font-size:.86rem">{{ user.get_full_name|default:user.username }}</div>
  <div style="color:#c9a84c;font-size:.7rem">{{ user.unique_id }}</div>
  </div>
- <a href="{% url 'dashboard' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>Dashboard</a>
+ <a href="{% url 'dashboard' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-th-large"></i></span>Dashboard</a>
  {% if user.franchisee_profile %}
  <a href="{% url 'franchisee_store' %}" class="tg-dd-item" style="color:#c9a84c;font-weight:600"><span class="tg-dd-ico"><i class="fas fa-store"></i></span>My Franchise Hub</a>
- <div style="height:1px;background:rgba(201,168,76,.12);margin:6px 8px"></div>
+ <div class="tg-dd-divider"></div>
  {% endif %}
- <a href="{% url 'profile' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>My Profile</a>
+ <a href="{% url 'profile' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-user"></i></span>My Profile</a>
  <a href="{% url 'loyalty_dashboard' %}" class="tg-dd-item">
- <span class="tg-dd-ico"></span>Loyalty Points
+ <span class="tg-dd-ico"><i class="fas fa-coins"></i></span>Loyalty Points
  <span class="tg-pts-badge">{{ user.avon_points|floatformat:0 }}</span>
  </a>
  <a href="{% url 'wallet' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-wallet"></i></span>My Wallet</a>
-                <a href="{% url 'my_tickets' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-ticket-alt"></i></span>My Tickets</a>
-              <a href="{% url 'my_orders' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>My Orders</a>
- <a href="{% url 'wishlist' %}" class="tg-dd-item"><span class="tg-dd-ico">️</span>My Wishlist</a>
- <a href="{% url 'cart' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>My Cart</a>
- <div style="height:1px;background:rgba(201,168,76,.12);margin:6px 8px"></div>
- <a href="{% url 'logout' %}" class="tg-dd-item tg-dd-danger"><span class="tg-dd-ico"></span>Sign Out</a>
+ <a href="{% url 'my_tickets' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-ticket-alt"></i></span>My Tickets</a>
+ <a href="{% url 'my_orders' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-shopping-bag"></i></span>My Orders</a>
+ <a href="{% url 'wishlist' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-heart"></i></span>My Wishlist</a>
+ <a href="{% url 'cart' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-shopping-cart"></i></span>My Cart</a>
+ <div class="tg-dd-divider"></div>
+ <a href="{% url 'logout' %}" class="tg-dd-item tg-dd-danger"><span class="tg-dd-ico"><i class="fas fa-sign-out-alt"></i></span>Sign Out</a>
  </div>
  </li>
  </ul>
