@@ -259,7 +259,11 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  text-decoration: none; transition: background .15s, color .15s;
 }
 .tg-dd-item:hover { background: rgba(201,168,76,.1); color: #fff; }
-.tg-dd-ico { font-size: .95rem; width: 20px; text-align: center; }
+.tg-dd-item:hover .tg-dd-sub { color: #aaa; }
+.tg-dd-ico { font-size: .95rem; width: 20px; text-align: center; flex-shrink: 0; }
+/* Rich dropdown items with sub-description */
+.tg-dd-item > div { display: flex; flex-direction: column; }
+.tg-dd-sub { font-size: .73rem; color: #666; margin-top: 1px; }
 .tg-dd-danger { color: #ff6b6b !important; }
 .tg-dd-danger:hover { background: rgba(255,107,107,.1) !important; }
 .tg-dd-uhead { padding: 10px 10px 4px; border-bottom: 1px solid rgba(201,168,76,.1); margin-bottom: 4px; }
@@ -609,33 +613,64 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  <li>
  <button class="tg-nl">{% t "nav_trade" %} <i class="fas fa-chevron-down tg-caret"></i></button>
  <div class="tg-dd">
- <a href="{% url 'trade_ecommerce' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>Trade & e-Commerce</a>
-              <a href="{% url 'import_export' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>Import & Export</a>
- <a href="{% url 'forex' %}" class="tg-dd-item"><span class="tg-dd-ico"></span>Live Exchange Rates</a>
+ <a href="{% url 'trade_ecommerce' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-handshake"></i></span>Trade & e-Commerce</a>
+ <a href="{% url 'import_export' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-ship"></i></span>Import & Export</a>
+ <a href="{% url 'forex' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-chart-line"></i></span>Live Exchange Rates</a>
  </div>
  </li>
+ <!-- Programs dropdown — groups Loyalty, Onboarding, Professional Services, Franchise -->
  <li>
- <a class="tg-nl {% if request.resolver_match.url_name == 'loyalty_info' %}tg-active{% endif %}" href="{% url 'loyalty_info' %}">
- <span class="tg-loyalty-tag"><i class="fas fa-coins"></i> {% t "nav_loyalty" %}</span>
- </a>
- </li>
- <li>
- <a class="tg-nl {% if request.resolver_match.url_name == 'join_program' %}tg-active{% endif %}" href="{% url 'join_program' %}">Onboarding Program</a>
- </li>
- <li>
- <a class="tg-nl {% if 'pro_' in request.resolver_match.url_name|default:'' %}tg-active{% endif %}" href="{% url 'pro_home' %}"><i class="fas fa-briefcase" style="margin-right:5px;font-size:.8rem;color:#c9a84c"></i>Professional Services</a>
+ <button class="tg-nl {% if request.resolver_match.url_name == 'loyalty_info' or request.resolver_match.url_name == 'join_program' or 'pro_' in request.resolver_match.url_name|default:'' or request.resolver_match.url_name == 'franchise_hub' %}tg-active{% endif %}">
+   Programs <i class="fas fa-chevron-down tg-caret"></i>
+ </button>
+ <div class="tg-dd tg-mega" style="min-width:460px">
+   <div class="tg-dd-col">
+     <div class="tg-dd-label">Membership & Rewards</div>
+     <a href="{% url 'loyalty_info' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'loyalty_info' %}tg-active{% endif %}">
+       <span class="tg-dd-ico"><i class="fas fa-coins" style="color:#c9a84c"></i></span>
+       <div>
+         <div style="font-weight:600">Loyalty Program</div>
+         <div style="font-size:.74rem;color:#888;margin-top:.1rem">Earn points on every purchase</div>
+       </div>
+     </a>
+     <a href="{% url 'join_program' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'join_program' %}tg-active{% endif %}">
+       <span class="tg-dd-ico"><i class="fas fa-graduation-cap"></i></span>
+       <div>
+         <div style="font-weight:600">Onboarding Program</div>
+         <div style="font-size:.74rem;color:#888;margin-top:.1rem">New partner onboarding & training</div>
+       </div>
+     </a>
+   </div>
+   <div class="tg-dd-sep"></div>
+   <div class="tg-dd-col">
+     <div class="tg-dd-label">Business Programs</div>
+     <a href="{% url 'pro_home' %}" class="tg-dd-item {% if 'pro_' in request.resolver_match.url_name|default:'' %}tg-active{% endif %}">
+       <span class="tg-dd-ico"><i class="fas fa-briefcase"></i></span>
+       <div>
+         <div style="font-weight:600">Professional Services</div>
+         <div style="font-size:.74rem;color:#888;margin-top:.1rem">Expert support for your business</div>
+       </div>
+     </a>
+     <a href="{% url 'franchise_hub' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'franchise_hub' %}tg-active{% endif %}">
+       <span class="tg-dd-ico"><i class="fas fa-store" style="color:#c9a84c"></i></span>
+       <div>
+         <div style="font-weight:600">Franchise Opportunities</div>
+         <div style="font-size:.74rem;color:#888;margin-top:.1rem">Own a T&TG franchise territory</div>
+       </div>
+     </a>
+   </div>
+ </div>
  </li>
  <li>
  <button class="tg-nl">Company <i class="fas fa-chevron-down tg-caret"></i></button>
  <div class="tg-dd">
- 
-              <a href="{% url 'about' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'about' %}tg-active{% endif %}"><span class="tg-dd-ico"></span>About Us</a>
- <a href="{% url 'contact' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'contact' %}tg-active{% endif %}"><span class="tg-dd-ico">️</span>Contact Us</a>
- <a href="{% url 'blog_list' %}" class="tg-dd-item {% if 'blog' in request.resolver_match.url_name %}tg-active{% endif %}"><span class="tg-dd-ico"></span>Blog & News</a>
-              <div class="tg-dd-divider"></div>
-              <a href="{% url 'faq' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'faq' %}tg-active{% endif %}"><span class="tg-dd-ico"><i class="fas fa-question-circle"></i></span>FAQ</a>
-              <a href="{% url 'privacy_policy' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'privacy_policy' %}tg-active{% endif %}"><span class="tg-dd-ico"><i class="fas fa-shield-alt"></i></span>Privacy Policy</a>
-              <a href="{% url 'terms' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'terms' %}tg-active{% endif %}"><span class="tg-dd-ico"><i class="fas fa-file-contract"></i></span>Terms & Conditions</a>
+ <a href="{% url 'about' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'about' %}tg-active{% endif %}"><span class="tg-dd-ico"><i class="fas fa-building"></i></span>About Us</a>
+ <a href="{% url 'contact' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'contact' %}tg-active{% endif %}"><span class="tg-dd-ico"><i class="fas fa-envelope"></i></span>Contact Us</a>
+ <a href="{% url 'blog_list' %}" class="tg-dd-item {% if 'blog' in request.resolver_match.url_name %}tg-active{% endif %}"><span class="tg-dd-ico"><i class="fas fa-newspaper"></i></span>Blog & News</a>
+ <div style="height:1px;background:rgba(201,168,76,.1);margin:5px 8px"></div>
+ <a href="{% url 'faq' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'faq' %}tg-active{% endif %}"><span class="tg-dd-ico"><i class="fas fa-question-circle"></i></span>FAQ</a>
+ <a href="{% url 'privacy_policy' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'privacy_policy' %}tg-active{% endif %}"><span class="tg-dd-ico"><i class="fas fa-shield-alt"></i></span>Privacy Policy</a>
+ <a href="{% url 'terms' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'terms' %}tg-active{% endif %}"><span class="tg-dd-ico"><i class="fas fa-file-contract"></i></span>Terms & Conditions</a>
  </div>
  </li>
  </ul>
@@ -813,43 +848,40 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  Trade <i class="fas fa-chevron-down tg-mob-caret"></i>
  </button>
  <div class="tg-mob-sub">
- <a href="{% url 'trade_ecommerce' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Trade & e-Commerce</a>
-            <a href="{% url 'import_export' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Import & Export</a>
- <a href="{% url 'forex' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Live Exchange Rates</a>
+ <a href="{% url 'trade_ecommerce' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"><i class="fas fa-handshake"></i></span>Trade & e-Commerce</a>
+ <a href="{% url 'import_export' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"><i class="fas fa-ship"></i></span>Import & Export</a>
+ <a href="{% url 'forex' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"><i class="fas fa-chart-line"></i></span>Live Exchange Rates</a>
  </div>
  </li>
 
- <!-- Loyalty -->
+ <!-- Programs -->
  <li class="tg-mob-li">
- <a class="tg-mob-link" href="{% url 'loyalty_info' %}">
- <i class="fas fa-coins" style="color:#c9a84c;margin-right:8px;font-size:.85rem"></i>Loyalty
- </a>
+ <button class="tg-mob-link tg-mob-toggle {% if request.resolver_match.url_name == 'loyalty_info' or request.resolver_match.url_name == 'join_program' or 'pro_' in request.resolver_match.url_name|default:'' or request.resolver_match.url_name == 'franchise_hub' %}tg-active{% endif %}">
+   <i class="fas fa-th-large" style="color:#c9a84c;margin-right:8px;font-size:.85rem"></i>Programs <i class="fas fa-chevron-down tg-mob-caret"></i>
+ </button>
+ <div class="tg-mob-sub">
+   <div class="tg-mob-sub-label">Membership & Rewards</div>
+   <a href="{% url 'loyalty_info' %}" class="tg-mob-sub-item {% if request.resolver_match.url_name == 'loyalty_info' %}tg-active{% endif %}">
+     <span class="tg-dd-ico"><i class="fas fa-coins" style="color:#c9a84c"></i></span>Loyalty Program
+   </a>
+   <a href="{% url 'join_program' %}" class="tg-mob-sub-item {% if request.resolver_match.url_name == 'join_program' %}tg-active{% endif %}">
+     <span class="tg-dd-ico"><i class="fas fa-graduation-cap"></i></span>Onboarding Program
+   </a>
+   <div class="tg-mob-sub-label" style="margin-top:8px">Business Programs</div>
+   <a href="{% url 'pro_home' %}" class="tg-mob-sub-item {% if 'pro_' in request.resolver_match.url_name|default:'' %}tg-active{% endif %}">
+     <span class="tg-dd-ico"><i class="fas fa-briefcase"></i></span>Professional Services
+   </a>
+   <a href="{% url 'franchise_hub' %}" class="tg-mob-sub-item {% if request.resolver_match.url_name == 'franchise_hub' %}tg-active{% endif %}">
+     <span class="tg-dd-ico"><i class="fas fa-store" style="color:#c9a84c"></i></span>Franchise Opportunities
+   </a>
+   {% if user.is_authenticated %}{% with fp=user.franchisee_profile %}{% if fp %}
+   <div style="height:1px;background:rgba(201,168,76,.1);margin:6px 0 2px"></div>
+   <a href="{% url 'franchisee_store' %}" class="tg-mob-sub-item {% if request.resolver_match.url_name == 'franchisee_store' %}tg-active{% endif %}" style="color:#c9a84c;font-weight:600">
+     <span class="tg-dd-ico"><i class="fas fa-store"></i></span>My Franchise Hub
+   </a>
+   {% endif %}{% endwith %}{% endif %}
+ </div>
  </li>
-
- <!-- Onboarding -->
- <li class="tg-mob-li">
- <a class="tg-mob-link {% if request.resolver_match.url_name == 'join_program' %}tg-active{% endif %}" href="{% url 'join_program' %}">Onboarding Program</a>
- </li>
-
- <!-- Professional Services -->
- <li class="tg-mob-li">
- <a class="tg-mob-link {% if 'pro_' in request.resolver_match.url_name|default:'' %}tg-active{% endif %}" href="{% url 'pro_home' %}">
- <i class="fas fa-briefcase" style="margin-right:8px;font-size:.85rem;color:#c9a84c"></i>Professional Services
- </a>
- </li>
-
- <!-- Franchise Hub (franchisees only) -->
- {% if user.is_authenticated %}
- {% with fp=user.franchisee_profile %}
- {% if fp %}
- <li class="tg-mob-li">
- <a class="tg-mob-link {% if request.resolver_match.url_name == 'franchisee_store' %}tg-active{% endif %}" href="{% url 'franchisee_store' %}" style="color:#c9a84c;font-weight:600">
- <i class="fas fa-store" style="margin-right:8px;font-size:.85rem"></i>My Franchise Hub
- </a>
- </li>
- {% endif %}
- {% endwith %}
- {% endif %}
 
  <!-- Company -->
  <li class="tg-mob-li">
@@ -857,13 +889,13 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  Company <i class="fas fa-chevron-down tg-mob-caret"></i>
  </button>
  <div class="tg-mob-sub">
- 
-              <a href="{% url 'about' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>About Us</a>
- <a href="{% url 'contact' %}" class="tg-mob-sub-item"><span class="tg-dd-ico">️</span>Contact Us</a>
- <a href="{% url 'blog_list' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"></span>Blog & News</a>
-        <a href="{% url 'faq' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"><i class="fas fa-question-circle"></i></span>FAQ</a>
-        <a href="{% url 'privacy_policy' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"><i class="fas fa-shield-alt"></i></span>Privacy Policy</a>
-        <a href="{% url 'terms' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"><i class="fas fa-file-contract"></i></span>Terms & Conditions</a>
+ <a href="{% url 'about' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"><i class="fas fa-building"></i></span>About Us</a>
+ <a href="{% url 'contact' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"><i class="fas fa-envelope"></i></span>Contact Us</a>
+ <a href="{% url 'blog_list' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"><i class="fas fa-newspaper"></i></span>Blog & News</a>
+ <div style="height:1px;background:rgba(201,168,76,.1);margin:6px 0 2px"></div>
+ <a href="{% url 'faq' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"><i class="fas fa-question-circle"></i></span>FAQ</a>
+ <a href="{% url 'privacy_policy' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"><i class="fas fa-shield-alt"></i></span>Privacy Policy</a>
+ <a href="{% url 'terms' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"><i class="fas fa-file-contract"></i></span>Terms & Conditions</a>
  </div>
  </li>
 
