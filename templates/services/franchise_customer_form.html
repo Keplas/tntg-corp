@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% block title %}{% if form_action == 'edit' %}Edit {{ customer.full_name }}{% else %}Add Customer{% endif %} — T&TG{% endblock %}
+
+{% block content %}
+<style>
+.fcf-wrap { background:#0d0d0d; min-height:100vh; color:#e8e0d0; padding-bottom:4rem; }
+.fcf-topbar {
+  background:linear-gradient(135deg,#1a1200 0%,#2a1e00 60%,#1a1200 100%);
+  border-bottom:2px solid #c9a84c; padding:1.8rem 2rem;
+}
+.fcf-topbar-inner { max-width:680px; margin:0 auto; }
+.fcf-back { display:inline-flex; align-items:center; gap:.4rem; color:#c9a84c; text-decoration:none; font-size:.85rem; }
+.fcf-back:hover { text-decoration:underline; color:#e8c96a; }
+
+.fcf-body { max-width:680px; margin:2.5rem auto 0; padding:0 1.5rem; }
+
+.fcf-card {
+  background:#111; border:1px solid #2a1e00; border-radius:10px; padding:2rem 1.8rem;
+}
+
+.fcf-section {
+  font-size:.68rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  color:#c9a84c; padding-bottom:.5rem; border-bottom:1px solid #2a1e00; margin:1.8rem 0 1.2rem;
+}
+.fcf-section:first-of-type { margin-top:0; }
+
+.fcf-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+@media(max-width:520px){ .fcf-grid { grid-template-columns:1fr; } }
+
+.fcf-field { margin-bottom:1rem; }
+.fcf-label { display:block; font-size:.8rem; color:#888; font-weight:600; margin-bottom:.45rem; letter-spacing:.03em; }
+.fcf-label .req { color:#c9a84c; margin-left:.15rem; }
+.fcf-input, .fcf-select, .fcf-textarea {
+  width:100%; background:#0d0d0d; border:1px solid #2a1e00; border-radius:7px;
+  padding:.7rem .9rem; color:#e8e0d0; font-size:.9rem; outline:none;
+  transition:border-color .2s; box-sizing:border-box;
+}
+.fcf-input:focus, .fcf-select:focus, .fcf-textarea:focus { border-color:#c9a84c; }
+.fcf-textarea { resize:vertical; min-height:90px; }
+
+/* Type toggle */
+.fcf-type-group { display:flex; gap:.8rem; }
+.fcf-type-opt input[type=radio] { display:none; }
+.fcf-type-opt label {
+  display:flex; align-items:center; gap:.6rem;
+  padding:.65rem 1.1rem; border-radius:7px; border:1px solid #2a1e00;
+  background:#0d0d0d; font-size:.88rem; color:#888; cursor:pointer;
+  transition:all .2s; white-space:nowrap;
+}
+.fcf-type-opt input[type=radio]:checked + label {
+  border-color:#c9a84c; color:#e8c96a; background:#1a1200;
+}
+.fcf-type-opt label i { width:14px; text-align:center; }
+
+/* Company field — shown/hidden by JS */
+#company-field { transition:opacity .2s; }
+
+.fcf-submit {
+  width:100%; padding:.95rem; background:#c9a84c; border:none; border-radius:8px;
+  color:#0d0d0d; font-weight:800; font-size:1rem; cursor:pointer; transition:background .2s;
+  display:flex; align-items:center; justify-content:center; gap:.6rem; margin-top:1.5rem;
+}
+.fcf-submit:hover { background:#e8c96a; }
+
+.fcf-cancel {
+  display:block; text-align:center; margin-top:1rem;
+  color:#666; font-size:.84rem; text-decoration:none;
+}
+.fcf-cancel:hover { color:#c9a84c; }
+</style>
+
+{% if messages %}
+<div style="max-width:680px;margin:1rem auto;padding:0 1.5rem">
+  {% for m in messages %}
+  <div style="background:{% if m.tags == 'error' %}#3a0f0f{% else %}#14300f{% endif %};border:1px solid {% if m.tags == 'error' %}#ef4444{% else %}#22c55e{% endif %};border-radius:6px;padding:.75rem 1rem;font-size:.88rem;color:{% if m.tags == 'error' %}#f87171{% else %}#4ade80{% endif %};margin-bottom:.5rem">
+    {{ m }}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="fcf-wrap">
+
+  <div class="fcf-topbar">
+    <div class="fcf-topbar-inner">
+      {% if form_action == 'edit' %}
+      <a href="{% url 'franchise_customer_detail' customer.pk %}" class="fcf-back"><i class="fas fa-arrow-left"></i> {{ customer.full_name }}</a>
+      <h1 style="font-size:1.3rem;font-weight:700;color:#e8c96a;margin:.5rem 0 0">
+        <i class="fas fa-pencil-alt" style="margin-right:.5rem;font-size:1rem"></i>Edit Customer
+      </h1>
+      {% else %}
+      <a href="{% url 'franchise_customers' %}" class="fcf-back"><i class="fas fa-arrow-left"></i> Customers</a>
+      <h1 style="font-size:1.3rem;font-weight:700;color:#e8c96a;margin:.5rem 0 0">
+        <i class="fas fa-user-plus" style="margin-right:.5rem;font-size:1rem"></i>Add Customer
+      </h1>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="fcf-body">
+    <div class="fcf-card">
+      <form method="post">
+        {% csrf_token %}
+
+        <!-- Type -->
+        <div class="fcf-section"><i class="fas fa-tag" style="margin-right:.4rem"></i>Customer Type</div>
+        <div class="fcf-type-group">
+          <div class="fcf-type-opt">
+            <input type="radio" name="customer_type" id="type_individual" value="individual"
+              {% if form_action == 'edit' %}{% if customer.customer_type == 'individual' %}checked{% endif %}{% else %}checked{% endif %}>
+            <label for="type_individual"><i class="fas fa-user"></i> Individual</label>
+          </div>
+          <div class="fcf-type-opt">
+            <input type="radio" name="customer_type" id="type_business" value="business"
+              {% if form_action == 'edit' and customer.customer_type == 'business' %}checked{% endif %}>
+            <label for="type_business"><i class="fas fa-building"></i> Business</label>
+          </div>
+        </div>
+
+        <!-- Identity -->
+        <div class="fcf-section"><i class="fas fa-id-card" style="margin-right:.4rem"></i>Identity</div>
+        <div class="fcf-grid">
+          <div class="fcf-field">
+            <label class="fcf-label" for="id_full_name">Full Name <span class="req">*</span></label>
+            <input type="text" id="id_full_name" name="full_name" class="fcf-input" required
+              placeholder="e.g. Marie Tremblay"
+              value="{% if form_action == 'edit' %}{{ customer.full_name }}{% else %}{{ prefill_name }}{% endif %}">
+          </div>
+          <div class="fcf-field" id="company-field">
+            <label class="fcf-label" for="id_company_name">Company Name</label>
+            <input type="text" id="id_company_name" name="company_name" class="fcf-input"
+              placeholder="e.g. Tremblay &amp; Sons Ltd."
+              value="{% if form_action == 'edit' %}{{ customer.company_name }}{% endif %}">
+          </div>
+        </div>
+
+        <!-- Contact -->
+        <div class="fcf-section"><i class="fas fa-address-book" style="margin-right:.4rem"></i>Contact Details</div>
+        <div class="fcf-grid">
+          <div class="fcf-field">
+            <label class="fcf-label" for="id_email">Email</label>
+            <input type="email" id="id_email" name="email" class="fcf-input"
+              placeholder="customer@example.com"
+              value="{% if form_action == 'edit' %}{{ customer.email }}{% else %}{{ prefill_email }}{% endif %}">
+          </div>
+          <div class="fcf-field">
+            <label class="fcf-label" for="id_phone">Phone</label>
+            <input type="text" id="id_phone" name="phone" class="fcf-input"
+              placeholder="+1 (514) 555-0100"
+              value="{% if form_action == 'edit' %}{{ customer.phone }}{% endif %}">
+          </div>
+        </div>
+        <div class="fcf-field">
+          <label class="fcf-label" for="id_address">Address</label>
+          <textarea id="id_address" name="address" class="fcf-textarea"
+            placeholder="Street, city, province, postal code">{% if form_action == 'edit' %}{{ customer.address }}{% endif %}</textarea>
+        </div>
+
+        <!-- Notes -->
+        <div class="fcf-section"><i class="fas fa-sticky-note" style="margin-right:.4rem"></i>Internal Notes</div>
+        <div class="fcf-field">
+          <label class="fcf-label" for="id_notes">Notes</label>
+          <textarea id="id_notes" name="notes" class="fcf-textarea"
+            placeholder="Preferred products, payment terms, special arrangements...">{% if form_action == 'edit' %}{{ customer.notes }}{% endif %}</textarea>
+        </div>
+
+        <button type="submit" class="fcf-submit">
+          {% if form_action == 'edit' %}
+          <i class="fas fa-save"></i> Save Changes
+          {% else %}
+          <i class="fas fa-user-plus"></i> Add Customer
+          {% endif %}
+        </button>
+      </form>
+
+      {% if form_action == 'edit' %}
+      <a href="{% url 'franchise_customer_detail' customer.pk %}" class="fcf-cancel">
+        <i class="fas fa-times" style="margin-right:.3rem"></i>Cancel
+      </a>
+      {% else %}
+      <a href="{% url 'franchise_customers' %}" class="fcf-cancel">
+        <i class="fas fa-times" style="margin-right:.3rem"></i>Cancel
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+// Show/hide company field based on customer type
+function toggleCompanyField() {
+  const isBusiness = document.getElementById('type_business').checked;
+  document.getElementById('company-field').style.opacity = isBusiness ? '1' : '0.5';
+}
+document.getElementById('type_individual').addEventListener('change', toggleCompanyField);
+document.getElementById('type_business').addEventListener('change', toggleCompanyField);
+// Initial state
+toggleCompanyField();
+</script>
+{% endblock %}

@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.db import models
 from .models import ForexRate, InsurancePolicy, BrokerageAccount
 from django.contrib.auth.decorators import login_required
 
@@ -308,6 +309,7 @@ def franchisee_store(request):
         'stock_pending':     profile.stock_requests.filter(
                                 status__in=['submitted', 'acknowledged', 'processing']
                              ).count(),
+        'customer_count':    profile.customers.count(),
     }
     return render(request, 'services/franchisee_store.html', ctx)
 
@@ -612,4 +614,165 @@ def franchise_inventory(request):
         'stock_requests': stock_requests,
         'products': products,
         'pending_count': stock_requests.filter(status__in=['submitted','acknowledged','processing']).count(),
+    })
+
+
+# ──────────────────────────────────────────────────────────────
+#  PHASE 3 — MY CUSTOMERS CRM
+# ──────────────────────────────────────────────────────────────
+
+@franchisee_required
+def franchise_customers(request):
+    """CRM — customer list with optional search."""
+    profile, app = _get_franchisee(request)
+    if profile is None:
+        messages.error(request, 'You do not have an active franchise profile.')
+        return redirect('franchisee_store')
+
+    from .models import FranchiseeCustomer
+    q = request.GET.get('q', '').strip()
+    customers = profile.customers.all()
+    if q:
+        customers = customers.filter(
+            models.Q(full_name__icontains=q) |
+            models.Q(email__icontains=q) |
+            models.Q(phone__icontains=q) |
+            models.Q(company_name__icontains=q)
+        )
+
+    return render(request, 'services/franchise_customers.html', {
+        'profile': profile,
+        'app': app,
+        'customers': customers,
+        'q': q,
+        'total': profile.customers.count(),
+        'business_count': profile.customers.filter(customer_type='business').count(),
+    })
+
+
+@franchisee_required
+def franchise_customer_detail(request, pk):
+    """CRM — customer detail + linked orders (matched by email)."""
+    profile, app = _get_franchisee(request)
+    if profile is None:
+        messages.error(request, 'You do not have an active franchise profile.')
+        return redirect('franchisee_store')
+
+    from .models import FranchiseeCustomer, FranchiseeOrder
+    try:
+        customer = profile.customers.get(pk=pk)
+    except FranchiseeCustomer.DoesNotExist:
+        messages.error(request, 'Customer not found.')
+        return redirect('franchise_customers')
+
+    linked_orders = []
+    if customer.email:
+        linked_orders = profile.orders.filter(
+            customer_email__iexact=customer.email
+        ).order_by('-placed_at')
+
+    return render(request, 'services/franchise_customer_detail.html', {
+        'profile': profile,
+        'app': app,
+        'customer': customer,
+        'linked_orders': linked_orders,
+    })
+
+
+@franchisee_required
+def franchise_customer_add(request):
+    """CRM — add a new customer."""
+    profile, app = _get_franchisee(request)
+    if profile is None:
+        messages.error(request, 'You do not have an active franchise profile.')
+        return redirect('franchisee_store')
+
+    from .models import FranchiseeCustomer
+
+    if request.method == 'POST':
+        full_name     = request.POST.get('full_name', '').strip()
+        email         = request.POST.get('email', '').strip()
+        phone         = request.POST.get('phone', '').strip()
+        company_name  = request.POST.get('company_name', '').strip()
+        customer_type = request.POST.get('customer_type', 'individual')
+        address       = request.POST.get('address', '').strip()
+        notes         = request.POST.get('notes', '').strip()
+
+        if not full_name:
+            messages.error(request, 'Full name is required.')
+        elif email and profile.customers.filter(email__iexact=email).exists():
+            messages.error(request, f'A customer with email {email} already exists.')
+        else:
+            cust = FranchiseeCustomer.objects.create(
+                franchisee=profile,
+                full_name=full_name,
+                email=email,
+                phone=phone,
+                company_name=company_name,
+                customer_type=customer_type,
+                address=address,
+                notes=notes,
+            )
+            messages.success(request, f'Customer {cust.full_name} added successfully.')
+            return redirect('franchise_customer_detail', pk=cust.pk)
+    else:
+        # Pre-fill from order if coming from order detail
+        order_email = request.GET.get('email', '')
+        order_name  = request.GET.get('name', '')
+
+    return render(request, 'services/franchise_customer_form.html', {
+        'profile': profile,
+        'app': app,
+        'form_action': 'add',
+        'prefill_email': request.GET.get('email', ''),
+        'prefill_name': request.GET.get('name', ''),
+    })
+
+
+@franchisee_required
+def franchise_customer_edit(request, pk):
+    """CRM — edit customer details."""
+    profile, app = _get_franchisee(request)
+    if profile is None:
+        messages.error(request, 'You do not have an active franchise profile.')
+        return redirect('franchisee_store')
+
+    from .models import FranchiseeCustomer
+    try:
+        customer = profile.customers.get(pk=pk)
+    except FranchiseeCustomer.DoesNotExist:
+        messages.error(request, 'Customer not found.')
+        return redirect('franchise_customers')
+
+    if request.method == 'POST':
+        full_name     = request.POST.get('full_name', '').strip()
+        email         = request.POST.get('email', '').strip()
+        phone         = request.POST.get('phone', '').strip()
+        company_name  = request.POST.get('company_name', '').strip()
+        customer_type = request.POST.get('customer_type', 'individual')
+        address       = request.POST.get('address', '').strip()
+        notes         = request.POST.get('notes', '').strip()
+
+        if not full_name:
+            messages.error(request, 'Full name is required.')
+        elif (email and email.lower() != customer.email.lower() and
+              profile.customers.filter(email__iexact=email).exists()):
+            messages.error(request, f'Another customer already has email {email}.')
+        else:
+            customer.full_name    = full_name
+            customer.email        = email
+            customer.phone        = phone
+            customer.company_name = company_name
+            customer.customer_type = customer_type
+            customer.address      = address
+            customer.notes        = notes
+            customer.save()
+            messages.success(request, 'Customer updated.')
+            return redirect('franchise_customer_detail', pk=customer.pk)
+
+    return render(request, 'services/franchise_customer_form.html', {
+        'profile': profile,
+        'app': app,
+        'customer': customer,
+        'form_action': 'edit',
     })

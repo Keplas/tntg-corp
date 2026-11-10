@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% block title %}My Customers — T&TG Franchise Hub{% endblock %}
+
+{% block content %}
+<style>
+.fc-wrap { background:#0d0d0d; min-height:100vh; color:#e8e0d0; padding-bottom:4rem; }
+.fc-topbar {
+  background:linear-gradient(135deg,#1a1200 0%,#2a1e00 60%,#1a1200 100%);
+  border-bottom:2px solid #c9a84c; padding:1.8rem 2rem;
+}
+.fc-topbar-inner { max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; align-items:flex-end; gap:1rem; flex-wrap:wrap; }
+.fc-back { display:inline-flex; align-items:center; gap:.4rem; color:#c9a84c; text-decoration:none; font-size:.85rem; }
+.fc-back:hover { text-decoration:underline; color:#e8c96a; }
+
+.fc-body { max-width:1100px; margin:2.5rem auto 0; padding:0 1.5rem; }
+
+/* Stats strip */
+.fc-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin-bottom:2rem; }
+@media(max-width:600px){ .fc-stats { grid-template-columns:1fr 1fr; } }
+.fc-stat-card {
+  background:#111; border:1px solid #2a1e00; border-radius:10px;
+  padding:1.1rem 1.3rem; text-align:center;
+}
+.fc-stat-num { font-size:1.9rem; font-weight:800; color:#e8c96a; line-height:1; }
+.fc-stat-label { font-size:.7rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#888; margin-top:.3rem; }
+
+/* Search + add row */
+.fc-toolbar { display:flex; gap:1rem; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; }
+.fc-search-wrap { flex:1; min-width:200px; position:relative; }
+.fc-search-input {
+  width:100%; background:#111; border:1px solid #2a1e00; border-radius:7px;
+  padding:.7rem 1rem .7rem 2.4rem; color:#e8e0d0; font-size:.9rem; outline:none;
+  box-sizing:border-box; transition:border-color .2s;
+}
+.fc-search-input:focus { border-color:#c9a84c; }
+.fc-search-icon { position:absolute; left:.8rem; top:50%; transform:translateY(-50%); color:#666; font-size:.85rem; }
+.fc-add-btn {
+  display:inline-flex; align-items:center; gap:.5rem;
+  background:#c9a84c; color:#0d0d0d; font-weight:700; font-size:.88rem;
+  padding:.7rem 1.2rem; border-radius:7px; text-decoration:none; white-space:nowrap;
+  transition:background .2s;
+}
+.fc-add-btn:hover { background:#e8c96a; }
+
+/* Table */
+.fc-table-wrap { overflow-x:auto; }
+.fc-table {
+  width:100%; border-collapse:collapse; font-size:.88rem;
+}
+.fc-table th {
+  font-size:.68rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+  color:#c9a84c; padding:.7rem 1rem; border-bottom:1px solid #2a1e00; text-align:left; white-space:nowrap;
+}
+.fc-table td {
+  padding:.85rem 1rem; border-bottom:1px solid #161616; vertical-align:middle;
+}
+.fc-table tr:hover td { background:#111; }
+.fc-table tr:last-child td { border-bottom:none; }
+
+.fc-ref { font-family:monospace; font-size:.78rem; color:#888; }
+.fc-name { font-weight:700; color:#e8c96a; }
+.fc-email { color:#c9a84c; font-size:.85rem; }
+.fc-phone { color:#888; font-size:.83rem; }
+
+.fc-type-pill {
+  display:inline-block; font-size:.65rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; padding:.18rem .6rem; border-radius:4px;
+}
+.fc-type-pill.individual { background:#1e2a3a; color:#7dd3fc; border:1px solid #38bdf8; }
+.fc-type-pill.business   { background:#2a1a00; color:#fcd34d; border:1px solid #f59e0b; }
+
+.fc-action-link {
+  color:#c9a84c; text-decoration:none; font-size:.82rem; display:inline-flex;
+  align-items:center; gap:.3rem;
+}
+.fc-action-link:hover { color:#e8c96a; text-decoration:underline; }
+
+.fc-empty {
+  text-align:center; padding:4rem 2rem;
+  background:#111; border:1px solid #2a1e00; border-radius:10px;
+}
+
+.fc-search-clear { color:#888; font-size:.82rem; margin-left:.5rem; text-decoration:none; }
+.fc-search-clear:hover { color:#e8c96a; }
+</style>
+
+{% if messages %}
+<div style="max-width:1100px;margin:1rem auto;padding:0 1.5rem">
+  {% for m in messages %}
+  <div style="background:{% if m.tags == 'error' %}#3a0f0f{% else %}#14300f{% endif %};border:1px solid {% if m.tags == 'error' %}#ef4444{% else %}#22c55e{% endif %};border-radius:6px;padding:.75rem 1rem;font-size:.88rem;color:{% if m.tags == 'error' %}#f87171{% else %}#4ade80{% endif %};margin-bottom:.5rem">
+    {{ m }}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="fc-wrap">
+
+  <div class="fc-topbar">
+    <div class="fc-topbar-inner">
+      <div>
+        <a href="{% url 'franchisee_store' %}" class="fc-back"><i class="fas fa-arrow-left"></i> Franchise Hub</a>
+        <h1 style="font-size:1.3rem;font-weight:700;color:#e8c96a;margin:.5rem 0 .2rem">
+          <i class="fas fa-users" style="margin-right:.5rem;font-size:1rem"></i>My Customers
+        </h1>
+        <p style="font-size:.85rem;color:#c9a84c;margin:0">{{ profile.display_name }} &mdash; {{ profile.territory }}</p>
+      </div>
+      <a href="{% url 'franchise_customer_add' %}" class="fc-add-btn">
+        <i class="fas fa-user-plus"></i> Add Customer
+      </a>
+    </div>
+  </div>
+
+  <div class="fc-body">
+
+    <!-- Stats -->
+    <div class="fc-stats">
+      <div class="fc-stat-card">
+        <div class="fc-stat-num">{{ total }}</div>
+        <div class="fc-stat-label">Total Customers</div>
+      </div>
+      <div class="fc-stat-card">
+        <div class="fc-stat-num">{{ business_count }}</div>
+        <div class="fc-stat-label">Business Accounts</div>
+      </div>
+      <div class="fc-stat-card">
+        <div class="fc-stat-num">{{ total|add:"-"|add:business_count|default:0 }}</div>
+        <div class="fc-stat-label">Individual Clients</div>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="fc-toolbar">
+      <form method="get" class="fc-search-wrap" style="display:flex;align-items:center;gap:.5rem">
+        <div style="flex:1;position:relative">
+          <i class="fas fa-search fc-search-icon"></i>
+          <input type="text" name="q" value="{{ q }}" placeholder="Search by name, email, phone or company..."
+            class="fc-search-input" autocomplete="off">
+        </div>
+        <button type="submit" style="background:#c9a84c;border:none;border-radius:7px;padding:.7rem 1rem;color:#0d0d0d;font-weight:700;cursor:pointer;font-size:.88rem">
+          Search
+        </button>
+        {% if q %}
+        <a href="{% url 'franchise_customers' %}" class="fc-search-clear"><i class="fas fa-times"></i> Clear</a>
+        {% endif %}
+      </form>
+    </div>
+
+    <!-- Results -->
+    {% if q %}
+    <p style="font-size:.82rem;color:#888;margin-bottom:1rem">
+      {{ customers|length }} result{{ customers|length|pluralize }} for &ldquo;{{ q }}&rdquo;
+    </p>
+    {% endif %}
+
+    {% if customers %}
+    <div class="fc-table-wrap">
+      <table class="fc-table">
+        <thead>
+          <tr>
+            <th>Ref</th>
+            <th>Name</th>
+            <th>Contact</th>
+            <th>Type</th>
+            <th>Company</th>
+            <th>Since</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in customers %}
+          <tr>
+            <td><span class="fc-ref">{{ c.ref }}</span></td>
+            <td>
+              <div class="fc-name">{{ c.full_name }}</div>
+            </td>
+            <td>
+              {% if c.email %}<div class="fc-email"><i class="fas fa-envelope" style="margin-right:.3rem;font-size:.75rem"></i>{{ c.email }}</div>{% endif %}
+              {% if c.phone %}<div class="fc-phone"><i class="fas fa-phone" style="margin-right:.3rem;font-size:.75rem"></i>{{ c.phone }}</div>{% endif %}
+            </td>
+            <td>
+              <span class="fc-type-pill {{ c.customer_type }}">{{ c.get_customer_type_display }}</span>
+            </td>
+            <td style="color:#888;font-size:.85rem">{{ c.company_name|default:"—" }}</td>
+            <td style="color:#888;font-size:.82rem;white-space:nowrap">{{ c.created_at|date:"j M Y" }}</td>
+            <td>
+              <a href="{% url 'franchise_customer_detail' c.pk %}" class="fc-action-link">
+                <i class="fas fa-eye"></i> View
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="fc-empty">
+      <div style="font-size:2.5rem;color:#2a1e00;margin-bottom:1rem"><i class="fas fa-users"></i></div>
+      {% if q %}
+      <h3 style="color:#e8c96a;margin:0 0 .5rem">No customers found</h3>
+      <p style="color:#888;font-size:.88rem">No results for &ldquo;{{ q }}&rdquo;.</p>
+      <a href="{% url 'franchise_customers' %}" style="color:#c9a84c;font-size:.88rem">Clear search</a>
+      {% else %}
+      <h3 style="color:#e8c96a;margin:0 0 .5rem">No Customers Yet</h3>
+      <p style="color:#888;font-size:.88rem;max-width:360px;margin:0 auto .8rem">
+        Start building your CRM by adding your first customer.
+      </p>
+      <a href="{% url 'franchise_customer_add' %}" class="fc-add-btn" style="display:inline-flex">
+        <i class="fas fa-user-plus"></i> Add First Customer
+      </a>
+      {% endif %}
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

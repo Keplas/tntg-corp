@@ -22,4 +22,9 @@ urlpatterns = [
     path('franchise/orders/<int:pk>/',      views.franchise_order_detail,    name='franchise_order_detail'),
     path('franchise/sales-reports/',        views.franchise_sales_reports,   name='franchise_sales_reports'),
     path('franchise/inventory/',            views.franchise_inventory,       name='franchise_inventory'),
+    # Phase 3
+    path('franchise/customers/',                    views.franchise_customers,         name='franchise_customers'),
+    path('franchise/customers/add/',                views.franchise_customer_add,      name='franchise_customer_add'),
+    path('franchise/customers/<int:pk>/',           views.franchise_customer_detail,   name='franchise_customer_detail'),
+    path('franchise/customers/<int:pk>/edit/',      views.franchise_customer_edit,     name='franchise_customer_edit'),
 ]

@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% block title %}{{ customer.display_name }} — T&TG Franchise Hub{% endblock %}
+
+{% block content %}
+<style>
+.fcd-wrap { background:#0d0d0d; min-height:100vh; color:#e8e0d0; padding-bottom:4rem; }
+.fcd-topbar {
+  background:linear-gradient(135deg,#1a1200 0%,#2a1e00 60%,#1a1200 100%);
+  border-bottom:2px solid #c9a84c; padding:1.8rem 2rem;
+}
+.fcd-topbar-inner { max-width:1000px; margin:0 auto; display:flex; justify-content:space-between; align-items:flex-end; gap:1rem; flex-wrap:wrap; }
+.fcd-back { display:inline-flex; align-items:center; gap:.4rem; color:#c9a84c; text-decoration:none; font-size:.85rem; }
+.fcd-back:hover { text-decoration:underline; color:#e8c96a; }
+
+.fcd-body { max-width:1000px; margin:2.5rem auto 0; padding:0 1.5rem; display:grid; grid-template-columns:320px 1fr; gap:1.5rem; }
+@media(max-width:720px){ .fcd-body { grid-template-columns:1fr; } }
+
+.fcd-card {
+  background:#111; border:1px solid #2a1e00; border-radius:10px; padding:1.5rem 1.4rem;
+}
+.fcd-card h2 {
+  font-size:.7rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  color:#c9a84c; margin:0 0 1.2rem; padding-bottom:.5rem; border-bottom:1px solid #2a1e00;
+}
+.fcd-row { display:flex; justify-content:space-between; gap:.5rem; padding:.55rem 0; border-bottom:1px solid #1a1200; font-size:.88rem; }
+.fcd-row:last-child { border-bottom:none; }
+.fcd-row .lbl { color:#888; flex-shrink:0; }
+.fcd-row .val { color:#e8e0d0; text-align:right; word-break:break-word; }
+
+.fcd-type-pill {
+  display:inline-block; font-size:.65rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; padding:.18rem .6rem; border-radius:4px;
+}
+.fcd-type-pill.individual { background:#1e2a3a; color:#7dd3fc; border:1px solid #38bdf8; }
+.fcd-type-pill.business   { background:#2a1a00; color:#fcd34d; border:1px solid #f59e0b; }
+
+.fcd-edit-btn {
+  display:inline-flex; align-items:center; gap:.4rem;
+  background:transparent; border:1px solid #c9a84c; color:#c9a84c; border-radius:7px;
+  padding:.55rem 1rem; font-size:.85rem; font-weight:700; text-decoration:none; transition:all .2s;
+}
+.fcd-edit-btn:hover { background:#c9a84c; color:#0d0d0d; }
+
+/* Orders section */
+.fcd-order-item {
+  background:#0d0d0d; border:1px solid #2a1e00; border-radius:7px; padding:.9rem 1rem;
+  margin-bottom:.7rem; display:flex; justify-content:space-between; gap:1rem; align-items:center; flex-wrap:wrap;
+  transition:border-color .2s;
+}
+.fcd-order-item:hover { border-color:#c9a84c; }
+.fcd-order-ref { font-family:monospace; font-size:.78rem; color:#888; }
+.fcd-order-name { font-weight:700; color:#e8c96a; font-size:.9rem; margin:.1rem 0; }
+.fcd-order-meta { font-size:.8rem; color:#888; }
+
+.fcd-status-pill {
+  display:inline-block; font-size:.65rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; padding:.18rem .55rem; border-radius:4px;
+}
+.fcd-status-pill.new        { background:#1e3a5f; color:#60a5fa; border:1px solid #3b82f6; }
+.fcd-status-pill.confirmed  { background:#1a2a1a; color:#86efac; border:1px solid #4ade80; }
+.fcd-status-pill.processing { background:#2a1a00; color:#fcd34d; border:1px solid #f59e0b; }
+.fcd-status-pill.shipped    { background:#1a1a2a; color:#a78bfa; border:1px solid #8b5cf6; }
+.fcd-status-pill.delivered  { background:#14300f; color:#4ade80; border:1px solid #22c55e; }
+.fcd-status-pill.cancelled  { background:#2a1a1a; color:#f87171; border:1px solid #ef4444; }
+.fcd-status-pill.refunded   { background:#2a1a1a; color:#f87171; border:1px solid #ef4444; }
+
+.fcd-notes-box {
+  background:#1a1200; border-left:3px solid #c9a84c; border-radius:0 6px 6px 0;
+  padding:.9rem 1.1rem; font-size:.85rem; color:#d4b96a; line-height:1.6;
+  margin-top:1rem;
+}
+</style>
+
+{% if messages %}
+<div style="max-width:1000px;margin:1rem auto;padding:0 1.5rem">
+  {% for m in messages %}
+  <div style="background:{% if m.tags == 'error' %}#3a0f0f{% else %}#14300f{% endif %};border:1px solid {% if m.tags == 'error' %}#ef4444{% else %}#22c55e{% endif %};border-radius:6px;padding:.75rem 1rem;font-size:.88rem;color:{% if m.tags == 'error' %}#f87171{% else %}#4ade80{% endif %};margin-bottom:.5rem">
+    {{ m }}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="fcd-wrap">
+
+  <div class="fcd-topbar">
+    <div class="fcd-topbar-inner">
+      <div>
+        <a href="{% url 'franchise_customers' %}" class="fcd-back"><i class="fas fa-arrow-left"></i> Customers</a>
+        <h1 style="font-size:1.3rem;font-weight:700;color:#e8c96a;margin:.5rem 0 .1rem">
+          {{ customer.display_name }}
+        </h1>
+        <p style="font-size:.82rem;color:#888;margin:0">{{ customer.ref }}</p>
+      </div>
+      <a href="{% url 'franchise_customer_edit' customer.pk %}" class="fcd-edit-btn">
+        <i class="fas fa-pencil-alt"></i> Edit
+      </a>
+    </div>
+  </div>
+
+  <div class="fcd-body">
+
+    <!-- Left: contact info -->
+    <div>
+      <div class="fcd-card">
+        <h2><i class="fas fa-id-card" style="margin-right:.4rem"></i>Contact Info</h2>
+        <div class="fcd-row">
+          <span class="lbl">Type</span>
+          <span class="val"><span class="fcd-type-pill {{ customer.customer_type }}">{{ customer.get_customer_type_display }}</span></span>
+        </div>
+        <div class="fcd-row"><span class="lbl">Full Name</span><span class="val">{{ customer.full_name }}</span></div>
+        {% if customer.company_name %}
+        <div class="fcd-row"><span class="lbl">Company</span><span class="val">{{ customer.company_name }}</span></div>
+        {% endif %}
+        {% if customer.email %}
+        <div class="fcd-row">
+          <span class="lbl">Email</span>
+          <span class="val"><a href="mailto:{{ customer.email }}" style="color:#c9a84c;text-decoration:none">{{ customer.email }}</a></span>
+        </div>
+        {% endif %}
+        {% if customer.phone %}
+        <div class="fcd-row"><span class="lbl">Phone</span><span class="val">{{ customer.phone }}</span></div>
+        {% endif %}
+        {% if customer.address %}
+        <div class="fcd-row">
+          <span class="lbl">Address</span>
+          <span class="val" style="font-size:.83rem;white-space:pre-line">{{ customer.address }}</span>
+        </div>
+        {% endif %}
+        <div class="fcd-row"><span class="lbl">Added</span><span class="val">{{ customer.created_at|date:"j M Y" }}</span></div>
+        <div class="fcd-row"><span class="lbl">Last updated</span><span class="val">{{ customer.updated_at|date:"j M Y" }}</span></div>
+      </div>
+
+      {% if customer.notes %}
+      <div class="fcd-notes-box" style="margin-top:1rem">
+        <div style="font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#c9a84c;margin-bottom:.4rem">
+          <i class="fas fa-sticky-note" style="margin-right:.3rem"></i>Notes
+        </div>
+        {{ customer.notes }}
+      </div>
+      {% endif %}
+
+      <div style="margin-top:1rem;text-align:center">
+        <a href="{% url 'franchise_customers' %}" style="color:#666;font-size:.82rem;text-decoration:none">
+          <i class="fas fa-arrow-left" style="margin-right:.3rem"></i>Back to all customers
+        </a>
+      </div>
+    </div>
+
+    <!-- Right: linked orders -->
+    <div>
+      <div class="fcd-card">
+        <h2 style="display:flex;justify-content:space-between;align-items:center">
+          <span><i class="fas fa-shopping-cart" style="margin-right:.4rem"></i>Order History</span>
+          {% if linked_orders %}
+          <span style="font-size:.85rem;font-weight:400;color:#888">{{ linked_orders|length }} order{{ linked_orders|length|pluralize }}</span>
+          {% endif %}
+        </h2>
+
+        {% if linked_orders %}
+        {% for order in linked_orders %}
+        <div class="fcd-order-item">
+          <div>
+            <div class="fcd-order-ref">{{ order.ref }}</div>
+            <div class="fcd-order-name">{{ order.product_name }}</div>
+            <div class="fcd-order-meta">
+              {{ order.quantity }} &times; ${{ order.unit_price }}
+              &bull; <strong style="color:#e8c96a">${{ order.total }}</strong>
+              &bull; {{ order.placed_at|date:"j M Y" }}
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.5rem">
+            <span class="fcd-status-pill {{ order.status }}">{{ order.get_status_display }}</span>
+            <a href="{% url 'franchise_order_detail' order.pk %}" style="color:#c9a84c;font-size:.8rem;text-decoration:none">
+              <i class="fas fa-eye" style="margin-right:.2rem"></i>View
+            </a>
+          </div>
+        </div>
+        {% endfor %}
+
+        <!-- Order total summary -->
+        <div style="background:#1a1200;border-radius:7px;padding:.9rem 1.1rem;margin-top:.5rem">
+          <div style="display:flex;justify-content:space-between;font-size:.88rem">
+            <span style="color:#888">Total orders</span>
+            <span style="color:#e8c96a;font-weight:700">{{ linked_orders|length }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:.88rem;margin-top:.4rem">
+            <span style="color:#888">Total revenue</span>
+            <span style="color:#e8c96a;font-weight:700">
+              ${% with total=0 %}{% for o in linked_orders %}{% endfor %}{{ linked_orders|length }}{% endwith %}
+              <!-- Note: Use annotate in view for exact total if needed -->
+            </span>
+          </div>
+        </div>
+
+        {% elif customer.email %}
+        <div style="text-align:center;padding:2.5rem 1rem">
+          <div style="font-size:1.8rem;color:#2a1e00;margin-bottom:.8rem"><i class="fas fa-shopping-cart"></i></div>
+          <p style="color:#888;font-size:.88rem;margin:0 0 1rem">No orders linked to {{ customer.email }} yet.</p>
+          <a href="{% url 'franchise_orders' %}" style="color:#c9a84c;font-size:.85rem;text-decoration:none">
+            <i class="fas fa-arrow-right" style="margin-right:.3rem"></i>View all orders
+          </a>
+        </div>
+        {% else %}
+        <div style="text-align:center;padding:2.5rem 1rem">
+          <div style="font-size:1.8rem;color:#2a1e00;margin-bottom:.8rem"><i class="fas fa-link-slash"></i></div>
+          <p style="color:#888;font-size:.86rem;margin:0">
+            Add an email address to this customer to automatically link their orders.
+          </p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

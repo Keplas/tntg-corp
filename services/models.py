@@ -339,6 +339,42 @@ class FranchiseeProduct(models.Model):
         return 0
 
 
+class FranchiseeCustomer(models.Model):
+    """CRM — customer contacts for a franchisee's territory."""
+    TYPE_CHOICES = [
+        ('individual', 'Individual'),
+        ('business',   'Business'),
+    ]
+    franchisee    = models.ForeignKey(FranchiseeProfile, on_delete=models.CASCADE,
+                        related_name='customers')
+    full_name     = models.CharField(max_length=200)
+    email         = models.EmailField(blank=True)
+    phone         = models.CharField(max_length=30, blank=True)
+    company_name  = models.CharField(max_length=200, blank=True)
+    customer_type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='individual')
+    address       = models.TextField(blank=True)
+    notes         = models.TextField(blank=True, help_text='Internal notes about this customer')
+    created_at    = models.DateTimeField(auto_now_add=True)
+    updated_at    = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['full_name']
+        verbose_name        = 'Franchisee Customer'
+        verbose_name_plural = 'Franchisee Customers'
+        unique_together = [['franchisee', 'email']]
+
+    def __str__(self):
+        return f"{self.full_name} [{self.franchisee}]"
+
+    @property
+    def display_name(self):
+        return self.company_name if self.customer_type == 'business' and self.company_name else self.full_name
+
+    @property
+    def ref(self):
+        return f'CUS-{self.pk:04d}'
+
+
 class FranchiseeOrder(models.Model):
     STATUS_CHOICES = [
         ('new',        'New Order'),

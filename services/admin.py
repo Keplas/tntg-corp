@@ -82,6 +82,21 @@ class StockRequestAdmin(admin.ModelAdmin):
     search_fields  = ['product_name', 'franchisee__business_name']
     readonly_fields = ['created_at', 'updated_at']
 
+from .models import FranchiseeCustomer
+
+@admin.register(FranchiseeCustomer)
+class FranchiseeCustomerAdmin(admin.ModelAdmin):
+    list_display   = ['ref', 'full_name', 'email', 'phone', 'customer_type', 'franchisee', 'created_at']
+    list_filter    = ['customer_type', 'franchisee']
+    search_fields  = ['full_name', 'email', 'phone', 'company_name']
+    readonly_fields = ['created_at', 'updated_at']
+    fieldsets = (
+        ('Identity', {'fields': ('franchisee', 'customer_type', 'full_name', 'company_name')}),
+        ('Contact', {'fields': ('email', 'phone', 'address')}),
+        ('Notes', {'fields': ('notes',)}),
+        ('Meta', {'fields': ('created_at', 'updated_at')}),
+    )
+
 from .models import PartnershipApplication
 
 @admin.register(PartnershipApplication)

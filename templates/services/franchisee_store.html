@@ -334,10 +334,10 @@
         <div class="fs-stat-sub">Month to date</div>
       </div>
       <div class="fs-stat-card">
-        <div class="fs-stat-icon"><i class="fas fa-truck"></i></div>
-        <div class="fs-stat-label">Stock Requests</div>
-        <div class="fs-stat-value">{{ stock_pending }}</div>
-        <div class="fs-stat-sub">Pending with HQ</div>
+        <div class="fs-stat-icon"><i class="fas fa-users"></i></div>
+        <div class="fs-stat-label">Customers</div>
+        <div class="fs-stat-value">{{ customer_count }}</div>
+        <div class="fs-stat-sub">{{ stock_pending }} stock requests pending</div>
       </div>
     </div>
 
@@ -429,12 +429,11 @@
         <span class="fs-tile-badge">Available Now</span>
       </a>
 
-      <div class="fs-action-tile coming-soon">
+      <a href="{% url 'franchise_customers' %}" class="fs-action-tile">
         <div class="fs-tile-icon"><i class="fas fa-users"></i></div>
         <div class="fs-tile-name">My Customers</div>
         <div class="fs-tile-desc">CRM — contacts and purchase history for your territory.</div>
-        <span class="fs-tile-badge soon">Phase 3</span>
-      </div>
+      </a>
 
       <a href="{% url 'join_program' %}" class="fs-action-tile">
         <div class="fs-tile-icon"><i class="fas fa-graduation-cap"></i></div>
