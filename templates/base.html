@@ -213,25 +213,6 @@ li:focus-within > .tg-nl > .tg-caret { transform: rotate(180deg); opacity: .9; }
 }
 .tg-nl:hover .tg-loyalty-tag { background: rgba(201,168,76,.18); }
 
-/* ── Promo campaign pill (Shopify-style) ── */
-.tg-promo-pill {
- display: flex; align-items: center; gap: 6px;
- padding: 5px 14px; border-radius: 100px;
- border: 1px solid rgba(201,168,76,.28);
- background: rgba(201,168,76,.07);
- color: rgba(201,168,76,.88); font-size: .74rem; font-weight: 700;
- text-decoration: none; white-space: nowrap; letter-spacing: .01em;
- margin-left: 16px;
- transition: background .18s ease, border-color .18s ease, color .18s ease;
-}
-.tg-promo-pill:hover {
- background: rgba(201,168,76,.14);
- border-color: rgba(201,168,76,.5);
- color: var(--tg-goldlt);
-}
-.tg-promo-pill i { font-size: .7rem; opacity: .8; }
-@media (max-width: 1200px) { .tg-promo-pill { display: none; } }
-
 /* ── Dropdowns ── */
 .tg-dd {
  position: absolute; top: calc(100% + 10px); left: 50%;
@@ -724,11 +705,6 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  </div>
  </li>
  </ul>
-
- <!-- Shopify-style campaign promo pill -->
- <a href="{% url 'franchise_hub' %}" class="tg-promo-pill">
-   <i class="fas fa-coffee"></i>&nbsp;Harvest '26 &middot; Direct from Uganda
- </a>
 
  <!-- Auth / user actions -->
  <div class="tg-nav-auth">
