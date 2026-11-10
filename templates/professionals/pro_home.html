@@ -3,39 +3,60 @@
 
 {% block content %}
 <style>
-.ps-wrap { background:#0d0d0d; min-height:100vh; color:#e8e0d0; }
+/* ── Palette ── */
+:root {
+  --pro-bg:     #060f1e;
+  --pro-bg2:    #0a1628;
+  --pro-card:   #0d1f35;
+  --pro-border: rgba(79,142,247,.18);
+  --pro-accent: #4f8ef7;
+  --pro-accent2:#7ab0ff;
+  --pro-text:   #c8d8e8;
+  --pro-muted:  #6b8099;
+  --pro-head:   #e8f0fe;
+}
+
+.ps-wrap { background:var(--pro-bg); min-height:100vh; color:var(--pro-text); }
 
 /* Hero */
 .ps-hero {
-  background: linear-gradient(135deg,#0d0d0d 0%,#1a1200 50%,#0d0d0d 100%);
-  border-bottom:2px solid #c9a84c;
+  background:linear-gradient(160deg, var(--pro-bg) 0%, #071530 55%, var(--pro-bg) 100%);
+  border-bottom:1px solid var(--pro-border);
   padding:5rem 1.5rem 4rem;
   text-align:center;
+  position:relative; overflow:hidden;
+}
+.ps-hero::before {
+  content:''; position:absolute; top:-120px; left:50%;
+  transform:translateX(-50%);
+  width:600px; height:300px; border-radius:50%;
+  background:radial-gradient(ellipse,rgba(79,142,247,.12) 0%, transparent 70%);
+  pointer-events:none;
 }
 .ps-hero-eyebrow {
-  font-size:.72rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
-  color:#c9a84c; margin-bottom:1rem;
+  font-size:.72rem; font-weight:700; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--pro-accent); margin-bottom:1rem;
 }
 .ps-hero h1 {
-  font-size:clamp(2rem,5vw,3.2rem); font-weight:800; color:#fff;
+  font-size:clamp(2rem,5vw,3rem); font-weight:800; color:var(--pro-head);
   line-height:1.15; margin:0 0 1.2rem;
 }
-.ps-hero h1 span { color:#e8c96a; }
+.ps-hero h1 span { color:var(--pro-accent2); }
 .ps-hero p {
-  max-width:600px; margin:0 auto 2rem; font-size:1.05rem; color:#b0a890; line-height:1.7;
+  max-width:600px; margin:0 auto 2rem; font-size:1rem; color:var(--pro-muted); line-height:1.75;
 }
 .ps-hero-badges { display:flex; gap:.8rem; justify-content:center; flex-wrap:wrap; }
 .ps-hero-badge {
   display:inline-flex; align-items:center; gap:.5rem;
   padding:.45rem 1rem; border-radius:20px; font-size:.8rem; font-weight:600;
-  background:rgba(201,168,76,.1); border:1px solid rgba(201,168,76,.3); color:#c9a84c;
+  background:rgba(79,142,247,.08); border:1px solid rgba(79,142,247,.22); color:var(--pro-accent);
 }
 
 /* Departments grid */
 .ps-body { max-width:1100px; margin:0 auto; padding:4rem 1.5rem; }
 .ps-section-title {
-  font-size:.72rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
-  color:#c9a84c; margin-bottom:2rem; text-align:center;
+  font-size:.7rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--pro-muted); margin-bottom:2rem; text-align:center;
 }
 .ps-depts {
   display:grid;
@@ -43,31 +64,34 @@
   gap:1.5rem;
 }
 .ps-dept-card {
-  background:#111; border:1px solid #2a1e00; border-radius:12px;
+  background:var(--pro-card); border:1px solid var(--pro-border); border-radius:12px;
   padding:2rem 1.8rem; text-decoration:none;
   display:flex; flex-direction:column; gap:1rem;
   transition:border-color .2s, transform .2s, background .2s;
 }
 .ps-dept-card:hover {
-  border-color:#c9a84c; background:#181000;
+  border-color:var(--pro-accent); background:#0f2440;
   transform:translateY(-3px); text-decoration:none;
 }
 .ps-dept-icon {
   width:52px; height:52px; border-radius:12px;
-  background:linear-gradient(135deg,#2a1e00,#1a1200);
-  border:1px solid #3a2c00;
+  background:rgba(79,142,247,.12);
+  border:1px solid rgba(79,142,247,.2);
   display:flex; align-items:center; justify-content:center;
-  font-size:1.3rem; color:#c9a84c;
+  font-size:1.3rem; color:var(--pro-accent);
 }
-.ps-dept-name { font-size:1.15rem; font-weight:700; color:#e8c96a; }
-.ps-dept-tagline { font-size:.88rem; color:#888; line-height:1.6; }
+.ps-dept-name { font-size:1.1rem; font-weight:700; color:var(--pro-head); }
+.ps-dept-tagline { font-size:.86rem; color:var(--pro-muted); line-height:1.6; }
 .ps-dept-arrow {
-  margin-top:auto; font-size:.8rem; color:#c9a84c;
+  margin-top:auto; font-size:.8rem; color:var(--pro-accent);
   display:flex; align-items:center; gap:.4rem;
 }
 
 /* How it works */
-.ps-how { background:#0a0a0a; border-top:1px solid #1a1200; border-bottom:1px solid #1a1200; padding:4rem 1.5rem; }
+.ps-how {
+  background:var(--pro-bg2); border-top:1px solid var(--pro-border);
+  border-bottom:1px solid var(--pro-border); padding:4rem 1.5rem;
+}
 .ps-how-inner { max-width:900px; margin:0 auto; }
 .ps-how-steps {
   display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:1.5rem; margin-top:2rem;
@@ -75,30 +99,29 @@
 .ps-how-step { text-align:center; padding:1.5rem 1rem; }
 .ps-how-num {
   width:44px; height:44px; border-radius:50%;
-  background:linear-gradient(135deg,#2a1e00,#1a1200);
-  border:2px solid #c9a84c;
+  background:rgba(79,142,247,.12);
+  border:1.5px solid var(--pro-accent);
   display:flex; align-items:center; justify-content:center;
-  font-size:.9rem; font-weight:800; color:#e8c96a;
+  font-size:.9rem; font-weight:800; color:var(--pro-accent2);
   margin:0 auto 1rem;
 }
-.ps-how-step h4 { font-size:.95rem; font-weight:700; color:#e8e0d0; margin-bottom:.5rem; }
-.ps-how-step p  { font-size:.82rem; color:#888; line-height:1.6; margin:0; }
+.ps-how-step h4 { font-size:.95rem; font-weight:700; color:var(--pro-head); margin-bottom:.5rem; }
+.ps-how-step p  { font-size:.82rem; color:var(--pro-muted); line-height:1.6; margin:0; }
 
 /* CTA strip */
 .ps-cta {
   max-width:1100px; margin:0 auto; padding:3rem 1.5rem;
   display:flex; align-items:center; justify-content:space-between; gap:1.5rem; flex-wrap:wrap;
 }
-.ps-cta h3 { font-size:1.3rem; font-weight:700; color:#e8c96a; margin:0 0 .4rem; }
-.ps-cta p  { font-size:.9rem; color:#888; margin:0; }
+.ps-cta h3 { font-size:1.2rem; font-weight:700; color:var(--pro-head); margin:0 0 .4rem; }
+.ps-cta p  { font-size:.9rem; color:var(--pro-muted); margin:0; }
 .ps-cta-btn {
   display:inline-flex; align-items:center; gap:.6rem;
-  background:linear-gradient(135deg,#c9a84c,#e8c96a);
-  color:#0d0d0d; font-weight:700; font-size:.9rem;
+  background:var(--pro-accent); color:#fff; font-weight:700; font-size:.9rem;
   padding:.85rem 2rem; border-radius:8px; text-decoration:none;
-  white-space:nowrap; transition:opacity .2s;
+  white-space:nowrap; transition:background .2s, opacity .2s;
 }
-.ps-cta-btn:hover { opacity:.85; text-decoration:none; color:#0d0d0d; }
+.ps-cta-btn:hover { background:#3b7de8; text-decoration:none; color:#fff; }
 </style>
 
 <div class="ps-wrap">
@@ -134,7 +157,7 @@
         </div>
       </a>
       {% empty %}
-      <div style="grid-column:1/-1;text-align:center;color:#555;padding:3rem">
+      <div style="grid-column:1/-1;text-align:center;color:var(--pro-muted);padding:3rem">
         <i class="fas fa-tools" style="font-size:2rem;margin-bottom:1rem;display:block"></i>
         Service departments are being configured. Check back soon.
       </div>

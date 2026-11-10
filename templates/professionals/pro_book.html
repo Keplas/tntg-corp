@@ -3,42 +3,55 @@
 
 {% block content %}
 <style>
-.pb-wrap { background:#0d0d0d; min-height:100vh; color:#e8e0d0; padding-bottom:4rem; }
+:root {
+  --pro-bg:     #060f1e;
+  --pro-bg2:    #0a1628;
+  --pro-card:   #0d1f35;
+  --pro-border: rgba(79,142,247,.18);
+  --pro-accent: #4f8ef7;
+  --pro-accent2:#7ab0ff;
+  --pro-text:   #c8d8e8;
+  --pro-muted:  #6b8099;
+  --pro-head:   #e8f0fe;
+}
+
+.pb-wrap { background:var(--pro-bg); min-height:100vh; color:var(--pro-text); padding-bottom:4rem; }
 
 .pb-header {
-  background:linear-gradient(135deg,#0d0d0d 0%,#1a1200 60%,#0d0d0d 100%);
-  border-bottom:2px solid #c9a84c; padding:3rem 1.5rem 2.5rem;
+  background:linear-gradient(160deg, var(--pro-bg) 0%, #071530 60%, var(--pro-bg) 100%);
+  border-bottom:1px solid var(--pro-border);
+  padding:3rem 1.5rem 2.5rem;
 }
 .pb-header-inner { max-width:900px; margin:0 auto; }
 .pb-breadcrumb {
-  font-size:.78rem; color:#666; margin-bottom:1.2rem;
+  font-size:.78rem; color:var(--pro-muted); margin-bottom:1.2rem;
   display:flex; align-items:center; gap:.5rem; flex-wrap:wrap;
 }
-.pb-breadcrumb a { color:#c9a84c; text-decoration:none; }
+.pb-breadcrumb a { color:var(--pro-accent); text-decoration:none; }
 .pb-breadcrumb a:hover { text-decoration:underline; }
-.pb-header h1 { font-size:1.6rem; font-weight:800; color:#e8c96a; margin:0 0 .4rem; }
-.pb-header p  { color:#888; font-size:.9rem; margin:0; }
+.pb-header h1 { font-size:1.6rem; font-weight:800; color:var(--pro-head); margin:0 0 .4rem; }
+.pb-header p  { color:var(--pro-muted); font-size:.9rem; margin:0; }
 
 /* Layout */
-.pb-body { max-width:900px; margin:2.5rem auto 0; padding:0 1.5rem; display:grid; grid-template-columns:1fr 340px; gap:2rem; }
+.pb-body { max-width:900px; margin:2.5rem auto 0; padding:0 1.5rem; display:grid; grid-template-columns:1fr 320px; gap:2rem; }
 @media(max-width:720px){ .pb-body{ grid-template-columns:1fr; } }
 
-/* Form */
+/* Form card */
 .pb-form-card {
-  background:#111; border:1px solid #2a1e00; border-radius:10px; padding:2rem 1.8rem;
+  background:var(--pro-card); border:1px solid var(--pro-border); border-radius:10px; padding:2rem 1.8rem;
 }
-.pb-form-card h2 { font-size:1rem; font-weight:700; color:#e8c96a; margin:0 0 1.5rem; }
+.pb-form-card h2 { font-size:1rem; font-weight:700; color:var(--pro-head); margin:0 0 1.5rem; }
 
 .pb-field { margin-bottom:1.4rem; }
-.pb-label { display:block; font-size:.82rem; font-weight:600; color:#a0937e; margin-bottom:.5rem; letter-spacing:.03em; }
-.pb-label span { color:#c9a84c; }
+.pb-label { display:block; font-size:.82rem; font-weight:600; color:var(--pro-muted); margin-bottom:.5rem; letter-spacing:.03em; }
+.pb-label span { color:var(--pro-accent); }
 
 .pb-input, .pb-textarea {
-  width:100%; background:#0d0d0d; border:1px solid #2a1e00; border-radius:7px;
-  padding:.75rem 1rem; font-size:.92rem; color:#e8e0d0;
+  width:100%; background:var(--pro-bg); border:1px solid var(--pro-border); border-radius:7px;
+  padding:.75rem 1rem; font-size:.92rem; color:var(--pro-text);
   transition:border-color .2s; outline:none; box-sizing:border-box;
 }
-.pb-input:focus, .pb-textarea:focus { border-color:#c9a84c; }
+.pb-input:focus, .pb-textarea:focus { border-color:var(--pro-accent); }
 .pb-textarea { resize:vertical; min-height:120px; }
 
 /* Radio groups */
@@ -47,57 +60,56 @@
 .pb-radio-opt input[type=radio] { display:none; }
 .pb-radio-opt label {
   display:block; padding:.7rem 1rem; border-radius:7px;
-  border:1px solid #2a1e00; background:#0d0d0d;
-  font-size:.85rem; color:#888; cursor:pointer; text-align:center;
-  transition:border-color .2s, color .2s;
+  border:1px solid var(--pro-border); background:var(--pro-bg);
+  font-size:.85rem; color:var(--pro-muted); cursor:pointer; text-align:center;
+  transition:border-color .2s, color .2s, background .2s;
 }
 .pb-radio-opt input[type=radio]:checked + label {
-  border-color:#c9a84c; color:#e8c96a; background:#1a1200;
+  border-color:var(--pro-accent); color:var(--pro-accent2); background:rgba(79,142,247,.08);
 }
 
 .pb-submit {
   width:100%; padding:1rem; border-radius:8px; border:none; cursor:pointer;
-  background:linear-gradient(135deg,#c9a84c,#e8c96a);
-  color:#0d0d0d; font-weight:800; font-size:1rem;
+  background:var(--pro-accent); color:#fff; font-weight:800; font-size:1rem;
   display:flex; align-items:center; justify-content:center; gap:.6rem;
-  transition:opacity .2s;
+  transition:background .2s;
 }
-.pb-submit:hover { opacity:.85; }
+.pb-submit:hover { background:#3b7de8; }
 
-.pb-errors { background:#3a0f0f; border:1px solid #ef4444; border-radius:7px; padding:.8rem 1rem; margin-bottom:1rem; font-size:.85rem; color:#f87171; }
+.pb-errors { background:#1a0f20; border:1px solid #ef4444; border-radius:7px; padding:.8rem 1rem; margin-bottom:1rem; font-size:.85rem; color:#f87171; }
 
-/* Summary sidebar */
+/* Sidebar */
 .pb-summary {
-  background:#111; border:1px solid #2a1e00; border-radius:10px; padding:1.8rem 1.5rem;
+  background:var(--pro-card); border:1px solid var(--pro-border); border-radius:10px; padding:1.8rem 1.5rem;
   position:sticky; top:1.5rem; height:fit-content;
 }
-.pb-summary h3 { font-size:.72rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:#c9a84c; margin:0 0 1.2rem; }
+.pb-summary h3 { font-size:.7rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--pro-muted); margin:0 0 1.2rem; }
 .pb-sum-dept {
   display:flex; align-items:center; gap:.8rem; padding-bottom:1rem; margin-bottom:1rem;
-  border-bottom:1px solid #2a1e00;
+  border-bottom:1px solid var(--pro-border);
 }
 .pb-sum-icon {
   width:40px; height:40px; border-radius:8px;
-  background:#2a1e00; display:flex; align-items:center; justify-content:center;
-  font-size:1rem; color:#c9a84c; flex-shrink:0;
+  background:rgba(79,142,247,.12); border:1px solid rgba(79,142,247,.2);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1rem; color:var(--pro-accent); flex-shrink:0;
 }
-.pb-sum-dept-name { font-weight:700; color:#e8e0d0; font-size:.9rem; }
-.pb-sum-pkg-name  { font-size:.8rem; color:#888; }
+.pb-sum-dept-name { font-weight:700; color:var(--pro-head); font-size:.9rem; }
+.pb-sum-pkg-name  { font-size:.8rem; color:var(--pro-muted); }
 .pb-sum-row { display:flex; justify-content:space-between; font-size:.85rem; padding:.4rem 0; }
-.pb-sum-row .lbl { color:#666; }
-.pb-sum-row .val { color:#e8e0d0; }
+.pb-sum-row .lbl { color:var(--pro-muted); }
+.pb-sum-row .val { color:var(--pro-text); }
 .pb-sum-total {
   display:flex; justify-content:space-between; align-items:center;
-  margin-top:1rem; padding-top:1rem; border-top:1px solid #2a1e00;
+  margin-top:1rem; padding-top:1rem; border-top:1px solid var(--pro-border);
 }
-.pb-sum-total .lbl { font-weight:700; color:#e8e0d0; }
-.pb-sum-total .val { font-size:1.4rem; font-weight:800; color:#e8c96a; }
-
+.pb-sum-total .lbl { font-weight:700; color:var(--pro-text); }
+.pb-sum-total .val { font-size:1.4rem; font-weight:800; color:var(--pro-head); }
 .pb-secure-note {
   display:flex; gap:.5rem; align-items:center;
-  font-size:.75rem; color:#555; margin-top:1.2rem;
+  font-size:.75rem; color:var(--pro-muted); margin-top:1.2rem;
 }
-.pb-secure-note i { color:#c9a84c; }
+.pb-secure-note i { color:var(--pro-accent); }
 </style>
 
 <div class="pb-wrap">
@@ -122,12 +134,10 @@
 
     <!-- Form -->
     <div class="pb-form-card">
-      <h2><i class="fas fa-file-alt" style="color:#c9a84c;margin-right:.5rem"></i>Your Request</h2>
+      <h2><i class="fas fa-file-alt" style="color:var(--pro-accent);margin-right:.5rem"></i>Your Request</h2>
 
       {% if form.errors %}
-      <div class="pb-errors">
-        Please correct the errors below.
-      </div>
+      <div class="pb-errors">Please correct the errors below.</div>
       {% endif %}
 
       <form method="post">
@@ -197,7 +207,7 @@
               <input type="radio" name="urgency" id="urg_{{ val }}" value="{{ val }}"
                 {% if form.urgency.value == val or not form.urgency.value and val == 'standard' %}checked{% endif %}>
               <label for="urg_{{ val }}">
-                {% if val == 'urgent' %}<i class="fas fa-bolt" style="margin-right:.4rem;color:#fb923c"></i>{% else %}<i class="fas fa-clock" style="margin-right:.4rem"></i>{% endif %}
+                {% if val == 'urgent' %}<i class="fas fa-bolt" style="margin-right:.4rem"></i>{% else %}<i class="fas fa-clock" style="margin-right:.4rem"></i>{% endif %}
                 {{ label }}
               </label>
             </div>
@@ -240,12 +250,12 @@
         </div>
       </div>
 
-      <div style="margin-top:1rem;background:#111;border:1px solid #2a1e00;border-radius:10px;padding:1.3rem 1.2rem;">
-        <div style="font-size:.75rem;color:#c9a84c;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.8rem">What Happens Next</div>
-        <div style="font-size:.82rem;color:#888;line-height:1.8">
-          <div style="margin-bottom:.5rem"><i class="fas fa-check" style="color:#c9a84c;margin-right:.5rem;font-size:.7rem"></i>Booking confirmed by email</div>
-          <div style="margin-bottom:.5rem"><i class="fas fa-check" style="color:#c9a84c;margin-right:.5rem;font-size:.7rem"></i>HQ assigns a professional</div>
-          <div><i class="fas fa-check" style="color:#c9a84c;margin-right:.5rem;font-size:.7rem"></i>Professional contacts you directly</div>
+      <div style="margin-top:1rem;background:var(--pro-card);border:1px solid var(--pro-border);border-radius:10px;padding:1.3rem 1.2rem;">
+        <div style="font-size:.7rem;color:var(--pro-muted);font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:.8rem">What Happens Next</div>
+        <div style="font-size:.82rem;color:var(--pro-muted);line-height:1.9">
+          <div style="margin-bottom:.5rem"><i class="fas fa-check-circle" style="color:var(--pro-accent);margin-right:.5rem;font-size:.8rem"></i>Booking confirmed by email</div>
+          <div style="margin-bottom:.5rem"><i class="fas fa-check-circle" style="color:var(--pro-accent);margin-right:.5rem;font-size:.8rem"></i>HQ assigns a professional</div>
+          <div><i class="fas fa-check-circle" style="color:var(--pro-accent);margin-right:.5rem;font-size:.8rem"></i>Professional contacts you directly</div>
         </div>
       </div>
     </div>

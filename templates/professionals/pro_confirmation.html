@@ -3,64 +3,74 @@
 
 {% block content %}
 <style>
+:root {
+  --pro-bg:     #060f1e;
+  --pro-card:   #0d1f35;
+  --pro-border: rgba(79,142,247,.18);
+  --pro-accent: #4f8ef7;
+  --pro-accent2:#7ab0ff;
+  --pro-text:   #c8d8e8;
+  --pro-muted:  #6b8099;
+  --pro-head:   #e8f0fe;
+}
+
 .pc-wrap {
-  background:#0d0d0d; min-height:100vh; color:#e8e0d0;
+  background:var(--pro-bg); min-height:100vh; color:var(--pro-text);
   display:flex; align-items:center; justify-content:center; padding:3rem 1.5rem;
 }
 .pc-card {
-  background:#111; border:1px solid #2a1e00; border-radius:14px;
-  padding:3rem 2.5rem; max-width:560px; width:100%; text-align:center;
+  background:var(--pro-card); border:1px solid var(--pro-border); border-radius:14px;
+  padding:3rem 2.5rem; max-width:540px; width:100%; text-align:center;
 }
 .pc-icon-wrap {
   width:72px; height:72px; border-radius:50%; margin:0 auto 1.5rem;
-  background:linear-gradient(135deg,#14300f,#0a1a0a);
+  background:rgba(34,197,94,.1);
   border:2px solid #22c55e;
   display:flex; align-items:center; justify-content:center;
   font-size:1.8rem; color:#4ade80;
 }
-.pc-card h1 { font-size:1.6rem; font-weight:800; color:#e8c96a; margin:0 0 .5rem; }
-.pc-card > p { font-size:.92rem; color:#888; margin:0 0 2rem; line-height:1.6; }
+.pc-card h1 { font-size:1.6rem; font-weight:800; color:var(--pro-head); margin:0 0 .5rem; }
+.pc-card > p { font-size:.92rem; color:var(--pro-muted); margin:0 0 2rem; line-height:1.6; }
 .pc-ref {
-  background:#1a1200; border:1px solid #2a1e00; border-radius:8px;
+  background:rgba(79,142,247,.06); border:1px solid var(--pro-border); border-radius:8px;
   padding:1rem 1.5rem; margin-bottom:2rem;
 }
-.pc-ref-label { font-size:.7rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:#666; }
-.pc-ref-val { font-size:1.6rem; font-weight:800; color:#c9a84c; letter-spacing:.08em; }
+.pc-ref-label { font-size:.7rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:var(--pro-muted); }
+.pc-ref-val { font-size:1.6rem; font-weight:800; color:var(--pro-accent2); letter-spacing:.08em; }
 .pc-steps { text-align:left; margin-bottom:2rem; }
-.pc-step { display:flex; gap:1rem; align-items:flex-start; padding:.7rem 0; border-bottom:1px solid #1a1200; }
+.pc-step { display:flex; gap:1rem; align-items:flex-start; padding:.7rem 0; border-bottom:1px solid var(--pro-border); }
 .pc-step:last-child { border-bottom:none; }
 .pc-step-num {
   width:28px; height:28px; border-radius:50%; flex-shrink:0;
-  background:#2a1e00; border:1px solid #c9a84c;
+  background:rgba(79,142,247,.12); border:1px solid var(--pro-accent);
   display:flex; align-items:center; justify-content:center;
-  font-size:.75rem; font-weight:800; color:#e8c96a;
+  font-size:.75rem; font-weight:800; color:var(--pro-accent2);
 }
-.pc-step-text { font-size:.86rem; color:#a0937e; line-height:1.6; }
-.pc-step-text strong { color:#e8e0d0; display:block; margin-bottom:.1rem; }
+.pc-step-text { font-size:.86rem; color:var(--pro-muted); line-height:1.6; }
+.pc-step-text strong { color:var(--pro-text); display:block; margin-bottom:.1rem; }
 .pc-actions { display:flex; gap:.8rem; justify-content:center; flex-wrap:wrap; }
 .pc-btn-primary {
   display:inline-flex; align-items:center; gap:.5rem;
-  background:linear-gradient(135deg,#c9a84c,#e8c96a);
-  color:#0d0d0d; font-weight:700; font-size:.88rem;
+  background:var(--pro-accent); color:#fff; font-weight:700; font-size:.88rem;
   padding:.75rem 1.5rem; border-radius:8px; text-decoration:none;
-  transition:opacity .2s;
+  transition:background .2s;
 }
-.pc-btn-primary:hover { opacity:.85; text-decoration:none; color:#0d0d0d; }
+.pc-btn-primary:hover { background:#3b7de8; text-decoration:none; color:#fff; }
 .pc-btn-secondary {
   display:inline-flex; align-items:center; gap:.5rem;
-  background:transparent; border:1px solid #2a1e00;
-  color:#a0937e; font-weight:600; font-size:.88rem;
+  background:transparent; border:1px solid var(--pro-border);
+  color:var(--pro-muted); font-weight:600; font-size:.88rem;
   padding:.75rem 1.5rem; border-radius:8px; text-decoration:none;
   transition:border-color .2s, color .2s;
 }
-.pc-btn-secondary:hover { border-color:#c9a84c; color:#c9a84c; text-decoration:none; }
+.pc-btn-secondary:hover { border-color:var(--pro-accent); color:var(--pro-accent); text-decoration:none; }
 </style>
 
 <div class="pc-wrap">
   <div class="pc-card">
     <div class="pc-icon-wrap"><i class="fas fa-check"></i></div>
     <h1>Booking Confirmed</h1>
-    <p>Your booking has been received and payment processed. A confirmation has been sent to <strong style="color:#e8e0d0">{{ booking.email }}</strong>.</p>
+    <p>Your booking has been received and payment processed. A confirmation has been sent to <strong style="color:var(--pro-text)">{{ booking.email }}</strong>.</p>
 
     <div class="pc-ref">
       <div class="pc-ref-label">Booking Reference</div>
