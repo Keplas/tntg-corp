@@ -16,4 +16,10 @@ urlpatterns = [
     path('franchise/<int:pk>/status/',      views.franchise_update_status,   name='franchise_update_status'),
     path('franchise/my-applications/',      views.my_franchise_applications, name='my_franchise_applications'),
     path('franchise/my-store/',             views.franchisee_store,          name='franchisee_store'),
+    # Phase 2
+    path('franchise/my-products/',          views.franchise_my_products,     name='franchise_my_products'),
+    path('franchise/orders/',               views.franchise_orders,          name='franchise_orders'),
+    path('franchise/orders/<int:pk>/',      views.franchise_order_detail,    name='franchise_order_detail'),
+    path('franchise/sales-reports/',        views.franchise_sales_reports,   name='franchise_sales_reports'),
+    path('franchise/inventory/',            views.franchise_inventory,       name='franchise_inventory'),
 ]

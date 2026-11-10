@@ -283,11 +283,31 @@ from .decorators import franchisee_required
 @franchisee_required
 def franchisee_store(request):
     """Personal franchise hub — visible only to the account owner."""
+    from django.utils import timezone
+    from django.db.models import Sum, Count
     from .models import FranchiseApplication
+    import datetime
+
     profile = request.user.franchisee_profile
+    now = timezone.now()
+    this_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
+    products = profile.products.all()
+    orders   = profile.orders.exclude(status__in=['cancelled', 'refunded'])
+    mtd      = orders.filter(placed_at__gte=this_month).aggregate(
+                   revenue=Sum('total'), count=Count('id'))
+
     ctx = {
-        'profile':  profile,
-        'app':      profile.application,
+        'profile':           profile,
+        'app':               profile.application,
+        'product_count':     products.count(),
+        'approved_products': products.filter(status='approved').count(),
+        'orders_mtd':        mtd['count'] or 0,
+        'revenue_mtd':       mtd['revenue'] or 0,
+        'new_orders':        profile.orders.filter(status='new').count(),
+        'stock_pending':     profile.stock_requests.filter(
+                                status__in=['submitted', 'acknowledged', 'processing']
+                             ).count(),
     }
     return render(request, 'services/franchisee_store.html', ctx)
 
@@ -405,4 +425,191 @@ def partnership_apply(request):
         'partnership_types': PA.PARTNERSHIP_TYPE_CHOICES,
         'capacity_choices':  PA.CAPACITY_CHOICES,
         'timeline_choices':  PA.TIMELINE_CHOICES,
+    })
+
+
+# ════════════════════════════════════════════════════════════════════════
+# FRANCHISE PHASE 2 VIEWS
+# ════════════════════════════════════════════════════════════════════════
+
+def _get_franchisee(request):
+    """Return (profile, app) or raise redirect if not franchisee."""
+    from .models import FranchiseeProfile
+    try:
+        profile = request.user.franchisee_profile
+        return profile, profile.application
+    except FranchiseeProfile.DoesNotExist:
+        return None, None
+
+
+@login_required
+def franchise_my_products(request):
+    """Phase 2 — My Products: franchisee product catalogue."""
+    profile, app = _get_franchisee(request)
+    if profile is None:
+        messages.error(request, 'You do not have an active franchise profile.')
+        return redirect('franchisee_store')
+
+    products = profile.products.all()
+    return render(request, 'services/franchise_products.html', {
+        'profile': profile,
+        'app': app,
+        'products': products,
+        'approved_count': products.filter(status='approved').count(),
+        'low_stock_count': sum(1 for p in products if p.is_low_stock and p.status == 'approved'),
+    })
+
+
+@login_required
+def franchise_orders(request):
+    """Phase 2 — Orders: list and fulfil customer orders."""
+    profile, app = _get_franchisee(request)
+    if profile is None:
+        messages.error(request, 'You do not have an active franchise profile.')
+        return redirect('franchisee_store')
+
+    status_filter = request.GET.get('status', '')
+    orders = profile.orders.all()
+    if status_filter:
+        orders = orders.filter(status=status_filter)
+
+    return render(request, 'services/franchise_orders.html', {
+        'profile': profile,
+        'app': app,
+        'orders': orders,
+        'status_filter': status_filter,
+        'new_count': profile.orders.filter(status='new').count(),
+        'processing_count': profile.orders.filter(status='processing').count(),
+    })
+
+
+@login_required
+def franchise_order_detail(request, pk):
+    """Phase 2 — Order detail / fulfillment update."""
+    profile, app = _get_franchisee(request)
+    if profile is None:
+        return redirect('franchisee_store')
+
+    order = get_object_or_404(profile.orders, pk=pk)
+
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        allowed = ['confirmed', 'processing', 'shipped', 'delivered', 'cancelled']
+        if new_status in allowed:
+            order.status = new_status
+            order.notes = request.POST.get('notes', order.notes)
+            order.save()
+            messages.success(request, f'Order {order.ref} updated to {order.get_status_display()}.')
+        return redirect('franchise_order_detail', pk=pk)
+
+    return render(request, 'services/franchise_order_detail.html', {
+        'profile': profile,
+        'app': app,
+        'order': order,
+    })
+
+
+@login_required
+def franchise_sales_reports(request):
+    """Phase 2 — Sales Reports: monthly/annual territory revenue."""
+    from django.utils import timezone
+    from django.db.models import Sum, Count
+    import datetime
+
+    profile, app = _get_franchisee(request)
+    if profile is None:
+        messages.error(request, 'You do not have an active franchise profile.')
+        return redirect('franchisee_store')
+
+    now = timezone.now()
+    this_month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    this_year_start  = now.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+
+    orders = profile.orders.exclude(status__in=['cancelled', 'refunded'])
+
+    mtd = orders.filter(placed_at__gte=this_month_start).aggregate(
+        revenue=Sum('total'), count=Count('id')
+    )
+    ytd = orders.filter(placed_at__gte=this_year_start).aggregate(
+        revenue=Sum('total'), count=Count('id')
+    )
+
+    # Last 6 months breakdown
+    months = []
+    for i in range(5, -1, -1):
+        d = (now.replace(day=1) - datetime.timedelta(days=i * 28)).replace(day=1)
+        end = (d.replace(day=28) + datetime.timedelta(days=4)).replace(day=1)
+        agg = orders.filter(placed_at__gte=d, placed_at__lt=end).aggregate(
+            revenue=Sum('total'), count=Count('id')
+        )
+        months.append({
+            'label': d.strftime('%b'),
+            'revenue': float(agg['revenue'] or 0),
+            'count': agg['count'] or 0,
+        })
+
+    return render(request, 'services/franchise_reports.html', {
+        'profile': profile,
+        'app': app,
+        'mtd_revenue': mtd['revenue'] or 0,
+        'mtd_orders':  mtd['count']   or 0,
+        'ytd_revenue': ytd['revenue'] or 0,
+        'ytd_orders':  ytd['count']   or 0,
+        'months': months,
+        'recent_orders': orders.order_by('-placed_at')[:10],
+    })
+
+
+@login_required
+def franchise_inventory(request):
+    """Phase 2 — Inventory & Supply: submit stock replenishment requests."""
+    profile, app = _get_franchisee(request)
+    if profile is None:
+        messages.error(request, 'You do not have an active franchise profile.')
+        return redirect('franchisee_store')
+
+    from .models import StockRequest
+    from django.utils import timezone
+
+    if request.method == 'POST':
+        product_id   = request.POST.get('product_id')
+        product_name = request.POST.get('product_name', '').strip()
+        qty          = request.POST.get('quantity', '').strip()
+        urgency      = request.POST.get('urgency', 'standard')
+        notes        = request.POST.get('notes', '').strip()
+
+        if not product_name or not qty or not qty.isdigit() or int(qty) < 1:
+            messages.error(request, 'Please provide a valid product name and quantity.')
+        else:
+            product_obj = None
+            if product_id:
+                try:
+                    product_obj = profile.products.get(pk=int(product_id), status='approved')
+                except Exception:
+                    pass
+
+            sr = StockRequest.objects.create(
+                franchisee=profile,
+                product=product_obj,
+                product_name=product_name,
+                quantity_requested=int(qty),
+                urgency=urgency,
+                notes=notes,
+                status='submitted',
+                submitted_at=timezone.now(),
+            )
+            messages.success(request,
+                f'Stock request {sr.ref} submitted to HQ. '
+                f'Expected delivery: {sr.get_urgency_display()}.')
+        return redirect('franchise_inventory')
+
+    stock_requests = profile.stock_requests.all()
+    products = profile.products.filter(status='approved')
+
+    return render(request, 'services/franchise_inventory.html', {
+        'profile': profile,
+        'app': app,
+        'stock_requests': stock_requests,
+        'products': products,
+        'pending_count': stock_requests.filter(status__in=['submitted','acknowledged','processing']).count(),
     })

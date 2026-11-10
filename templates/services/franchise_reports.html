@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% block title %}Sales Reports — T&TG Franchise Hub{% endblock %}
+
+{% block content %}
+<style>
+.fr-wrap { background:#0d0d0d; min-height:100vh; color:#e8e0d0; padding-bottom:4rem; }
+.fr-topbar {
+  background:linear-gradient(135deg,#1a1200 0%,#2a1e00 60%,#1a1200 100%);
+  border-bottom:2px solid #c9a84c; padding:1.8rem 2rem;
+}
+.fr-topbar-inner { max-width:1100px; margin:0 auto; }
+.fr-back { display:inline-flex; align-items:center; gap:.4rem; color:#c9a84c; text-decoration:none; font-size:.85rem; }
+.fr-back:hover { text-decoration:underline; color:#e8c96a; }
+
+.fr-body { max-width:1100px; margin:2.5rem auto 0; padding:0 1.5rem; }
+
+/* KPI tiles */
+.fr-kpis { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem; margin-bottom:2rem; }
+.fr-kpi {
+  background:#111; border:1px solid #2a1e00; border-radius:10px;
+  padding:1.5rem 1.3rem; transition:border-color .2s;
+}
+.fr-kpi:hover { border-color:#c9a84c; }
+.fr-kpi-label { font-size:.7rem; color:#888; text-transform:uppercase; letter-spacing:.12em; margin-bottom:.5rem; display:flex; align-items:center; gap:.4rem; }
+.fr-kpi-label i { color:#c9a84c; }
+.fr-kpi-val { font-size:1.8rem; font-weight:800; color:#e8c96a; }
+.fr-kpi-sub { font-size:.75rem; color:#888; margin-top:.4rem; }
+
+/* Section title */
+.fr-section-title {
+  font-size:.7rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  color:#c9a84c; margin:2.5rem 0 1.2rem; padding-bottom:.5rem; border-bottom:1px solid #2a1e00;
+}
+
+/* Chart card */
+.fr-chart-card {
+  background:#111; border:1px solid #2a1e00; border-radius:10px; padding:1.5rem;
+  margin-bottom:2rem;
+}
+.fr-chart-card h3 { font-size:.82rem; font-weight:700; color:#e8c96a; margin:0 0 1.2rem; }
+
+/* Bar chart */
+.fr-chart { display:flex; align-items:flex-end; gap:.5rem; height:140px; }
+.fr-bar-col { display:flex; flex-direction:column; align-items:center; gap:.4rem; flex:1; }
+.fr-bar {
+  background:linear-gradient(to top,#c9a84c,#e8c96a);
+  border-radius:4px 4px 0 0; width:100%;
+  transition:height .3s; min-height:4px;
+}
+.fr-bar:hover { background:linear-gradient(to top,#e8c96a,#fff3b0); }
+.fr-bar-val { font-size:.7rem; color:#888; white-space:nowrap; }
+.fr-bar-label { font-size:.7rem; color:#666; white-space:nowrap; }
+
+/* Orders table */
+.fr-table-wrap { overflow-x:auto; }
+.fr-table { width:100%; border-collapse:collapse; font-size:.88rem; }
+.fr-table th {
+  font-size:.68rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+  color:#888; padding:.7rem .9rem; border-bottom:1px solid #2a1e00; text-align:left;
+}
+.fr-table td { padding:.8rem .9rem; border-bottom:1px solid #1a1200; }
+.fr-table tr:last-child td { border-bottom:none; }
+.fr-table tr:hover td { background:#191200; }
+
+.fr-status-pill {
+  display:inline-block; font-size:.65rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; padding:.15rem .5rem; border-radius:4px;
+}
+.fr-status-pill.delivered  { background:#14300f; color:#4ade80; border:1px solid #22c55e; }
+.fr-status-pill.shipped    { background:#1a1a2a; color:#a78bfa; border:1px solid #8b5cf6; }
+.fr-status-pill.processing { background:#2a1a00; color:#fcd34d; border:1px solid #f59e0b; }
+.fr-status-pill.new        { background:#1e3a5f; color:#60a5fa; border:1px solid #3b82f6; }
+.fr-status-pill.confirmed  { background:#1a2a1a; color:#86efac; border:1px solid #4ade80; }
+
+/* Empty state */
+.fr-empty { text-align:center; padding:3rem; background:#111; border:1px solid #2a1e00; border-radius:8px; }
+
+/* Notice */
+.fr-notice {
+  background:#1a1200; border:1px solid #c9a84c33; border-left:3px solid #c9a84c;
+  border-radius:6px; padding:1rem 1.2rem; display:flex; gap:.8rem; align-items:flex-start;
+  font-size:.88rem; color:#c9a84c; margin-bottom:2rem;
+}
+.fr-notice i { margin-top:.1rem; flex-shrink:0; }
+.fr-notice p { margin:0; color:#d4b96a; }
+</style>
+
+<div class="fr-wrap">
+
+  <!-- Topbar -->
+  <div class="fr-topbar">
+    <div class="fr-topbar-inner">
+      <a href="{% url 'franchisee_store' %}" class="fr-back"><i class="fas fa-arrow-left"></i> Franchise Hub</a>
+      <h1 style="font-size:1.3rem;font-weight:700;color:#e8c96a;margin:.5rem 0 .2rem">
+        <i class="fas fa-chart-line" style="margin-right:.5rem;font-size:1rem"></i>Sales Reports
+      </h1>
+      <p style="font-size:.85rem;color:#c9a84c;margin:0">{{ profile.display_name }} &mdash; {{ profile.territory }}</p>
+    </div>
+  </div>
+
+  <div class="fr-body">
+
+    <!-- KPI tiles -->
+    <div class="fr-kpis">
+      <div class="fr-kpi">
+        <div class="fr-kpi-label"><i class="fas fa-dollar-sign"></i> Revenue MTD</div>
+        <div class="fr-kpi-val">${{ mtd_revenue|floatformat:2 }}</div>
+        <div class="fr-kpi-sub">This month to date</div>
+      </div>
+      <div class="fr-kpi">
+        <div class="fr-kpi-label"><i class="fas fa-shopping-bag"></i> Orders MTD</div>
+        <div class="fr-kpi-val">{{ mtd_orders }}</div>
+        <div class="fr-kpi-sub">Orders this month</div>
+      </div>
+      <div class="fr-kpi">
+        <div class="fr-kpi-label"><i class="fas fa-calendar-alt"></i> Revenue YTD</div>
+        <div class="fr-kpi-val">${{ ytd_revenue|floatformat:2 }}</div>
+        <div class="fr-kpi-sub">January – today</div>
+      </div>
+      <div class="fr-kpi">
+        <div class="fr-kpi-label"><i class="fas fa-receipt"></i> Orders YTD</div>
+        <div class="fr-kpi-val">{{ ytd_orders }}</div>
+        <div class="fr-kpi-sub">Total orders this year</div>
+      </div>
+    </div>
+
+    <!-- Revenue chart -->
+    <div class="fr-section-title"><i class="fas fa-bar-chart" style="margin-right:.5rem"></i>Revenue — Last 6 Months</div>
+
+    {% if months %}
+    {% with max_rev=months|dictsort:"revenue"|last %}
+    <div class="fr-chart-card">
+      <h3>Monthly Revenue (USD)</h3>
+      <div class="fr-chart">
+        {% for m in months %}
+        {% if max_rev.revenue > 0 %}
+        {% widthratio m.revenue max_rev.revenue 120 as bar_h %}
+        {% else %}
+        {% with bar_h=4 %}{% endwith %}
+        {% endif %}
+        <div class="fr-bar-col">
+          <div class="fr-bar-val">${{ m.revenue|floatformat:0 }}</div>
+          <div class="fr-bar" style="height:{% if max_rev.revenue > 0 %}{% widthratio m.revenue max_rev.revenue 120 %}{% else %}4{% endif %}px"></div>
+          <div class="fr-bar-label">{{ m.label }}</div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endwith %}
+    </div>
+    {% endif %}
+
+    <!-- Recent orders -->
+    <div class="fr-section-title"><i class="fas fa-list" style="margin-right:.5rem"></i>Recent Orders</div>
+
+    {% if recent_orders %}
+    <div class="fr-table-wrap">
+      <table class="fr-table">
+        <thead>
+          <tr>
+            <th>Ref</th>
+            <th>Customer</th>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in recent_orders %}
+          <tr>
+            <td style="font-family:monospace;font-size:.82rem;color:#888">
+              <a href="{% url 'franchise_order_detail' order.pk %}" style="color:#c9a84c;text-decoration:none">{{ order.ref }}</a>
+            </td>
+            <td style="color:#e8e0d0">{{ order.customer_name }}</td>
+            <td style="color:#888;font-size:.85rem">{{ order.product_name }}</td>
+            <td style="color:#888">{{ order.quantity }}</td>
+            <td style="color:#e8c96a;font-weight:700">${{ order.total }}</td>
+            <td><span class="fr-status-pill {{ order.status }}">{{ order.get_status_display }}</span></td>
+            <td style="color:#888;font-size:.82rem">{{ order.placed_at|date:"j M Y" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="fr-empty">
+      <div style="font-size:2rem;color:#333;margin-bottom:1rem"><i class="fas fa-chart-bar"></i></div>
+      <h3 style="color:#e8c96a;margin:0 0 .5rem">No Sales Data Yet</h3>
+      <p style="color:#888;font-size:.88rem">Revenue and order data will appear here once your franchise begins receiving orders.</p>
+    </div>
+    {% endif %}
+
+    <!-- Notice -->
+    <div class="fr-notice" style="margin-top:2rem">
+      <i class="fas fa-info-circle"></i>
+      <p>Reports show confirmed, processing, shipped and delivered orders. Cancelled and refunded orders are excluded from revenue figures. For detailed financial reports or royalty statements, <a href="{% url 'contact' %}" style="color:#e8c96a">contact HQ</a>.</p>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+{% block title %}Inventory & Supply — T&TG Franchise Hub{% endblock %}
+
+{% block content %}
+<style>
+.fi-wrap { background:#0d0d0d; min-height:100vh; color:#e8e0d0; padding-bottom:4rem; }
+.fi-topbar {
+  background:linear-gradient(135deg,#1a1200 0%,#2a1e00 60%,#1a1200 100%);
+  border-bottom:2px solid #c9a84c; padding:1.8rem 2rem;
+}
+.fi-topbar-inner { max-width:1100px; margin:0 auto; }
+.fi-back { display:inline-flex; align-items:center; gap:.4rem; color:#c9a84c; text-decoration:none; font-size:.85rem; }
+.fi-back:hover { text-decoration:underline; color:#e8c96a; }
+
+.fi-body { max-width:1100px; margin:2.5rem auto 0; padding:0 1.5rem; display:grid; grid-template-columns:1fr 340px; gap:2rem; }
+@media(max-width:760px){ .fi-body { grid-template-columns:1fr; } }
+
+.fi-section-title {
+  font-size:.7rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  color:#c9a84c; margin:0 0 1.2rem; padding-bottom:.5rem; border-bottom:1px solid #2a1e00;
+}
+
+/* Request form */
+.fi-form-card {
+  background:#111; border:1px solid #2a1e00; border-radius:10px; padding:1.6rem 1.5rem;
+  position:sticky; top:1.5rem; height:fit-content;
+}
+.fi-field { margin-bottom:1.2rem; }
+.fi-label { display:block; font-size:.8rem; color:#888; font-weight:600; margin-bottom:.45rem; letter-spacing:.03em; }
+.fi-label span { color:#c9a84c; }
+.fi-input, .fi-select, .fi-textarea {
+  width:100%; background:#0d0d0d; border:1px solid #2a1e00; border-radius:7px;
+  padding:.7rem .9rem; color:#e8e0d0; font-size:.9rem; outline:none;
+  transition:border-color .2s; box-sizing:border-box;
+}
+.fi-input:focus, .fi-select:focus, .fi-textarea:focus { border-color:#c9a84c; }
+.fi-textarea { resize:vertical; min-height:80px; }
+.fi-submit {
+  width:100%; padding:.9rem; background:#c9a84c; border:none; border-radius:7px;
+  color:#0d0d0d; font-weight:800; font-size:.95rem; cursor:pointer; transition:background .2s;
+  display:flex; align-items:center; justify-content:center; gap:.5rem;
+}
+.fi-submit:hover { background:#e8c96a; }
+
+/* Urgency pills */
+.fi-urgency-group { display:flex; gap:.6rem; flex-direction:column; }
+.fi-urgency-opt input[type=radio] { display:none; }
+.fi-urgency-opt label {
+  display:flex; align-items:center; gap:.6rem;
+  padding:.6rem .9rem; border-radius:6px; border:1px solid #2a1e00;
+  background:#0d0d0d; font-size:.85rem; color:#888; cursor:pointer;
+  transition:border-color .2s, color .2s;
+}
+.fi-urgency-opt input[type=radio]:checked + label {
+  border-color:#c9a84c; color:#e8c96a; background:#1a1200;
+}
+.fi-urgency-opt label i { color:#c9a84c; width:14px; text-align:center; }
+
+/* Requests list */
+.fi-requests { display:flex; flex-direction:column; gap:.8rem; }
+.fi-req-card {
+  background:#111; border:1px solid #2a1e00; border-radius:8px;
+  padding:1.2rem 1.3rem; display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+  transition:border-color .2s;
+}
+.fi-req-card:hover { border-color:#c9a84c; }
+.fi-req-ref { font-family:monospace; font-size:.82rem; color:#888; }
+.fi-req-name { font-weight:700; color:#e8c96a; font-size:.95rem; margin:.2rem 0; }
+.fi-req-meta { font-size:.8rem; color:#888; display:flex; gap:.8rem; flex-wrap:wrap; margin-top:.3rem; }
+
+.fi-status-pill {
+  display:inline-block; font-size:.68rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; padding:.18rem .55rem; border-radius:4px;
+}
+.fi-status-pill.draft        { background:#222; color:#888; border:1px solid #444; }
+.fi-status-pill.submitted    { background:#1e3a5f; color:#60a5fa; border:1px solid #3b82f6; }
+.fi-status-pill.acknowledged { background:#1a2a1a; color:#86efac; border:1px solid #4ade80; }
+.fi-status-pill.processing   { background:#2a1a00; color:#fcd34d; border:1px solid #f59e0b; }
+.fi-status-pill.shipped      { background:#1a1a2a; color:#a78bfa; border:1px solid #8b5cf6; }
+.fi-status-pill.delivered    { background:#14300f; color:#4ade80; border:1px solid #22c55e; }
+.fi-status-pill.cancelled    { background:#2a1a1a; color:#f87171; border:1px solid #ef4444; }
+
+.fi-urgency-tag { font-size:.72rem; color:#c9a84c; }
+
+.fi-empty { text-align:center; padding:3rem; background:#111; border:1px solid #2a1e00; border-radius:8px; }
+
+.fi-notice {
+  background:#1a1200; border:1px solid #c9a84c33; border-left:3px solid #c9a84c;
+  border-radius:6px; padding:1rem 1.2rem; display:flex; gap:.8rem; align-items:flex-start;
+  font-size:.88rem; color:#c9a84c; margin-bottom:1.5rem;
+}
+.fi-notice i { margin-top:.1rem; flex-shrink:0; }
+.fi-notice p { margin:0; color:#d4b96a; }
+</style>
+
+{% if messages %}
+<div style="max-width:1100px;margin:1rem auto;padding:0 1.5rem">
+  {% for m in messages %}
+  <div style="background:{% if m.tags == 'error' %}#3a0f0f{% else %}#14300f{% endif %};border:1px solid {% if m.tags == 'error' %}#ef4444{% else %}#22c55e{% endif %};border-radius:6px;padding:.75rem 1rem;font-size:.88rem;color:{% if m.tags == 'error' %}#f87171{% else %}#4ade80{% endif %};margin-bottom:.5rem">
+    {{ m }}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="fi-wrap">
+
+  <!-- Topbar -->
+  <div class="fi-topbar">
+    <div class="fi-topbar-inner">
+      <a href="{% url 'franchisee_store' %}" class="fi-back"><i class="fas fa-arrow-left"></i> Franchise Hub</a>
+      <h1 style="font-size:1.3rem;font-weight:700;color:#e8c96a;margin:.5rem 0 .2rem">
+        <i class="fas fa-truck" style="margin-right:.5rem;font-size:1rem"></i>Inventory &amp; Supply
+      </h1>
+      <p style="font-size:.85rem;color:#c9a84c;margin:0">{{ profile.display_name }} &mdash; {{ profile.territory }}</p>
+    </div>
+  </div>
+
+  <div class="fi-body">
+
+    <!-- Left: request history -->
+    <div>
+      <div class="fi-section-title"><i class="fas fa-history" style="margin-right:.4rem"></i>Stock Requests</div>
+
+      {% if pending_count %}
+      <div class="fi-notice">
+        <i class="fas fa-clock"></i>
+        <p><strong>{{ pending_count }} active request{{ pending_count|pluralize }}</strong> pending with HQ.</p>
+      </div>
+      {% endif %}
+
+      {% if stock_requests %}
+      <div class="fi-requests">
+        {% for sr in stock_requests %}
+        <div class="fi-req-card">
+          <div>
+            <div class="fi-req-ref">{{ sr.ref }}</div>
+            <div class="fi-req-name">{{ sr.product_name }}</div>
+            <div class="fi-req-meta">
+              <span><i class="fas fa-boxes" style="margin-right:.3rem"></i>{{ sr.quantity_requested }} units</span>
+              <span class="fi-urgency-tag"><i class="fas fa-bolt" style="margin-right:.3rem"></i>{{ sr.get_urgency_display }}</span>
+              <span><i class="fas fa-calendar" style="margin-right:.3rem"></i>{{ sr.created_at|date:"j M Y" }}</span>
+            </div>
+            {% if sr.notes %}
+            <div style="font-size:.8rem;color:#666;margin-top:.4rem;font-style:italic">{{ sr.notes }}</div>
+            {% endif %}
+            {% if sr.hq_notes %}
+            <div style="font-size:.8rem;color:#c9a84c;margin-top:.4rem;background:#1a1200;padding:.4rem .6rem;border-radius:4px">
+              <i class="fas fa-comment" style="margin-right:.3rem"></i>HQ: {{ sr.hq_notes }}
+            </div>
+            {% endif %}
+          </div>
+          <div>
+            <span class="fi-status-pill {{ sr.status }}">{{ sr.get_status_display }}</span>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="fi-empty">
+        <div style="font-size:2rem;color:#333;margin-bottom:1rem"><i class="fas fa-truck"></i></div>
+        <h3 style="color:#e8c96a;margin:0 0 .5rem">No Stock Requests</h3>
+        <p style="color:#888;font-size:.88rem">Submit a stock replenishment request using the form to the right.</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Right: submit form -->
+    <div>
+      <div class="fi-form-card">
+        <div class="fi-section-title"><i class="fas fa-plus-circle" style="margin-right:.4rem"></i>New Stock Request</div>
+        <form method="post">
+          {% csrf_token %}
+
+          <!-- Product select or free-text -->
+          {% if products %}
+          <div class="fi-field">
+            <label class="fi-label" for="id_product_id">Select Product <span>*</span></label>
+            <select id="id_product_id" name="product_id" class="fi-select" onchange="syncProductName(this)">
+              <option value="">— Type product name below —</option>
+              {% for p in products %}
+              <option value="{{ p.pk }}" data-name="{{ p.name }}">{{ p.sku }} — {{ p.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          {% endif %}
+
+          <div class="fi-field">
+            <label class="fi-label" for="id_product_name">Product Name <span>*</span></label>
+            <input type="text" id="id_product_name" name="product_name" class="fi-input"
+              placeholder="e.g. Arabica Green Beans 50kg" required>
+          </div>
+
+          <div class="fi-field">
+            <label class="fi-label" for="id_quantity">Quantity (units) <span>*</span></label>
+            <input type="number" id="id_quantity" name="quantity" class="fi-input"
+              placeholder="e.g. 50" min="1" required>
+          </div>
+
+          <div class="fi-field">
+            <label class="fi-label">Urgency</label>
+            <div class="fi-urgency-group">
+              <div class="fi-urgency-opt">
+                <input type="radio" name="urgency" id="urg_std" value="standard" checked>
+                <label for="urg_std"><i class="fas fa-clock"></i> Standard — 5–7 business days</label>
+              </div>
+              <div class="fi-urgency-opt">
+                <input type="radio" name="urgency" id="urg_urg" value="urgent">
+                <label for="urg_urg"><i class="fas fa-bolt"></i> Urgent — 2–3 business days</label>
+              </div>
+              <div class="fi-urgency-opt">
+                <input type="radio" name="urgency" id="urg_crit" value="critical">
+                <label for="urg_crit"><i class="fas fa-exclamation-triangle"></i> Critical — Next business day</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="fi-field">
+            <label class="fi-label" for="id_notes">Notes (optional)</label>
+            <textarea id="id_notes" name="notes" class="fi-textarea"
+              placeholder="Reason for request, specific packaging requirements, etc."></textarea>
+          </div>
+
+          <button type="submit" class="fi-submit">
+            <i class="fas fa-paper-plane"></i> Submit Request to HQ
+          </button>
+        </form>
+      </div>
+
+      <div style="margin-top:1rem;background:#111;border:1px solid #2a1e00;border-radius:8px;padding:1.2rem">
+        <div style="font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#c9a84c;margin-bottom:.8rem">Need Help?</div>
+        <div style="font-size:.82rem;color:#888;line-height:1.9">
+          <div style="margin-bottom:.4rem"><i class="fas fa-phone" style="color:#c9a84c;margin-right:.5rem;font-size:.78rem"></i>+1 (416) 832 3512</div>
+          <div style="margin-bottom:.4rem"><i class="fas fa-envelope" style="color:#c9a84c;margin-right:.5rem;font-size:.78rem"></i>tom.grouptrade@gmail.com</div>
+          <div><a href="{% url 'contact' %}" style="color:#c9a84c;font-size:.8rem"><i class="fas fa-arrow-right" style="margin-right:.3rem"></i>Contact HQ Form</a></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function syncProductName(sel) {
+  const opt = sel.options[sel.selectedIndex];
+  if (opt && opt.dataset.name) {
+    document.getElementById('id_product_name').value = opt.dataset.name;
+  }
+}
+</script>
+{% endblock %}

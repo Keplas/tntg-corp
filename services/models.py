@@ -281,6 +281,148 @@ class FranchiseeProfile(models.Model):
 
 
 # ════════════════════════════════════════════════════════════════════════
+# FRANCHISE PHASE 2 — PRODUCTS / ORDERS / STOCK REQUESTS
+# ════════════════════════════════════════════════════════════════════════
+
+class FranchiseeProduct(models.Model):
+    STATUS_CHOICES = [
+        ('pending',      'Pending HQ Approval'),
+        ('approved',     'Approved'),
+        ('rejected',     'Rejected by HQ'),
+        ('discontinued', 'Discontinued'),
+    ]
+    CATEGORY_CHOICES = [
+        ('coffee_bean', 'Coffee Beans (Green)'),
+        ('roasted',     'Roasted Coffee'),
+        ('instant',     'Instant Coffee'),
+        ('artisanal',   'Artisanal Goods'),
+        ('soap',        'Coffee Soaps'),
+        ('other',       'Other'),
+    ]
+    franchisee     = models.ForeignKey(FranchiseeProfile, on_delete=models.CASCADE, related_name='products')
+    name           = models.CharField(max_length=200)
+    sku            = models.CharField(max_length=50, unique=True)
+    category       = models.CharField(max_length=30, choices=CATEGORY_CHOICES, default='other')
+    description    = models.TextField(blank=True)
+    selling_price  = models.DecimalField(max_digits=10, decimal_places=2)
+    hq_cost_price  = models.DecimalField(max_digits=10, decimal_places=2,
+                         help_text='HQ transfer price to franchisee')
+    stock_qty      = models.PositiveIntegerField(default=0)
+    low_stock_level= models.PositiveIntegerField(default=10,
+                         help_text='Alert when stock falls below this')
+    status         = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    image_url      = models.URLField(blank=True)
+    hq_notes       = models.TextField(blank=True)
+    added_at       = models.DateTimeField(auto_now_add=True)
+    updated_at     = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-added_at']
+        verbose_name        = 'Franchisee Product'
+        verbose_name_plural = 'Franchisee Products'
+
+    def __str__(self):
+        return f"{self.sku} — {self.name} [{self.franchisee}]"
+
+    @property
+    def is_low_stock(self):
+        return self.stock_qty <= self.low_stock_level
+
+    @property
+    def margin(self):
+        return self.selling_price - self.hq_cost_price
+
+    @property
+    def margin_pct(self):
+        if self.hq_cost_price:
+            return round((self.margin / self.selling_price) * 100, 1)
+        return 0
+
+
+class FranchiseeOrder(models.Model):
+    STATUS_CHOICES = [
+        ('new',        'New Order'),
+        ('confirmed',  'Confirmed'),
+        ('processing', 'Processing'),
+        ('shipped',    'Shipped'),
+        ('delivered',  'Delivered'),
+        ('cancelled',  'Cancelled'),
+        ('refunded',   'Refunded'),
+    ]
+    franchisee    = models.ForeignKey(FranchiseeProfile, on_delete=models.CASCADE, related_name='orders')
+    # Customer
+    customer_name  = models.CharField(max_length=200)
+    customer_email = models.EmailField(blank=True)
+    customer_phone = models.CharField(max_length=30, blank=True)
+    # Line item (snapshot)
+    product        = models.ForeignKey(FranchiseeProduct, on_delete=models.SET_NULL,
+                         null=True, blank=True, related_name='orders')
+    product_name   = models.CharField(max_length=200, help_text='Name snapshot at time of order')
+    quantity       = models.PositiveIntegerField(default=1)
+    unit_price     = models.DecimalField(max_digits=10, decimal_places=2)
+    total          = models.DecimalField(max_digits=12, decimal_places=2)
+    # Status
+    status         = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new')
+    notes          = models.TextField(blank=True)
+    placed_at      = models.DateTimeField(auto_now_add=True)
+    updated_at     = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-placed_at']
+        verbose_name        = 'Franchisee Order'
+        verbose_name_plural = 'Franchisee Orders'
+
+    def __str__(self):
+        return f"ORD-{self.pk:05d} — {self.customer_name} — {self.status}"
+
+    @property
+    def ref(self):
+        return f'ORD-{self.pk:05d}'
+
+
+class StockRequest(models.Model):
+    STATUS_CHOICES = [
+        ('draft',        'Draft'),
+        ('submitted',    'Submitted to HQ'),
+        ('acknowledged', 'Acknowledged by HQ'),
+        ('processing',   'Processing'),
+        ('shipped',      'Shipped'),
+        ('delivered',    'Delivered'),
+        ('cancelled',    'Cancelled'),
+    ]
+    URGENCY_CHOICES = [
+        ('standard', 'Standard (5–7 business days)'),
+        ('urgent',   'Urgent (2–3 business days)'),
+        ('critical', 'Critical (Next business day)'),
+    ]
+    franchisee         = models.ForeignKey(FranchiseeProfile, on_delete=models.CASCADE,
+                             related_name='stock_requests')
+    product            = models.ForeignKey(FranchiseeProduct, on_delete=models.SET_NULL,
+                             null=True, blank=True, related_name='stock_requests')
+    product_name       = models.CharField(max_length=200, help_text='Name snapshot')
+    quantity_requested = models.PositiveIntegerField()
+    urgency            = models.CharField(max_length=20, choices=URGENCY_CHOICES, default='standard')
+    notes              = models.TextField(blank=True)
+    status             = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
+    hq_notes           = models.TextField(blank=True)
+    submitted_at       = models.DateTimeField(null=True, blank=True)
+    created_at         = models.DateTimeField(auto_now_add=True)
+    updated_at         = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name        = 'Stock Request'
+        verbose_name_plural = 'Stock Requests'
+
+    def __str__(self):
+        return f"SR-{self.pk:04d} — {self.product_name} x{self.quantity_requested} [{self.status}]"
+
+    @property
+    def ref(self):
+        return f'SR-{self.pk:04d}'
+
+
+# ════════════════════════════════════════════════════════════════════════
 # PARTNERSHIP APPLICATION
 # ════════════════════════════════════════════════════════════════════════
 

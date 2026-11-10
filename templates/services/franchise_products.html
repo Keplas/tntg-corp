@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% block title %}My Products — T&TG Franchise Hub{% endblock %}
+
+{% block content %}
+<style>
+/* ═══════════════════════════════════════
+   FRANCHISE PHASE 2 — shared base vars
+   ═══════════════════════════════════════ */
+:root {
+  --fg: #0d0d0d; --bg: #f9f8f4; --gold: #c9a84c; --gold2: #e8c96a;
+  --dark: #1a1200; --dark2: #2a1e00; --card: #111;
+  --border: #2a1e00; --muted: #888; --text: #e8e0d0; --head: #e8c96a;
+}
+
+.fp-wrap { background:#0d0d0d; min-height:100vh; color:#e8e0d0; padding-bottom:4rem; }
+
+/* ── Topbar ── */
+.fp-topbar {
+  background:linear-gradient(135deg,#1a1200 0%,#2a1e00 60%,#1a1200 100%);
+  border-bottom:2px solid #c9a84c;
+  padding:1.8rem 2rem;
+}
+.fp-topbar-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
+.fp-back { display:inline-flex; align-items:center; gap:.4rem; color:#c9a84c; text-decoration:none; font-size:.85rem; }
+.fp-back:hover { text-decoration:underline; color:#e8c96a; }
+.fp-topbar h1 { font-size:1.3rem; font-weight:700; color:#e8c96a; margin:0; }
+.fp-topbar-sub { font-size:.85rem; color:#c9a84c; margin:0; }
+
+/* ── Body ── */
+.fp-body { max-width:1100px; margin:2.5rem auto 0; padding:0 1.5rem; }
+
+/* ── Stats strip ── */
+.fp-stats { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:1rem; margin-bottom:2rem; }
+.fp-stat {
+  background:#111; border:1px solid #2a1e00; border-radius:8px;
+  padding:1.1rem 1rem; text-align:center; transition:border-color .2s;
+}
+.fp-stat:hover { border-color:#c9a84c; }
+.fp-stat-icon { font-size:1.3rem; color:#c9a84c; margin-bottom:.4rem; }
+.fp-stat-label { font-size:.72rem; color:#888; text-transform:uppercase; letter-spacing:.08em; margin-bottom:.3rem; }
+.fp-stat-val { font-size:1.5rem; font-weight:700; color:#e8c96a; }
+
+/* ── Section title ── */
+.fp-section-title {
+  font-size:.7rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  color:#c9a84c; margin:2rem 0 1rem; padding-bottom:.5rem; border-bottom:1px solid #2a1e00;
+}
+
+/* ── Product table ── */
+.fp-table-wrap { overflow-x:auto; }
+.fp-table { width:100%; border-collapse:collapse; font-size:.88rem; }
+.fp-table th {
+  font-size:.68rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+  color:#888; padding:.7rem .9rem; border-bottom:1px solid #2a1e00; text-align:left;
+  white-space:nowrap;
+}
+.fp-table td { padding:.85rem .9rem; border-bottom:1px solid #1a1200; vertical-align:middle; }
+.fp-table tr:last-child td { border-bottom:none; }
+.fp-table tr:hover td { background:#191200; }
+
+.fp-status-pill {
+  display:inline-block; font-size:.68rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; padding:.18rem .55rem; border-radius:4px;
+}
+.fp-status-pill.approved   { background:#14300f; color:#4ade80; border:1px solid #22c55e; }
+.fp-status-pill.pending    { background:#1e3a5f; color:#60a5fa; border:1px solid #3b82f6; }
+.fp-status-pill.rejected   { background:#3a0f0f; color:#f87171; border:1px solid #ef4444; }
+.fp-status-pill.discontinued { background:#2a2000; color:#f59e0b; border:1px solid #d97706; }
+
+.fp-sku { font-family:monospace; font-size:.8rem; color:#888; }
+.fp-price { font-weight:700; color:#e8c96a; }
+.fp-margin { font-size:.8rem; color:#888; }
+
+.fp-low-stock { color:#f97316; font-size:.75rem; display:flex; align-items:center; gap:.3rem; }
+
+/* ── Empty state ── */
+.fp-empty {
+  text-align:center; padding:4rem 2rem;
+  background:#111; border:1px solid #2a1e00; border-radius:8px;
+}
+.fp-empty-icon { font-size:2.5rem; color:#333; margin-bottom:1rem; }
+.fp-empty h3 { color:#e8c96a; font-size:1.1rem; margin:0 0 .5rem; }
+.fp-empty p  { color:#888; font-size:.88rem; margin:0; }
+
+/* ── Notice ── */
+.fp-notice {
+  background:#1a1200; border:1px solid #c9a84c33; border-left:3px solid #c9a84c;
+  border-radius:6px; padding:1rem 1.2rem; display:flex; gap:.8rem; align-items:flex-start;
+  font-size:.88rem; color:#c9a84c; margin-bottom:2rem;
+}
+.fp-notice i { margin-top:.1rem; flex-shrink:0; }
+.fp-notice p { margin:0; color:#d4b96a; }
+</style>
+
+<div class="fp-wrap">
+
+  <!-- Topbar -->
+  <div class="fp-topbar">
+    <div class="fp-topbar-inner">
+      <div>
+        <a href="{% url 'franchisee_store' %}" class="fp-back">
+          <i class="fas fa-arrow-left"></i> Franchise Hub
+        </a>
+        <h1 style="margin-top:.5rem"><i class="fas fa-box-open" style="margin-right:.5rem;font-size:1rem"></i>My Products</h1>
+        <p class="fp-topbar-sub">{{ profile.display_name }} &mdash; {{ profile.territory }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="fp-body">
+
+    <!-- Phase 2 notice -->
+    <div class="fp-notice" style="margin-top:0">
+      <i class="fas fa-info-circle"></i>
+      <p>Your product catalogue is managed by T&TG HQ. Products are listed here once approved and assigned to your territory. Contact HQ to request new products or report issues.</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="fp-stats">
+      <div class="fp-stat">
+        <div class="fp-stat-icon"><i class="fas fa-box-open"></i></div>
+        <div class="fp-stat-label">Total Products</div>
+        <div class="fp-stat-val">{{ products.count }}</div>
+      </div>
+      <div class="fp-stat">
+        <div class="fp-stat-icon"><i class="fas fa-check-circle"></i></div>
+        <div class="fp-stat-label">Approved</div>
+        <div class="fp-stat-val">{{ approved_count }}</div>
+      </div>
+      <div class="fp-stat">
+        <div class="fp-stat-icon" style="color:#f97316"><i class="fas fa-exclamation-triangle"></i></div>
+        <div class="fp-stat-label">Low Stock</div>
+        <div class="fp-stat-val" style="color:{% if low_stock_count %}#f97316{% else %}#e8c96a{% endif %}">{{ low_stock_count }}</div>
+      </div>
+    </div>
+
+    <!-- Product table -->
+    <div class="fp-section-title"><i class="fas fa-boxes" style="margin-right:.5rem"></i>Product Catalogue</div>
+
+    {% if products %}
+    <div class="fp-table-wrap">
+      <table class="fp-table">
+        <thead>
+          <tr>
+            <th>SKU</th>
+            <th>Product Name</th>
+            <th>Category</th>
+            <th>Selling Price</th>
+            <th>HQ Cost</th>
+            <th>Margin</th>
+            <th>Stock</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for product in products %}
+          <tr>
+            <td><span class="fp-sku">{{ product.sku }}</span></td>
+            <td style="color:#e8e0d0;font-weight:600">{{ product.name }}</td>
+            <td style="color:#888;font-size:.82rem">{{ product.get_category_display }}</td>
+            <td class="fp-price">${{ product.selling_price }}</td>
+            <td style="color:#888">${{ product.hq_cost_price }}</td>
+            <td>
+              <div class="fp-margin">
+                ${{ product.margin }} &middot; {{ product.margin_pct }}%
+              </div>
+            </td>
+            <td>
+              <div style="font-weight:600;color:{% if product.is_low_stock and product.status == 'approved' %}#f97316{% else %}#e8e0d0{% endif %}">
+                {{ product.stock_qty }}
+              </div>
+              {% if product.is_low_stock and product.status == 'approved' %}
+              <div class="fp-low-stock"><i class="fas fa-exclamation-triangle"></i> Low stock</div>
+              {% endif %}
+            </td>
+            <td><span class="fp-status-pill {{ product.status }}">{{ product.get_status_display }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="fp-empty">
+      <div class="fp-empty-icon"><i class="fas fa-box-open"></i></div>
+      <h3>No Products Yet</h3>
+      <p>Your territory product catalogue hasn't been configured yet. Contact HQ to request your approved product list.</p>
+    </div>
+    {% endif %}
+
+    <!-- Footer notice -->
+    <div class="fp-notice" style="margin-top:2rem">
+      <i class="fas fa-headset"></i>
+      <p>To request new products, adjust stock levels, or report discrepancies, <a href="{% url 'contact' %}" style="color:#e8c96a">contact T&TG HQ</a>. Stock replenishment can also be submitted via <a href="{% url 'franchise_inventory' %}" style="color:#e8c96a">Inventory &amp; Supply</a>.</p>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

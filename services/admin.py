@@ -56,6 +56,32 @@ class FranchiseeProfileAdmin(admin.ModelAdmin):
         ('Timestamps', {'fields': ('approved_at', 'updated_at')}),
     )
 
+from .models import FranchiseeProduct, FranchiseeOrder, StockRequest
+
+@admin.register(FranchiseeProduct)
+class FranchiseeProductAdmin(admin.ModelAdmin):
+    list_display   = ['sku', 'name', 'franchisee', 'category', 'selling_price', 'stock_qty', 'status', 'added_at']
+    list_filter    = ['status', 'category']
+    list_editable  = ['status']
+    search_fields  = ['sku', 'name', 'franchisee__business_name']
+    readonly_fields = ['added_at', 'updated_at']
+
+@admin.register(FranchiseeOrder)
+class FranchiseeOrderAdmin(admin.ModelAdmin):
+    list_display   = ['ref', 'franchisee', 'customer_name', 'product_name', 'quantity', 'total', 'status', 'placed_at']
+    list_filter    = ['status']
+    list_editable  = ['status']
+    search_fields  = ['customer_name', 'customer_email', 'product_name']
+    readonly_fields = ['placed_at', 'updated_at']
+
+@admin.register(StockRequest)
+class StockRequestAdmin(admin.ModelAdmin):
+    list_display   = ['ref', 'franchisee', 'product_name', 'quantity_requested', 'urgency', 'status', 'submitted_at']
+    list_filter    = ['status', 'urgency']
+    list_editable  = ['status']
+    search_fields  = ['product_name', 'franchisee__business_name']
+    readonly_fields = ['created_at', 'updated_at']
+
 from .models import PartnershipApplication
 
 @admin.register(PartnershipApplication)

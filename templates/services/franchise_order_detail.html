@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+{% block title %}{{ order.ref }} — T&TG Franchise Hub{% endblock %}
+
+{% block content %}
+<style>
+.fod-wrap { background:#0d0d0d; min-height:100vh; color:#e8e0d0; padding-bottom:4rem; }
+.fod-topbar {
+  background:linear-gradient(135deg,#1a1200 0%,#2a1e00 60%,#1a1200 100%);
+  border-bottom:2px solid #c9a84c; padding:1.8rem 2rem;
+}
+.fod-topbar-inner { max-width:900px; margin:0 auto; }
+.fod-back { display:inline-flex; align-items:center; gap:.4rem; color:#c9a84c; text-decoration:none; font-size:.85rem; }
+.fod-back:hover { text-decoration:underline; color:#e8c96a; }
+.fod-body { max-width:900px; margin:2.5rem auto 0; padding:0 1.5rem; display:grid; grid-template-columns:1fr 320px; gap:1.5rem; }
+@media(max-width:680px){ .fod-body { grid-template-columns:1fr; } }
+
+.fod-card {
+  background:#111; border:1px solid #2a1e00; border-radius:8px; padding:1.5rem 1.4rem;
+}
+.fod-card h2 {
+  font-size:.72rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  color:#c9a84c; margin:0 0 1.2rem; padding-bottom:.5rem; border-bottom:1px solid #2a1e00;
+}
+.fod-row { display:flex; justify-content:space-between; gap:.5rem; padding:.55rem 0; border-bottom:1px solid #1a1200; font-size:.88rem; }
+.fod-row:last-child { border-bottom:none; }
+.fod-row .lbl { color:#888; }
+.fod-row .val { color:#e8e0d0; text-align:right; }
+.fod-total { font-size:1.3rem; font-weight:700; color:#e8c96a; }
+
+.fod-status-badge {
+  display:inline-block; font-size:.75rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; padding:.25rem .7rem; border-radius:5px;
+}
+.fod-status-badge.new        { background:#1e3a5f; color:#60a5fa; border:1px solid #3b82f6; }
+.fod-status-badge.confirmed  { background:#1a2a1a; color:#86efac; border:1px solid #4ade80; }
+.fod-status-badge.processing { background:#2a1a00; color:#fcd34d; border:1px solid #f59e0b; }
+.fod-status-badge.shipped    { background:#1a1a2a; color:#a78bfa; border:1px solid #8b5cf6; }
+.fod-status-badge.delivered  { background:#14300f; color:#4ade80; border:1px solid #22c55e; }
+.fod-status-badge.cancelled  { background:#2a1a1a; color:#f87171; border:1px solid #ef4444; }
+.fod-status-badge.refunded   { background:#2a1a1a; color:#f87171; border:1px solid #ef4444; }
+
+/* Fulfillment form */
+.fod-select {
+  width:100%; background:#0d0d0d; border:1px solid #2a1e00; border-radius:6px;
+  padding:.6rem .8rem; color:#e8e0d0; font-size:.9rem; outline:none;
+}
+.fod-select:focus { border-color:#c9a84c; }
+.fod-textarea {
+  width:100%; background:#0d0d0d; border:1px solid #2a1e00; border-radius:6px;
+  padding:.6rem .8rem; color:#e8e0d0; font-size:.88rem; resize:vertical; min-height:80px;
+  box-sizing:border-box; outline:none;
+}
+.fod-textarea:focus { border-color:#c9a84c; }
+.fod-label { display:block; font-size:.78rem; color:#888; margin-bottom:.4rem; }
+.fod-field { margin-bottom:1rem; }
+.fod-submit {
+  width:100%; padding:.85rem; background:#c9a84c; border:none; border-radius:7px;
+  color:#0d0d0d; font-weight:700; font-size:.95rem; cursor:pointer; transition:background .2s;
+}
+.fod-submit:hover { background:#e8c96a; }
+
+.fod-notice {
+  background:#1a1200; border:1px solid #c9a84c33; border-left:3px solid #c9a84c;
+  border-radius:6px; padding:.8rem 1rem; display:flex; gap:.7rem; align-items:flex-start;
+  font-size:.84rem; color:#d4b96a; margin-bottom:1rem;
+}
+.fod-notice i { margin-top:.1rem; flex-shrink:0; color:#c9a84c; }
+.fod-notice p { margin:0; }
+</style>
+
+{% if messages %}
+<div style="max-width:900px;margin:1rem auto;padding:0 1.5rem">
+  {% for m in messages %}
+  <div style="background:{% if m.tags == 'error' %}#3a0f0f{% else %}#14300f{% endif %};border:1px solid {% if m.tags == 'error' %}#ef4444{% else %}#22c55e{% endif %};border-radius:6px;padding:.75rem 1rem;font-size:.88rem;color:{% if m.tags == 'error' %}#f87171{% else %}#4ade80{% endif %};margin-bottom:.5rem">
+    {{ m }}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="fod-wrap">
+  <div class="fod-topbar">
+    <div class="fod-topbar-inner">
+      <a href="{% url 'franchise_orders' %}" class="fod-back"><i class="fas fa-arrow-left"></i> Orders</a>
+      <h1 style="font-size:1.3rem;font-weight:700;color:#e8c96a;margin:.5rem 0 0">
+        Order {{ order.ref }}
+      </h1>
+    </div>
+  </div>
+
+  <div class="fod-body">
+
+    <!-- Left: order detail -->
+    <div>
+      <div class="fod-card">
+        <h2><i class="fas fa-user" style="margin-right:.4rem"></i>Customer</h2>
+        <div class="fod-row"><span class="lbl">Name</span><span class="val">{{ order.customer_name }}</span></div>
+        {% if order.customer_email %}<div class="fod-row"><span class="lbl">Email</span><span class="val">{{ order.customer_email }}</span></div>{% endif %}
+        {% if order.customer_phone %}<div class="fod-row"><span class="lbl">Phone</span><span class="val">{{ order.customer_phone }}</span></div>{% endif %}
+        <div class="fod-row"><span class="lbl">Order Date</span><span class="val">{{ order.placed_at|date:"j M Y, g:i a" }}</span></div>
+      </div>
+
+      <div class="fod-card" style="margin-top:1rem">
+        <h2><i class="fas fa-box" style="margin-right:.4rem"></i>Order Summary</h2>
+        <div class="fod-row"><span class="lbl">Product</span><span class="val">{{ order.product_name }}</span></div>
+        <div class="fod-row"><span class="lbl">Quantity</span><span class="val">{{ order.quantity }}</span></div>
+        <div class="fod-row"><span class="lbl">Unit Price</span><span class="val">${{ order.unit_price }}</span></div>
+        <div class="fod-row" style="border-top:1px solid #2a1e00;padding-top:.8rem;margin-top:.3rem">
+          <span class="lbl" style="font-weight:700;color:#e8e0d0">Total</span>
+          <span class="val fod-total">${{ order.total }}</span>
+        </div>
+        {% if order.notes %}
+        <div style="margin-top:1rem;padding:.7rem;background:#1a1200;border-radius:6px;font-size:.85rem;color:#888">
+          <strong style="color:#c9a84c">Notes:</strong> {{ order.notes }}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Right: status + fulfillment -->
+    <div>
+      <div class="fod-card">
+        <h2><i class="fas fa-tasks" style="margin-right:.4rem"></i>Status</h2>
+        <div style="text-align:center;padding:1rem 0">
+          <span class="fod-status-badge {{ order.status }}">{{ order.get_status_display }}</span>
+        </div>
+      </div>
+
+      {% if order.status != 'delivered' and order.status != 'cancelled' and order.status != 'refunded' %}
+      <div class="fod-card" style="margin-top:1rem">
+        <h2><i class="fas fa-edit" style="margin-right:.4rem"></i>Update Order</h2>
+        <div class="fod-notice">
+          <i class="fas fa-info-circle"></i>
+          <p>Change the order status to track fulfilment. The customer is notified by HQ.</p>
+        </div>
+        <form method="post">
+          {% csrf_token %}
+          <div class="fod-field">
+            <label class="fod-label">New Status</label>
+            <select name="status" class="fod-select">
+              {% if order.status == 'new' %}
+                <option value="confirmed">Confirm Order</option>
+                <option value="cancelled">Cancel Order</option>
+              {% elif order.status == 'confirmed' %}
+                <option value="processing">Start Processing</option>
+                <option value="cancelled">Cancel Order</option>
+              {% elif order.status == 'processing' %}
+                <option value="shipped">Mark as Shipped</option>
+                <option value="cancelled">Cancel Order</option>
+              {% elif order.status == 'shipped' %}
+                <option value="delivered">Mark as Delivered</option>
+              {% endif %}
+            </select>
+          </div>
+          <div class="fod-field">
+            <label class="fod-label">Notes (optional)</label>
+            <textarea name="notes" class="fod-textarea" placeholder="Add a note, tracking number, etc.">{{ order.notes }}</textarea>
+          </div>
+          <button type="submit" class="fod-submit">
+            <i class="fas fa-save" style="margin-right:.4rem"></i> Update Order
+          </button>
+        </form>
+      </div>
+      {% endif %}
+
+      <div style="margin-top:1rem;text-align:center">
+        <a href="{% url 'franchise_orders' %}" style="color:#888;font-size:.82rem;text-decoration:none">
+          <i class="fas fa-arrow-left" style="margin-right:.3rem"></i>Back to all orders
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

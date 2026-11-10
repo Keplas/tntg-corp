@@ -318,26 +318,26 @@
       <div class="fs-stat-card">
         <div class="fs-stat-icon"><i class="fas fa-box-open"></i></div>
         <div class="fs-stat-label">Products Listed</div>
-        <div class="fs-stat-value">—</div>
-        <div class="fs-stat-sub">Coming Phase 2</div>
+        <div class="fs-stat-value">{{ product_count }}</div>
+        <div class="fs-stat-sub">{{ approved_products }} approved</div>
       </div>
       <div class="fs-stat-card">
         <div class="fs-stat-icon"><i class="fas fa-shopping-cart"></i></div>
         <div class="fs-stat-label">Orders This Month</div>
-        <div class="fs-stat-value">—</div>
-        <div class="fs-stat-sub">Coming Phase 2</div>
+        <div class="fs-stat-value">{{ orders_mtd }}</div>
+        <div class="fs-stat-sub">{{ new_orders }} new</div>
       </div>
       <div class="fs-stat-card">
         <div class="fs-stat-icon"><i class="fas fa-dollar-sign"></i></div>
         <div class="fs-stat-label">Revenue (MTD)</div>
-        <div class="fs-stat-value">—</div>
-        <div class="fs-stat-sub">Coming Phase 2</div>
+        <div class="fs-stat-value">${{ revenue_mtd|floatformat:0 }}</div>
+        <div class="fs-stat-sub">Month to date</div>
       </div>
       <div class="fs-stat-card">
-        <div class="fs-stat-icon"><i class="fas fa-users"></i></div>
-        <div class="fs-stat-label">Active Customers</div>
-        <div class="fs-stat-value">—</div>
-        <div class="fs-stat-sub">Coming Phase 2</div>
+        <div class="fs-stat-icon"><i class="fas fa-truck"></i></div>
+        <div class="fs-stat-label">Stock Requests</div>
+        <div class="fs-stat-value">{{ stock_pending }}</div>
+        <div class="fs-stat-sub">Pending with HQ</div>
       </div>
     </div>
 
@@ -401,33 +401,33 @@
     <div class="fs-section-title">My Store</div>
     <div class="fs-actions">
 
-      <div class="fs-action-tile coming-soon">
+      <a href="{% url 'franchise_my_products' %}" class="fs-action-tile">
         <div class="fs-tile-icon"><i class="fas fa-box-open"></i></div>
         <div class="fs-tile-name">My Products</div>
-        <div class="fs-tile-desc">Manage your approved T&TG product catalogue for your territory.</div>
-        <span class="fs-tile-badge soon">Phase 2</span>
-      </div>
+        <div class="fs-tile-desc">View your approved T&TG product catalogue and stock levels for your territory.</div>
+        <span class="fs-tile-badge">Available Now</span>
+      </a>
 
-      <div class="fs-action-tile coming-soon">
+      <a href="{% url 'franchise_orders' %}" class="fs-action-tile">
         <div class="fs-tile-icon"><i class="fas fa-shopping-bag"></i></div>
         <div class="fs-tile-name">Orders</div>
         <div class="fs-tile-desc">View and fulfil customer orders placed through your franchise store.</div>
-        <span class="fs-tile-badge soon">Phase 2</span>
-      </div>
+        <span class="fs-tile-badge">Available Now</span>
+      </a>
 
-      <div class="fs-action-tile coming-soon">
+      <a href="{% url 'franchise_sales_reports' %}" class="fs-action-tile">
         <div class="fs-tile-icon"><i class="fas fa-chart-line"></i></div>
         <div class="fs-tile-name">Sales Reports</div>
         <div class="fs-tile-desc">Monthly and annual revenue reports for your territory.</div>
-        <span class="fs-tile-badge soon">Phase 2</span>
-      </div>
+        <span class="fs-tile-badge">Available Now</span>
+      </a>
 
-      <div class="fs-action-tile coming-soon">
+      <a href="{% url 'franchise_inventory' %}" class="fs-action-tile">
         <div class="fs-tile-icon"><i class="fas fa-truck"></i></div>
-        <div class="fs-tile-name">Inventory & Supply</div>
+        <div class="fs-tile-name">Inventory &amp; Supply</div>
         <div class="fs-tile-desc">Request stock replenishments directly from T&TG HQ.</div>
-        <span class="fs-tile-badge soon">Phase 2</span>
-      </div>
+        <span class="fs-tile-badge">Available Now</span>
+      </a>
 
       <div class="fs-action-tile coming-soon">
         <div class="fs-tile-icon"><i class="fas fa-users"></i></div>

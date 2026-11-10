@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% block title %}Orders — T&TG Franchise Hub{% endblock %}
+
+{% block content %}
+<style>
+.fo-wrap { background:#0d0d0d; min-height:100vh; color:#e8e0d0; padding-bottom:4rem; }
+
+/* Topbar */
+.fo-topbar {
+  background:linear-gradient(135deg,#1a1200 0%,#2a1e00 60%,#1a1200 100%);
+  border-bottom:2px solid #c9a84c; padding:1.8rem 2rem;
+}
+.fo-topbar-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; gap:1rem; flex-wrap:wrap; }
+.fo-back { display:inline-flex; align-items:center; gap:.4rem; color:#c9a84c; text-decoration:none; font-size:.85rem; }
+.fo-back:hover { text-decoration:underline; color:#e8c96a; }
+
+/* Body */
+.fo-body { max-width:1100px; margin:2.5rem auto 0; padding:0 1.5rem; }
+
+/* Stats */
+.fo-stats { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:1rem; margin-bottom:2rem; }
+.fo-stat {
+  background:#111; border:1px solid #2a1e00; border-radius:8px;
+  padding:1.1rem 1rem; text-align:center;
+}
+.fo-stat-icon { font-size:1.3rem; color:#c9a84c; margin-bottom:.4rem; }
+.fo-stat-label { font-size:.72rem; color:#888; text-transform:uppercase; letter-spacing:.08em; margin-bottom:.3rem; }
+.fo-stat-val { font-size:1.5rem; font-weight:700; color:#e8c96a; }
+
+/* Filter bar */
+.fo-filter-bar {
+  display:flex; gap:.6rem; flex-wrap:wrap; margin-bottom:1.5rem;
+}
+.fo-filter-btn {
+  display:inline-flex; align-items:center; gap:.4rem;
+  padding:.4rem .9rem; border-radius:20px; font-size:.8rem; font-weight:600;
+  text-decoration:none; border:1px solid #2a1e00; color:#888;
+  transition:border-color .2s, color .2s;
+}
+.fo-filter-btn:hover, .fo-filter-btn.active {
+  border-color:#c9a84c; color:#c9a84c; text-decoration:none;
+}
+
+/* Section title */
+.fo-section-title {
+  font-size:.7rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  color:#c9a84c; margin:2rem 0 1rem; padding-bottom:.5rem; border-bottom:1px solid #2a1e00;
+}
+
+/* Order cards */
+.fo-orders { display:flex; flex-direction:column; gap:.8rem; }
+.fo-order-card {
+  background:#111; border:1px solid #2a1e00; border-radius:8px;
+  padding:1.2rem 1.3rem; display:grid;
+  grid-template-columns:1fr auto; gap:1rem; align-items:start;
+  transition:border-color .2s;
+}
+.fo-order-card:hover { border-color:#c9a84c; }
+.fo-order-ref { font-family:monospace; font-size:.88rem; color:#888; }
+.fo-order-customer { font-weight:700; color:#e8c96a; font-size:1rem; margin:.2rem 0; }
+.fo-order-product  { font-size:.85rem; color:#e8e0d0; }
+.fo-order-meta     { font-size:.78rem; color:#888; margin-top:.4rem; display:flex; gap:1rem; flex-wrap:wrap; }
+.fo-order-total    { font-size:1.2rem; font-weight:700; color:#e8c96a; text-align:right; }
+.fo-order-date     { font-size:.75rem; color:#888; text-align:right; margin-top:.3rem; }
+.fo-order-actions  { display:flex; gap:.5rem; margin-top:.8rem; flex-wrap:wrap; }
+
+.fo-view-btn {
+  display:inline-flex; align-items:center; gap:.4rem;
+  background:#2a1e00; border:1px solid #c9a84c33; color:#c9a84c;
+  font-size:.8rem; font-weight:600; padding:.4rem .9rem; border-radius:6px;
+  text-decoration:none; transition:background .2s;
+}
+.fo-view-btn:hover { background:#3a2800; text-decoration:none; color:#e8c96a; }
+
+.fo-status-pill {
+  display:inline-block; font-size:.68rem; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; padding:.18rem .55rem; border-radius:4px;
+}
+.fo-status-pill.new        { background:#1e3a5f; color:#60a5fa; border:1px solid #3b82f6; }
+.fo-status-pill.confirmed  { background:#1a2a1a; color:#86efac; border:1px solid #4ade80; }
+.fo-status-pill.processing { background:#2a1a00; color:#fcd34d; border:1px solid #f59e0b; }
+.fo-status-pill.shipped    { background:#1a1a2a; color:#a78bfa; border:1px solid #8b5cf6; }
+.fo-status-pill.delivered  { background:#14300f; color:#4ade80; border:1px solid #22c55e; }
+.fo-status-pill.cancelled  { background:#2a1a1a; color:#f87171; border:1px solid #ef4444; }
+.fo-status-pill.refunded   { background:#2a1a1a; color:#f87171; border:1px solid #ef4444; }
+
+/* Empty */
+.fo-empty { text-align:center; padding:4rem 2rem; background:#111; border:1px solid #2a1e00; border-radius:8px; }
+.fo-empty-icon { font-size:2.5rem; color:#333; margin-bottom:1rem; }
+
+/* Notice */
+.fo-notice {
+  background:#1a1200; border:1px solid #c9a84c33; border-left:3px solid #c9a84c;
+  border-radius:6px; padding:1rem 1.2rem; display:flex; gap:.8rem; align-items:flex-start;
+  font-size:.88rem; color:#c9a84c; margin-bottom:2rem;
+}
+.fo-notice i { margin-top:.1rem; flex-shrink:0; }
+.fo-notice p { margin:0; color:#d4b96a; }
+</style>
+
+<div class="fo-wrap">
+
+  <!-- Topbar -->
+  <div class="fo-topbar">
+    <div class="fo-topbar-inner">
+      <div>
+        <a href="{% url 'franchisee_store' %}" class="fo-back">
+          <i class="fas fa-arrow-left"></i> Franchise Hub
+        </a>
+        <h1 style="font-size:1.3rem;font-weight:700;color:#e8c96a;margin:.5rem 0 .2rem">
+          <i class="fas fa-shopping-bag" style="margin-right:.5rem;font-size:1rem"></i>Orders
+        </h1>
+        <p style="font-size:.85rem;color:#c9a84c;margin:0">{{ profile.display_name }} &mdash; {{ profile.territory }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="fo-body">
+
+    <!-- Stats -->
+    <div class="fo-stats">
+      <div class="fo-stat">
+        <div class="fo-stat-icon"><i class="fas fa-shopping-bag"></i></div>
+        <div class="fo-stat-label">Total Orders</div>
+        <div class="fo-stat-val">{{ orders.count }}</div>
+      </div>
+      <div class="fo-stat">
+        <div class="fo-stat-icon" style="color:#60a5fa"><i class="fas fa-bell"></i></div>
+        <div class="fo-stat-label">New Orders</div>
+        <div class="fo-stat-val" style="color:{% if new_count %}#60a5fa{% else %}#e8c96a{% endif %}">{{ new_count }}</div>
+      </div>
+      <div class="fo-stat">
+        <div class="fo-stat-icon" style="color:#fcd34d"><i class="fas fa-cog"></i></div>
+        <div class="fo-stat-label">Processing</div>
+        <div class="fo-stat-val">{{ processing_count }}</div>
+      </div>
+    </div>
+
+    <!-- Notice if new orders -->
+    {% if new_count %}
+    <div class="fo-notice">
+      <i class="fas fa-bell"></i>
+      <p>You have <strong>{{ new_count }} new order{{ new_count|pluralize }}</strong> awaiting confirmation. Review and confirm below to begin fulfilment.</p>
+    </div>
+    {% endif %}
+
+    <!-- Filters -->
+    <div class="fo-filter-bar">
+      <a href="{% url 'franchise_orders' %}" class="fo-filter-btn {% if not status_filter %}active{% endif %}">All</a>
+      <a href="?status=new"        class="fo-filter-btn {% if status_filter == 'new' %}active{% endif %}"><i class="fas fa-circle" style="font-size:.5rem"></i> New</a>
+      <a href="?status=processing" class="fo-filter-btn {% if status_filter == 'processing' %}active{% endif %}">Processing</a>
+      <a href="?status=shipped"    class="fo-filter-btn {% if status_filter == 'shipped' %}active{% endif %}">Shipped</a>
+      <a href="?status=delivered"  class="fo-filter-btn {% if status_filter == 'delivered' %}active{% endif %}">Delivered</a>
+      <a href="?status=cancelled"  class="fo-filter-btn {% if status_filter == 'cancelled' %}active{% endif %}">Cancelled</a>
+    </div>
+
+    <div class="fo-section-title"><i class="fas fa-list" style="margin-right:.5rem"></i>Order List</div>
+
+    {% if orders %}
+    <div class="fo-orders">
+      {% for order in orders %}
+      <div class="fo-order-card">
+        <div>
+          <div class="fo-order-ref">{{ order.ref }}</div>
+          <div class="fo-order-customer">{{ order.customer_name }}</div>
+          <div class="fo-order-product">
+            {{ order.product_name }} &times; {{ order.quantity }}
+          </div>
+          <div class="fo-order-meta">
+            {% if order.customer_email %}<span><i class="fas fa-envelope" style="margin-right:.3rem"></i>{{ order.customer_email }}</span>{% endif %}
+            {% if order.customer_phone %}<span><i class="fas fa-phone" style="margin-right:.3rem"></i>{{ order.customer_phone }}</span>{% endif %}
+          </div>
+          <div class="fo-order-actions">
+            <span class="fo-status-pill {{ order.status }}">{{ order.get_status_display }}</span>
+            <a href="{% url 'franchise_order_detail' order.pk %}" class="fo-view-btn">
+              <i class="fas fa-eye"></i> View &amp; Update
+            </a>
+          </div>
+        </div>
+        <div>
+          <div class="fo-order-total">${{ order.total }}</div>
+          <div class="fo-order-date">{{ order.placed_at|date:"j M Y" }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="fo-empty">
+      <div class="fo-empty-icon"><i class="fas fa-shopping-bag"></i></div>
+      <h3 style="color:#e8c96a;margin:0 0 .5rem">No Orders Yet</h3>
+      <p style="color:#888;font-size:.88rem">Customer orders placed through your franchise store will appear here.</p>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}
