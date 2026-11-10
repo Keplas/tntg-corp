@@ -623,6 +623,9 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  <a class="tg-nl {% if request.resolver_match.url_name == 'join_program' %}tg-active{% endif %}" href="{% url 'join_program' %}">Onboarding Program</a>
  </li>
  <li>
+ <a class="tg-nl {% if 'pro_' in request.resolver_match.url_name|default:'' %}tg-active{% endif %}" href="{% url 'pro_home' %}"><i class="fas fa-briefcase" style="margin-right:5px;font-size:.8rem;color:#c9a84c"></i>Professional Services</a>
+ </li>
+ <li>
  <button class="tg-nl">Company <i class="fas fa-chevron-down tg-caret"></i></button>
  <div class="tg-dd">
  
@@ -826,6 +829,13 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  <!-- Onboarding -->
  <li class="tg-mob-li">
  <a class="tg-mob-link {% if request.resolver_match.url_name == 'join_program' %}tg-active{% endif %}" href="{% url 'join_program' %}">Onboarding Program</a>
+ </li>
+
+ <!-- Professional Services -->
+ <li class="tg-mob-li">
+ <a class="tg-mob-link {% if 'pro_' in request.resolver_match.url_name|default:'' %}tg-active{% endif %}" href="{% url 'pro_home' %}">
+ <i class="fas fa-briefcase" style="margin-right:8px;font-size:.85rem;color:#c9a84c"></i>Professional Services
+ </a>
  </li>
 
  <!-- Franchise Hub (franchisees only) -->

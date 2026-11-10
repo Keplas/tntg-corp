@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+{% block title %}Book — {{ package.name }} | T&TG Professional Services{% endblock %}
+
+{% block content %}
+<style>
+.pb-wrap { background:#0d0d0d; min-height:100vh; color:#e8e0d0; padding-bottom:4rem; }
+
+.pb-header {
+  background:linear-gradient(135deg,#0d0d0d 0%,#1a1200 60%,#0d0d0d 100%);
+  border-bottom:2px solid #c9a84c; padding:3rem 1.5rem 2.5rem;
+}
+.pb-header-inner { max-width:900px; margin:0 auto; }
+.pb-breadcrumb {
+  font-size:.78rem; color:#666; margin-bottom:1.2rem;
+  display:flex; align-items:center; gap:.5rem; flex-wrap:wrap;
+}
+.pb-breadcrumb a { color:#c9a84c; text-decoration:none; }
+.pb-breadcrumb a:hover { text-decoration:underline; }
+.pb-header h1 { font-size:1.6rem; font-weight:800; color:#e8c96a; margin:0 0 .4rem; }
+.pb-header p  { color:#888; font-size:.9rem; margin:0; }
+
+/* Layout */
+.pb-body { max-width:900px; margin:2.5rem auto 0; padding:0 1.5rem; display:grid; grid-template-columns:1fr 340px; gap:2rem; }
+@media(max-width:720px){ .pb-body{ grid-template-columns:1fr; } }
+
+/* Form */
+.pb-form-card {
+  background:#111; border:1px solid #2a1e00; border-radius:10px; padding:2rem 1.8rem;
+}
+.pb-form-card h2 { font-size:1rem; font-weight:700; color:#e8c96a; margin:0 0 1.5rem; }
+
+.pb-field { margin-bottom:1.4rem; }
+.pb-label { display:block; font-size:.82rem; font-weight:600; color:#a0937e; margin-bottom:.5rem; letter-spacing:.03em; }
+.pb-label span { color:#c9a84c; }
+
+.pb-input, .pb-textarea {
+  width:100%; background:#0d0d0d; border:1px solid #2a1e00; border-radius:7px;
+  padding:.75rem 1rem; font-size:.92rem; color:#e8e0d0;
+  transition:border-color .2s; outline:none; box-sizing:border-box;
+}
+.pb-input:focus, .pb-textarea:focus { border-color:#c9a84c; }
+.pb-textarea { resize:vertical; min-height:120px; }
+
+/* Radio groups */
+.pb-radio-group { display:flex; gap:.8rem; flex-wrap:wrap; }
+.pb-radio-opt { flex:1; min-width:120px; }
+.pb-radio-opt input[type=radio] { display:none; }
+.pb-radio-opt label {
+  display:block; padding:.7rem 1rem; border-radius:7px;
+  border:1px solid #2a1e00; background:#0d0d0d;
+  font-size:.85rem; color:#888; cursor:pointer; text-align:center;
+  transition:border-color .2s, color .2s;
+}
+.pb-radio-opt input[type=radio]:checked + label {
+  border-color:#c9a84c; color:#e8c96a; background:#1a1200;
+}
+
+.pb-submit {
+  width:100%; padding:1rem; border-radius:8px; border:none; cursor:pointer;
+  background:linear-gradient(135deg,#c9a84c,#e8c96a);
+  color:#0d0d0d; font-weight:800; font-size:1rem;
+  display:flex; align-items:center; justify-content:center; gap:.6rem;
+  transition:opacity .2s;
+}
+.pb-submit:hover { opacity:.85; }
+
+.pb-errors { background:#3a0f0f; border:1px solid #ef4444; border-radius:7px; padding:.8rem 1rem; margin-bottom:1rem; font-size:.85rem; color:#f87171; }
+
+/* Summary sidebar */
+.pb-summary {
+  background:#111; border:1px solid #2a1e00; border-radius:10px; padding:1.8rem 1.5rem;
+  position:sticky; top:1.5rem; height:fit-content;
+}
+.pb-summary h3 { font-size:.72rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:#c9a84c; margin:0 0 1.2rem; }
+.pb-sum-dept {
+  display:flex; align-items:center; gap:.8rem; padding-bottom:1rem; margin-bottom:1rem;
+  border-bottom:1px solid #2a1e00;
+}
+.pb-sum-icon {
+  width:40px; height:40px; border-radius:8px;
+  background:#2a1e00; display:flex; align-items:center; justify-content:center;
+  font-size:1rem; color:#c9a84c; flex-shrink:0;
+}
+.pb-sum-dept-name { font-weight:700; color:#e8e0d0; font-size:.9rem; }
+.pb-sum-pkg-name  { font-size:.8rem; color:#888; }
+.pb-sum-row { display:flex; justify-content:space-between; font-size:.85rem; padding:.4rem 0; }
+.pb-sum-row .lbl { color:#666; }
+.pb-sum-row .val { color:#e8e0d0; }
+.pb-sum-total {
+  display:flex; justify-content:space-between; align-items:center;
+  margin-top:1rem; padding-top:1rem; border-top:1px solid #2a1e00;
+}
+.pb-sum-total .lbl { font-weight:700; color:#e8e0d0; }
+.pb-sum-total .val { font-size:1.4rem; font-weight:800; color:#e8c96a; }
+
+.pb-secure-note {
+  display:flex; gap:.5rem; align-items:center;
+  font-size:.75rem; color:#555; margin-top:1.2rem;
+}
+.pb-secure-note i { color:#c9a84c; }
+</style>
+
+<div class="pb-wrap">
+
+  <!-- Header -->
+  <div class="pb-header">
+    <div class="pb-header-inner">
+      <div class="pb-breadcrumb">
+        <a href="{% url 'pro_home' %}">Professional Services</a>
+        <i class="fas fa-chevron-right" style="font-size:.6rem"></i>
+        <a href="{{ package.department.get_absolute_url }}">{{ package.department }}</a>
+        <i class="fas fa-chevron-right" style="font-size:.6rem"></i>
+        {{ package.name }}
+      </div>
+      <h1>Book: {{ package.name }}</h1>
+      <p>Fill in your details and describe your request. A professional will contact you after payment.</p>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="pb-body">
+
+    <!-- Form -->
+    <div class="pb-form-card">
+      <h2><i class="fas fa-file-alt" style="color:#c9a84c;margin-right:.5rem"></i>Your Request</h2>
+
+      {% if form.errors %}
+      <div class="pb-errors">
+        Please correct the errors below.
+      </div>
+      {% endif %}
+
+      <form method="post">
+        {% csrf_token %}
+
+        <!-- Client type -->
+        <div class="pb-field">
+          <label class="pb-label">I am booking as a <span>*</span></label>
+          <div class="pb-radio-group">
+            {% for val, label in form.fields.client_type.choices %}
+            <div class="pb-radio-opt">
+              <input type="radio" name="client_type" id="ct_{{ val }}" value="{{ val }}"
+                {% if form.client_type.value == val or not form.client_type.value and val == 'individual' %}checked{% endif %}>
+              <label for="ct_{{ val }}">
+                {% if val == 'individual' %}<i class="fas fa-user" style="margin-right:.4rem"></i>{% else %}<i class="fas fa-building" style="margin-right:.4rem"></i>{% endif %}
+                {{ label }}
+              </label>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Full name -->
+        <div class="pb-field">
+          <label class="pb-label" for="id_full_name">Full Name <span>*</span></label>
+          <input type="text" name="full_name" id="id_full_name" class="pb-input"
+            placeholder="Full name" value="{{ form.full_name.value|default:'' }}" required>
+          {% if form.full_name.errors %}<div style="color:#f87171;font-size:.8rem;margin-top:.3rem">{{ form.full_name.errors.0 }}</div>{% endif %}
+        </div>
+
+        <!-- Email -->
+        <div class="pb-field">
+          <label class="pb-label" for="id_email">Email Address <span>*</span></label>
+          <input type="email" name="email" id="id_email" class="pb-input"
+            placeholder="Email address" value="{{ form.email.value|default:'' }}" required>
+          {% if form.email.errors %}<div style="color:#f87171;font-size:.8rem;margin-top:.3rem">{{ form.email.errors.0 }}</div>{% endif %}
+        </div>
+
+        <!-- Phone -->
+        <div class="pb-field">
+          <label class="pb-label" for="id_phone">Phone Number</label>
+          <input type="text" name="phone" id="id_phone" class="pb-input"
+            placeholder="Phone number (optional)" value="{{ form.phone.value|default:'' }}">
+        </div>
+
+        <!-- Company -->
+        <div class="pb-field">
+          <label class="pb-label" for="id_company_name">Company Name</label>
+          <input type="text" name="company_name" id="id_company_name" class="pb-input"
+            placeholder="Company name (if applicable)" value="{{ form.company_name.value|default:'' }}">
+        </div>
+
+        <!-- Problem -->
+        <div class="pb-field">
+          <label class="pb-label" for="id_problem_description">Describe Your Request <span>*</span></label>
+          <textarea name="problem_description" id="id_problem_description" class="pb-textarea"
+            placeholder="Describe the issue or task you need help with. The more detail you provide, the better we can assist you." required>{{ form.problem_description.value|default:'' }}</textarea>
+          {% if form.problem_description.errors %}<div style="color:#f87171;font-size:.8rem;margin-top:.3rem">{{ form.problem_description.errors.0 }}</div>{% endif %}
+        </div>
+
+        <!-- Urgency -->
+        <div class="pb-field">
+          <label class="pb-label">Urgency</label>
+          <div class="pb-radio-group">
+            {% for val, label in form.fields.urgency.choices %}
+            <div class="pb-radio-opt">
+              <input type="radio" name="urgency" id="urg_{{ val }}" value="{{ val }}"
+                {% if form.urgency.value == val or not form.urgency.value and val == 'standard' %}checked{% endif %}>
+              <label for="urg_{{ val }}">
+                {% if val == 'urgent' %}<i class="fas fa-bolt" style="margin-right:.4rem;color:#fb923c"></i>{% else %}<i class="fas fa-clock" style="margin-right:.4rem"></i>{% endif %}
+                {{ label }}
+              </label>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <button type="submit" class="pb-submit">
+          <i class="fas fa-lock"></i> Confirm &amp; Pay {{ package.price_display }}
+        </button>
+      </form>
+    </div>
+
+    <!-- Summary sidebar -->
+    <div>
+      <div class="pb-summary">
+        <h3>Booking Summary</h3>
+        <div class="pb-sum-dept">
+          <div class="pb-sum-icon"><i class="{{ package.department.icon }}"></i></div>
+          <div>
+            <div class="pb-sum-dept-name">{{ package.department }}</div>
+            <div class="pb-sum-pkg-name">{{ package.name }}</div>
+          </div>
+        </div>
+        <div class="pb-sum-row">
+          <span class="lbl">Type</span>
+          <span class="val">{{ package.get_service_type_display }}</span>
+        </div>
+        <div class="pb-sum-row">
+          <span class="lbl">Duration</span>
+          <span class="val">{{ package.duration }}</span>
+        </div>
+        <div class="pb-sum-total">
+          <span class="lbl">Total</span>
+          <span class="val">{{ package.price_display }}</span>
+        </div>
+        <div class="pb-secure-note">
+          <i class="fas fa-shield-alt"></i>
+          Secure payment. Your information is kept strictly confidential.
+        </div>
+      </div>
+
+      <div style="margin-top:1rem;background:#111;border:1px solid #2a1e00;border-radius:10px;padding:1.3rem 1.2rem;">
+        <div style="font-size:.75rem;color:#c9a84c;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.8rem">What Happens Next</div>
+        <div style="font-size:.82rem;color:#888;line-height:1.8">
+          <div style="margin-bottom:.5rem"><i class="fas fa-check" style="color:#c9a84c;margin-right:.5rem;font-size:.7rem"></i>Booking confirmed by email</div>
+          <div style="margin-bottom:.5rem"><i class="fas fa-check" style="color:#c9a84c;margin-right:.5rem;font-size:.7rem"></i>HQ assigns a professional</div>
+          <div><i class="fas fa-check" style="color:#c9a84c;margin-right:.5rem;font-size:.7rem"></i>Professional contacts you directly</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

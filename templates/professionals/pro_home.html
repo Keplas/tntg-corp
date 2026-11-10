@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% block title %}Professional Services — T&TG Trade Corporation{% endblock %}
+
+{% block content %}
+<style>
+.ps-wrap { background:#0d0d0d; min-height:100vh; color:#e8e0d0; }
+
+/* Hero */
+.ps-hero {
+  background: linear-gradient(135deg,#0d0d0d 0%,#1a1200 50%,#0d0d0d 100%);
+  border-bottom:2px solid #c9a84c;
+  padding:5rem 1.5rem 4rem;
+  text-align:center;
+}
+.ps-hero-eyebrow {
+  font-size:.72rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase;
+  color:#c9a84c; margin-bottom:1rem;
+}
+.ps-hero h1 {
+  font-size:clamp(2rem,5vw,3.2rem); font-weight:800; color:#fff;
+  line-height:1.15; margin:0 0 1.2rem;
+}
+.ps-hero h1 span { color:#e8c96a; }
+.ps-hero p {
+  max-width:600px; margin:0 auto 2rem; font-size:1.05rem; color:#b0a890; line-height:1.7;
+}
+.ps-hero-badges { display:flex; gap:.8rem; justify-content:center; flex-wrap:wrap; }
+.ps-hero-badge {
+  display:inline-flex; align-items:center; gap:.5rem;
+  padding:.45rem 1rem; border-radius:20px; font-size:.8rem; font-weight:600;
+  background:rgba(201,168,76,.1); border:1px solid rgba(201,168,76,.3); color:#c9a84c;
+}
+
+/* Departments grid */
+.ps-body { max-width:1100px; margin:0 auto; padding:4rem 1.5rem; }
+.ps-section-title {
+  font-size:.72rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
+  color:#c9a84c; margin-bottom:2rem; text-align:center;
+}
+.ps-depts {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:1.5rem;
+}
+.ps-dept-card {
+  background:#111; border:1px solid #2a1e00; border-radius:12px;
+  padding:2rem 1.8rem; text-decoration:none;
+  display:flex; flex-direction:column; gap:1rem;
+  transition:border-color .2s, transform .2s, background .2s;
+}
+.ps-dept-card:hover {
+  border-color:#c9a84c; background:#181000;
+  transform:translateY(-3px); text-decoration:none;
+}
+.ps-dept-icon {
+  width:52px; height:52px; border-radius:12px;
+  background:linear-gradient(135deg,#2a1e00,#1a1200);
+  border:1px solid #3a2c00;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.3rem; color:#c9a84c;
+}
+.ps-dept-name { font-size:1.15rem; font-weight:700; color:#e8c96a; }
+.ps-dept-tagline { font-size:.88rem; color:#888; line-height:1.6; }
+.ps-dept-arrow {
+  margin-top:auto; font-size:.8rem; color:#c9a84c;
+  display:flex; align-items:center; gap:.4rem;
+}
+
+/* How it works */
+.ps-how { background:#0a0a0a; border-top:1px solid #1a1200; border-bottom:1px solid #1a1200; padding:4rem 1.5rem; }
+.ps-how-inner { max-width:900px; margin:0 auto; }
+.ps-how-steps {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:1.5rem; margin-top:2rem;
+}
+.ps-how-step { text-align:center; padding:1.5rem 1rem; }
+.ps-how-num {
+  width:44px; height:44px; border-radius:50%;
+  background:linear-gradient(135deg,#2a1e00,#1a1200);
+  border:2px solid #c9a84c;
+  display:flex; align-items:center; justify-content:center;
+  font-size:.9rem; font-weight:800; color:#e8c96a;
+  margin:0 auto 1rem;
+}
+.ps-how-step h4 { font-size:.95rem; font-weight:700; color:#e8e0d0; margin-bottom:.5rem; }
+.ps-how-step p  { font-size:.82rem; color:#888; line-height:1.6; margin:0; }
+
+/* CTA strip */
+.ps-cta {
+  max-width:1100px; margin:0 auto; padding:3rem 1.5rem;
+  display:flex; align-items:center; justify-content:space-between; gap:1.5rem; flex-wrap:wrap;
+}
+.ps-cta h3 { font-size:1.3rem; font-weight:700; color:#e8c96a; margin:0 0 .4rem; }
+.ps-cta p  { font-size:.9rem; color:#888; margin:0; }
+.ps-cta-btn {
+  display:inline-flex; align-items:center; gap:.6rem;
+  background:linear-gradient(135deg,#c9a84c,#e8c96a);
+  color:#0d0d0d; font-weight:700; font-size:.9rem;
+  padding:.85rem 2rem; border-radius:8px; text-decoration:none;
+  white-space:nowrap; transition:opacity .2s;
+}
+.ps-cta-btn:hover { opacity:.85; text-decoration:none; color:#0d0d0d; }
+</style>
+
+<div class="ps-wrap">
+
+  <!-- Hero -->
+  <div class="ps-hero">
+    <div class="ps-hero-eyebrow">T&TG Professional Services</div>
+    <h1>Expert Professionals,<br><span>On Demand</span></h1>
+    <p>Connect with T&TG's qualified in-house professionals for legal, financial, tech, HR, forex, and trade expertise — individuals and businesses welcome.</p>
+    <div class="ps-hero-badges">
+      <span class="ps-hero-badge"><i class="fas fa-shield-alt"></i> Vetted In-House Team</span>
+      <span class="ps-hero-badge"><i class="fas fa-bolt"></i> Fast Response</span>
+      <span class="ps-hero-badge"><i class="fas fa-globe"></i> Individuals &amp; Businesses</span>
+      <span class="ps-hero-badge"><i class="fas fa-lock"></i> Secure &amp; Confidential</span>
+    </div>
+  </div>
+
+  <!-- Departments -->
+  <div class="ps-body">
+    <div class="ps-section-title">Choose a Department</div>
+    <div class="ps-depts">
+      {% for dept in departments %}
+      <a href="{{ dept.get_absolute_url }}" class="ps-dept-card">
+        <div class="ps-dept-icon"><i class="{{ dept.icon }}"></i></div>
+        <div>
+          <div class="ps-dept-name">{{ dept.name }}</div>
+          {% if dept.tagline %}
+          <div class="ps-dept-tagline" style="margin-top:.4rem">{{ dept.tagline }}</div>
+          {% endif %}
+        </div>
+        <div class="ps-dept-arrow">
+          View Services <i class="fas fa-arrow-right"></i>
+        </div>
+      </a>
+      {% empty %}
+      <div style="grid-column:1/-1;text-align:center;color:#555;padding:3rem">
+        <i class="fas fa-tools" style="font-size:2rem;margin-bottom:1rem;display:block"></i>
+        Service departments are being configured. Check back soon.
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <div class="ps-how">
+    <div class="ps-how-inner">
+      <div class="ps-section-title">How It Works</div>
+      <div class="ps-how-steps">
+        <div class="ps-how-step">
+          <div class="ps-how-num">1</div>
+          <h4>Choose a Service</h4>
+          <p>Browse our departments and select the professional service that matches your need.</p>
+        </div>
+        <div class="ps-how-step">
+          <div class="ps-how-num">2</div>
+          <h4>Describe Your Problem</h4>
+          <p>Fill in a short brief so our professional understands exactly what you need.</p>
+        </div>
+        <div class="ps-how-step">
+          <div class="ps-how-num">3</div>
+          <h4>Secure Payment</h4>
+          <p>Pay securely online. Your booking is confirmed immediately.</p>
+        </div>
+        <div class="ps-how-step">
+          <div class="ps-how-num">4</div>
+          <h4>Get Connected</h4>
+          <p>A qualified T&TG professional contacts you directly within 1–2 business days.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="ps-cta">
+    <div>
+      <h3>Not sure which service you need?</h3>
+      <p>Contact our team and we'll point you in the right direction.</p>
+    </div>
+    <a href="{% url 'contact' %}" class="ps-cta-btn">
+      <i class="fas fa-headset"></i> Contact Us
+    </a>
+  </div>
+
+</div>
+{% endblock %}

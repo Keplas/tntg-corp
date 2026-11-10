@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'accounts',
     'services',
     'training',
+    'professionals',
 ]
 
 # ── Middleware ─────────────────────────────────────────────────────────────────
