@@ -125,7 +125,7 @@
         {{ package.name }}
       </div>
       <h1>Book: {{ package.name }}</h1>
-      <p>Fill in your details and describe your request. A professional will contact you after payment.</p>
+      <p>Fill in your details and describe your request. A professional will contact you shortly.</p>
     </div>
   </div>
 
@@ -216,7 +216,7 @@
         </div>
 
         <button type="submit" class="pb-submit">
-          <i class="fas fa-lock"></i> Confirm &amp; Pay {{ package.price_display }}
+          <i class="fas fa-paper-plane"></i> Submit Request
         </button>
       </form>
     </div>
@@ -240,13 +240,9 @@
           <span class="lbl">Duration</span>
           <span class="val">{{ package.duration }}</span>
         </div>
-        <div class="pb-sum-total">
-          <span class="lbl">Total</span>
-          <span class="val">{{ package.price_display }}</span>
-        </div>
         <div class="pb-secure-note">
           <i class="fas fa-shield-alt"></i>
-          Secure payment. Your information is kept strictly confidential.
+          Your information is kept strictly confidential.
         </div>
       </div>
 
