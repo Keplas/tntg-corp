@@ -13,6 +13,9 @@
   .auth-igt { background:rgba(255,255,255,.04); border:1px solid rgba(201,168,76,.18); border-right:none; color:#c9a84c; }
   .auth-igc { border-left:none !important; border-radius:0 10px 10px 0 !important; }
   .auth-igs { border-left:none !important; background:rgba(255,255,255,.04); border:1px solid rgba(201,168,76,.18); border-left:none; color:#7a6e5f; cursor:pointer; border-radius:0 10px 10px 0 !important; }
+  .auth-pcode { background:rgba(255,255,255,.04) !important; border:1px solid rgba(201,168,76,.18) !important; border-right:none !important; color:#c9a84c !important; border-radius:10px 0 0 10px !important; padding:10px 10px !important; min-width:100px; max-width:112px; cursor:pointer; }
+  .auth-pcode:focus { border-color:rgba(201,168,76,.5) !important; box-shadow:none !important; outline:none; }
+  .auth-pcode option { background:#0d1a2e; color:#e0d5c0; }
   .reg-step { display:none; }
   .reg-step.active { display:block; }
   .step-track { display:flex; align-items:center; justify-content:center; gap:0; margin-bottom:32px; }
@@ -99,7 +102,18 @@
                 </div>
                 <div class="col-md-6">
                   <label class="auth-label">Phone Number</label>
-                  <input type="tel" name="phone" class="form-control auth-fc" placeholder="+1 416 000 0000" value="{{ post.phone|default:'' }}">
+                  <div class="input-group">
+                    <select id="phoneCode" class="auth-pcode">
+                      <option value="+1"   data-cc="CA">CA  +1</option>
+                      <option value="+1"   data-cc="US">US  +1</option>
+                      <option value="+256" data-cc="UG">UG +256</option>
+                      <option value="+254" data-cc="KE">KE +254</option>
+                      <option value="+31"  data-cc="NL">NL  +31</option>
+                      <option value="+81"  data-cc="JP">JP  +81</option>
+                    </select>
+                    <input type="tel" name="phone" id="phoneNum" class="form-control auth-fc auth-igc"
+                           placeholder="416 000 0000" value="{{ post.phone|default:'' }}" autocomplete="tel-national">
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label class="auth-label">Country of Residence *</label>
@@ -310,5 +324,57 @@ function checkPw(pw) {
 document.getElementById('is_partner').addEventListener('change', function() {
   document.getElementById('company-field').style.display = this.checked ? 'block' : 'none';
 });
+
+// ── Phone country code ────────────────────────────────────────────────────────
+(function() {
+  var codeMap = { CA:'+1', US:'+1', UG:'+256', KE:'+254', NL:'+31', JP:'+81' };
+  var phoneNumEl = document.getElementById('phoneNum');
+  var phoneCodeEl = document.getElementById('phoneCode');
+
+  // If form re-rendered with an existing phone value that starts with a code,
+  // strip the code from the display input (the submit handler will re-add it).
+  var existing = phoneNumEl.value.trim();
+  if (existing) {
+    var codes = ['+256','+254','+31','+81','+1'];
+    for (var i = 0; i < codes.length; i++) {
+      if (existing.startsWith(codes[i])) {
+        phoneNumEl.value = existing.slice(codes[i].length).trim();
+        // Try to pre-select the right option
+        var opts = phoneCodeEl.options;
+        for (var j = 0; j < opts.length; j++) {
+          if (opts[j].value === codes[i]) { phoneCodeEl.selectedIndex = j; break; }
+        }
+        break;
+      }
+    }
+  }
+
+  // Auto-select country code when country dropdown changes
+  var countryEl = document.querySelector('select[name="country"]');
+  if (countryEl) {
+    countryEl.addEventListener('change', function() {
+      var cc = this.value.toUpperCase();
+      if (codeMap[cc]) {
+        var opts = phoneCodeEl.options;
+        for (var j = 0; j < opts.length; j++) {
+          if (opts[j].getAttribute('data-cc') === cc) { phoneCodeEl.selectedIndex = j; break; }
+        }
+      }
+    });
+    // Trigger on load if country already set
+    if (countryEl.value) countryEl.dispatchEvent(new Event('change'));
+  }
+
+  // On submit: prepend selected code to phone number
+  var form = phoneNumEl.closest('form');
+  if (form) {
+    form.addEventListener('submit', function() {
+      var num = phoneNumEl.value.trim();
+      if (num) {
+        phoneNumEl.value = phoneCodeEl.value + ' ' + num;
+      }
+    });
+  }
+})();
 </script>
 {% endblock %}
