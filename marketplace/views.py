@@ -23,25 +23,20 @@ def product_list(request):
 
     market   = request.GET.get('market', 'both')
     category = request.GET.get('category', '')
-    gender   = request.GET.get('gender', '')
     query    = request.GET.get('q', '')
     products = Product.objects.filter(is_active=True).select_related("seller")
     if market in ['local', 'international']:
         products = products.filter(market_type__in=[market, 'both'])
     if category:
         products = products.filter(category=category)
-    if gender:
-        products = products.filter(gender_target__in=[gender, 'all'])
     if query:
         products = products.filter(name__icontains=query)
     ctx = {
         'products': products,
         'market':   market,
         'category': category,
-        'gender':   gender,
         'query':    query,
         'categories': [('coffee', 'Coffee')],
-        'genders':    Product._meta.get_field('gender_target').choices,
     }
     return render(request, 'marketplace/product_list.html', ctx)
 

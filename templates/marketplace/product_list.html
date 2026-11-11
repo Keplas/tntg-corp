@@ -41,17 +41,6 @@
  </select>
  </div>
  <div class="col-md-2">
- <label class="form-label">Shop By</label>
- <select name="gender" class="form-select">
- <option value="">Everyone</option>
- {% for val, label in genders %}
- {% if val != 'all' %}
- <option value="{{ val }}" {% if gender == val %}selected{% endif %}>{{ label }}</option>
- {% endif %}
- {% endfor %}
- </select>
- </div>
- <div class="col-md-2">
  <label class="form-label">Market</label>
  <select name="market" class="form-select">
  <option value="">All Markets</option>
@@ -68,13 +57,10 @@
 
  <!-- Category quick links -->
  <div class="d-flex gap-2 flex-wrap mb-3">
- <a href="{% url 'product_list' %}" class="btn btn-sm {% if not category and not gender %}btn-gold{% else %}btn-outline-gold{% endif %}">All</a>
- <a href="?category=coffee" class="btn btn-sm {% if category == 'coffee' %}btn-gold{% else %}btn-outline-gold{% endif %}">All Coffee</a>
- <a href="?category=coffee" class="btn btn-sm {% if category == 'coffee' %}btn-gold{% else %}btn-outline-gold{% endif %}"> Coffee</a>
- <span class="border-start mx-1"></span>
- <a href="?gender=men" class="btn btn-sm {% if gender == 'men' %}btn-gold{% else %}btn-outline-gold{% endif %}">Men</a>
- <a href="?gender=women" class="btn btn-sm {% if gender == 'women' %}btn-gold{% else %}btn-outline-gold{% endif %}">Women</a>
- <a href="?gender=children" class="btn btn-sm {% if gender == 'children' %}btn-gold{% else %}btn-outline-gold{% endif %}">Children</a>
+ <a href="{% url 'product_list' %}" class="btn btn-sm {% if not category %}btn-gold{% else %}btn-outline-gold{% endif %}">All Coffee</a>
+ <a href="?category=coffee&name=arabica" class="btn btn-sm {% if 'arabica' in query|lower %}btn-gold{% else %}btn-outline-gold{% endif %}">Arabica</a>
+ <a href="?category=coffee&name=robusta" class="btn btn-sm {% if 'robusta' in query|lower %}btn-gold{% else %}btn-outline-gold{% endif %}">Robusta</a>
+ <a href="?category=coffee&name=artisanal" class="btn btn-sm {% if 'artisanal' in query|lower %}btn-gold{% else %}btn-outline-gold{% endif %}">Artisanal Goods</a>
  </div>
 
  <div class="d-flex justify-content-between align-items-center mb-3">
@@ -98,12 +84,7 @@
  <div class="m-badge {{ product.market_type }}">{{ product.get_market_type_display }}</div>
  </div>
  <div class="product-body">
- <div class="product-cat">
- {{ product.get_category_display }}
- {% if product.gender_target != 'all' %}
- <span class="ms-1 text-muted" style="font-size:.7rem">· {{ product.get_gender_target_display }}</span>
- {% endif %}
- </div>
+ <div class="product-cat">{{ product.get_category_display }}</div>
  <div class="product-name">{{ product.name }}</div>
  <div class="d-flex align-items-center gap-2 mb-2">
  <div class="product-price">{{ product.currency }} {{ product.price }}</div>
