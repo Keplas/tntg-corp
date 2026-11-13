@@ -51,6 +51,11 @@ EMAIL_PORT          = 587
 EMAIL_USE_TLS       = True
 EMAIL_HOST_USER     = os.environ.get('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL  = os.environ.get('EMAIL_HOST_USER', 'noreply@tntg-corp.com')
+SERVER_EMAIL        = DEFAULT_FROM_EMAIL
+
+# ── Admin restriction — only Tom (superuser) can access /admin/ ───────────────
+TNTG_ADMIN_EMAIL    = os.environ.get('TNTG_ADMIN_EMAIL', 'tom.grouptrade@gmail.com')
 
 # ── Cloudinary ────────────────────────────────────────────────────────────────
 CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME', '')

@@ -109,7 +109,7 @@ def register(request):
             username=d.get('username'),
             email=email,
             password=d.get('password'),
-            is_active=False,   # inactive until email is verified
+            is_active=True,    # active immediately; email verification is optional
             first_name=d.get('first_name', ''),
             last_name=d.get('last_name', ''),
             phone=d.get('phone', ''),
@@ -137,6 +137,8 @@ def register(request):
         verify_url = request.build_absolute_uri(
             reverse('verify_email', kwargs={'token': token})
         )
+        import logging as _logging
+        _email_log = _logging.getLogger('accounts.email')
         try:
             send_mail(
                 subject='Verify your T&TG Trade Corp email',
@@ -147,12 +149,12 @@ def register(request):
                     f'Your unique ID is: {user.unique_id}\n\n'
                     f'If you did not create this account, ignore this email.\n\nT&TG Trade Corp'
                 ),
-                from_email=getattr(djsettings, 'DEFAULT_FROM_EMAIL', ''),
+                from_email=getattr(djsettings, 'DEFAULT_FROM_EMAIL', 'noreply@tntg-corp.com'),
                 recipient_list=[user.email],
-                fail_silently=True,
+                fail_silently=False,
             )
-        except Exception:
-            pass
+        except Exception as _e:
+            _email_log.error('Verification email failed for %s: %s', user.email, _e)
 
         try:
             Notification.notify(
@@ -167,11 +169,11 @@ def register(request):
         except Exception:
             pass
 
-        # Do NOT log in — account stays inactive until email is verified.
+        # Account is active immediately. Email verification link is sent as a bonus.
         messages.success(request,
-            f'Account created! We sent a verification link to {email}. '
-            f'Click it to activate your account. '
-            f'Your T&TG ID will be {user.unique_id}.')
+            f'Account created! You can now log in. '
+            f'We also sent a verification link to {email}. '
+            f'Your T&TG ID is {user.unique_id}.')
         return redirect('registration_email_sent')
     return render(request, 'accounts/register.html')
 
@@ -545,6 +547,8 @@ def forgot_password(request):
             reset_url = request.build_absolute_uri(
                 reverse('reset_password', kwargs={'token': token})
             )
+            import logging as _logging
+            _email_log = _logging.getLogger('accounts.email')
             try:
                 send_mail(
                     subject='Reset your T&TG password',
@@ -554,12 +558,12 @@ def forgot_password(request):
                         f'This link expires in 24 hours.\n\n{reset_url}\n\n'
                         f'If you did not request this, ignore this email.\n\nT&TG Trade Corp'
                     ),
-                    from_email=getattr(djsettings, 'DEFAULT_FROM_EMAIL', ''),
+                    from_email=getattr(djsettings, 'DEFAULT_FROM_EMAIL', 'noreply@tntg-corp.com'),
                     recipient_list=[user.email],
-                    fail_silently=True,
+                    fail_silently=False,
                 )
-            except Exception:
-                pass
+            except Exception as _e:
+                _email_log.error('Password reset email failed for %s: %s', user.email, _e)
         except CustomUser.DoesNotExist:
             pass  # Don't reveal if email exists
 
@@ -593,9 +597,10 @@ def reset_password(request, token):
             user.password_reset_expires = None
             user.login_attempts         = 0
             user.locked_until           = None
+            user.is_active              = True   # re-activate if account was inactive
             user.save(update_fields=[
                 'password', 'password_reset_token', 'password_reset_expires',
-                'login_attempts', 'locked_until'
+                'login_attempts', 'locked_until', 'is_active',
             ])
             messages.success(request, 'Password reset successfully. You can now sign in.')
             return redirect('login')

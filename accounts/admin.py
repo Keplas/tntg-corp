@@ -2,6 +2,15 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser, AvonPointTransaction
 
+# ── Restrict /admin/ to Tom (superuser) only ─────────────────────────────────
+# Any staff member can be assigned is_staff, but only the superuser (Tom) may
+# access the Django admin interface.  We patch the default AdminSite in-place
+# so ALL registered model admins inherit this restriction automatically.
+def _superuser_only(self, request):
+    return request.user.is_active and request.user.is_superuser
+
+admin.site.__class__.has_permission = _superuser_only
+
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
