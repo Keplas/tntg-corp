@@ -1,469 +1,955 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block title %}My Franchise Hub — T&TG Trade Corporation{% endblock %}
 
 {% block content %}
 <style>
-/* ═══════════════════════════════════════════════
-   FRANCHISEE STORE — dark-blue design system
-   ═══════════════════════════════════════════════ */
-.fs-wrap {
-  background: #060f1e;
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800;900&display=swap');
+
+/* ══════════════════════════════════════
+   FRANCHISEE HUB DASHBOARD
+   ══════════════════════════════════════ */
+:root {
+  --hub-bg:    #05101e;
+  --hub-navy:  #0a1930;
+  --hub-card:  #0d1f38;
+  --hub-blue:  #1a4fa0;
+  --hub-accent:#2563eb;
+  --hub-gold:  #f59e0b;
+  --hub-border:rgba(37,99,235,.2);
+  --hub-text:  #c8d8f0;
+  --hub-muted: #6b82a0;
+}
+
+.hub-wrap {
+  background: var(--hub-bg);
   min-height: 100vh;
-  padding: 0 0 4rem;
-  color: #c8d8e8;
+  font-family: 'Manrope', sans-serif;
+  color: var(--hub-text);
 }
 
-/* ── Header banner ───────────────────────────── */
-.fs-header {
-  background: linear-gradient(135deg, #060f1e 0%, #0d1f35 60%, #060f1e 100%);
-  border-bottom: 2px solid #4f8ef7;
-  padding: 2.5rem 2rem 2rem;
-}
-.fs-header-inner {
-  max-width: 1100px;
-  margin: 0 auto;
-  display: flex;
-  align-items: flex-start;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-}
-.fs-avatar {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  border: 2px solid #4f8ef7;
-  background: rgba(79,142,247,.12);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.8rem;
-  color: #4f8ef7;
-  flex-shrink: 0;
-  overflow: hidden;
-}
-.fs-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.fs-header-text h1 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #e8f0fe;
-  margin: 0 0 .25rem;
-}
-.fs-header-text p {
-  font-size: .9rem;
-  color: #7ab0ff;
-  margin: 0;
-}
-.fs-status-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: .4rem;
-  padding: .3rem .9rem;
-  border-radius: 20px;
-  font-size: .78rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .06em;
-  margin-top: .5rem;
-}
-.fs-status-pill.setup      { background: #1e3a5f; color: #60a5fa; border: 1px solid #3b82f6; }
-.fs-status-pill.active     { background: #14300f; color: #4ade80; border: 1px solid #22c55e; }
-.fs-status-pill.paused     { background: #3a2200; color: #fb923c; border: 1px solid #f97316; }
-.fs-status-pill.terminated { background: #3a0f0f; color: #f87171; border: 1px solid #ef4444; }
-
-.fs-ref-badge {
-  margin-left: auto;
-  text-align: right;
-  color: #888;
-  font-size: .82rem;
-}
-.fs-ref-badge span {
-  display: block;
-  color: #7ab0ff;
-  font-size: 1.1rem;
-  font-weight: 700;
-  letter-spacing: .04em;
-}
-
-/* ── Content area ────────────────────────────── */
-.fs-body {
-  max-width: 1100px;
-  margin: 2.5rem auto 0;
+/* ── Inner Hub Nav ─────────────────── */
+.hub-nav {
+  background: var(--hub-navy);
+  border-bottom: 1px solid var(--hub-border);
   padding: 0 1.5rem;
-}
-
-/* ── Section heading ─────────────────────────── */
-.fs-section-title {
-  font-size: .72rem;
-  font-weight: 700;
-  letter-spacing: .15em;
-  text-transform: uppercase;
-  color: #4f8ef7;
-  margin: 2.5rem 0 1rem;
-  padding-bottom: .5rem;
-  border-bottom: 1px solid rgba(79,142,247,.18);
-}
-
-/* ── Stats row ───────────────────────────────── */
-.fs-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 1rem;
-}
-.fs-stat-card {
-  background: #0d1a26;
-  border: 1px solid rgba(79,142,247,.18);
-  border-radius: 8px;
-  padding: 1.2rem 1rem;
-  text-align: center;
-  transition: border-color .2s;
-}
-.fs-stat-card:hover { border-color: #4f8ef7; }
-.fs-stat-icon {
-  font-size: 1.4rem;
-  color: #4f8ef7;
-  margin-bottom: .5rem;
-}
-.fs-stat-label {
-  font-size: .75rem;
-  color: #6b8099;
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  margin-bottom: .3rem;
-}
-.fs-stat-value {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #e8f0fe;
-}
-.fs-stat-sub {
-  font-size: .78rem;
-  color: #666;
-  margin-top: .2rem;
-}
-
-/* ── Info grid ───────────────────────────────── */
-.fs-info-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-@media (max-width: 600px) {
-  .fs-info-grid { grid-template-columns: 1fr; }
-  .fs-ref-badge { display: none; }
-}
-.fs-info-card {
-  background: #0d1a26;
-  border: 1px solid rgba(79,142,247,.18);
-  border-radius: 8px;
-  padding: 1.2rem 1.3rem;
-}
-.fs-info-card h3 {
-  font-size: .78rem;
-  font-weight: 700;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: #4f8ef7;
-  margin: 0 0 .9rem;
-}
-.fs-info-row {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: .5rem;
-  padding: .45rem 0;
-  border-bottom: 1px solid rgba(79,142,247,.08);
-  font-size: .88rem;
+  align-items: center;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
-.fs-info-row:last-child { border-bottom: none; }
-.fs-info-row .label { color: #6b8099; white-space: nowrap; }
-.fs-info-row .value { color: #c8d8e8; text-align: right; }
-
-/* ── Action tiles ────────────────────────────── */
-.fs-actions {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1rem;
+.hub-nav::-webkit-scrollbar { display: none; }
+.hub-nav-brand {
+  display: flex; align-items: center; gap: 10px;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1rem;
+  white-space: nowrap;
+  padding: 14px 0;
+  margin-right: 24px;
+  border-right: 1px solid var(--hub-border);
+  padding-right: 24px;
 }
-.fs-action-tile {
-  background: #0d1a26;
-  border: 1px solid rgba(79,142,247,.18);
-  border-radius: 8px;
-  padding: 1.5rem 1.3rem;
-  display: flex;
-  flex-direction: column;
-  gap: .6rem;
+.hub-nav-brand span { color: var(--hub-gold); }
+.hub-nav-links {
+  display: flex; align-items: center; gap: 2px;
+  flex: 1;
+}
+.hub-nav-link {
+  display: flex; align-items: center; gap: 7px;
+  padding: 14px 16px;
+  color: #8aa0bc;
+  font-size: .84rem;
+  font-weight: 600;
   text-decoration: none;
-  transition: border-color .2s, background .2s;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color .15s, border-color .15s;
+}
+.hub-nav-link:hover { color: #fff; text-decoration: none; }
+.hub-nav-link.active {
+  color: #fff;
+  border-bottom-color: var(--hub-accent);
+  background: rgba(37,99,235,.07);
+}
+.hub-nav-link i { font-size: .8rem; }
+.hub-nav-right {
+  display: flex; align-items: center; gap: 12px;
+  margin-left: auto;
+  padding-left: 16px;
+}
+.hub-notif {
+  position: relative;
+  color: #8aa0bc;
+  font-size: 1.1rem;
   cursor: pointer;
+  transition: color .15s;
 }
-.fs-action-tile:hover {
-  border-color: #4f8ef7;
-  background: #0f2440;
-  text-decoration: none;
+.hub-notif:hover { color: #fff; }
+.hub-notif-badge {
+  position: absolute;
+  top: -5px; right: -5px;
+  background: #ef4444;
+  color: #fff;
+  font-size: .58rem;
+  font-weight: 800;
+  min-width: 16px; height: 16px;
+  border-radius: 99px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 3px;
 }
-.fs-action-tile.coming-soon {
-  opacity: .5;
-  cursor: not-allowed;
+.hub-user-chip {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(37,99,235,.12);
+  border: 1px solid var(--hub-border);
+  border-radius: 99px;
+  padding: 5px 12px 5px 5px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.hub-user-chip:hover { background: rgba(37,99,235,.2); }
+.hub-user-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--hub-blue);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .75rem;
+  color: #fff;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.hub-user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.hub-user-name { font-size: .8rem; font-weight: 600; color: #c8d8f0; }
+
+/* ── Status pill ───────────────────── */
+.hub-status {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.hub-status.setup      { background: rgba(59,130,246,.15); color: #60a5fa; border: 1px solid rgba(59,130,246,.3); }
+.hub-status.active     { background: rgba(34,197,94,.12);  color: #4ade80; border: 1px solid rgba(34,197,94,.3); }
+.hub-status.paused     { background: rgba(249,115,22,.12); color: #fb923c; border: 1px solid rgba(249,115,22,.3); }
+.hub-status.terminated { background: rgba(239,68,68,.12);  color: #f87171; border: 1px solid rgba(239,68,68,.3); }
+
+/* ── Hero Banner ───────────────────── */
+.hub-hero {
+  background: linear-gradient(130deg, #040e1c 0%, #071428 45%, #0a1f40 100%);
+  border-bottom: 1px solid var(--hub-border);
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+}
+/* world-map grid pattern */
+.hub-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(37,99,235,.12) 1px, transparent 1px);
+  background-size: 32px 32px;
   pointer-events: none;
 }
-.fs-tile-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 8px;
-  background: rgba(79,142,247,.12);
+/* blue radial glow left */
+.hub-hero::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: -80px;
+  transform: translateY(-50%);
+  width: 500px; height: 400px;
+  background: radial-gradient(ellipse, rgba(37,99,235,.18) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hub-hero-inner {
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: #4f8ef7;
-  font-size: 1.1rem;
+  min-height: 200px;
+  position: relative; z-index: 1;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  gap: 24px;
 }
-.fs-tile-name {
-  font-weight: 600;
-  color: #e8f0fe;
-  font-size: .95rem;
+.hub-hero-text { flex: 1; padding: 36px 0; }
+.hub-hero-text h2 {
+  font-size: clamp(1.4rem, 3.5vw, 2rem);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.15;
+  margin: 0 0 10px;
+  text-wrap: balance;
 }
-.fs-tile-desc {
-  font-size: .82rem;
-  color: #6b8099;
-  line-height: 1.5;
+.hub-hero-text h2 span { color: var(--hub-gold); }
+.hub-hero-text p {
+  color: #7a94b8;
+  font-size: .9rem;
+  line-height: 1.65;
+  max-width: 440px;
+  margin: 0 0 20px;
 }
-.fs-tile-badge {
-  display: inline-block;
-  font-size: .68rem;
-  font-weight: 700;
-  letter-spacing: .07em;
-  text-transform: uppercase;
-  padding: .15rem .5rem;
-  border-radius: 4px;
-  background: #1e3a5f;
-  color: #60a5fa;
-  align-self: flex-start;
+.hub-hero-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--hub-gold);
+  color: #05101e;
+  font-weight: 800;
+  font-size: .85rem;
+  padding: 11px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background .15s, transform .15s;
 }
-.fs-tile-badge.soon { background: rgba(79,142,247,.12); color: #7ab0ff; }
-
-/* ── Notice banner ───────────────────────────── */
-.fs-notice {
-  background: rgba(79,142,247,.06);
-  border: 1px solid rgba(79,142,247,.2);
-  border-left: 3px solid #4f8ef7;
-  border-radius: 6px;
-  padding: 1rem 1.2rem;
+.hub-hero-btn:hover { background: #fbbf24; transform: translateY(-1px); text-decoration: none; color: #05101e; }
+.hub-hero-img {
+  width: 320px;
+  min-width: 220px;
+  align-self: flex-end;
+  padding-top: 20px;
+  flex-shrink: 0;
   display: flex;
-  gap: .8rem;
-  align-items: flex-start;
-  font-size: .88rem;
-  color: #4f8ef7;
-  margin-bottom: 1.5rem;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 10px;
 }
-.fs-notice i { margin-top: .1rem; flex-shrink: 0; }
-.fs-notice p { margin: 0; color: #93c5fd; }
+@media (max-width: 700px) { .hub-hero-img { display: none; } }
+.hub-hero-store {
+  width: 170px;
+  border-radius: 10px 10px 0 0;
+  overflow: hidden;
+  border: 1px solid rgba(37,99,235,.3);
+  border-bottom: none;
+}
+.hub-hero-store img {
+  width: 100%; height: 110px;
+  object-fit: cover;
+  filter: brightness(.75) saturate(.9);
+}
+.hub-hero-person {
+  width: 110px;
+  align-self: flex-end;
+}
+.hub-hero-person img {
+  width: 100%;
+  filter: brightness(.85) saturate(.8) contrast(1.1);
+}
+
+/* ── Stats Row ─────────────────────── */
+.hub-stats-row {
+  background: #071122;
+  border-bottom: 1px solid var(--hub-border);
+}
+.hub-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  max-width: 1240px;
+  margin: 0 auto;
+}
+@media (max-width: 700px) { .hub-stats-grid { grid-template-columns: repeat(2, 1fr); } }
+.hub-stat {
+  padding: 20px 24px;
+  border-right: 1px solid var(--hub-border);
+  display: flex; align-items: center; gap: 14px;
+  transition: background .15s;
+}
+.hub-stat:last-child { border-right: none; }
+@media (max-width: 700px) {
+  .hub-stat:nth-child(2) { border-right: none; }
+  .hub-stat:nth-child(1), .hub-stat:nth-child(2) { border-bottom: 1px solid var(--hub-border); }
+}
+.hub-stat:hover { background: rgba(37,99,235,.05); }
+.hub-stat-ico {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+.hub-stat-ico.blue   { background: rgba(37,99,235,.18);  color: #60a5fa; }
+.hub-stat-ico.green  { background: rgba(34,197,94,.15);  color: #4ade80; }
+.hub-stat-ico.purple { background: rgba(139,92,246,.18); color: #a78bfa; }
+.hub-stat-ico.gold   { background: rgba(245,158,11,.15); color: #fbbf24; }
+.hub-stat-label {
+  font-size: .73rem;
+  color: var(--hub-muted);
+  margin-bottom: 3px;
+}
+.hub-stat-val {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.1;
+  display: flex; align-items: center; gap: 7px;
+}
+.hub-stat-delta {
+  font-size: .75rem;
+  font-weight: 700;
+  color: #4ade80;
+}
+.hub-stat-link {
+  display: block;
+  font-size: .73rem;
+  color: #3b82f6;
+  margin-top: 5px;
+  text-decoration: none;
+  transition: color .15s;
+}
+.hub-stat-link:hover { color: #60a5fa; text-decoration: none; }
+
+/* ── Main body ─────────────────────── */
+.hub-body {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 28px 1.5rem 48px;
+  display: grid;
+  grid-template-columns: 320px 1fr 300px;
+  gap: 20px;
+  align-items: start;
+}
+@media (max-width: 1100px) {
+  .hub-body { grid-template-columns: 1fr 1fr; }
+  .hub-col-chart { grid-column: 1 / -1; }
+}
+@media (max-width: 680px) {
+  .hub-body { grid-template-columns: 1fr; }
+}
+
+/* ── Panel base ────────────────────── */
+.hub-panel {
+  background: var(--hub-card);
+  border: 1px solid var(--hub-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.hub-panel-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--hub-border);
+  background: rgba(10,25,48,.6);
+}
+.hub-panel-title {
+  display: flex; align-items: center; gap: 9px;
+  font-weight: 800;
+  font-size: .88rem;
+  color: #e0eaff;
+}
+.hub-panel-title i { color: var(--hub-gold); font-size: .9rem; }
+.hub-panel-link {
+  font-size: .78rem;
+  font-weight: 600;
+  color: #3b82f6;
+  text-decoration: none;
+  display: flex; align-items: center; gap: 5px;
+  transition: color .15s;
+}
+.hub-panel-link:hover { color: #60a5fa; text-decoration: none; }
+
+/* ── Quick Actions ─────────────────── */
+.hub-qa-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--hub-border);
+}
+.hub-qa-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px 12px;
+  background: var(--hub-card);
+  text-decoration: none;
+  transition: background .15s;
+  text-align: center;
+}
+.hub-qa-item:hover { background: rgba(37,99,235,.1); text-decoration: none; }
+.hub-qa-ico {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: rgba(37,99,235,.12);
+  border: 1px solid rgba(37,99,235,.22);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  color: #60a5fa;
+  transition: background .15s;
+}
+.hub-qa-item:hover .hub-qa-ico { background: rgba(37,99,235,.2); }
+.hub-qa-label {
+  font-size: .78rem;
+  font-weight: 700;
+  color: #c8d8f0;
+  line-height: 1.2;
+}
+
+/* ── Announcements ─────────────────── */
+.hub-ann-list { padding: 4px 0; }
+.hub-ann-item {
+  display: flex;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(37,99,235,.1);
+  transition: background .15s;
+}
+.hub-ann-item:last-child { border-bottom: none; }
+.hub-ann-item:hover { background: rgba(37,99,235,.05); }
+.hub-ann-badge {
+  flex-shrink: 0;
+  margin-top: 2px;
+  font-size: .62rem;
+  font-weight: 800;
+  letter-spacing: .07em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  height: fit-content;
+}
+.hub-ann-badge.new    { background: rgba(239,68,68,.15);  color: #f87171; border: 1px solid rgba(239,68,68,.3); }
+.hub-ann-badge.info   { background: rgba(59,130,246,.15); color: #60a5fa; border: 1px solid rgba(59,130,246,.3); }
+.hub-ann-badge.update { background: rgba(245,158,11,.15); color: #fbbf24; border: 1px solid rgba(245,158,11,.3); }
+.hub-ann-title {
+  font-weight: 700;
+  font-size: .84rem;
+  color: #e0eaff;
+  margin-bottom: 3px;
+}
+.hub-ann-desc { font-size: .78rem; color: var(--hub-muted); line-height: 1.5; }
+.hub-ann-date { font-size: .72rem; color: #3d5570; margin-top: 4px; }
+
+/* ── Performance chart ─────────────── */
+.hub-chart-wrap { padding: 18px; }
+.hub-chart-legend {
+  display: flex; gap: 16px;
+  margin-bottom: 14px;
+}
+.hub-legend-dot {
+  display: flex; align-items: center; gap: 5px;
+  font-size: .75rem;
+  color: var(--hub-muted);
+  font-weight: 600;
+}
+.hub-legend-dot span {
+  width: 10px; height: 10px; border-radius: 2px;
+}
+.hub-bars {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  height: 160px;
+  padding-top: 20px;
+  border-bottom: 1px solid rgba(37,99,235,.2);
+}
+.hub-bar-group {
+  flex: 1;
+  display: flex;
+  gap: 3px;
+  align-items: flex-end;
+  position: relative;
+}
+.hub-bar {
+  flex: 1;
+  border-radius: 4px 4px 0 0;
+  min-height: 4px;
+  position: relative;
+  transition: opacity .2s;
+}
+.hub-bar:hover { opacity: .8; }
+.hub-bar.sales  { background: #2563eb; }
+.hub-bar.target { background: var(--hub-gold); }
+.hub-bar-val {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: .62rem;
+  font-weight: 700;
+  color: #8aa0bc;
+  white-space: nowrap;
+}
+.hub-bar-labels {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+.hub-bar-lbl {
+  flex: 1;
+  text-align: center;
+  font-size: .73rem;
+  color: var(--hub-muted);
+  font-weight: 600;
+}
+
+/* ── Bottom row ────────────────────── */
+.hub-bottom {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.5rem 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+@media (max-width: 680px) { .hub-bottom { grid-template-columns: 1fr; } }
+
+/* Support card */
+.hub-support {
+  background: var(--hub-card);
+  border: 1px solid var(--hub-border);
+  border-radius: 12px;
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.hub-support-ico {
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  background: rgba(37,99,235,.12);
+  border: 1px solid rgba(37,99,235,.25);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem;
+  color: #60a5fa;
+  flex-shrink: 0;
+}
+.hub-support-text { flex: 1; min-width: 150px; }
+.hub-support-text strong {
+  display: block;
+  color: #e0eaff;
+  font-weight: 800;
+  font-size: .95rem;
+  margin-bottom: 4px;
+}
+.hub-support-text p {
+  color: var(--hub-muted);
+  font-size: .8rem;
+  margin: 0 0 2px;
+}
+.hub-support-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--hub-gold);
+  color: #05101e;
+  font-weight: 800;
+  font-size: .82rem;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: background .15s;
+}
+.hub-support-btn:hover { background: #fbbf24; color: #05101e; text-decoration: none; }
+
+/* Resources card */
+.hub-resources {
+  background: var(--hub-card);
+  border: 1px solid var(--hub-border);
+  border-radius: 12px;
+  padding: 22px 24px;
+}
+.hub-res-head {
+  display: flex; align-items: center; gap: 9px;
+  font-weight: 800;
+  font-size: .9rem;
+  color: #e0eaff;
+  margin-bottom: 16px;
+}
+.hub-res-head i { color: var(--hub-gold); }
+.hub-res-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+}
+.hub-res-link {
+  display: flex; align-items: center; gap: 7px;
+  font-size: .82rem;
+  font-weight: 600;
+  color: #3b82f6;
+  text-decoration: none;
+  transition: color .15s;
+}
+.hub-res-link:hover { color: #60a5fa; text-decoration: none; }
+.hub-res-link i { font-size: .8rem; }
+
+/* ── Hub Footer ────────────────────── */
+.hub-footer {
+  background: var(--hub-navy);
+  border-top: 1px solid var(--hub-border);
+  padding: 20px 1.5rem;
+}
+.hub-footer-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-between;
+}
+.hub-footer-brand {
+  display: flex; align-items: center; gap: 10px;
+}
+.hub-footer-brand .tagline {
+  font-style: italic;
+  color: var(--hub-muted);
+  font-size: .82rem;
+}
+.hub-footer-info {
+  display: flex; flex-wrap: wrap; gap: 16px;
+}
+.hub-footer-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: .78rem;
+  color: var(--hub-muted);
+  text-decoration: none;
+}
+.hub-footer-item i { color: #3b82f6; font-size: .8rem; }
+.hub-footer-social {
+  display: flex; gap: 10px;
+}
+.hub-soc {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(37,99,235,.12);
+  border: 1px solid rgba(37,99,235,.22);
+  display: flex; align-items: center; justify-content: center;
+  color: #60a5fa;
+  font-size: .82rem;
+  text-decoration: none;
+  transition: background .15s;
+}
+.hub-soc:hover { background: rgba(37,99,235,.25); color: #93c5fd; text-decoration: none; }
+
+/* ── Setup notice ──────────────────── */
+.hub-notice {
+  background: rgba(37,99,235,.07);
+  border: 1px solid rgba(37,99,235,.22);
+  border-left: 3px solid #3b82f6;
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex; gap: 10px; align-items: flex-start;
+  font-size: .84rem;
+  color: #93c5fd;
+  max-width: 1240px;
+  margin: 20px auto 0;
+  padding-left: calc(1.5rem + 13px);
+}
+.hub-notice i { margin-top: 2px; flex-shrink: 0; }
+.hub-notice p { margin: 0; }
 </style>
 
-<div class="fs-wrap">
+<div class="hub-wrap">
 
-  <!-- ── Header ──────────────────────────────────── -->
-  <div class="fs-header">
-    <div class="fs-header-inner">
-      <div class="fs-avatar">
-        {% if profile.photo %}
-          <img src="{{ profile.photo }}" alt="{{ profile.display_name }}">
-        {% else %}
-          <i class="fas fa-store"></i>
-        {% endif %}
+  <!-- ── Inner Hub Nav ────────────────────────────── -->
+  <nav class="hub-nav">
+    <div class="hub-nav-brand">
+      <i class="fas fa-store"></i>
+      <span>Franchisee</span>&nbsp;Hub
+    </div>
+    <div class="hub-nav-links">
+      <a href="{% url 'my_franchise_store' %}" class="hub-nav-link active">
+        <i class="fas fa-th-large"></i> Dashboard
+      </a>
+      <a href="{% url 'franchise_my_products' %}" class="hub-nav-link">
+        <i class="fas fa-box-open"></i> My Franchise
+      </a>
+      <a href="{% url 'franchise_my_products' %}" class="hub-nav-link">
+        <i class="fas fa-tags"></i> Products
+      </a>
+      <a href="{% url 'join_program' %}" class="hub-nav-link">
+        <i class="fas fa-graduation-cap"></i> Training
+      </a>
+      <a href="{% url 'contact' %}" class="hub-nav-link">
+        <i class="fas fa-headset"></i> Support
+      </a>
+    </div>
+    <div class="hub-nav-right">
+      <div class="hub-notif">
+        <i class="fas fa-bell"></i>
+        {% if new_orders %}<span class="hub-notif-badge">{{ new_orders }}</span>{% endif %}
       </div>
-
-      <div class="fs-header-text">
-        <h1>{{ profile.display_name }}</h1>
-        <p>{{ profile.get_franchise_type_display }} &nbsp;&middot;&nbsp; {{ profile.territory }}{% if profile.country %}, {{ profile.country }}{% endif %}</p>
-        <div class="fs-status-pill {{ profile.operational_status }}">
-          {% if profile.operational_status == 'setup' %}
-            <i class="fas fa-tools"></i> Setting Up
-          {% elif profile.operational_status == 'active' %}
-            <i class="fas fa-circle" style="font-size:.5rem"></i> Active
-          {% elif profile.operational_status == 'paused' %}
-            <i class="fas fa-pause-circle"></i> Paused
+      <div class="hub-user-chip">
+        <div class="hub-user-avatar">
+          {% if profile.photo %}
+            <img src="{{ profile.photo }}" alt="">
           {% else %}
-            <i class="fas fa-times-circle"></i> Terminated
+            <i class="fas fa-user" style="font-size:.7rem"></i>
           {% endif %}
         </div>
+        <span class="hub-user-name">{{ request.user.get_full_name|default:request.user.username }}</span>
+        <i class="fas fa-chevron-down" style="font-size:.6rem;color:#6b82a0;margin-left:2px"></i>
       </div>
+    </div>
+  </nav>
 
-      <div class="fs-ref-badge">
-        Franchise Reference
-        <span>{{ profile.ref }}</span>
-        <div style="color:#555;font-size:.75rem;margin-top:.3rem">
-          Since {{ profile.approved_at|date:"N j, Y" }}
+  <!-- ── Setup notice ───────────────────────────── -->
+  {% if profile.operational_status == 'setup' %}
+  <div class="hub-notice" style="padding-left:1.5rem">
+    <i class="fas fa-info-circle"></i>
+    <p>Your franchise is in the <strong>setup phase</strong>. Our team will contact you to complete onboarding. Features unlock once your store is activated.</p>
+  </div>
+  {% endif %}
+
+  <!-- ── Hero Banner ────────────────────────────── -->
+  <div class="hub-hero">
+    <div class="hub-hero-inner">
+      <div class="hub-hero-text">
+        <h2>Welcome to the<br>T&TG <span>Franchisee Hub!</span></h2>
+        <p>Your central platform to manage your franchise, access resources, grow your business and stay connected with T&TG.</p>
+        <a href="#quick-actions" class="hub-hero-btn">
+          <i class="fas fa-th-large"></i> Explore Your Hub
+        </a>
+      </div>
+      <div class="hub-hero-img">
+        <div class="hub-hero-store">
+          <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&q=75" alt="T&TG Store">
+        </div>
+        <div class="hub-hero-person">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=75" alt="">
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ── Body ───────────────────────────────────── -->
-  <div class="fs-body">
+  <!-- ── Stats Row ──────────────────────────────── -->
+  <div class="hub-stats-row">
+    <div class="hub-stats-grid">
 
-    {% if profile.operational_status == 'setup' %}
-    <div class="fs-notice" style="margin-top:1.5rem">
-      <i class="fas fa-info-circle"></i>
-      <p>Your franchise is in the <strong>setup phase</strong>. Our team will contact you soon to complete your onboarding. Features below will unlock once your store is activated.</p>
+      <div class="hub-stat">
+        <div class="hub-stat-ico blue"><i class="fas fa-store"></i></div>
+        <div>
+          <div class="hub-stat-label">Your Franchise ID</div>
+          <div class="hub-stat-val">{{ profile.ref }}</div>
+          <a href="{% url 'my_franchise_applications' %}" class="hub-stat-link">View Details <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+
+      <div class="hub-stat">
+        <div class="hub-stat-ico green"><i class="fas fa-chart-line"></i></div>
+        <div>
+          <div class="hub-stat-label">Your Performance</div>
+          <div class="hub-stat-val">
+            <span class="hub-status {{ profile.operational_status }}">
+              {% if profile.operational_status == 'active' %}Active
+              {% elif profile.operational_status == 'setup' %}Setting Up
+              {% elif profile.operational_status == 'paused' %}Paused
+              {% else %}Terminated{% endif %}
+            </span>
+          </div>
+          <a href="{% url 'franchise_sales_reports' %}" class="hub-stat-link">View Analytics <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+
+      <div class="hub-stat">
+        <div class="hub-stat-ico purple"><i class="fas fa-shopping-cart"></i></div>
+        <div>
+          <div class="hub-stat-label">Total Sales (This Month)</div>
+          <div class="hub-stat-val">${{ revenue_mtd|floatformat:0 }}</div>
+          <a href="{% url 'franchise_sales_reports' %}" class="hub-stat-link">View Reports <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+
+      <div class="hub-stat">
+        <div class="hub-stat-ico gold"><i class="fas fa-star"></i></div>
+        <div>
+          <div class="hub-stat-label">Orders This Month</div>
+          <div class="hub-stat-val">{{ orders_mtd }}<span class="hub-stat-delta" style="font-size:.8rem;margin-left:4px">{{ new_orders }} new</span></div>
+          <a href="{% url 'franchise_orders' %}" class="hub-stat-link">View Orders <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+
     </div>
-    {% endif %}
+  </div>
 
-    <!-- Stats -->
-    <div class="fs-section-title">Overview</div>
-    <div class="fs-stats">
-      <div class="fs-stat-card">
-        <div class="fs-stat-icon"><i class="fas fa-box-open"></i></div>
-        <div class="fs-stat-label">Products Listed</div>
-        <div class="fs-stat-value">{{ product_count }}</div>
-        <div class="fs-stat-sub">{{ approved_products }} approved</div>
+  <!-- ── Main Three Columns ─────────────────────── -->
+  <div class="hub-body" id="quick-actions">
+
+    <!-- Col 1: Quick Actions -->
+    <div class="hub-panel">
+      <div class="hub-panel-head">
+        <div class="hub-panel-title"><i class="fas fa-bolt"></i> Quick Actions</div>
       </div>
-      <div class="fs-stat-card">
-        <div class="fs-stat-icon"><i class="fas fa-shopping-cart"></i></div>
-        <div class="fs-stat-label">Orders This Month</div>
-        <div class="fs-stat-value">{{ orders_mtd }}</div>
-        <div class="fs-stat-sub">{{ new_orders }} new</div>
-      </div>
-      <div class="fs-stat-card">
-        <div class="fs-stat-icon"><i class="fas fa-dollar-sign"></i></div>
-        <div class="fs-stat-label">Revenue (MTD)</div>
-        <div class="fs-stat-value">${{ revenue_mtd|floatformat:0 }}</div>
-        <div class="fs-stat-sub">Month to date</div>
-      </div>
-      <div class="fs-stat-card">
-        <div class="fs-stat-icon"><i class="fas fa-users"></i></div>
-        <div class="fs-stat-label">Customers</div>
-        <div class="fs-stat-value">{{ customer_count }}</div>
-        <div class="fs-stat-sub">{{ stock_pending }} stock requests pending</div>
+      <div class="hub-qa-grid">
+        <a href="{% url 'franchise_my_products' %}" class="hub-qa-item">
+          <div class="hub-qa-ico"><i class="fas fa-box-open"></i></div>
+          <div class="hub-qa-label">Browse Products</div>
+        </a>
+        <a href="{% url 'join_program' %}" class="hub-qa-item">
+          <div class="hub-qa-ico"><i class="fas fa-graduation-cap"></i></div>
+          <div class="hub-qa-label">Access Training</div>
+        </a>
+        <a href="{% url 'franchise_sales_reports' %}" class="hub-qa-item">
+          <div class="hub-qa-ico"><i class="fas fa-chart-bar"></i></div>
+          <div class="hub-qa-label">View Reports</div>
+        </a>
+        <a href="{% url 'franchise_orders' %}" class="hub-qa-item">
+          <div class="hub-qa-ico"><i class="fas fa-shopping-bag"></i></div>
+          <div class="hub-qa-label">My Orders</div>
+        </a>
+        <a href="{% url 'contact' %}" class="hub-qa-item">
+          <div class="hub-qa-ico"><i class="fas fa-headset"></i></div>
+          <div class="hub-qa-label">Contact Support</div>
+        </a>
+        <a href="{% url 'franchise_inventory' %}" class="hub-qa-item">
+          <div class="hub-qa-ico"><i class="fas fa-truck"></i></div>
+          <div class="hub-qa-label">Supply Request</div>
+        </a>
+        <a href="{% url 'franchise_customers' %}" class="hub-qa-item">
+          <div class="hub-qa-ico"><i class="fas fa-users"></i></div>
+          <div class="hub-qa-label">My Customers</div>
+        </a>
+        <a href="{% url 'my_franchise_applications' %}" class="hub-qa-item">
+          <div class="hub-qa-ico"><i class="fas fa-file-alt"></i></div>
+          <div class="hub-qa-label">My Application</div>
+        </a>
       </div>
     </div>
 
-    <!-- Franchise info -->
-    <div class="fs-section-title">Franchise Details</div>
-    <div class="fs-info-grid">
-      <div class="fs-info-card">
-        <h3><i class="fas fa-id-card" style="margin-right:.5rem"></i>Your Account</h3>
-        <div class="fs-info-row">
-          <span class="label">Reference</span>
-          <span class="value" style="color:#7ab0ff;font-weight:700">{{ profile.ref }}</span>
-        </div>
-        <div class="fs-info-row">
-          <span class="label">Type</span>
-          <span class="value">{{ profile.get_franchise_type_display }}</span>
-        </div>
-        <div class="fs-info-row">
-          <span class="label">Status</span>
-          <span class="value">{{ profile.get_operational_status_display }}</span>
-        </div>
-        <div class="fs-info-row">
-          <span class="label">Approved</span>
-          <span class="value">{{ profile.approved_at|date:"j M Y" }}</span>
-        </div>
-        <div class="fs-info-row">
-          <span class="label">Account Owner</span>
-          <span class="value">{{ request.user.get_full_name|default:request.user.username }}</span>
-        </div>
+    <!-- Col 2: Announcements -->
+    <div class="hub-panel">
+      <div class="hub-panel-head">
+        <div class="hub-panel-title"><i class="fas fa-bullhorn"></i> Latest Announcements</div>
+        <a href="#" class="hub-panel-link">View All <i class="fas fa-arrow-right"></i></a>
       </div>
+      <div class="hub-ann-list">
 
-      <div class="fs-info-card">
-        <h3><i class="fas fa-map-marker-alt" style="margin-right:.5rem"></i>Territory</h3>
-        <div class="fs-info-row">
-          <span class="label">Territory</span>
-          <span class="value">{{ profile.territory }}</span>
-        </div>
-        {% if profile.zone %}
-        <div class="fs-info-row">
-          <span class="label">Zone</span>
-          <span class="value">{{ profile.zone }}</span>
-        </div>
+        {% if announcements %}
+          {% for ann in announcements %}
+          <div class="hub-ann-item">
+            <span class="hub-ann-badge {{ ann.badge_type|default:'info' }}">{{ ann.badge_type|upper|default:'INFO' }}</span>
+            <div>
+              <div class="hub-ann-title">{{ ann.title }}</div>
+              <div class="hub-ann-desc">{{ ann.excerpt }}</div>
+              <div class="hub-ann-date">{{ ann.published_at|date:"M j, Y" }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <!-- Default announcements when none are in DB -->
+          <div class="hub-ann-item">
+            <span class="hub-ann-badge new">NEW</span>
+            <div>
+              <div class="hub-ann-title">Welcome to Your Franchise Hub</div>
+              <div class="hub-ann-desc">Your franchise dashboard is now active. Explore the Quick Actions to get started.</div>
+              <div class="hub-ann-date">{{ profile.approved_at|date:"M j, Y"|default:"Recently" }}</div>
+            </div>
+          </div>
+          <div class="hub-ann-item">
+            <span class="hub-ann-badge info">INFO</span>
+            <div>
+              <div class="hub-ann-title">Complete Your Onboarding</div>
+              <div class="hub-ann-desc">Join the Field-to-Market Accelerator program to fully activate your franchise account.</div>
+              <div class="hub-ann-date">T&TG Trade Corp</div>
+            </div>
+          </div>
+          <div class="hub-ann-item">
+            <span class="hub-ann-badge update">UPDATE</span>
+            <div>
+              <div class="hub-ann-title">New Products Available</div>
+              <div class="hub-ann-desc">Browse the latest T&TG product catalogue and request stock for your territory.</div>
+              <div class="hub-ann-date">T&TG Trade Corp</div>
+            </div>
+          </div>
         {% endif %}
-        <div class="fs-info-row">
-          <span class="label">Country</span>
-          <span class="value">{{ profile.country }}</span>
-        </div>
-        <div class="fs-info-row">
-          <span class="label">Application Ref</span>
-          <span class="value">{{ app.ref }}</span>
-        </div>
-        {% if profile.business_name %}
-        <div class="fs-info-row">
-          <span class="label">Trading Name</span>
-          <span class="value">{{ profile.business_name }}</span>
-        </div>
-        {% endif %}
+
       </div>
     </div>
 
-    <!-- Action tiles -->
-    <div class="fs-section-title">My Store</div>
-    <div class="fs-actions">
-
-      <a href="{% url 'franchise_my_products' %}" class="fs-action-tile">
-        <div class="fs-tile-icon"><i class="fas fa-box-open"></i></div>
-        <div class="fs-tile-name">My Products</div>
-        <div class="fs-tile-desc">View your approved T&TG product catalogue and stock levels for your territory.</div>
-        <span class="fs-tile-badge">Available Now</span>
-      </a>
-
-      <a href="{% url 'franchise_orders' %}" class="fs-action-tile">
-        <div class="fs-tile-icon"><i class="fas fa-shopping-bag"></i></div>
-        <div class="fs-tile-name">Orders</div>
-        <div class="fs-tile-desc">View and fulfil customer orders placed through your franchise store.</div>
-        <span class="fs-tile-badge">Available Now</span>
-      </a>
-
-      <a href="{% url 'franchise_sales_reports' %}" class="fs-action-tile">
-        <div class="fs-tile-icon"><i class="fas fa-chart-line"></i></div>
-        <div class="fs-tile-name">Sales Reports</div>
-        <div class="fs-tile-desc">Monthly and annual revenue reports for your territory.</div>
-        <span class="fs-tile-badge">Available Now</span>
-      </a>
-
-      <a href="{% url 'franchise_inventory' %}" class="fs-action-tile">
-        <div class="fs-tile-icon"><i class="fas fa-truck"></i></div>
-        <div class="fs-tile-name">Inventory &amp; Supply</div>
-        <div class="fs-tile-desc">Request stock replenishments directly from T&TG HQ.</div>
-        <span class="fs-tile-badge">Available Now</span>
-      </a>
-
-      <a href="{% url 'franchise_customers' %}" class="fs-action-tile">
-        <div class="fs-tile-icon"><i class="fas fa-users"></i></div>
-        <div class="fs-tile-name">My Customers</div>
-        <div class="fs-tile-desc">CRM — contacts and purchase history for your territory.</div>
-      </a>
-
-      <a href="{% url 'join_program' %}" class="fs-action-tile">
-        <div class="fs-tile-icon"><i class="fas fa-graduation-cap"></i></div>
-        <div class="fs-tile-name">Onboarding Program</div>
-        <div class="fs-tile-desc">Complete the Field-to-Market Accelerator to fully activate your franchise.</div>
-        <span class="fs-tile-badge">Available Now</span>
-      </a>
-
-      <a href="{% url 'contact' %}" class="fs-action-tile">
-        <div class="fs-tile-icon"><i class="fas fa-headset"></i></div>
-        <div class="fs-tile-name">Contact HQ</div>
-        <div class="fs-tile-desc">Reach T&TG headquarters for support, questions or escalations.</div>
-        <span class="fs-tile-badge">Available Now</span>
-      </a>
-
-      <a href="{% url 'my_franchise_applications' %}" class="fs-action-tile">
-        <div class="fs-tile-icon"><i class="fas fa-file-alt"></i></div>
-        <div class="fs-tile-name">My Application</div>
-        <div class="fs-tile-desc">Review your original franchise application and submission history.</div>
-        <span class="fs-tile-badge">Available Now</span>
-      </a>
-
+    <!-- Col 3: Performance Chart -->
+    <div class="hub-panel hub-col-chart">
+      <div class="hub-panel-head">
+        <div class="hub-panel-title"><i class="fas fa-chart-bar"></i> Franchise Performance</div>
+      </div>
+      <div class="hub-chart-wrap">
+        <div class="hub-chart-legend">
+          <div class="hub-legend-dot"><span style="background:#2563eb"></span> Sales</div>
+          <div class="hub-legend-dot"><span style="background:#f59e0b"></span> Target</div>
+        </div>
+        <!-- Simple CSS bar chart — heights set via inline style -->
+        <div class="hub-bars">
+          <div class="hub-bar-group">
+            <div class="hub-bar sales"  style="height:55%"><span class="hub-bar-val">{{ chart_m1_sales|default:"—" }}</span></div>
+            <div class="hub-bar target" style="height:60%"></div>
+          </div>
+          <div class="hub-bar-group">
+            <div class="hub-bar sales"  style="height:63%"><span class="hub-bar-val">{{ chart_m2_sales|default:"—" }}</span></div>
+            <div class="hub-bar target" style="height:65%"></div>
+          </div>
+          <div class="hub-bar-group">
+            <div class="hub-bar sales"  style="height:72%"><span class="hub-bar-val">{{ chart_m3_sales|default:"—" }}</span></div>
+            <div class="hub-bar target" style="height:70%"></div>
+          </div>
+          <div class="hub-bar-group">
+            <div class="hub-bar sales"  style="height:85%"><span class="hub-bar-val">{{ chart_m4_sales|default:"—" }}</span></div>
+            <div class="hub-bar target" style="height:80%"></div>
+          </div>
+        </div>
+        <div class="hub-bar-labels">
+          <div class="hub-bar-lbl">{{ chart_m1_label|default:"Mon 1" }}</div>
+          <div class="hub-bar-lbl">{{ chart_m2_label|default:"Mon 2" }}</div>
+          <div class="hub-bar-lbl">{{ chart_m3_label|default:"Mon 3" }}</div>
+          <div class="hub-bar-lbl">{{ chart_m4_label|default:"Mon 4" }}</div>
+        </div>
+      </div>
     </div>
 
-    <!-- Footer note -->
-    <div class="fs-notice" style="margin-top:2.5rem">
-      <i class="fas fa-lock"></i>
-      <p>This is your private franchise dashboard. Only you and T&TG HQ administrators can view this page. For support contact <strong>tom.grouptrade@gmail.com</strong> or call <strong>+1 (416) 832 3512</strong>.</p>
+  </div><!-- /hub-body -->
+
+  <!-- ── Bottom Row ─────────────────────────────── -->
+  <div class="hub-bottom">
+
+    <!-- Support -->
+    <div class="hub-support">
+      <div class="hub-support-ico"><i class="fas fa-headset"></i></div>
+      <div class="hub-support-text">
+        <strong>Our Support</strong>
+        <p>Need help? Our support team is here for you.</p>
+        <p>Call: <strong style="color:#c8d8f0">+1 (416) 832 3512</strong></p>
+        <p>Email: <strong style="color:#c8d8f0">tom.grouptrade@gmail.com</strong></p>
+      </div>
+      <a href="{% url 'contact' %}" class="hub-support-btn">
+        <i class="fas fa-paper-plane"></i> Contact Support
+      </a>
     </div>
 
-  </div><!-- /fs-body -->
-</div><!-- /fs-wrap -->
+    <!-- Resources -->
+    <div class="hub-resources">
+      <div class="hub-res-head"><i class="fas fa-book-open"></i> Useful Resources</div>
+      <div class="hub-res-links">
+        <a href="#" class="hub-res-link"><i class="fas fa-download"></i> Franchise Guide (PDF)</a>
+        <a href="#" class="hub-res-link"><i class="fas fa-download"></i> Marketing Toolkit</a>
+        <a href="{% url 'franchise_my_products' %}" class="hub-res-link"><i class="fas fa-download"></i> Product Catalogue</a>
+        <a href="{% url 'contact' %}" class="hub-res-link"><i class="fas fa-question-circle"></i> FAQs</a>
+        <a href="{% url 'join_program' %}" class="hub-res-link"><i class="fas fa-play-circle"></i> Training Videos</a>
+        <a href="{% url 'my_franchise_applications' %}" class="hub-res-link"><i class="fas fa-file-contract"></i> My Agreement</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Hub Footer ──────────────────────────────── -->
+  <div class="hub-footer">
+    <div class="hub-footer-inner">
+      <div class="hub-footer-brand">
+        <i class="fas fa-globe" style="color:#3b82f6;font-size:1.1rem"></i>
+        <strong style="color:#e0eaff;font-size:.9rem">T&TG Trade Corporation</strong>
+        <span class="tagline">— Together, We Grow Globally</span>
+      </div>
+      <div class="hub-footer-info">
+        <span class="hub-footer-item"><i class="fas fa-globe"></i> www.tntg-corp.com</span>
+        <span class="hub-footer-item"><i class="fas fa-envelope"></i> info@tntg-corp.com</span>
+        <span class="hub-footer-item"><i class="fas fa-map-marker-alt"></i> Toronto, Ontario, Canada</span>
+      </div>
+      <div class="hub-footer-social">
+        <a href="#" class="hub-soc"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" class="hub-soc"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="hub-soc"><i class="fab fa-youtube"></i></a>
+        <a href="#" class="hub-soc"><i class="fab fa-x-twitter"></i></a>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /hub-wrap -->
 {% endblock %}
