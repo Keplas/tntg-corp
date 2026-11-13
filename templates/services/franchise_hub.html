@@ -5,22 +5,23 @@
 
 {% block content %}
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800;900&display=swap');
+
 :root {
-  --gold: #c9a84c;
-  --gold-lt: #e8c96a;
-  --dark: #080c10;
-  --navy: #060f1e;
-  --card: #0d1a26;
+  --gold:   #c9a84c;
+  --gold-lt:#e8c96a;
+  --gold-dk:#a8841e;
+  --navy:   #060f1e;
+  --card:   #0d1a26;
   --border: rgba(201,168,76,.18);
-  --muted: #7a8fa8;
-  --text: #c8d8e8;
-  --glow: rgba(201,168,76,.22);
+  --muted:  #7a8fa8;
+  --text:   #c8d8e8;
 }
 
-/* ── HERO ── */
+/* ═══════════ HERO ═══════════ */
 .fh-hero {
   position: relative;
-  min-height: 88vh;
+  min-height: 92vh;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -31,354 +32,452 @@
   background-size: cover;
   background-position: center 40%;
   transform: scale(1.04);
-  transition: transform 8s ease;
+  transition: transform 10s ease;
 }
 .fh-hero:hover .fh-hero-bg { transform: scale(1.0); }
 .fh-hero-overlay {
   position: absolute; inset: 0;
-  background: linear-gradient(120deg, rgba(6,15,30,.97) 0%, rgba(6,15,30,.82) 50%, rgba(6,15,30,.55) 100%);
+  background: linear-gradient(110deg,
+    rgba(5,10,18,.97) 0%,
+    rgba(6,15,30,.88) 45%,
+    rgba(6,15,30,.52) 100%);
+}
+/* subtle diagonal grain */
+.fh-hero-overlay::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(201,168,76,.018) 0px, rgba(201,168,76,.018) 1px,
+    transparent 1px, transparent 8px
+  );
 }
 .fh-hero-content {
   position: relative; z-index: 2;
-  max-width: 720px;
-  padding: 80px 0;
+  max-width: 700px;
+  padding: 100px 0 80px;
 }
-.fh-pill {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: rgba(201,168,76,.1);
-  border: 1px solid rgba(201,168,76,.3);
-  color: var(--gold);
-  padding: 7px 20px;
+
+.fh-eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: rgba(201,168,76,.08);
+  border: 1px solid rgba(201,168,76,.32);
+  color: var(--gold-lt);
+  padding: 8px 22px;
   border-radius: 99px;
-  font-size: .72rem;
-  font-weight: 700;
-  letter-spacing: .1em;
+  font-size: .7rem;
+  font-weight: 800;
+  letter-spacing: .14em;
   text-transform: uppercase;
-  margin-bottom: 28px;
+  margin-bottom: 30px;
 }
+.fh-eyebrow i { font-size: .75rem; opacity: .85; }
+
 .fh-hero-content h1 {
   font-family: 'Manrope', sans-serif;
-  font-size: clamp(2.4rem, 6vw, 4rem);
-  font-weight: 800;
+  font-size: clamp(2.6rem, 6.5vw, 4.4rem);
+  font-weight: 900;
   color: #fff;
-  line-height: 1.12;
-  margin-bottom: 20px;
+  line-height: 1.08;
+  margin-bottom: 22px;
   text-wrap: balance;
+  letter-spacing: -.02em;
 }
 .fh-hero-content h1 em {
   font-style: normal;
-  background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+  background: linear-gradient(135deg, var(--gold) 10%, var(--gold-lt) 90%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 .fh-hero-content p {
-  color: #a8bdd0;
-  font-size: 1.15rem;
-  line-height: 1.7;
-  max-width: 560px;
-  margin-bottom: 36px;
+  color: #98b4c8;
+  font-size: 1.1rem;
+  line-height: 1.75;
+  max-width: 540px;
+  margin-bottom: 40px;
 }
-.fh-hero-btns { display: flex; flex-wrap: wrap; gap: 14px; }
-.btn-gold {
-  background: linear-gradient(135deg, var(--gold), var(--gold-lt));
-  color: #080c10;
+.fh-hero-btns { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 48px; }
+
+.btn-gold-hero {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-lt) 100%);
+  color: #060c14;
   font-weight: 800;
   font-size: .95rem;
-  padding: 14px 32px;
-  border-radius: 12px;
+  padding: 15px 36px;
+  border-radius: 10px;
   text-decoration: none;
+  display: inline-flex; align-items: center; gap: 10px;
   transition: transform .15s, box-shadow .2s;
-  border: none;
-  display: inline-flex; align-items: center; gap: 9px;
+  letter-spacing: .01em;
 }
-.btn-gold:hover {
+.btn-gold-hero:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(201,168,76,.35);
-  color: #080c10;
+  box-shadow: 0 10px 32px rgba(201,168,76,.4);
+  color: #060c14; text-decoration: none;
 }
-.btn-outline {
-  background: rgba(255,255,255,.06);
+.btn-ghost {
+  background: rgba(255,255,255,.05);
   color: #c8d8e8;
   font-weight: 600;
   font-size: .95rem;
-  padding: 14px 28px;
-  border-radius: 12px;
+  padding: 15px 30px;
+  border-radius: 10px;
   text-decoration: none;
-  border: 1px solid rgba(255,255,255,.15);
-  transition: border-color .2s, background .2s;
-  display: inline-flex; align-items: center; gap: 9px;
+  border: 1px solid rgba(255,255,255,.12);
+  display: inline-flex; align-items: center; gap: 10px;
+  transition: border-color .2s, background .2s, color .2s;
 }
-.btn-outline:hover { border-color: var(--gold); background: rgba(201,168,76,.07); color: #fff; }
+.btn-ghost:hover {
+  border-color: rgba(201,168,76,.5);
+  background: rgba(201,168,76,.07);
+  color: #fff; text-decoration: none;
+}
 
 .fh-trust-row {
-  display: flex; flex-wrap: wrap; gap: 24px;
-  margin-top: 48px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding-top: 28px;
+  display: flex; flex-wrap: wrap; gap: 20px 32px;
 }
 .fh-trust-item {
-  display: flex; align-items: center; gap: 10px;
-  color: #8a9ab0; font-size: .82rem;
+  display: flex; align-items: center; gap: 9px;
+  color: #7a8fa8; font-size: .8rem; font-weight: 500;
 }
-.fh-trust-item i { color: var(--gold); font-size: .9rem; }
+.fh-trust-item i { color: var(--gold); font-size: .85rem; }
 
-/* ── STATS BAND ── */
+/* ═══════════ STATS BAND ═══════════ */
 .fh-stats {
-  background: #070e1a;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  padding: 32px 0;
+  background: #040c16;
+  border-top: 1px solid rgba(201,168,76,.14);
+  border-bottom: 1px solid rgba(201,168,76,.14);
+  padding: 0;
 }
 .fh-stat-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(4, 1fr);
   text-align: center;
+}
+@media (max-width: 640px) { .fh-stat-grid { grid-template-columns: repeat(2, 1fr); } }
+.fh-stat-item {
+  padding: 36px 20px;
+  border-right: 1px solid rgba(201,168,76,.1);
+  position: relative;
+}
+.fh-stat-item:last-child { border-right: none; }
+@media (max-width: 640px) {
+  .fh-stat-item:nth-child(2) { border-right: none; }
+  .fh-stat-item:nth-child(1),
+  .fh-stat-item:nth-child(2) { border-bottom: 1px solid rgba(201,168,76,.1); }
+}
+.fh-stat-ico {
+  font-size: 1rem;
+  color: rgba(201,168,76,.5);
+  margin-bottom: 10px;
 }
 .fh-stat-num {
   font-family: 'Manrope', sans-serif;
-  font-size: 2.2rem;
-  font-weight: 800;
-  color: var(--gold);
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: var(--gold-lt);
   line-height: 1;
+  letter-spacing: -.02em;
 }
 .fh-stat-label {
   color: var(--muted);
-  font-size: .78rem;
+  font-size: .73rem;
   text-transform: uppercase;
-  letter-spacing: .07em;
-  margin-top: 6px;
+  letter-spacing: .08em;
+  margin-top: 7px;
+  font-weight: 600;
 }
 
-/* ── SECTION LABELS ── */
-.sec-label {
+/* ═══════════ SECTION COMMON ═══════════ */
+.sec-eyebrow {
   text-align: center;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
-.sec-label span {
-  display: inline-block;
-  background: rgba(201,168,76,.1);
-  border: 1px solid rgba(201,168,76,.25);
+.sec-eyebrow span {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(201,168,76,.07);
+  border: 1px solid rgba(201,168,76,.22);
   color: var(--gold);
-  padding: 5px 16px;
+  padding: 6px 18px;
   border-radius: 99px;
-  font-size: .72rem;
-  font-weight: 700;
-  letter-spacing: .1em;
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .12em;
   text-transform: uppercase;
 }
 .sec-headline {
   text-align: center;
   font-family: 'Manrope', sans-serif;
-  font-size: clamp(1.6rem, 4vw, 2.4rem);
-  font-weight: 800;
+  font-size: clamp(1.7rem, 4vw, 2.5rem);
+  font-weight: 900;
   color: #fff;
+  letter-spacing: -.02em;
   margin-bottom: 10px;
   text-wrap: balance;
 }
 .sec-sub {
   text-align: center;
   color: var(--muted);
-  font-size: 1rem;
-  max-width: 560px;
-  margin: 0 auto 48px;
+  font-size: .95rem;
+  line-height: 1.7;
+  max-width: 540px;
+  margin: 0 auto 52px;
 }
 
-/* ── FRANCHISE TYPE CARDS ── */
-.fh-types { background: var(--navy); padding: 80px 0; }
+/* ═══════════ FRANCHISE TYPE CARDS ═══════════ */
+.fh-types {
+  background: var(--navy);
+  padding: 90px 0;
+}
 .fh-type-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+  gap: 26px;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 .fh-type-card {
   background: var(--card);
-  border: 1px solid var(--border);
+  border: 1px solid rgba(201,168,76,.14);
   border-radius: 20px;
   overflow: hidden;
-  transition: transform .25s, border-color .25s, box-shadow .25s;
+  display: flex;
+  flex-direction: column;
   text-decoration: none;
-  display: block;
+  transition: transform .25s, border-color .25s, box-shadow .3s;
   position: relative;
 }
 .fh-type-card:hover {
-  transform: translateY(-6px);
-  border-color: var(--gold);
-  box-shadow: 0 16px 48px rgba(0,0,0,.4), 0 0 0 1px rgba(201,168,76,.2);
+  transform: translateY(-7px);
+  border-color: rgba(201,168,76,.5);
+  box-shadow: 0 20px 56px rgba(0,0,0,.45), 0 0 0 1px rgba(201,168,76,.18);
+  text-decoration: none;
 }
 .fh-type-photo {
   width: 100%;
-  height: 200px;
+  height: 210px;
   overflow: hidden;
   position: relative;
+  flex-shrink: 0;
 }
 .fh-type-photo img {
   width: 100%; height: 100%;
   object-fit: cover;
-  transition: transform .4s ease, filter .3s;
-  filter: brightness(.75) saturate(.9);
+  transition: transform .5s ease, filter .3s;
+  filter: brightness(.72) saturate(.85);
 }
 .fh-type-card:hover .fh-type-photo img {
-  transform: scale(1.07);
-  filter: brightness(.65) saturate(1.1);
+  transform: scale(1.08);
+  filter: brightness(.6) saturate(1.0);
+}
+/* gradient fade from photo into card body */
+.fh-type-photo::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 70px;
+  background: linear-gradient(to bottom, transparent, var(--card));
+  pointer-events: none;
 }
 .fh-type-badge {
   position: absolute;
   top: 14px; left: 14px;
-  background: rgba(6,15,30,.82);
-  border: 1px solid rgba(201,168,76,.35);
-  color: var(--gold);
-  padding: 4px 12px;
+  background: rgba(5,10,18,.86);
+  border: 1px solid rgba(201,168,76,.4);
+  color: var(--gold-lt);
+  padding: 5px 14px;
   border-radius: 99px;
-  font-size: .68rem;
-  font-weight: 700;
+  font-size: .67rem;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: .08em;
-  backdrop-filter: blur(4px);
+  letter-spacing: .09em;
+  backdrop-filter: blur(6px);
+  z-index: 1;
 }
 .fh-type-body {
-  padding: 24px 24px 28px;
+  padding: 22px 26px 28px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 .fh-type-ico {
-  width: 44px; height: 44px;
+  width: 46px; height: 46px;
   background: rgba(201,168,76,.1);
-  border: 1px solid rgba(201,168,76,.25);
+  border: 1px solid rgba(201,168,76,.22);
   border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
   font-size: 1.1rem;
   color: var(--gold);
-  margin-bottom: 14px;
-  transition: background .2s, transform .2s;
+  margin-bottom: 16px;
+  transition: background .2s, transform .25s;
 }
 .fh-type-card:hover .fh-type-ico {
-  background: rgba(201,168,76,.18);
-  transform: scale(1.1);
+  background: rgba(201,168,76,.2);
+  transform: scale(1.1) rotate(-3deg);
 }
 .fh-type-body h3 {
   font-family: 'Manrope', sans-serif;
-  font-weight: 700;
-  color: #fff;
-  font-size: 1.1rem;
-  margin: 0 0 8px;
+  font-weight: 800;
+  color: #e8f0fe;
+  font-size: 1.08rem;
+  margin: 0 0 9px;
+  letter-spacing: -.01em;
 }
 .fh-type-body p {
   color: var(--muted);
-  font-size: .86rem;
-  line-height: 1.6;
-  margin: 0 0 16px;
+  font-size: .84rem;
+  line-height: 1.65;
+  margin: 0 0 18px;
+  flex: 1;
 }
 .fh-type-meta {
-  display: flex; flex-wrap: wrap; gap: 10px;
-  margin-bottom: 20px;
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 22px;
 }
 .fh-meta-chip {
   background: rgba(255,255,255,.04);
-  border: 1px solid rgba(255,255,255,.07);
-  color: #a0b8cc;
-  font-size: .75rem;
+  border: 1px solid rgba(255,255,255,.08);
+  color: #94a8bc;
+  font-size: .73rem;
+  font-weight: 500;
   padding: 4px 12px;
   border-radius: 99px;
   display: flex; align-items: center; gap: 6px;
 }
-.fh-meta-chip i { color: var(--gold); font-size: .72rem; }
+.fh-meta-chip i { color: var(--gold); font-size: .7rem; }
 .fh-type-cta {
   display: flex; align-items: center; justify-content: space-between;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255,255,255,.06);
+  padding-top: 18px;
+  border-top: 1px solid rgba(201,168,76,.1);
+  margin-top: auto;
 }
 .fh-apply-link {
   color: var(--gold);
   font-weight: 700;
-  font-size: .85rem;
+  font-size: .84rem;
   text-decoration: none;
-  display: flex; align-items: center; gap: 6px;
-  transition: gap .2s;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: gap .2s, color .2s;
 }
-.fh-type-card:hover .fh-apply-link { gap: 10px; }
+.fh-type-card:hover .fh-apply-link { gap: 13px; color: var(--gold-lt); }
 .fh-invest {
-  color: var(--muted);
-  font-size: .78rem;
+  color: #566b7e;
+  font-size: .76rem;
+  font-weight: 500;
 }
 
-/* ── HOW IT WORKS ── */
-.fh-how { background: #060d18; padding: 80px 0; }
+/* ═══════════ HOW IT WORKS ═══════════ */
+.fh-how {
+  background: #04090f;
+  padding: 90px 0;
+  position: relative;
+  overflow: hidden;
+}
+.fh-how::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 900px; height: 400px;
+  background: radial-gradient(ellipse, rgba(201,168,76,.04) 0%, transparent 65%);
+  pointer-events: none;
+}
 .fh-steps {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 32px;
+  gap: 10px;
   position: relative;
 }
+/* horizontal line behind step numbers */
 .fh-steps::before {
   content: '';
   position: absolute;
-  top: 28px; left: 10%; right: 10%;
+  top: 36px; left: 12%; right: 12%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
-  pointer-events: none;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(201,168,76,.2) 15%,
+    rgba(201,168,76,.2) 85%,
+    transparent 100%);
 }
-@media(max-width:768px){ .fh-steps::before { display: none; } }
+@media (max-width: 768px) { .fh-steps::before { display: none; } }
+
 .fh-step {
   text-align: center;
+  padding: 0 16px 32px;
   position: relative;
 }
 .fh-step-num {
-  width: 56px; height: 56px;
-  background: var(--card);
-  border: 2px solid var(--border);
+  width: 72px; height: 72px;
+  background: linear-gradient(135deg, #0d1f35 0%, #0a1628 100%);
+  border: 1.5px solid rgba(201,168,76,.35);
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   font-family: 'Manrope', sans-serif;
-  font-weight: 800;
-  font-size: 1.15rem;
+  font-weight: 900;
+  font-size: 1.3rem;
   color: var(--gold);
-  margin: 0 auto 20px;
+  margin: 0 auto 18px;
   position: relative; z-index: 1;
-  transition: border-color .2s, background .2s;
+  box-shadow: 0 0 0 6px rgba(201,168,76,.05), 0 0 0 12px rgba(201,168,76,.02);
+  transition: border-color .25s, box-shadow .25s;
 }
 .fh-step:hover .fh-step-num {
   border-color: var(--gold);
-  background: rgba(201,168,76,.1);
+  box-shadow: 0 0 0 6px rgba(201,168,76,.1), 0 0 0 12px rgba(201,168,76,.04);
 }
-.fh-step-icon {
-  font-size: 1.3rem;
+.fh-step-icon-wrap {
+  width: 48px; height: 48px;
+  background: rgba(201,168,76,.08);
+  border: 1px solid rgba(201,168,76,.18);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem;
   color: var(--gold);
-  margin-bottom: 14px;
-  display: block;
+  margin: 0 auto 16px;
+  transition: background .2s;
 }
+.fh-step:hover .fh-step-icon-wrap { background: rgba(201,168,76,.14); }
 .fh-step h4 {
   font-family: 'Manrope', sans-serif;
-  font-weight: 700;
-  color: #fff;
-  margin: 0 0 8px;
+  font-weight: 800;
+  color: #e8f0fe;
   font-size: 1rem;
+  margin: 0 0 9px;
+  letter-spacing: -.01em;
 }
 .fh-step p {
   color: var(--muted);
-  font-size: .84rem;
-  line-height: 1.6;
+  font-size: .83rem;
+  line-height: 1.65;
   margin: 0;
 }
 
-/* ── SUPPORT PILLARS ── */
-.fh-support { background: var(--navy); padding: 80px 0; }
+/* ═══════════ SUPPORT PILLARS ═══════════ */
+.fh-support { background: var(--navy); padding: 90px 0; }
 .fh-support-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
   gap: 24px;
 }
 .fh-pillar {
-  background: rgba(13,26,38,.7);
-  border: 1px solid var(--border);
+  background: linear-gradient(160deg, #0d1f35 0%, #0a1628 100%);
+  border: 1px solid rgba(201,168,76,.14);
+  border-top: 3px solid var(--gold);
   border-radius: 18px;
-  padding: 32px 28px;
-  transition: border-color .2s, transform .2s;
+  padding: 34px 30px;
+  transition: transform .2s, border-color .2s, box-shadow .2s;
 }
 .fh-pillar:hover {
+  transform: translateY(-4px);
   border-color: rgba(201,168,76,.4);
-  transform: translateY(-3px);
+  box-shadow: 0 16px 44px rgba(0,0,0,.35);
 }
 .fh-pillar-ico {
-  width: 52px; height: 52px;
-  background: linear-gradient(135deg, rgba(201,168,76,.15), rgba(201,168,76,.06));
-  border: 1px solid rgba(201,168,76,.25);
+  width: 54px; height: 54px;
+  background: rgba(201,168,76,.1);
+  border: 1px solid rgba(201,168,76,.22);
   border-radius: 14px;
   display: flex; align-items: center; justify-content: center;
   font-size: 1.3rem;
@@ -387,93 +486,113 @@
 }
 .fh-pillar h3 {
   font-family: 'Manrope', sans-serif;
-  font-weight: 700;
-  color: #fff;
+  font-weight: 800;
+  color: #e8f0fe;
   font-size: 1.05rem;
   margin: 0 0 10px;
+  letter-spacing: -.01em;
 }
 .fh-pillar p {
   color: var(--muted);
-  font-size: .86rem;
-  line-height: 1.6;
-  margin: 0 0 16px;
+  font-size: .85rem;
+  line-height: 1.65;
+  margin: 0 0 20px;
 }
 .fh-pillar ul {
   list-style: none;
   padding: 0; margin: 0;
-  display: flex; flex-direction: column; gap: 8px;
+  display: flex; flex-direction: column; gap: 9px;
 }
 .fh-pillar ul li {
-  color: #a0b8cc;
+  color: #94a8bc;
   font-size: .83rem;
-  display: flex; align-items: flex-start; gap: 8px;
+  display: flex; align-items: flex-start; gap: 9px;
+  line-height: 1.5;
 }
 .fh-pillar ul li::before {
   content: '\f00c';
   font-family: 'Font Awesome 6 Free';
   font-weight: 900;
   color: var(--gold);
-  font-size: .72rem;
+  font-size: .68rem;
   margin-top: 3px;
   flex-shrink: 0;
 }
 
-/* ── FINAL CTA ── */
+/* ═══════════ FINAL CTA ═══════════ */
 .fh-cta {
-  background: linear-gradient(135deg, #070d17 0%, #0d1f35 50%, #070d17 100%);
-  border-top: 1px solid var(--border);
-  padding: 88px 0;
+  background: #04090f;
+  padding: 100px 0;
   text-align: center;
   position: relative;
   overflow: hidden;
 }
+/* multi-layer radial glow */
 .fh-cta::before {
   content: '';
   position: absolute;
-  top: -120px; left: 50%;
-  transform: translateX(-50%);
-  width: 600px; height: 600px;
-  background: radial-gradient(circle, rgba(201,168,76,.07) 0%, transparent 65%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px; height: 500px;
+  background: radial-gradient(ellipse, rgba(201,168,76,.1) 0%, rgba(201,168,76,.03) 40%, transparent 68%);
   pointer-events: none;
 }
+.fh-cta::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(201,168,76,.4) 50%, transparent 100%);
+}
+.fh-cta-inner { position: relative; z-index: 1; }
 .fh-cta h2 {
   font-family: 'Manrope', sans-serif;
-  font-size: clamp(1.8rem, 4vw, 2.8rem);
-  font-weight: 800;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 900;
   color: #fff;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   text-wrap: balance;
+  letter-spacing: -.025em;
 }
-.fh-cta h2 span { color: var(--gold); }
+.fh-cta h2 span { color: var(--gold-lt); }
 .fh-cta p {
   color: var(--muted);
   font-size: 1rem;
-  max-width: 500px;
-  margin: 0 auto 36px;
+  line-height: 1.7;
+  max-width: 480px;
+  margin: 0 auto 44px;
 }
 .fh-cta-btns { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+/* note strip below CTA */
+.fh-cta-note {
+  margin-top: 44px;
+  display: flex; align-items: center; justify-content: center; gap: 32px;
+  flex-wrap: wrap;
+  color: #4a6070;
+  font-size: .78rem;
+}
+.fh-cta-note span { display: flex; align-items: center; gap: 7px; }
+.fh-cta-note i { color: rgba(201,168,76,.5); }
 </style>
 
-<!-- HERO -->
+<!-- ═══════════ HERO ═══════════ -->
 <section class="fh-hero">
   <div class="fh-hero-bg"></div>
   <div class="fh-hero-overlay"></div>
   <div class="container">
     <div class="fh-hero-content">
-      <div class="fh-pill">
+      <div class="fh-eyebrow">
         <i class="fas fa-store"></i>
-        Franchise Platform
+        Franchise Platform — T&TG Trade Corp
       </div>
       <h1>Build Your Business<br>on <em>T&TG Trade Corp</em></h1>
-      <p>
-        Five franchise models. Six countries. One proven supply chain.
-        Join the T&TG network and operate your own slice of a global trade corridor — backed by our brand, sourcing power, and full operational support.
-      </p>
+      <p>Five franchise models. Six countries. One proven supply chain.
+        Join the T&TG network and operate your own territory — backed by our brand, sourcing power, and full operational support.</p>
       <div class="fh-hero-btns">
-        <a href="{% url 'franchise_apply' %}" class="btn-gold">
+        <a href="{% url 'franchise_apply' %}" class="btn-gold-hero">
           <i class="fas fa-paper-plane"></i> Apply Now
         </a>
-        <a href="#franchise-types" class="btn-outline">
+        <a href="#franchise-types" class="btn-ghost">
           <i class="fas fa-th-large"></i> Explore Opportunities
         </a>
       </div>
@@ -486,23 +605,27 @@
   </div>
 </section>
 
-<!-- STATS BAND -->
+<!-- ═══════════ STATS BAND ═══════════ -->
 <div class="fh-stats">
   <div class="container">
     <div class="fh-stat-grid">
-      <div>
+      <div class="fh-stat-item">
+        <div class="fh-stat-ico"><i class="fas fa-globe-africa"></i></div>
         <div class="fh-stat-num">6</div>
         <div class="fh-stat-label">Countries Active</div>
       </div>
-      <div>
+      <div class="fh-stat-item">
+        <div class="fh-stat-ico"><i class="fas fa-layer-group"></i></div>
         <div class="fh-stat-num">5</div>
         <div class="fh-stat-label">Franchise Models</div>
       </div>
-      <div>
+      <div class="fh-stat-item">
+        <div class="fh-stat-ico"><i class="fas fa-calendar-check"></i></div>
         <div class="fh-stat-num">3</div>
-        <div class="fh-stat-label">Business Days to Review</div>
+        <div class="fh-stat-label">Day Review Window</div>
       </div>
-      <div>
+      <div class="fh-stat-item">
+        <div class="fh-stat-ico"><i class="fas fa-coins"></i></div>
         <div class="fh-stat-num">$10K+</div>
         <div class="fh-stat-label">Starting Investment (CAD)</div>
       </div>
@@ -510,16 +633,15 @@
   </div>
 </div>
 
-<!-- FRANCHISE TYPES -->
+<!-- ═══════════ FRANCHISE TYPES ═══════════ -->
 <section class="fh-types" id="franchise-types">
   <div class="container">
-    <div class="sec-label"><span><i class="fas fa-th-large me-1"></i> Choose Your Model</span></div>
+    <div class="sec-eyebrow"><span><i class="fas fa-th-large"></i> Choose Your Model</span></div>
     <h2 class="sec-headline">Three Ways to Franchise with T&TG</h2>
     <p class="sec-sub">Each model is tailored to a different market, investment level, and operational style. Pick the one that fits your vision.</p>
 
-    <div class="fh-type-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); max-width: 1100px; margin: 0 auto;">
+    <div class="fh-type-grid">
 
-      <!-- Coffee Estates & Farms -->
       <a href="{% url 'franchise_apply' %}?type=coffee_estate" class="fh-type-card">
         <div class="fh-type-photo">
           <img src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=700&q=80" alt="Coffee Estates and Farms" loading="lazy">
@@ -528,7 +650,7 @@
         <div class="fh-type-body">
           <div class="fh-type-ico"><i class="fas fa-seedling"></i></div>
           <h3>Coffee Estates &amp; Farms</h3>
-          <p>Partner with T&TG as a certified coffee estate or farm supplier. Provide premium single-origin beans from Uganda, Kenya, Ethiopia, or Asia directly into our global supply chain.</p>
+          <p>Partner with T&TG as a certified coffee estate or farm supplier. Provide premium single-origin beans from Uganda, Kenya, or Asia directly into our global supply chain.</p>
           <div class="fh-type-meta">
             <span class="fh-meta-chip"><i class="fas fa-leaf"></i> Farm / Plantation</span>
             <span class="fh-meta-chip"><i class="fas fa-globe-africa"></i> Africa / Asia Origins</span>
@@ -540,7 +662,6 @@
         </div>
       </a>
 
-      <!-- E-Commerce Distributors -->
       <a href="{% url 'franchise_apply' %}?type=ecommerce_distributor" class="fh-type-card">
         <div class="fh-type-photo">
           <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=700&q=80" alt="E-Commerce Distributors" loading="lazy">
@@ -561,7 +682,6 @@
         </div>
       </a>
 
-      <!-- Coffee-Based Product Sellers -->
       <a href="{% url 'franchise_apply' %}?type=product_seller" class="fh-type-card">
         <div class="fh-type-photo">
           <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=700&q=80" alt="Coffee-Based Product Sellers" loading="lazy">
@@ -570,7 +690,7 @@
         <div class="fh-type-body">
           <div class="fh-type-ico"><i class="fas fa-box-open"></i></div>
           <h3>Coffee-Based Product Sellers</h3>
-          <p>Sell a curated range of T&TG coffee-based products — roasted blends, cold brews, extracts, wellness teas, and artisanal goods — through retail, pop-ups, or direct-to-consumer channels.</p>
+          <p>Sell a curated range of T&TG coffee-based products — roasted blends, cold brews, extracts, wellness teas, and artisanal goods — through retail, pop-up, or direct-to-consumer channels.</p>
           <div class="fh-type-meta">
             <span class="fh-meta-chip"><i class="fas fa-tags"></i> Retail / Pop-Up</span>
             <span class="fh-meta-chip"><i class="fas fa-mug-hot"></i> Consumer Products</span>
@@ -586,46 +706,46 @@
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
+<!-- ═══════════ HOW IT WORKS ═══════════ -->
 <section class="fh-how">
   <div class="container">
-    <div class="sec-label"><span><i class="fas fa-route me-1"></i> The Process</span></div>
+    <div class="sec-eyebrow"><span><i class="fas fa-route"></i> The Process</span></div>
     <h2 class="sec-headline">How Franchising With T&TG Works</h2>
     <p class="sec-sub">From first application to operating day — a clear, supported path every step of the way.</p>
 
     <div class="fh-steps">
       <div class="fh-step">
         <div class="fh-step-num">1</div>
-        <i class="fh-step-icon fas fa-file-alt"></i>
+        <div class="fh-step-icon-wrap"><i class="fas fa-file-alt"></i></div>
         <h4>Submit Your Application</h4>
         <p>Choose your franchise model, fill out the form, and tell us your vision. Takes about 10 minutes.</p>
       </div>
       <div class="fh-step">
         <div class="fh-step-num">2</div>
-        <i class="fh-step-icon fas fa-search"></i>
+        <div class="fh-step-icon-wrap"><i class="fas fa-search"></i></div>
         <h4>Team Review</h4>
-        <p>Tom's team reviews your application within 3 business days and schedules an introductory call if there's a fit.</p>
+        <p>T&TG's team reviews your application within 3 business days and schedules an introductory call if there's a fit.</p>
       </div>
       <div class="fh-step">
         <div class="fh-step-num">3</div>
-        <i class="fh-step-icon fas fa-handshake"></i>
+        <div class="fh-step-icon-wrap"><i class="fas fa-handshake"></i></div>
         <h4>Onboarding &amp; Agreement</h4>
         <p>Sign your franchise agreement, complete onboarding training, and get full access to T&TG's supply chain and brand assets.</p>
       </div>
       <div class="fh-step">
         <div class="fh-step-num">4</div>
-        <i class="fh-step-icon fas fa-rocket"></i>
+        <div class="fh-step-icon-wrap"><i class="fas fa-rocket"></i></div>
         <h4>Launch &amp; Grow</h4>
-        <p>Open for business with ongoing support from the T&TG team — product restocks, marketing materials, and operational guidance.</p>
+        <p>Open for business with ongoing support — product restocks, marketing materials, and operational guidance.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- SUPPORT PILLARS -->
+<!-- ═══════════ SUPPORT PILLARS ═══════════ -->
 <section class="fh-support">
   <div class="container">
-    <div class="sec-label"><span><i class="fas fa-star me-1"></i> What You Get</span></div>
+    <div class="sec-eyebrow"><span><i class="fas fa-star"></i> What You Get</span></div>
     <h2 class="sec-headline">Built-In Support From Day One</h2>
     <p class="sec-sub">T&TG doesn't just hand you a product — we hand you a business system.</p>
 
@@ -633,7 +753,7 @@
       <div class="fh-pillar">
         <div class="fh-pillar-ico"><i class="fas fa-boxes"></i></div>
         <h3>Sourcing &amp; Supply Chain</h3>
-        <p>Direct-trade coffee, tea, and artisanal goods sourced from Uganda, Kenya, Japan, and the Netherlands — arriving to you ready to sell.</p>
+        <p>Direct-trade coffee, tea, and artisanal goods sourced from Uganda, Kenya, Japan, and the Netherlands — arriving ready to sell.</p>
         <ul>
           <li>Farm-direct specialty coffee</li>
           <li>Consistent supply with no minimum</li>
@@ -655,11 +775,11 @@
       <div class="fh-pillar">
         <div class="fh-pillar-ico"><i class="fas fa-graduation-cap"></i></div>
         <h3>Training &amp; Operations</h3>
-        <p>Structured onboarding, product knowledge training, and access to our operations playbook — so you launch confidently and run efficiently.</p>
+        <p>Structured onboarding, product knowledge training, and access to our operations playbook — so you launch confidently.</p>
         <ul>
           <li>Product and barista training</li>
           <li>Operations handbook included</li>
-          <li>Direct access to Tom's team</li>
+          <li>Direct access to T&TG's team</li>
           <li>Ongoing support after launch</li>
         </ul>
       </div>
@@ -667,23 +787,30 @@
   </div>
 </section>
 
-<!-- FINAL CTA -->
+<!-- ═══════════ FINAL CTA ═══════════ -->
 <section class="fh-cta">
   <div class="container">
-    <h2>Ready to Build Something <span>Real</span>?</h2>
-    <p>Apply today — no fees to apply, no obligation. Our team will reach out within 3 business days.</p>
-    <div class="fh-cta-btns">
-      <a href="{% url 'franchise_apply' %}" class="btn-gold">
-        <i class="fas fa-paper-plane"></i> Start Your Application
-      </a>
-      {% if user.is_authenticated %}
-      <a href="{% url 'my_franchise_applications' %}" class="btn-outline">
-        <i class="fas fa-folder-open"></i> My Applications
-      </a>
-      {% endif %}
-      <a href="mailto:tom.grouptrade@gmail.com" class="btn-outline">
-        <i class="fas fa-envelope"></i> Ask a Question
-      </a>
+    <div class="fh-cta-inner">
+      <h2>Ready to Build Something <span>Real</span>?</h2>
+      <p>Apply today — no fees to apply, no obligation. Our team will reach out within 3 business days.</p>
+      <div class="fh-cta-btns">
+        <a href="{% url 'franchise_apply' %}" class="btn-gold-hero">
+          <i class="fas fa-paper-plane"></i> Start Your Application
+        </a>
+        {% if user.is_authenticated %}
+        <a href="{% url 'my_franchise_applications' %}" class="btn-ghost">
+          <i class="fas fa-folder-open"></i> My Applications
+        </a>
+        {% endif %}
+        <a href="mailto:tom.grouptrade@gmail.com" class="btn-ghost">
+          <i class="fas fa-envelope"></i> Ask a Question
+        </a>
+      </div>
+      <div class="fh-cta-note">
+        <span><i class="fas fa-lock"></i> No fee to apply</span>
+        <span><i class="fas fa-shield-alt"></i> Application is confidential</span>
+        <span><i class="fas fa-headset"></i> Support at every step</span>
+      </div>
     </div>
   </div>
 </section>
