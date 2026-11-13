@@ -4,19 +4,19 @@
 {% block content %}
 <style>
 /* ═══════════════════════════════════════════════
-   FRANCHISEE STORE — dark-gold design system
+   FRANCHISEE STORE — dark-blue design system
    ═══════════════════════════════════════════════ */
 .fs-wrap {
-  background: #0d0d0d;
+  background: #060f1e;
   min-height: 100vh;
   padding: 0 0 4rem;
-  color: #e8e0d0;
+  color: #c8d8e8;
 }
 
 /* ── Header banner ───────────────────────────── */
 .fs-header {
-  background: linear-gradient(135deg, #1a1200 0%, #2a1e00 60%, #1a1200 100%);
-  border-bottom: 2px solid #c9a84c;
+  background: linear-gradient(135deg, #060f1e 0%, #0d1f35 60%, #060f1e 100%);
+  border-bottom: 2px solid #4f8ef7;
   padding: 2.5rem 2rem 2rem;
 }
 .fs-header-inner {
@@ -31,13 +31,13 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  border: 2px solid #c9a84c;
-  background: #2a1e00;
+  border: 2px solid #4f8ef7;
+  background: rgba(79,142,247,.12);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.8rem;
-  color: #c9a84c;
+  color: #4f8ef7;
   flex-shrink: 0;
   overflow: hidden;
 }
@@ -49,12 +49,12 @@
 .fs-header-text h1 {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #e8c96a;
+  color: #e8f0fe;
   margin: 0 0 .25rem;
 }
 .fs-header-text p {
   font-size: .9rem;
-  color: #c9a84c;
+  color: #7ab0ff;
   margin: 0;
 }
 .fs-status-pill {
@@ -82,7 +82,7 @@
 }
 .fs-ref-badge span {
   display: block;
-  color: #c9a84c;
+  color: #7ab0ff;
   font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: .04em;
@@ -101,10 +101,10 @@
   font-weight: 700;
   letter-spacing: .15em;
   text-transform: uppercase;
-  color: #c9a84c;
+  color: #4f8ef7;
   margin: 2.5rem 0 1rem;
   padding-bottom: .5rem;
-  border-bottom: 1px solid #2a1e00;
+  border-bottom: 1px solid rgba(79,142,247,.18);
 }
 
 /* ── Stats row ───────────────────────────────── */
@@ -114,22 +114,22 @@
   gap: 1rem;
 }
 .fs-stat-card {
-  background: #111;
-  border: 1px solid #2a1e00;
+  background: #0d1a26;
+  border: 1px solid rgba(79,142,247,.18);
   border-radius: 8px;
   padding: 1.2rem 1rem;
   text-align: center;
   transition: border-color .2s;
 }
-.fs-stat-card:hover { border-color: #c9a84c; }
+.fs-stat-card:hover { border-color: #4f8ef7; }
 .fs-stat-icon {
   font-size: 1.4rem;
-  color: #c9a84c;
+  color: #4f8ef7;
   margin-bottom: .5rem;
 }
 .fs-stat-label {
   font-size: .75rem;
-  color: #888;
+  color: #6b8099;
   text-transform: uppercase;
   letter-spacing: .08em;
   margin-bottom: .3rem;
@@ -137,7 +137,7 @@
 .fs-stat-value {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #e8c96a;
+  color: #e8f0fe;
 }
 .fs-stat-sub {
   font-size: .78rem;
@@ -156,8 +156,8 @@
   .fs-ref-badge { display: none; }
 }
 .fs-info-card {
-  background: #111;
-  border: 1px solid #2a1e00;
+  background: #0d1a26;
+  border: 1px solid rgba(79,142,247,.18);
   border-radius: 8px;
   padding: 1.2rem 1.3rem;
 }
@@ -166,7 +166,7 @@
   font-weight: 700;
   letter-spacing: .1em;
   text-transform: uppercase;
-  color: #c9a84c;
+  color: #4f8ef7;
   margin: 0 0 .9rem;
 }
 .fs-info-row {
@@ -175,12 +175,12 @@
   align-items: flex-start;
   gap: .5rem;
   padding: .45rem 0;
-  border-bottom: 1px solid #1a1200;
+  border-bottom: 1px solid rgba(79,142,247,.08);
   font-size: .88rem;
 }
 .fs-info-row:last-child { border-bottom: none; }
-.fs-info-row .label { color: #888; white-space: nowrap; }
-.fs-info-row .value { color: #e8e0d0; text-align: right; }
+.fs-info-row .label { color: #6b8099; white-space: nowrap; }
+.fs-info-row .value { color: #c8d8e8; text-align: right; }
 
 /* ── Action tiles ────────────────────────────── */
 .fs-actions {
@@ -189,8 +189,8 @@
   gap: 1rem;
 }
 .fs-action-tile {
-  background: #111;
-  border: 1px solid #2a1e00;
+  background: #0d1a26;
+  border: 1px solid rgba(79,142,247,.18);
   border-radius: 8px;
   padding: 1.5rem 1.3rem;
   display: flex;
@@ -201,8 +201,8 @@
   cursor: pointer;
 }
 .fs-action-tile:hover {
-  border-color: #c9a84c;
-  background: #191200;
+  border-color: #4f8ef7;
+  background: #0f2440;
   text-decoration: none;
 }
 .fs-action-tile.coming-soon {
@@ -214,21 +214,21 @@
   width: 42px;
   height: 42px;
   border-radius: 8px;
-  background: #2a1e00;
+  background: rgba(79,142,247,.12);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #c9a84c;
+  color: #4f8ef7;
   font-size: 1.1rem;
 }
 .fs-tile-name {
   font-weight: 600;
-  color: #e8c96a;
+  color: #e8f0fe;
   font-size: .95rem;
 }
 .fs-tile-desc {
   font-size: .82rem;
-  color: #888;
+  color: #6b8099;
   line-height: 1.5;
 }
 .fs-tile-badge {
@@ -243,24 +243,24 @@
   color: #60a5fa;
   align-self: flex-start;
 }
-.fs-tile-badge.soon { background: #2a1e00; color: #c9a84c; }
+.fs-tile-badge.soon { background: rgba(79,142,247,.12); color: #7ab0ff; }
 
 /* ── Notice banner ───────────────────────────── */
 .fs-notice {
-  background: #1a1200;
-  border: 1px solid #c9a84c33;
-  border-left: 3px solid #c9a84c;
+  background: rgba(79,142,247,.06);
+  border: 1px solid rgba(79,142,247,.2);
+  border-left: 3px solid #4f8ef7;
   border-radius: 6px;
   padding: 1rem 1.2rem;
   display: flex;
   gap: .8rem;
   align-items: flex-start;
   font-size: .88rem;
-  color: #c9a84c;
+  color: #4f8ef7;
   margin-bottom: 1.5rem;
 }
 .fs-notice i { margin-top: .1rem; flex-shrink: 0; }
-.fs-notice p { margin: 0; color: #d4b96a; }
+.fs-notice p { margin: 0; color: #93c5fd; }
 </style>
 
 <div class="fs-wrap">
@@ -348,7 +348,7 @@
         <h3><i class="fas fa-id-card" style="margin-right:.5rem"></i>Your Account</h3>
         <div class="fs-info-row">
           <span class="label">Reference</span>
-          <span class="value" style="color:#c9a84c;font-weight:700">{{ profile.ref }}</span>
+          <span class="value" style="color:#7ab0ff;font-weight:700">{{ profile.ref }}</span>
         </div>
         <div class="fs-info-row">
           <span class="label">Type</span>
