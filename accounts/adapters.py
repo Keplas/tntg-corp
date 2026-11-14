@@ -92,17 +92,19 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         """Connect social account to existing account if email matches.
 
         Runs before allauth creates a new user.  We need to:
-        1. Find the existing user by email
-        2. Ensure account_emailaddress has a row for them (get_or_create)
-        3. Connect the social login — this sets is_existing=True so allauth
+        1. Validate that Google supplied a verified email address
+        2. Find the existing user by email
+        3. Ensure account_emailaddress has a row for them (get_or_create)
+        4. Connect the social login — this sets is_existing=True so allauth
            skips process_signup() and never tries to INSERT a duplicate email.
         """
         import logging
+        from django.contrib import messages as django_messages
+        from allauth.exceptions import ImmediateHttpResponse
+        from django.shortcuts import redirect
         logger = logging.getLogger(__name__)
 
-        if sociallogin.is_existing:
-            return
-
+        # ── 1. Extract email from Google's response ───────────────────────────
         # Prefer allauth's parsed email list (reliable for all providers).
         email = None
         for ea in (sociallogin.email_addresses or []):
@@ -111,7 +113,44 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
         if not email:
             email = sociallogin.account.extra_data.get('email', '') or ''
         email = email.lower().strip()
+
+        # ── 2. Require a non-empty email ──────────────────────────────────────
         if not email:
+            django_messages.error(
+                request,
+                'Your Google account does not have a verified email address. '
+                'Please add one to your Google account and try again.'
+            )
+            raise ImmediateHttpResponse(redirect('account_login'))
+
+        # ── 3. Require Google to have verified the email ──────────────────────
+        extra = sociallogin.account.extra_data or {}
+        email_verified = extra.get('email_verified', True)  # Google always sends this
+        if not email_verified:
+            django_messages.error(
+                request,
+                f'The email address {email} has not been verified by Google. '
+                'Please verify it in your Google account settings and try again.'
+            )
+            raise ImmediateHttpResponse(redirect('account_login'))
+
+        # ── 4. Block disposable / throwaway email domains ─────────────────────
+        try:
+            from accounts.views import _DISPOSABLE_DOMAINS
+            domain = email.split('@')[-1].lower() if '@' in email else ''
+            if domain in _DISPOSABLE_DOMAINS:
+                django_messages.error(
+                    request,
+                    'Temporary or disposable email addresses are not allowed. '
+                    'Please sign in with a real, active Google account.'
+                )
+                raise ImmediateHttpResponse(redirect('account_login'))
+        except ImmediateHttpResponse:
+            raise
+        except Exception:
+            pass  # If import fails for any reason, don't block login
+
+        if sociallogin.is_existing:
             return
 
         from django.contrib.auth import get_user_model
