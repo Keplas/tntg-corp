@@ -692,6 +692,14 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
    </div>
  </div>
  </li>
+ <!-- Franchise — standalone tab, visible to all visitors -->
+ <li>
+ <a class="tg-nl {% if request.resolver_match.url_name == 'franchise_hub' or request.resolver_match.url_name == 'franchise_apply' %}tg-active{% endif %}"
+    href="{% url 'franchise_hub' %}"
+    style="display:flex;align-items:center;gap:6px">
+   <i class="fas fa-store" style="color:#c9a84c;font-size:.8rem"></i>Franchise
+ </a>
+ </li>
  <li>
  <button class="tg-nl">Company <i class="fas fa-chevron-down tg-caret"></i></button>
  <div class="tg-dd">
@@ -913,6 +921,15 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
    </a>
    {% endif %}{% endwith %}{% endif %}
  </div>
+ </li>
+
+ <!-- Franchise — standalone mobile tab -->
+ <li class="tg-mob-li">
+ <a href="{% url 'franchise_hub' %}"
+    class="tg-mob-link {% if request.resolver_match.url_name == 'franchise_hub' or request.resolver_match.url_name == 'franchise_apply' %}tg-active{% endif %}"
+    style="display:flex;align-items:center;gap:8px">
+   <i class="fas fa-store" style="color:#c9a84c;font-size:.85rem"></i>Franchise Opportunities
+ </a>
  </li>
 
  <!-- Company -->
