@@ -266,7 +266,7 @@ def analytics_dashboard(request):
     total_revenue   = Order.objects.aggregate(s=Sum('total_price'))['s'] or 0
     total_orders    = Order.objects.count()
     avg_order_value = Order.objects.aggregate(a=Avg('total_price'))['a'] or 0
-    total_customers = CustomUser.objects.filter(orders__isnull=False).distinct().count()
+    total_customers = CustomUser.objects.filter(orders__isnull=False, is_superuser=False).exclude(user_role='admin').distinct().count()
     total_points_issued = AvonPointTransaction.objects.filter(
         transaction_type__in=['earn_purchase', 'earn_referral']
     ).aggregate(s=Sum('points'))['s'] or 0

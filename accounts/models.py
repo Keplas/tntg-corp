@@ -79,6 +79,13 @@ class CustomUser(AbstractUser):
     withdrawal_pin_set     = models.BooleanField(default=False)
     daily_withdrawal_limit = models.DecimalField(max_digits=10, decimal_places=2, default=500)
 
+    @classmethod
+    def platform_users(cls):
+        """Queryset of all non-admin platform users (customers, franchisees, partners).
+        Use this everywhere instead of CustomUser.objects.all() to keep admin accounts
+        invisible on the user-facing side of the platform."""
+        return cls.objects.filter(is_superuser=False).exclude(user_role='admin')
+
     @property
     def is_platform_admin(self):
         """True for accounts that monitor/manage the platform but do NOT participate
@@ -103,13 +110,18 @@ class CustomUser(AbstractUser):
             return None
 
     def __str__(self):
+        if self.is_superuser or self.user_role == 'admin':
+            return f"{self.get_full_name() or self.username} [Admin]"
         return f"{self.get_full_name() or self.username} ({self.unique_id or 'No ID'})"
 
     def save(self, *args, **kwargs):
-        if not self.unique_id and self.pk:
-            self.unique_id = f"TG{str(self.pk).zfill(5)}"
+        # Admin/superuser accounts stay out of the user layer — no TG ID.
+        # Regular platform users always get one.
+        if not self.is_superuser and self.user_role != 'admin':
+            if not self.unique_id and self.pk:
+                self.unique_id = f"TG{str(self.pk).zfill(5)}"
         super().save(*args, **kwargs)
-        if not self.unique_id:
+        if not self.is_superuser and self.user_role != 'admin' and not self.unique_id:
             self.unique_id = f"TG{str(self.pk).zfill(5)}"
             CustomUser.objects.filter(pk=self.pk).update(unique_id=self.unique_id)
 

@@ -427,7 +427,7 @@ def dashboard(request):
             'total_revenue':        Order.objects.aggregate(s=Sum('total_price'))['s'] or 0,
             'total_orders_all':     Order.objects.count(),
             'avg_order_value':      Order.objects.aggregate(a=Avg('total_price'))['a'] or 0,
-            'total_customers':      CustomUser.objects.filter(orders__isnull=False).distinct().count(),
+            'total_customers':      CustomUser.objects.filter(orders__isnull=False, is_superuser=False).exclude(user_role='admin').distinct().count(),
             'total_points_issued':  AvonPointTransaction.objects.filter(
                                         transaction_type__in=['earn_purchase','earn_referral']
                                     ).aggregate(s=Sum('points'))['s'] or 0,
@@ -879,7 +879,7 @@ def analytics_dashboard(request):
     except: avg_order     = decimal.Decimal('0')
 
     stats = {
-        'total_users':      CustomUser.objects.count(),
+        'total_users':      CustomUser.objects.filter(is_superuser=False).exclude(user_role='admin').count(),
         'total_orders':     Order.objects.count(),
         'pending_orders':   Order.objects.filter(status='pending').count(),
         'trade_inquiries':  TradeInquiry.objects.count(),
@@ -894,9 +894,14 @@ def analytics_dashboard(request):
         order_count=Count('order')
     ).order_by('-order_count')[:5]
 
-    users_by_country = CustomUser.objects.values('country').annotate(
-        count=Count('id')
-    ).order_by('-count')[:6]
+    users_by_country = (
+        CustomUser.objects
+        .filter(is_superuser=False)
+        .exclude(user_role='admin')
+        .values('country')
+        .annotate(count=Count('id'))
+        .order_by('-count')[:6]
+    )
 
     ctx = {
         'stats':          stats,
