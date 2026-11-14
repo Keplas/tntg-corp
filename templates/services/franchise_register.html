@@ -293,15 +293,24 @@
       <div class="fr-header-inner">
         <div class="fr-badge"><i class="fas fa-store"></i> Franchisee Registration</div>
         <h1>Start Your <span>T&TG Franchise</span></h1>
+        {% if user.is_authenticated %}
+        <p>Choose your franchise type and territory — your hub will be ready instantly.</p>
+        {% else %}
         <p>Fill in the form below to create your franchisee account and unlock your hub instantly.</p>
+        {% endif %}
       </div>
     </div>
 
     <!-- Steps -->
     <div class="fr-steps">
+      {% if user.is_authenticated %}
+      <div class="fr-step active"><i class="fas fa-store" style="margin-right:5px"></i>Franchise Info</div>
+      <div class="fr-step active"><i class="fas fa-check" style="margin-right:5px"></i>Activate Hub</div>
+      {% else %}
       <div class="fr-step active"><i class="fas fa-user" style="margin-right:5px"></i>Your Details</div>
       <div class="fr-step active"><i class="fas fa-store" style="margin-right:5px"></i>Franchise Info</div>
       <div class="fr-step active"><i class="fas fa-lock" style="margin-right:5px"></i>Set Password</div>
+      {% endif %}
     </div>
 
     <!-- Django messages -->
@@ -325,6 +334,16 @@
           <input type="text" name="_hp_name" tabindex="-1" autocomplete="off">
         </div>
 
+        {% if user.is_authenticated %}
+        <!-- Logged-in user banner -->
+        <div style="display:flex;align-items:center;gap:12px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.25);border-radius:10px;padding:14px 18px;margin-bottom:24px;">
+          <i class="fas fa-user-circle" style="color:var(--fr-gold);font-size:1.3rem;flex-shrink:0;"></i>
+          <div>
+            <div style="font-size:.78rem;font-weight:700;color:var(--fr-gold);letter-spacing:.04em;text-transform:uppercase;margin-bottom:2px;">Registering as</div>
+            <div style="font-size:.9rem;color:#e8f0fe;">{{ user.get_full_name|default:user.username }} &mdash; {{ user.email }}</div>
+          </div>
+        </div>
+        {% else %}
         <!-- Section 1: Personal info -->
         <div class="fr-section-label"><i class="fas fa-user"></i> Personal Information</div>
         <div class="fr-grid">
@@ -360,6 +379,7 @@
         </div>
 
         <div class="fr-divider"></div>
+        {% endif %}
 
         <!-- Section 2: Franchise type -->
         <div class="fr-section-label"><i class="fas fa-store"></i> Franchise Type</div>
@@ -371,7 +391,7 @@
                    {% if post.franchise_type == val or prefill_type == val %}checked{% endif %}
                    required>
             <label class="fr-type-label" for="ft_{{ val }}">
-              <i class="fas {% if val == 'cafe_kiosk' %}fa-coffee{% elif val == 'distribution' %}fa-truck{% elif val == 'online_reseller' %}fa-laptop{% elif val == 'corporate_supply' %}fa-building{% elif val == 'mobile_unit' %}fa-shuttle-van{% else %}fa-store{% endif %}"></i>
+              <i class="fas {% if val == 'coffee_estate' %}fa-leaf{% elif val == 'ecommerce_distributor' %}fa-boxes{% elif val == 'product_seller' %}fa-coffee{% else %}fa-store{% endif %}"></i>
               <span>{{ label }}</span>
             </label>
           </div>
@@ -385,6 +405,19 @@
                    value="{{ post.proposed_location|default:'' }}" required
                    placeholder="e.g. Kampala North, Toronto West, Nairobi CBD">
           </div>
+          {% if not user.is_authenticated %}
+          <div class="fr-field">
+            <label class="fr-label" for="id_country_franchise">Country <span class="req">*</span></label>
+            <select class="fr-select" id="id_country_franchise" name="country" required>
+              <option value="">Select country…</option>
+              {% for code, label in countries %}
+              <option value="{{ code }}" {% if post.country == code %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          {% else %}
+          <input type="hidden" name="country" value="{{ user.country }}">
+          {% endif %}
           <div class="fr-field">
             <label class="fr-label" for="id_investment_budget">Investment Budget</label>
             <select class="fr-select" id="id_investment_budget" name="investment_budget">
@@ -416,6 +449,7 @@
           </div>
         </div>
 
+        {% if not user.is_authenticated %}
         <div class="fr-divider"></div>
 
         <!-- Section 3: Password -->
@@ -432,15 +466,22 @@
                    required minlength="8" placeholder="Repeat password">
           </div>
         </div>
+        {% endif %}
 
         <!-- Submit -->
         <div class="fr-submit-row">
           <button type="submit" class="fr-btn-submit">
+            {% if user.is_authenticated %}
+            <i class="fas fa-store"></i> Activate My Franchise Hub
+            {% else %}
             <i class="fas fa-store"></i> Create My Franchise Account
+            {% endif %}
           </button>
+          {% if not user.is_authenticated %}
           <div class="fr-login-link">
             Already have an account? <a href="{% url 'login' %}">Sign in</a>
           </div>
+          {% endif %}
         </div>
 
         <!-- Trust strip -->

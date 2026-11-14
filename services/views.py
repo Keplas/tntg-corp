@@ -304,6 +304,66 @@ def franchise_register(request):
         if d.get('_hp_name', '').strip():
             return redirect('franchise_hub')
 
+        # ══════════════════════════════════════════════════════════════════════
+        # PATH A: Already logged-in TNTG user applying for a franchise
+        # ══════════════════════════════════════════════════════════════════════
+        if request.user.is_authenticated and not request.user.is_platform_admin:
+            user = request.user
+
+            # Already a franchisee?
+            if hasattr(user, 'franchisee_profile'):
+                messages.warning(request, 'You already have an active franchise hub.')
+                return redirect('franchisee_store')
+
+            # ── Required franchise fields ─────────────────────────────────────
+            franchise_type    = d.get('franchise_type', '')
+            proposed_location = d.get('proposed_location', '').strip()
+            country           = d.get('country', '') or user.country
+            if not franchise_type or not proposed_location or not country:
+                messages.error(request, 'Please fill in all required franchise fields.')
+                return render(request, 'services/franchise_register.html', {'post': d, 'prefill_type': prefill_type})
+
+            # ── Auto-approved application ─────────────────────────────────────
+            app = FranchiseApplication.objects.create(
+                user=user,
+                full_name=user.get_full_name() or user.username,
+                email=user.email,
+                phone=user.phone,
+                country=country,
+                franchise_type=franchise_type,
+                proposed_location=proposed_location,
+                investment_budget=d.get('investment_budget', 'under_10k'),
+                start_timeline=d.get('start_timeline', 'asap'),
+                business_experience=d.get('business_experience', 'none'),
+                why_tntg=d.get('why_tntg', 'Self-registered via franchisee portal.'),
+                status='approved',
+                admin_notes='Auto-approved via franchisee self-registration (existing user).',
+            )
+
+            # ── FranchiseeProfile ─────────────────────────────────────────────
+            FranchiseeProfile.objects.create(
+                user=user,
+                application=app,
+                franchise_type=franchise_type,
+                territory=proposed_location,
+                country=country,
+                operational_status='setup',
+            )
+
+            # Upgrade role to franchisee if still set to a marketplace role
+            if user.user_role not in ('franchisee', 'regional_manager'):
+                user.user_role = 'franchisee'
+                user.save(update_fields=['user_role'])
+
+            messages.success(request,
+                f'Welcome to T&TG Franchisee Network, {user.first_name or user.username}! '
+                f'Your hub is ready.')
+            return redirect('franchisee_store')
+
+        # ══════════════════════════════════════════════════════════════════════
+        # PATH B: New user — create account + franchise in one step
+        # ══════════════════════════════════════════════════════════════════════
+
         # ── IP rate limit: 3 registrations / IP / hour ────────────────────────
         from accounts.views import _get_client_ip
         client_ip = _get_client_ip(request)

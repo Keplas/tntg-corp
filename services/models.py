@@ -144,11 +144,9 @@ class TradeInquiry(models.Model):
 class FranchiseApplication(models.Model):
 
     FRANCHISE_TYPE_CHOICES = [
-        ('cafe_kiosk',       'Café / Kiosk Franchise'),
-        ('distribution',     'Distribution Partner'),
-        ('online_reseller',  'Online Reseller'),
-        ('corporate_supply', 'Corporate & Institutional Supply'),
-        ('mobile_unit',      'Mobile Coffee Unit'),
+        ('coffee_estate',        'Coffee Estates & Farms'),
+        ('ecommerce_distributor','E-commerce Distributor'),
+        ('product_seller',       'Coffee-Based Product Sellers'),
     ]
     BUDGET_CHOICES = [
         ('under_10k',    'Under $10,000 CAD'),
