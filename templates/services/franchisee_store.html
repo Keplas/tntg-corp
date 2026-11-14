@@ -642,47 +642,6 @@
 
 <div class="hub-wrap">
 
-  <!-- ── Inner Hub Nav ────────────────────────────── -->
-  <nav class="hub-nav">
-    <div class="hub-nav-brand">
-      <i class="fas fa-store"></i>
-      <span>Franchisee</span>&nbsp;Hub
-    </div>
-    <div class="hub-nav-links">
-      <a href="{% url 'franchisee_store' %}" class="hub-nav-link active">
-        <i class="fas fa-th-large"></i> Dashboard
-      </a>
-      <a href="{% url 'franchise_my_products' %}" class="hub-nav-link">
-        <i class="fas fa-box-open"></i> My Franchise
-      </a>
-      <a href="{% url 'franchise_my_products' %}" class="hub-nav-link">
-        <i class="fas fa-tags"></i> Products
-      </a>
-      <a href="{% url 'join_program' %}" class="hub-nav-link">
-        <i class="fas fa-graduation-cap"></i> Training
-      </a>
-      <a href="{% url 'contact' %}" class="hub-nav-link">
-        <i class="fas fa-headset"></i> Support
-      </a>
-    </div>
-    <div class="hub-nav-right">
-      <div class="hub-notif">
-        <i class="fas fa-bell"></i>
-        {% if new_orders %}<span class="hub-notif-badge">{{ new_orders }}</span>{% endif %}
-      </div>
-      <div class="hub-user-chip">
-        <div class="hub-user-avatar">
-          {% if profile.photo %}
-            <img src="{{ profile.photo }}" alt="">
-          {% else %}
-            <i class="fas fa-user" style="font-size:.7rem"></i>
-          {% endif %}
-        </div>
-        <span class="hub-user-name">{{ request.user.get_full_name|default:request.user.username }}</span>
-        <i class="fas fa-chevron-down" style="font-size:.6rem;color:#6b82a0;margin-left:2px"></i>
-      </div>
-    </div>
-  </nav>
 
   <!-- ── Setup notice ───────────────────────────── -->
   {% if profile.operational_status == 'setup' %}
