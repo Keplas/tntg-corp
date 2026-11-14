@@ -293,6 +293,30 @@ def franchise_register(request):
     from .models import FranchiseApplication, FranchiseeProfile
     from django.contrib.auth import login as auth_login
     from django.core.cache import cache
+    from django.core.mail import send_mail
+    from django.conf import settings as djsettings
+
+    def _notify_admin_new_franchise(applicant_name, applicant_email, franchise_type, territory):
+        """Send a notification email to the admin when a new franchise application is submitted."""
+        admin_email = getattr(djsettings, 'TNTG_ADMIN_EMAIL', 'tom.grouptrade@gmail.com')
+        try:
+            send_mail(
+                subject=f'[T&TG] New Franchise Application — {applicant_name}',
+                message=(
+                    f'A new franchise application has been submitted.\n\n'
+                    f'Name       : {applicant_name}\n'
+                    f'Email      : {applicant_email}\n'
+                    f'Type       : {franchise_type}\n'
+                    f'Territory  : {territory}\n\n'
+                    f'Log in to the admin panel to review:\n'
+                    f'https://www.tomtradecorp.com/admin/services/franchiseapplication/\n'
+                ),
+                from_email=djsettings.DEFAULT_FROM_EMAIL,
+                recipient_list=[admin_email],
+                fail_silently=True,
+            )
+        except Exception:
+            pass  # Never block registration if email fails
 
     # Pre-fill franchise type from ?type= query param (from card links)
     prefill_type = request.GET.get('type', '')
@@ -355,6 +379,12 @@ def franchise_register(request):
                 user.user_role = 'franchisee'
                 user.save(update_fields=['user_role'])
 
+            _notify_admin_new_franchise(
+                user.get_full_name() or user.username,
+                user.email,
+                franchise_type,
+                proposed_location,
+            )
             messages.success(request,
                 f'Welcome to T&TG Franchisee Network, {user.first_name or user.username}! '
                 f'Your hub is ready.')
@@ -450,6 +480,14 @@ def franchise_register(request):
             territory=proposed_location,
             country=country,
             operational_status='setup',
+        )
+
+        # ── Notify admin ──────────────────────────────────────────────────────
+        _notify_admin_new_franchise(
+            user.get_full_name() or username,
+            user.email,
+            franchise_type,
+            proposed_location,
         )
 
         # ── Log in and redirect to hub ────────────────────────────────────────
