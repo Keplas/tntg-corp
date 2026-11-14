@@ -11,6 +11,7 @@ urlpatterns = [
     path('partnership/apply/', views.partnership_apply, name='partnership_apply'),
     # Franchise
     path('franchise/',                       views.franchise_hub,            name='franchise_hub'),
+    path('franchise/register/',             views.franchise_register,       name='franchise_register'),
     path('franchise/apply/',                views.franchise_apply,          name='franchise_apply'),
     path('franchise/dashboard/',            views.franchise_dashboard,       name='franchise_dashboard'),
     path('franchise/<int:pk>/status/',      views.franchise_update_status,   name='franchise_update_status'),

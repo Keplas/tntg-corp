@@ -279,6 +279,139 @@ def franchise_update_status(request, pk):
 # FRANCHISEE STORE — personal dashboard for each approved franchisee
 # ════════════════════════════════════════════════════════════════════════
 
+# ── Franchisee self-registration ──────────────────────────────────────────────
+
+def franchise_register(request):
+    """
+    Fast-track franchisee sign-up.
+    Creates a CustomUser + FranchiseApplication (auto-approved) + FranchiseeProfile
+    in a single step.  Linked from franchise_hub.html CTAs.
+    """
+    from accounts.models import CustomUser
+    from django.core.validators import validate_email
+    from django.core.exceptions import ValidationError
+    from .models import FranchiseApplication, FranchiseeProfile
+    from django.contrib.auth import login as auth_login
+    from django.core.cache import cache
+
+    # Pre-fill franchise type from ?type= query param (from card links)
+    prefill_type = request.GET.get('type', '')
+
+    if request.method == 'POST':
+        d = request.POST
+
+        # ── Honeypot ──────────────────────────────────────────────────────────
+        if d.get('_hp_name', '').strip():
+            return redirect('franchise_hub')
+
+        # ── IP rate limit: 3 registrations / IP / hour ────────────────────────
+        from accounts.views import _get_client_ip
+        client_ip = _get_client_ip(request)
+        rate_key  = f'freg_ip_{client_ip}'
+        if cache.get(rate_key, 0) >= 3:
+            messages.error(request, 'Too many registrations from your connection. Try again in an hour.')
+            return render(request, 'services/franchise_register.html', {'post': d, 'prefill_type': prefill_type})
+
+        # ── Validate email ────────────────────────────────────────────────────
+        email = d.get('email', '').lower().strip()
+        try:
+            validate_email(email)
+        except ValidationError:
+            messages.error(request, 'Please enter a valid email address.')
+            return render(request, 'services/franchise_register.html', {'post': d, 'prefill_type': prefill_type})
+
+        if CustomUser.objects.filter(email__iexact=email).exists():
+            messages.error(request, 'An account with this email already exists. Please log in.')
+            return render(request, 'services/franchise_register.html', {'post': d, 'prefill_type': prefill_type})
+
+        # ── Password ──────────────────────────────────────────────────────────
+        pw1 = d.get('password', '')
+        pw2 = d.get('confirm_password', '')
+        if pw1 != pw2:
+            messages.error(request, 'Passwords do not match.')
+            return render(request, 'services/franchise_register.html', {'post': d, 'prefill_type': prefill_type})
+        if len(pw1) < 8:
+            messages.error(request, 'Password must be at least 8 characters.')
+            return render(request, 'services/franchise_register.html', {'post': d, 'prefill_type': prefill_type})
+
+        # ── Required franchise fields ─────────────────────────────────────────
+        franchise_type    = d.get('franchise_type', '')
+        proposed_location = d.get('proposed_location', '').strip()
+        country           = d.get('country', '')
+        if not franchise_type or not proposed_location or not country:
+            messages.error(request, 'Please fill in all required fields.')
+            return render(request, 'services/franchise_register.html', {'post': d, 'prefill_type': prefill_type})
+
+        # ── Create user ───────────────────────────────────────────────────────
+        import re
+        base_username = re.sub(r'[^a-z0-9]', '', email.split('@')[0].lower()) or 'user'
+        username = base_username
+        suffix = 1
+        while CustomUser.objects.filter(username=username).exists():
+            username = f'{base_username}{suffix}'
+            suffix += 1
+
+        cache.set(rate_key, cache.get(rate_key, 0) + 1, 3600)
+
+        user = CustomUser.objects.create_user(
+            username=username,
+            email=email,
+            password=pw1,
+            is_active=True,
+            first_name=d.get('first_name', '').strip(),
+            last_name=d.get('last_name', '').strip(),
+            phone=d.get('phone', '').strip(),
+            country=country,
+            user_role='franchisee',
+        )
+
+        # ── Auto-approved franchise application ───────────────────────────────
+        app = FranchiseApplication.objects.create(
+            user=user,
+            full_name=user.get_full_name() or username,
+            email=email,
+            phone=user.phone,
+            country=country,
+            franchise_type=franchise_type,
+            proposed_location=proposed_location,
+            investment_budget=d.get('investment_budget', 'under_10k'),
+            start_timeline=d.get('start_timeline', 'asap'),
+            business_experience=d.get('business_experience', 'none'),
+            why_tntg=d.get('why_tntg', 'Self-registered via franchisee portal.'),
+            status='approved',
+            admin_notes='Auto-approved via franchisee self-registration.',
+        )
+
+        # ── FranchiseeProfile — hub is immediately accessible ─────────────────
+        FranchiseeProfile.objects.create(
+            user=user,
+            application=app,
+            franchise_type=franchise_type,
+            territory=proposed_location,
+            country=country,
+            operational_status='setup',
+        )
+
+        # ── Log in and redirect to hub ────────────────────────────────────────
+        auth_login(request, user, backend='accounts.backends.FlexAuthBackend')
+        messages.success(request,
+            f'Welcome to T&TG Franchisee Network, {user.first_name or username}! '
+            f'Your hub is ready.')
+        return redirect('franchisee_store')
+
+    return render(request, 'services/franchise_register.html', {
+        'post': {},
+        'prefill_type': prefill_type,
+        'franchise_types':    FranchiseApplication.FRANCHISE_TYPE_CHOICES,
+        'budget_choices':     FranchiseApplication.BUDGET_CHOICES,
+        'timeline_choices':   FranchiseApplication.TIMELINE_CHOICES,
+        'experience_choices': FranchiseApplication.EXPERIENCE_CHOICES,
+        'countries': [('CA', 'Canada'), ('UG', 'Uganda'), ('KE', 'Kenya')],
+    })
+
+
+# ════════════════════════════════════════════════════════════════════════
+
 from .decorators import franchisee_required
 
 @franchisee_required

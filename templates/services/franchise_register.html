@@ -1,0 +1,458 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Become a Franchisee — T&TG Trade Corp{% endblock %}
+
+{% block extra_head %}
+<style>
+/* ═══ Franchise Register ════════════════════════════════════════════════ */
+:root {
+  --fr-bg:     #05101e;
+  --fr-card:   #0b1a2e;
+  --fr-border: rgba(201,168,76,.18);
+  --fr-gold:   #c9a84c;
+  --fr-goldlt: #e8c96a;
+  --fr-muted:  #7a90a8;
+  --fr-input:  #0d1f38;
+}
+
+.fr-wrap {
+  min-height: 100vh;
+  background: var(--fr-bg);
+  padding: 60px 16px 80px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.fr-card {
+  width: 100%;
+  max-width: 760px;
+  background: var(--fr-card);
+  border: 1px solid var(--fr-border);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0,0,0,.55);
+}
+
+/* ── Header ── */
+.fr-header {
+  background: linear-gradient(135deg, #060f1e 0%, #0a1930 60%, #0d2040 100%);
+  border-bottom: 1px solid var(--fr-border);
+  padding: 36px 40px 32px;
+  position: relative;
+  overflow: hidden;
+}
+.fr-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 80% at 90% 50%, rgba(201,168,76,.08) 0%, transparent 70%);
+}
+.fr-header-inner { position: relative; z-index: 1; }
+.fr-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(201,168,76,.12);
+  border: 1px solid rgba(201,168,76,.3);
+  color: var(--fr-gold);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+.fr-header h1 {
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+  color: #e8f0fe;
+  margin: 0 0 8px;
+  line-height: 1.2;
+}
+.fr-header h1 span { color: var(--fr-goldlt); }
+.fr-header p {
+  color: var(--fr-muted);
+  font-size: .9rem;
+  margin: 0;
+}
+
+/* ── Steps indicator ── */
+.fr-steps {
+  display: flex;
+  gap: 0;
+  padding: 0 40px;
+  background: rgba(0,0,0,.2);
+  border-bottom: 1px solid var(--fr-border);
+}
+.fr-step {
+  flex: 1;
+  text-align: center;
+  padding: 14px 8px;
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--fr-muted);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  position: relative;
+}
+.fr-step.active { color: var(--fr-gold); }
+.fr-step.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--fr-gold);
+  border-radius: 2px 2px 0 0;
+}
+
+/* ── Form body ── */
+.fr-body { padding: 36px 40px 40px; }
+
+.fr-section-label {
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--fr-gold);
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.fr-section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--fr-border);
+}
+
+.fr-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.fr-grid.full { grid-template-columns: 1fr; }
+@media (max-width: 540px) { .fr-grid { grid-template-columns: 1fr; } }
+
+.fr-field { display: flex; flex-direction: column; gap: 6px; }
+.fr-field.span2 { grid-column: span 2; }
+@media (max-width: 540px) { .fr-field.span2 { grid-column: span 1; } }
+
+.fr-label {
+  font-size: .78rem;
+  font-weight: 600;
+  color: #c8d8e8;
+}
+.fr-label .req { color: var(--fr-gold); margin-left: 2px; }
+
+.fr-input, .fr-select, .fr-textarea {
+  background: var(--fr-input);
+  border: 1px solid rgba(201,168,76,.2);
+  border-radius: 8px;
+  color: #e8f0fe;
+  font-size: .88rem;
+  padding: 10px 14px;
+  width: 100%;
+  transition: border-color .2s, box-shadow .2s;
+  outline: none;
+  font-family: inherit;
+}
+.fr-input:focus, .fr-select:focus, .fr-textarea:focus {
+  border-color: var(--fr-gold);
+  box-shadow: 0 0 0 3px rgba(201,168,76,.12);
+}
+.fr-select option { background: #0b1a2e; }
+.fr-textarea { resize: vertical; min-height: 80px; }
+
+/* Franchise type cards */
+.fr-type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.fr-type-opt { display: none; }
+.fr-type-label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 14px 16px;
+  background: var(--fr-input);
+  border: 1.5px solid rgba(201,168,76,.18);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+  min-height: 72px;
+}
+.fr-type-label:hover { border-color: rgba(201,168,76,.4); }
+.fr-type-opt:checked + .fr-type-label {
+  border-color: var(--fr-gold);
+  background: rgba(201,168,76,.08);
+}
+.fr-type-label i {
+  font-size: 1.1rem;
+  color: var(--fr-gold);
+}
+.fr-type-label span {
+  font-size: .78rem;
+  font-weight: 600;
+  color: #c8d8e8;
+  line-height: 1.3;
+}
+
+/* Divider */
+.fr-divider {
+  height: 1px;
+  background: var(--fr-border);
+  margin: 28px 0;
+}
+
+/* Submit */
+.fr-submit-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 32px;
+}
+.fr-btn-submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, var(--fr-gold) 0%, #a8893a 100%);
+  color: #060f1e;
+  font-weight: 800;
+  font-size: .95rem;
+  padding: 14px 32px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: opacity .2s, transform .15s;
+  font-family: inherit;
+  letter-spacing: .01em;
+}
+.fr-btn-submit:hover { opacity: .92; transform: translateY(-1px); }
+.fr-login-link {
+  font-size: .82rem;
+  color: var(--fr-muted);
+}
+.fr-login-link a { color: var(--fr-gold); text-decoration: none; font-weight: 600; }
+.fr-login-link a:hover { text-decoration: underline; }
+
+/* Trust strip */
+.fr-trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--fr-border);
+}
+.fr-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: .75rem;
+  color: var(--fr-muted);
+}
+.fr-trust-item i { color: var(--fr-gold); font-size: .8rem; }
+
+/* Django messages */
+.fr-msgs { padding: 0 40px; margin-top: 20px; }
+.fr-msg {
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: .84rem;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.fr-msg.error   { background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.3); color: #fca5a5; }
+.fr-msg.success { background: rgba(34,197,94,.12);  border: 1px solid rgba(34,197,94,.3);  color: #86efac; }
+.fr-msg.warning { background: rgba(234,179,8,.12);  border: 1px solid rgba(234,179,8,.3);  color: #fde047; }
+
+/* Hidden honeypot */
+.fr-hp { display: none !important; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="fr-wrap">
+  <div class="fr-card">
+
+    <!-- Header -->
+    <div class="fr-header">
+      <div class="fr-header-inner">
+        <div class="fr-badge"><i class="fas fa-store"></i> Franchisee Registration</div>
+        <h1>Start Your <span>T&TG Franchise</span></h1>
+        <p>Fill in the form below to create your franchisee account and unlock your hub instantly.</p>
+      </div>
+    </div>
+
+    <!-- Steps -->
+    <div class="fr-steps">
+      <div class="fr-step active"><i class="fas fa-user" style="margin-right:5px"></i>Your Details</div>
+      <div class="fr-step active"><i class="fas fa-store" style="margin-right:5px"></i>Franchise Info</div>
+      <div class="fr-step active"><i class="fas fa-lock" style="margin-right:5px"></i>Set Password</div>
+    </div>
+
+    <!-- Django messages -->
+    {% if messages %}
+    <div class="fr-msgs">
+      {% for msg in messages %}
+      <div class="fr-msg {{ msg.tags }}">
+        <i class="fas {% if 'error' in msg.tags %}fa-exclamation-circle{% elif 'success' in msg.tags %}fa-check-circle{% else %}fa-info-circle{% endif %}"></i>
+        {{ msg }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Form -->
+    <div class="fr-body">
+      <form method="post" autocomplete="off">
+        {% csrf_token %}
+        <!-- Honeypot -->
+        <div class="fr-hp" aria-hidden="true">
+          <input type="text" name="_hp_name" tabindex="-1" autocomplete="off">
+        </div>
+
+        <!-- Section 1: Personal info -->
+        <div class="fr-section-label"><i class="fas fa-user"></i> Personal Information</div>
+        <div class="fr-grid">
+          <div class="fr-field">
+            <label class="fr-label" for="id_first_name">First Name <span class="req">*</span></label>
+            <input class="fr-input" type="text" id="id_first_name" name="first_name"
+                   value="{{ post.first_name|default:'' }}" required placeholder="e.g. Edgar">
+          </div>
+          <div class="fr-field">
+            <label class="fr-label" for="id_last_name">Last Name <span class="req">*</span></label>
+            <input class="fr-input" type="text" id="id_last_name" name="last_name"
+                   value="{{ post.last_name|default:'' }}" required placeholder="e.g. Kitayimbwa">
+          </div>
+          <div class="fr-field">
+            <label class="fr-label" for="id_email">Email Address <span class="req">*</span></label>
+            <input class="fr-input" type="email" id="id_email" name="email"
+                   value="{{ post.email|default:'' }}" required placeholder="you@example.com">
+          </div>
+          <div class="fr-field">
+            <label class="fr-label" for="id_phone">Phone Number</label>
+            <input class="fr-input" type="tel" id="id_phone" name="phone"
+                   value="{{ post.phone|default:'' }}" placeholder="+256 700 000 000">
+          </div>
+          <div class="fr-field">
+            <label class="fr-label" for="id_country">Country <span class="req">*</span></label>
+            <select class="fr-select" id="id_country" name="country" required>
+              <option value="">Select country…</option>
+              {% for code, label in countries %}
+              <option value="{{ code }}" {% if post.country == code %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="fr-divider"></div>
+
+        <!-- Section 2: Franchise type -->
+        <div class="fr-section-label"><i class="fas fa-store"></i> Franchise Type</div>
+        <div class="fr-type-grid">
+          {% for val, label in franchise_types %}
+          <div>
+            <input class="fr-type-opt" type="radio" name="franchise_type" id="ft_{{ val }}"
+                   value="{{ val }}"
+                   {% if post.franchise_type == val or prefill_type == val %}checked{% endif %}
+                   required>
+            <label class="fr-type-label" for="ft_{{ val }}">
+              <i class="fas {% if val == 'cafe_kiosk' %}fa-coffee{% elif val == 'distribution' %}fa-truck{% elif val == 'online_reseller' %}fa-laptop{% elif val == 'corporate_supply' %}fa-building{% elif val == 'mobile_unit' %}fa-shuttle-van{% else %}fa-store{% endif %}"></i>
+              <span>{{ label }}</span>
+            </label>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="fr-grid">
+          <div class="fr-field span2">
+            <label class="fr-label" for="id_proposed_location">Proposed Territory / Location <span class="req">*</span></label>
+            <input class="fr-input" type="text" id="id_proposed_location" name="proposed_location"
+                   value="{{ post.proposed_location|default:'' }}" required
+                   placeholder="e.g. Kampala North, Toronto West, Nairobi CBD">
+          </div>
+          <div class="fr-field">
+            <label class="fr-label" for="id_investment_budget">Investment Budget</label>
+            <select class="fr-select" id="id_investment_budget" name="investment_budget">
+              {% for val, label in budget_choices %}
+              <option value="{{ val }}" {% if post.investment_budget == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="fr-field">
+            <label class="fr-label" for="id_start_timeline">Start Timeline</label>
+            <select class="fr-select" id="id_start_timeline" name="start_timeline">
+              {% for val, label in timeline_choices %}
+              <option value="{{ val }}" {% if post.start_timeline == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="fr-field">
+            <label class="fr-label" for="id_business_experience">Business Experience</label>
+            <select class="fr-select" id="id_business_experience" name="business_experience">
+              {% for val, label in experience_choices %}
+              <option value="{{ val }}" {% if post.business_experience == val %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="fr-field span2">
+            <label class="fr-label" for="id_why_tntg">Why do you want to franchise with T&TG? <span class="req">*</span></label>
+            <textarea class="fr-textarea" id="id_why_tntg" name="why_tntg"
+                      required placeholder="Tell us briefly about your motivation…">{{ post.why_tntg|default:'' }}</textarea>
+          </div>
+        </div>
+
+        <div class="fr-divider"></div>
+
+        <!-- Section 3: Password -->
+        <div class="fr-section-label"><i class="fas fa-lock"></i> Set Your Password</div>
+        <div class="fr-grid">
+          <div class="fr-field">
+            <label class="fr-label" for="id_password">Password <span class="req">*</span></label>
+            <input class="fr-input" type="password" id="id_password" name="password"
+                   required minlength="8" placeholder="Minimum 8 characters">
+          </div>
+          <div class="fr-field">
+            <label class="fr-label" for="id_confirm_password">Confirm Password <span class="req">*</span></label>
+            <input class="fr-input" type="password" id="id_confirm_password" name="confirm_password"
+                   required minlength="8" placeholder="Repeat password">
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="fr-submit-row">
+          <button type="submit" class="fr-btn-submit">
+            <i class="fas fa-store"></i> Create My Franchise Account
+          </button>
+          <div class="fr-login-link">
+            Already have an account? <a href="{% url 'login' %}">Sign in</a>
+          </div>
+        </div>
+
+        <!-- Trust strip -->
+        <div class="fr-trust">
+          <div class="fr-trust-item"><i class="fas fa-bolt"></i> Hub ready instantly</div>
+          <div class="fr-trust-item"><i class="fas fa-shield-alt"></i> Your data is secure</div>
+          <div class="fr-trust-item"><i class="fas fa-headset"></i> HQ support included</div>
+          <div class="fr-trust-item"><i class="fas fa-globe"></i> Canada · Uganda · Kenya</div>
+        </div>
+
+      </form>
+    </div><!-- /fr-body -->
+  </div><!-- /fr-card -->
+</div>
+{% endblock %}
