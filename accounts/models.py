@@ -11,13 +11,21 @@ MARKET_TYPE_CHOICES = [
     ('local',         'Local Market'),
     ('international', 'International Market'),
     ('both',          'Both'),
+    ('none',          'Not Applicable'),   # admin / monitoring-only accounts
 ]
 
 USER_ROLE_CHOICES = [
-    ('buyer',  'Buyer'),
-    ('seller', 'Seller'),
-    ('partner','Partner Company'),
-    ('both',   'Buyer & Seller'),
+    # ── Marketplace participants ──────────────────────────────────────────────
+    ('buyer',       'Buyer'),
+    ('seller',      'Seller'),
+    ('partner',     'Partner Company'),
+    ('both',        'Buyer & Seller'),
+    # ── Franchise network ────────────────────────────────────────────────────
+    ('franchisee',       'Franchisee'),
+    ('regional_manager', 'Regional Manager'),
+    # ── Platform staff (non-marketplace) ─────────────────────────────────────
+    ('finance',     'Finance'),
+    ('admin',       'Platform Administrator'),
 ]
 
 TERM_CHOICES = [
@@ -70,6 +78,12 @@ class CustomUser(AbstractUser):
     withdrawal_pin         = models.CharField(max_length=128, blank=True)
     withdrawal_pin_set     = models.BooleanField(default=False)
     daily_withdrawal_limit = models.DecimalField(max_digits=10, decimal_places=2, default=500)
+
+    @property
+    def is_platform_admin(self):
+        """True for accounts that monitor/manage the platform but do NOT participate
+        in the marketplace (no cart, no loyalty points, no buyer/seller flows)."""
+        return self.is_superuser or self.user_role == 'admin'
 
     @property
     def safe_profile_photo_url(self):

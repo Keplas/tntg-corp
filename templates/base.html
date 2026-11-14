@@ -767,10 +767,16 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  <div style="color:#c9a84c;font-size:.7rem">{{ user.unique_id }}</div>
  </div>
  <a href="{% url 'dashboard' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-th-large"></i></span>Dashboard</a>
+ {% if user.is_platform_admin %}
+ {# ── Admin-only links — no marketplace, no transactions ── #}
+ <a href="{% url 'franchise_dashboard' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-network-wired"></i></span>Franchise Network</a>
+ {% else %}
+ {# ── Franchise hub (franchisees only) ── #}
  {% if user.franchisee_profile %}
  <a href="{% url 'franchisee_store' %}" class="tg-dd-item" style="color:#c9a84c;font-weight:600"><span class="tg-dd-ico"><i class="fas fa-store"></i></span>My Franchise Hub</a>
- <div class="tg-dd-divider"></div>
  {% endif %}
+ <div class="tg-dd-divider"></div>
+ {# ── Marketplace/transactional links (non-admin only) ── #}
  <a href="{% url 'profile' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-user"></i></span>My Profile</a>
  <a href="{% url 'loyalty_dashboard' %}" class="tg-dd-item">
  <span class="tg-dd-ico"><i class="fas fa-coins"></i></span>Loyalty Points
@@ -781,6 +787,7 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  <a href="{% url 'my_orders' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-shopping-bag"></i></span>My Orders</a>
  <a href="{% url 'wishlist' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-heart"></i></span>My Wishlist</a>
  <a href="{% url 'cart' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-shopping-cart"></i></span>My Cart</a>
+ {% endif %}
  <div class="tg-dd-divider"></div>
  <a href="{% url 'logout' %}" class="tg-dd-item tg-dd-danger"><span class="tg-dd-ico"><i class="fas fa-sign-out-alt"></i></span>Sign Out</a>
  </div>
