@@ -12,21 +12,81 @@ def _superuser_only(self, request):
 admin.site.__class__.has_permission = _superuser_only
 
 
-@admin.register(CustomUser)
-class CustomUserAdmin(UserAdmin):
-    list_display = ['username', 'unique_id', 'email', 'country', 'market_type', 'avon_points', 'is_verified']
-    list_filter  = ['country', 'market_type', 'is_verified', 'is_partner']
-    fieldsets    = UserAdmin.fieldsets + (
-        ('T&TG Profile', {'fields': (
-            'unique_id', 'phone', 'country', 'city', 'address',
-            'market_type', 'user_role', 'term_preference', 'business_description',
-            'is_partner', 'partner_company', 'partner_id',
-            'has_certificate', 'is_registered_company',
-            'avon_points', 'is_verified',
-            'profile_photo', 'national_id_front', 'national_id_back', 'selfie', 'declaration',
-            'bio', 'profile_link', 'website',
-        )}),
-    )
+# ── Proxy models so Users and Admins appear in separate admin sections ────────
+
+class RegularUser(CustomUser):
+    """Proxy — regular platform users (buyers, sellers, franchisees, etc.)."""
+    class Meta:
+        proxy        = True
+        verbose_name        = 'User'
+        verbose_name_plural = 'Users'
+        app_label    = 'accounts'
+
+
+class AdminUser(CustomUser):
+    """Proxy — platform administrators and staff (user_role=admin/finance or is_staff/superuser)."""
+    class Meta:
+        proxy        = True
+        verbose_name        = 'Administrator'
+        verbose_name_plural = 'Administrators'
+        app_label    = 'accounts'
+
+
+# ── Shared fieldset for the T&TG profile block ────────────────────────────────
+_TNTG_FIELDSET = ('T&TG Profile', {'fields': (
+    'unique_id', 'phone', 'country', 'city', 'address',
+    'market_type', 'user_role', 'term_preference', 'business_description',
+    'is_partner', 'partner_company', 'partner_id',
+    'avon_points', 'is_verified',
+    'profile_photo', 'national_id_front', 'national_id_back', 'selfie', 'declaration',
+    'bio', 'profile_link', 'website',
+)})
+
+
+@admin.register(RegularUser)
+class RegularUserAdmin(UserAdmin):
+    """Admin view for regular (non-admin) platform users."""
+
+    list_display  = ['username', 'unique_id', 'email', 'get_full_name', 'country',
+                     'user_role', 'market_type', 'avon_points', 'is_verified', 'date_joined']
+    list_filter   = ['user_role', 'country', 'market_type', 'is_verified', 'is_partner']
+    search_fields = ['username', 'email', 'unique_id', 'first_name', 'last_name', 'phone']
+    ordering      = ['-date_joined']
+    fieldsets     = UserAdmin.fieldsets + (_TNTG_FIELDSET,)
+
+    def get_queryset(self, request):
+        """Only show non-admin, non-staff users."""
+        return super().get_queryset(request).filter(
+            is_superuser=False,
+            is_staff=False,
+        ).exclude(user_role__in=['admin', 'finance'])
+
+    def get_full_name(self, obj):
+        return obj.get_full_name() or '—'
+    get_full_name.short_description = 'Name'
+
+
+@admin.register(AdminUser)
+class AdminUserAdmin(UserAdmin):
+    """Admin view for platform administrators and staff accounts."""
+
+    list_display  = ['username', 'unique_id', 'email', 'get_full_name',
+                     'user_role', 'is_staff', 'is_superuser', 'is_active', 'date_joined']
+    list_filter   = ['user_role', 'is_staff', 'is_superuser', 'is_active', 'country']
+    search_fields = ['username', 'email', 'unique_id', 'first_name', 'last_name']
+    ordering      = ['-date_joined']
+    fieldsets     = UserAdmin.fieldsets + (_TNTG_FIELDSET,)
+
+    def get_queryset(self, request):
+        """Only show admin/staff/superuser accounts."""
+        from django.db.models import Q
+        return super().get_queryset(request).filter(
+            Q(is_superuser=True) | Q(is_staff=True) | Q(user_role__in=['admin', 'finance'])
+        )
+
+    def get_full_name(self, obj):
+        return obj.get_full_name() or '—'
+    get_full_name.short_description = 'Name'
 
 
 @admin.register(AvonPointTransaction)
