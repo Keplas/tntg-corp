@@ -573,6 +573,74 @@
 .hub-res-link:hover { color: #60a5fa; text-decoration: none; }
 .hub-res-link i { font-size: .8rem; }
 
+/* ── Profile card ─────────────────── */
+.hub-profile {
+  background: var(--hub-card);
+  border: 1px solid var(--hub-border);
+  border-radius: 12px;
+  padding: 22px 24px;
+}
+.hub-profile-head {
+  display: flex; align-items: center; gap: 9px;
+  font-weight: 800;
+  font-size: .9rem;
+  color: #e0eaff;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--hub-border);
+}
+.hub-profile-head i { color: var(--hub-gold); }
+.hub-profile-avatar {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg,rgba(201,168,76,.22),rgba(37,99,235,.22));
+  border: 2px solid rgba(201,168,76,.35);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+  color: var(--hub-gold);
+  flex-shrink: 0;
+  margin-bottom: 16px;
+}
+.hub-profile-name {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #e8f0fe;
+  margin-bottom: 2px;
+}
+.hub-profile-role {
+  font-size: .75rem;
+  font-weight: 700;
+  color: var(--hub-gold);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.hub-profile-rows {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 20px;
+}
+.hub-profile-row {
+  display: flex; flex-direction: column; gap: 2px;
+}
+.hub-profile-label {
+  font-size: .68rem;
+  font-weight: 700;
+  color: var(--hub-muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+.hub-profile-val {
+  font-size: .84rem;
+  color: #c8d8f0;
+  font-weight: 500;
+  word-break: break-all;
+}
+.hub-profile-val.mono { font-family: monospace; letter-spacing: .03em; }
+@media (max-width:500px) {
+  .hub-profile-rows { grid-template-columns: 1fr; }
+}
+
 /* ── Hub Footer ────────────────────── */
 .hub-footer {
   background: var(--hub-navy);
@@ -883,6 +951,70 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- ── My Profile ────────────────────────────── -->
+  <div style="max-width:1240px;margin:28px auto 0;padding:0 1.5rem;">
+    <div class="hub-profile">
+      <div class="hub-profile-head">
+        <i class="fas fa-id-card"></i> My Profile
+      </div>
+      <div class="hub-profile-avatar">
+        {% if user.first_name %}
+          {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
+        {% else %}
+          <i class="fas fa-user" style="font-size:1.3rem;"></i>
+        {% endif %}
+      </div>
+      <div class="hub-profile-name">{{ user.get_full_name|default:user.username }}</div>
+      <div class="hub-profile-role">
+        {% if profile.franchise_type == 'coffee_estate' %}Coffee Estates &amp; Farms
+        {% elif profile.franchise_type == 'ecommerce_distributor' %}E-commerce Distributor
+        {% elif profile.franchise_type == 'product_seller' %}Coffee-Based Product Seller
+        {% else %}{{ profile.get_franchise_type_display }}{% endif %}
+      </div>
+      <div class="hub-profile-rows">
+        <div class="hub-profile-row">
+          <span class="hub-profile-label"><i class="fas fa-envelope" style="margin-right:4px"></i>Email</span>
+          <span class="hub-profile-val">{{ user.email }}</span>
+        </div>
+        <div class="hub-profile-row">
+          <span class="hub-profile-label"><i class="fas fa-phone" style="margin-right:4px"></i>Phone</span>
+          <span class="hub-profile-val">{{ user.phone|default:"—" }}</span>
+        </div>
+        <div class="hub-profile-row">
+          <span class="hub-profile-label"><i class="fas fa-map-marker-alt" style="margin-right:4px"></i>Territory</span>
+          <span class="hub-profile-val">{{ profile.territory }}</span>
+        </div>
+        <div class="hub-profile-row">
+          <span class="hub-profile-label"><i class="fas fa-globe" style="margin-right:4px"></i>Country</span>
+          <span class="hub-profile-val">{{ profile.country }}</span>
+        </div>
+        <div class="hub-profile-row">
+          <span class="hub-profile-label"><i class="fas fa-id-badge" style="margin-right:4px"></i>Franchise ID</span>
+          <span class="hub-profile-val mono">{{ profile.ref }}</span>
+        </div>
+        <div class="hub-profile-row">
+          <span class="hub-profile-label"><i class="fas fa-hashtag" style="margin-right:4px"></i>Member ID</span>
+          <span class="hub-profile-val mono">{{ user.unique_id|default:"—" }}</span>
+        </div>
+        <div class="hub-profile-row">
+          <span class="hub-profile-label"><i class="fas fa-calendar-alt" style="margin-right:4px"></i>Member Since</span>
+          <span class="hub-profile-val">{{ user.date_joined|date:"M j, Y" }}</span>
+        </div>
+        <div class="hub-profile-row">
+          <span class="hub-profile-label"><i class="fas fa-circle" style="margin-right:4px"></i>Status</span>
+          <span class="hub-profile-val">
+            <span class="hub-status {{ profile.operational_status }}">
+              {% if profile.operational_status == 'active' %}Active
+              {% elif profile.operational_status == 'setup' %}Setting Up
+              {% elif profile.operational_status == 'paused' %}Paused
+              {% else %}Terminated{% endif %}
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ── Hub Footer ──────────────────────────────── -->
