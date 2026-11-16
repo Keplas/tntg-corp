@@ -843,3 +843,11 @@ def set_currency(request):
     return JsonResponse({'currency': request.session.get('display_currency','CAD')})
 
 
+
+
+@login_required
+def poll_payment_status(request, pk):
+    """AJAX endpoint polled by payment_pending.html to check if an order has been paid."""
+    from django.http import JsonResponse
+    order = get_object_or_404(Order, pk=pk, buyer=request.user)
+    return JsonResponse({'status': order.payment_status})

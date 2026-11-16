@@ -30,4 +30,5 @@ urlpatterns = [
     path('manage/<int:pk>/prices/', views.manage_product_prices, name='manage_product_prices'),
     path('manage/<int:pk>/image/', views.update_product_image, name='update_product_image'),
     path('bulk-order/', views.bulk_order_request, name='bulk_order_request'),
+    path('orders/<int:pk>/pay/status/', views.poll_payment_status, name='poll_payment_status'),
 ]
