@@ -57,7 +57,8 @@
   var verifyUrl = "{% url 'moneris_verify' order.pk %}";
   var csrfToken = "{{ csrf_token }}";
 
-  var myCheckout = new monerisCheckout();
+  // monerisCheckout is a factory function, not a class — call without 'new'
+  var myCheckout = monerisCheckout();
   myCheckout.setMode(env);
   myCheckout.setCheckoutDiv('monerisCheckout');
 
