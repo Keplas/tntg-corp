@@ -110,7 +110,7 @@ def reserve_spot(request, pk):
         # Prevent double booking
         if EventTicket.objects.filter(event=event, email=email, status='confirmed').exists():
             messages.warning(request, 'You already have a confirmed ticket for this event. Check your email.')
-            return redirect('my_tickets')
+            return redirect('event_list')
 
         # Create ticket
         ticket = EventTicket.objects.create(
@@ -160,13 +160,6 @@ def reserve_spot(request, pk):
         return redirect('ticket_detail', pk=ticket.pk)
 
     return redirect('event_detail', pk=pk)
-
-@login_required
-def my_tickets(request):
-    tickets = EventTicket.objects.filter(
-        email=request.user.email
-    ).select_related('event').order_by('-registered_at')
-    return render(request, 'training/my_tickets.html', {'tickets': tickets})
 
 def ticket_detail(request, pk):
     from django.shortcuts import get_object_or_404

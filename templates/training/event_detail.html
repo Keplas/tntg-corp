@@ -76,7 +76,7 @@
           <div style="font-size:2.5rem;margin-bottom:12px"><i class="fas fa-ticket-alt"></i></div>
           <h5 style="color:#4ade80;font-weight:800">You're Registered!</h5>
           <p style="color:#7a6e5f;font-size:.82rem;margin-bottom:20px">You already have a confirmed ticket for this event. Check your email for ticket details.</p>
-          <a href="{% url 'my_tickets' %}" class="btn btn-gold w-100">View My Tickets</a>
+          <a href="{% url 'event_list' %}" class="btn btn-gold w-100">Browse More Events</a>
         </div>
         {% elif event.is_full %}
         <div style="text-align:center;padding:20px 0">
