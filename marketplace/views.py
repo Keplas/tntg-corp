@@ -230,6 +230,10 @@ def debug_moneris(request):
         'bill_email':         'debug@tomtradecorp.com',
     }
 
+    # Build the real return_url the same way payment_start_moneris does
+    from django.urls import reverse as _reverse
+    real_return_url = request.build_absolute_uri(_reverse('payment_success', args=[1]))
+
     try:
         resp = _req.post(preload_url, json=payload,
                          headers={'Content-Type': 'application/json'}, timeout=15)
@@ -237,6 +241,35 @@ def debug_moneris(request):
             body = resp.json()
         except Exception:
             body = resp.text
+
+        # If preload succeeded, also attempt a receipt call with the ticket
+        # so we can confirm receipt verification works end-to-end.
+        receipt_result = None
+        ticket = None
+        try:
+            ticket = body.get('response', {}).get('ticket')
+        except Exception:
+            pass
+
+        if ticket:
+            receipt_payload = {
+                'store_id':    store_id,
+                'api_token':   api_token,
+                'checkout_id': checkout_id,
+                'ticket':      ticket,
+                'action':      'receipt',
+                'environment': moneris_env,
+            }
+            try:
+                r2 = _req.post(preload_url, json=receipt_payload,
+                               headers={'Content-Type': 'application/json'}, timeout=15)
+                try:
+                    receipt_result = r2.json()
+                except Exception:
+                    receipt_result = r2.text
+            except Exception as e:
+                receipt_result = {'error': str(e)}
+
         result = {
             'credentials_set': {
                 'MONERIS_STORE_ID':    bool(store_id),
@@ -246,11 +279,13 @@ def debug_moneris(request):
             'environment':        env,
             'moneris_env_param':  moneris_env,
             'preload_url':        preload_url,
-            'http_status':        resp.status_code,
-            'moneris_response':   body,
+            'real_return_url':    real_return_url,
+            'preload_http_status': resp.status_code,
+            'preload_response':   body,
+            'receipt_response':   receipt_result,
         }
     except Exception as exc:
-        result = {'error': str(exc)}
+        result = {'error': str(exc), 'real_return_url': real_return_url}
 
     return JsonResponse(result, json_dumps_params={'indent': 2})
 

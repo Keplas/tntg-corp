@@ -302,12 +302,15 @@ def verify_moneris_payment(ticket):
     env_setting = os.environ.get('MONERIS_ENVIRONMENT', 'sandbox').strip()
     env = env_setting if env_setting in ('sandbox', 'production') else 'sandbox'
 
+    moneris_env = 'prod' if env == 'production' else 'qa'
+
     payload = {
         'store_id':    store_id,
         'api_token':   api_token,
         'checkout_id': checkout_id,
         'ticket':      ticket,
         'action':      'receipt',
+        'environment': moneris_env,   # required — must match the preload
     }
     try:
         resp = requests.post(
@@ -316,9 +319,11 @@ def verify_moneris_payment(ticket):
             headers={'Content-Type': 'application/json'},
             timeout=15,
         )
+        logger.info(f'[Moneris] receipt status={resp.status_code} body={resp.text[:500]}')
         data = resp.json()
         response = data.get('response', data)
         receipt  = response.get('receipt', response)
+        logger.info(f'[Moneris] receipt parsed={receipt}')
         if isinstance(receipt, dict):
             result = str(receipt.get('result', '')).lower()
             paid   = result in ('a', 'approved', '0', 'success', 'true')
