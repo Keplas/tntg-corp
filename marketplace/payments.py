@@ -55,9 +55,10 @@ _MONERIS_PRELOAD_URL = {
     'production': 'https://gateway.moneris.com/chktv2/request/request.php',
 }
 # Hosted checkout page — buyer is redirected here with ?id=<ticket>
+# Must use chktv2 (same as preload) — v2 tickets are invalid on the v1 /chkt/ endpoint
 _MONERIS_CHECKOUT_HOST = {
-    'sandbox':    'https://gatewayt.moneris.com/chkt/request/request.php',
-    'production': 'https://gateway.moneris.com/chkt/request/request.php',
+    'sandbox':    'https://gatewayt.moneris.com/chktv2/request/request.php',
+    'production': 'https://gateway.moneris.com/chktv2/request/request.php',
 }
 
 
