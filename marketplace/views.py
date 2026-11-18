@@ -330,12 +330,11 @@ def payment_start_card(request, pk):
 
 @login_required
 def payment_start_moneris(request, pk):
-    """Redirect buyer to Moneris hosted checkout."""
+    """Render Moneris Hosted Checkout v2 inline (JS-based, not a redirect)."""
     order = get_object_or_404(Order, pk=pk, buyer=request.user)
-    success_url = request.build_absolute_uri(reverse('payment_success', args=[order.pk]))
-    cancel_url  = request.build_absolute_uri(reverse('payment_select',  args=[order.pk]))
+    cancel_url = request.build_absolute_uri(reverse('payment_select', args=[order.pk]))
 
-    checkout_url, error = payments.create_moneris_checkout_session(order, success_url, cancel_url)
+    ticket, moneris_env, js_url, error = payments.create_moneris_checkout_session(order, cancel_url)
     if error:
         messages.error(request, error)
         return redirect('payment_select', pk=order.pk)
@@ -343,7 +342,39 @@ def payment_start_moneris(request, pk):
     order.payment_method = 'moneris'
     order.payment_status = 'pending'
     order.save(update_fields=['payment_method', 'payment_status'])
-    return redirect(checkout_url)
+    return render(request, 'marketplace/moneris_checkout.html', {
+        'order':       order,
+        'ticket':      ticket,
+        'moneris_env': moneris_env,
+        'js_url':      js_url,
+    })
+
+
+@login_required
+def moneris_verify(request, pk):
+    """AJAX endpoint called by Moneris.js after payment completes."""
+    import json
+    from django.views.decorators.http import require_POST
+    order = get_object_or_404(Order, pk=pk, buyer=request.user)
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST required'}, status=405)
+    try:
+        data   = json.loads(request.body)
+        ticket = data.get('ticket', '').strip()
+    except Exception:
+        ticket = ''
+    paid, ref = payments.verify_moneris_payment(ticket) if ticket else (False, '')
+    if paid:
+        order.payment_status   = 'paid'
+        order.payment_reference = ref
+        order.paid_at          = timezone.now()
+        order.save(update_fields=['payment_status', 'payment_reference', 'paid_at'])
+        send_order_confirmation_email(order)
+        return JsonResponse({'paid': True, 'redirect': reverse('order_detail', args=[order.pk])})
+    else:
+        order.payment_status = 'failed'
+        order.save(update_fields=['payment_status'])
+        return JsonResponse({'paid': False, 'redirect': reverse('payment_select', args=[order.pk])})
 
 
 @login_required

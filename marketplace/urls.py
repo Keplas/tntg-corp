@@ -13,6 +13,7 @@ urlpatterns = [
     path('orders/<int:pk>/pay/',        views.payment_select,      name='payment_select'),
     path('orders/<int:pk>/pay/card/',    views.payment_start_card,    name='payment_start_card'),
     path('orders/<int:pk>/pay/moneris/', views.payment_start_moneris, name='payment_start_moneris'),
+    path('orders/<int:pk>/pay/moneris/verify/', views.moneris_verify, name='moneris_verify'),
     path('orders/<int:pk>/pay/mobile/',  views.payment_start_mobile,  name='payment_start_mobile'),
     path('orders/<int:pk>/pay/success/', views.payment_success,        name='payment_success'),
     path('orders/<int:pk>/pay/manual/',  views.payment_manual,         name='payment_manual'),

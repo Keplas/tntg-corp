@@ -54,11 +54,11 @@ _MONERIS_PRELOAD_URL = {
     'sandbox':    'https://gatewayt.moneris.com/chktv2/request/request.php',
     'production': 'https://gateway.moneris.com/chktv2/request/request.php',
 }
-# Hosted checkout page — buyer is redirected here with ?id=<ticket>
-# Must use chktv2 (same as preload) — v2 tickets are invalid on the v1 /chkt/ endpoint
-_MONERIS_CHECKOUT_HOST = {
-    'sandbox':    'https://gatewayt.moneris.com/chktv2/request/request.php',
-    'production': 'https://gateway.moneris.com/chktv2/request/request.php',
+# Moneris.js library — loaded client-side to render the inline checkout
+# Moneris Checkout v2 is JS-only (no redirect URL); the JS renders inside a <div>
+_MONERIS_JS_URL = {
+    'sandbox':    'https://gatewayt.moneris.com/chktv2/js/monerisCheckout.js',
+    'production': 'https://gateway.moneris.com/chktv2/js/monerisCheckout.js',
 }
 
 
@@ -190,17 +190,17 @@ def moneris_configured():
     )
 
 
-def create_moneris_checkout_session(order, success_url, cancel_url):
+def create_moneris_checkout_session(order, cancel_url):
     """
     Create a Moneris Hosted Checkout v2 preload ticket.
-    Returns (redirect_url, error).  redirect_url is None on failure.
+    Returns (ticket, moneris_env, js_url, error).
+    ticket/js_url are None on failure.
 
-    Buyer is redirected to:
-        https://gatewayt.moneris.com/chkt/request/request.php?id=<ticket>  (sandbox)
-        https://gateway.moneris.com/chkt/request/request.php?id=<ticket>   (production)
+    Moneris Checkout v2 uses a JavaScript library (not a redirect).
+    Pass the returned ticket to monerisCheckout.js on the client side.
     """
     if not moneris_configured():
-        return None, (
+        return None, None, None, (
             'Moneris card payments are not yet configured. '
             'Set MONERIS_STORE_ID, MONERIS_API_TOKEN and MONERIS_CHECKOUT_ID '
             'in Cloud Run env vars.'
@@ -248,7 +248,6 @@ def create_moneris_checkout_session(order, success_url, cancel_url):
         # dynamic_descriptor: alphanumeric only (max 20 chars) — no & # or special chars
         'dynamic_descriptor': f'TNTG Order {order.pk}',
         'language':    'en',
-        'return_url':  success_url,
         'cancel_url':  cancel_url,
         'bill_first_name': order.buyer.first_name or order.buyer.username,
         'bill_last_name':  order.buyer.last_name or '',
@@ -268,23 +267,23 @@ def create_moneris_checkout_session(order, success_url, cancel_url):
         )
         logger.info(f'[Moneris] preload status={resp.status_code} env={env} body={resp.text[:500]}')
         if not resp.text.strip():
-            return None, f'Moneris returned empty response (HTTP {resp.status_code}).'
+            return None, None, None, f'Moneris returned empty response (HTTP {resp.status_code}).'
         data = resp.json()
         # Response shape: {"response": {"success": "true", "ticket": "..."}}
         response = data.get('response', data)
         success = str(response.get('success', '')).lower()
         ticket  = response.get('ticket', '')
         if success == 'true' and ticket:
-            checkout_url = f'{_MONERIS_CHECKOUT_HOST[env]}?id={ticket}'
-            return checkout_url, None
+            js_url = _MONERIS_JS_URL[env]
+            return ticket, moneris_env, js_url, None
         error = (response.get('error')
                  or response.get('message')
                  or f'Moneris returned: {resp.status_code} {resp.text[:200]}')
         logger.error(f'[Moneris] preload failed: {error}')
-        return None, f'Moneris checkout failed: {error}'
+        return None, None, None, f'Moneris checkout failed: {error}'
     except Exception as e:
         logger.error(f'[Moneris] preload exception: {e}')
-        return None, f'Moneris payment setup failed: {e}'
+        return None, None, None, f'Moneris payment setup failed: {e}'
 
 
 def verify_moneris_payment(ticket):
