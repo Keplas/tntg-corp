@@ -11,23 +11,5 @@ urlpatterns = [
     path('forex/', views.forex, name='forex'),
     # Partnership
     path('partnership/apply/', views.partnership_apply, name='partnership_apply'),
-    # Franchise
-    path('franchise/',                       views.franchise_hub,            name='franchise_hub'),
-    path('franchise/register/',             views.franchise_register,       name='franchise_register'),
-    path('franchise/apply/',                views.franchise_apply,          name='franchise_apply'),
-    path('franchise/dashboard/',            views.franchise_dashboard,       name='franchise_dashboard'),
-    path('franchise/<int:pk>/status/',      views.franchise_update_status,   name='franchise_update_status'),
-    path('franchise/my-applications/',      views.my_franchise_applications, name='my_franchise_applications'),
-    path('franchise/my-store/',             views.franchisee_store,          name='franchisee_store'),
-    # Phase 2
-    path('franchise/my-products/',          views.franchise_my_products,     name='franchise_my_products'),
-    path('franchise/orders/',               views.franchise_orders,          name='franchise_orders'),
-    path('franchise/orders/<int:pk>/',      views.franchise_order_detail,    name='franchise_order_detail'),
-    path('franchise/sales-reports/',        views.franchise_sales_reports,   name='franchise_sales_reports'),
-    path('franchise/inventory/',            views.franchise_inventory,       name='franchise_inventory'),
-    # Phase 3
-    path('franchise/customers/',                    views.franchise_customers,         name='franchise_customers'),
-    path('franchise/customers/add/',                views.franchise_customer_add,      name='franchise_customer_add'),
-    path('franchise/customers/<int:pk>/',           views.franchise_customer_detail,   name='franchise_customer_detail'),
-    path('franchise/customers/<int:pk>/edit/',      views.franchise_customer_edit,     name='franchise_customer_edit'),
+    # Franchise patterns live in franchise_urls.py — included at /franchise/ in tntg_corp/urls.py
 ]

@@ -513,6 +513,7 @@ def franchise_register(request):
 from .decorators import franchisee_required
 
 @franchisee_required
+@login_required
 def franchisee_store(request):
     """Personal franchise hub — visible only to the account owner."""
     from django.utils import timezone
