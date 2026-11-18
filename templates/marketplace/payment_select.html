@@ -2,151 +2,222 @@
 {% block title %}Complete Payment — Order #{{ order.pk }} — T&TG{% endblock %}
 {% block content %}
 <style>
-  .pay-bg   { background:#060f1e; min-height:90vh; padding:56px 0 80px; }
-  .pay-card { background:rgba(255,255,255,.03); border:1px solid rgba(201,168,76,.15); border-radius:18px; padding:24px; height:100%; display:flex; flex-direction:column; }
-  .pay-icon { font-size:2rem; color:#c9a84c; margin-bottom:12px; }
-  .pay-title{ color:#fff; font-weight:800; font-size:1rem; margin-bottom:8px; }
-  .pay-desc { color:#7a6e5f; font-size:.82rem; flex:1; line-height:1.6; margin-bottom:16px; }
-  .pay-input{ background:rgba(255,255,255,.05); border:1px solid rgba(201,168,76,.2); color:#e0d5c0; border-radius:10px; padding:11px 14px; width:100%; margin-bottom:10px; }
-  .pay-coming{ background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:10px; text-align:center; color:#7a6e5f; font-size:.78rem; }
+  .pay-bg { background:linear-gradient(160deg,#060f1e 0%,#0d1a2d 100%); min-height:90vh; padding:52px 0 80px; }
+
+  /* Order summary strip */
+  .order-strip {
+    background:rgba(201,168,76,.07);
+    border:1px solid rgba(201,168,76,.22);
+    border-radius:16px;
+    padding:18px 24px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-bottom:36px;
+  }
+
+  /* Central payment panel */
+  .pay-panel {
+    background:rgba(255,255,255,.025);
+    border:1px solid rgba(201,168,76,.25);
+    border-radius:22px;
+    padding:40px 36px 36px;
+    max-width:520px;
+    margin:0 auto;
+  }
+
+  /* Security row */
+  .sec-row {
+    display:flex;
+    justify-content:center;
+    gap:1.4rem;
+    flex-wrap:wrap;
+    margin-bottom:30px;
+  }
+  .sec-badge {
+    display:flex;
+    align-items:center;
+    gap:6px;
+    color:rgba(255,255,255,.4);
+    font-size:.75rem;
+  }
+  .sec-badge i { color:#c9a84c; font-size:.85rem; }
+
+  /* Amount display */
+  .amount-box {
+    text-align:center;
+    background:rgba(201,168,76,.06);
+    border:1px solid rgba(201,168,76,.18);
+    border-radius:14px;
+    padding:18px 20px;
+    margin-bottom:28px;
+  }
+  .amount-label { color:rgba(255,255,255,.4); font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; }
+  .amount-value { color:#c9a84c; font-weight:900; font-size:2rem; line-height:1.2; margin:4px 0 2px; }
+  .amount-sub   { color:rgba(255,255,255,.35); font-size:.75rem; }
+
+  /* Card logos */
+  .card-logos {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:24px;
+  }
+  .card-logo {
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:7px;
+    padding:5px 10px;
+    color:rgba(255,255,255,.55);
+    font-size:.7rem;
+    font-weight:700;
+    letter-spacing:.04em;
+  }
+
+  /* Pay button */
+  .btn-pay {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    width:100%;
+    padding:15px 20px;
+    background:linear-gradient(135deg,#c9a84c,#e8c96a);
+    color:#000;
+    font-weight:800;
+    font-size:1rem;
+    border:none;
+    border-radius:12px;
+    text-decoration:none;
+    cursor:pointer;
+    letter-spacing:.02em;
+    transition:opacity .18s,transform .15s;
+  }
+  .btn-pay:hover { opacity:.9; transform:translateY(-1px); color:#000; text-decoration:none; }
+  .btn-pay:active { transform:translateY(0); }
+
+  /* Moneris footnote */
+  .moneris-note {
+    text-align:center;
+    color:rgba(255,255,255,.25);
+    font-size:.72rem;
+    margin-top:14px;
+  }
+  .moneris-note strong { color:rgba(255,255,255,.45); }
 </style>
 
 <div class="pay-bg">
 <div class="container">
-  <a href="{% url 'order_detail' order.pk %}" style="color:#7a6e5f;font-size:.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-bottom:28px">
+
+  <a href="{% url 'order_detail' order.pk %}"
+     style="color:rgba(255,255,255,.35);font-size:.8rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-bottom:28px">
     <i class="fas fa-arrow-left"></i> Back to Order
   </a>
 
-  <!-- Order Summary -->
-  <div style="background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.2);border-radius:16px;padding:20px 24px;margin-bottom:32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+  <!-- Order summary strip -->
+  <div class="order-strip">
     <div>
-      <div style="color:#7a6e5f;font-size:.7rem;text-transform:uppercase;letter-spacing:1px">Order #{{ order.pk }}</div>
-      <div style="color:#fff;font-weight:800;font-size:1rem;margin-top:2px">{{ order.product.name }} × {{ order.quantity }}</div>
-      <div style="color:#7a6e5f;font-size:.78rem">{{ order.destination_country }}</div>
+      <div style="color:rgba(255,255,255,.35);font-size:.7rem;text-transform:uppercase;letter-spacing:.08em">Order #{{ order.pk }}</div>
+      <div style="color:#fff;font-weight:800;font-size:.95rem;margin-top:3px">{{ order.product.name }} × {{ order.quantity }}</div>
+      <div style="color:rgba(255,255,255,.35);font-size:.77rem;margin-top:2px">{{ order.destination_country }}</div>
     </div>
     <div style="text-align:right">
       {% if order.display_currency and order.display_currency != order.product.currency %}
-      <div style="color:#c9a84c;font-weight:900;font-size:1.6rem">{{ order.display_currency }} {{ order.display_total }}</div>
-      <div style="color:#7a6e5f;font-size:.72rem">≈ {{ order.product.currency }} {{ order.total_price }} base</div>
+      <div style="color:#c9a84c;font-weight:900;font-size:1.4rem">{{ order.display_currency }} {{ order.display_total }}</div>
+      <div style="color:rgba(255,255,255,.3);font-size:.72rem">≈ {{ order.product.currency }} {{ order.total_price }} base</div>
       {% else %}
-      <div style="color:#c9a84c;font-weight:900;font-size:1.6rem">{{ order.product.currency }} {{ order.total_price }}</div>
+      <div style="color:#c9a84c;font-weight:900;font-size:1.4rem">{{ order.product.currency }} {{ order.total_price }}</div>
       {% endif %}
     </div>
   </div>
 
   {% if order.payment_status == 'paid' %}
-  <div style="text-align:center;padding:40px">
-    <i class="fas fa-check-circle" style="font-size:3rem;color:#4ade80;margin-bottom:12px"></i>
-    <h4 style="color:#fff">This order is already paid</h4>
+  <!-- Already paid -->
+  <div style="text-align:center;padding:48px 20px">
+    <i class="fas fa-check-circle" style="font-size:3rem;color:#4ade80;margin-bottom:14px;display:block"></i>
+    <h4 style="color:#fff;margin-bottom:8px">This order is already paid</h4>
+    <p style="color:rgba(255,255,255,.4);font-size:.85rem">No further action needed.</p>
     <a href="{% url 'order_detail' order.pk %}" class="btn btn-gold mt-3 px-5">View Order</a>
   </div>
 
   {% else %}
 
-  {% if messages %}{% for m in messages %}
-  <div class="alert mb-4" style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);color:#4ade80;border-radius:12px;padding:14px 18px">
-    <i class="fas fa-check-circle me-2"></i>{{ m }}
-  </div>
-  {% endfor %}{% endif %}
+  {% if messages %}
+    {% for m in messages %}
+    <div class="mb-4" style="background:rgba(231,76,60,.1);border:1px solid rgba(231,76,60,.3);color:#ff8070;border-radius:12px;padding:13px 18px;max-width:520px;margin:0 auto 20px">
+      <i class="fas fa-exclamation-circle me-2"></i>{{ m }}
+    </div>
+    {% endfor %}
+  {% endif %}
 
-  <h4 style="color:#fff;font-weight:900;margin-bottom:6px">Choose Payment Method</h4>
-  <p style="color:#7a6e5f;font-size:.85rem;margin-bottom:24px">Select how you would like to pay for your order.</p>
+  <!-- Payment panel -->
+  <div class="pay-panel">
 
-  <div class="row g-4">
+    <h4 style="color:#fff;font-weight:900;text-align:center;margin-bottom:4px;font-size:1.25rem">Secure Checkout</h4>
+    <p style="color:rgba(255,255,255,.35);font-size:.8rem;text-align:center;margin-bottom:24px">Complete your payment securely with Moneris</p>
 
-    <!-- 1. Moneris — Canadian card processing (primary for CA buyers) -->
-    <div class="col-md-3">
-      <div class="pay-card" {% if moneris_ready %}style="border-color:rgba(201,168,76,.4)"{% endif %}>
-        <div class="pay-icon"><i class="fas fa-credit-card"></i></div>
-        <div class="pay-title">
-          Pay by Card
-          <span style="display:inline-block;background:rgba(201,168,76,.15);color:#c9a84c;font-size:.6rem;font-weight:700;letter-spacing:.5px;padding:2px 6px;border-radius:4px;vertical-align:middle;margin-left:6px">CA</span>
-        </div>
-        <div class="pay-desc">Visa, Mastercard, Amex. Optimised for Canadian buyers. Secured by Moneris.</div>
-        {% if moneris_ready %}
-        <a href="{% url 'payment_start_moneris' order.pk %}" class="btn btn-gold w-100 mt-auto">
-          <i class="fas fa-lock me-2"></i>Pay with Moneris
-        </a>
-        {% else %}
-        <div class="pay-coming"><i class="fas fa-clock me-1"></i>Canadian card: coming soon</div>
-        {% endif %}
-      </div>
+    <!-- Security badges -->
+    <div class="sec-row">
+      <span class="sec-badge"><i class="fas fa-lock"></i>256-bit SSL</span>
+      <span class="sec-badge"><i class="fas fa-shield-alt"></i>PCI DSS Compliant</span>
+      <span class="sec-badge"><i class="fas fa-university"></i>Powered by Moneris</span>
     </div>
 
-    <!-- 2. Card (Stripe) — international -->
-    <div class="col-md-3">
-      <div class="pay-card">
-        <div class="pay-icon"><i class="fas fa-globe"></i></div>
-        <div class="pay-title">Pay by Card
-          <span style="display:inline-block;background:rgba(255,255,255,.07);color:#7a8fa8;font-size:.6rem;font-weight:700;letter-spacing:.5px;padding:2px 6px;border-radius:4px;vertical-align:middle;margin-left:6px">INTL</span>
-        </div>
-        <div class="pay-desc">Visa, Mastercard, and major cards worldwide. Secured by Stripe. Instant confirmation.</div>
-        {% if stripe_ready %}
-        <a href="{% url 'payment_start_card' order.pk %}" class="btn btn-gold w-100 mt-auto">
-          <i class="fas fa-lock me-2"></i>Pay with Stripe
-        </a>
-        {% else %}
-        <div class="pay-coming"><i class="fas fa-clock me-1"></i>International card: coming soon</div>
-        {% endif %}
-      </div>
+    <!-- Amount -->
+    <div class="amount-box">
+      <div class="amount-label">Total due today</div>
+      {% if order.display_currency and order.display_currency != order.product.currency %}
+      <div class="amount-value">{{ order.display_currency }} {{ order.display_total }}</div>
+      <div class="amount-sub">≈ {{ order.product.currency }} {{ order.total_price }} base rate</div>
+      {% else %}
+      <div class="amount-value">{{ order.product.currency }} {{ order.total_price }}</div>
+      <div class="amount-sub">{{ order.product.name }} × {{ order.quantity }}</div>
+      {% endif %}
     </div>
 
-    <!-- 3. Mobile Money (Flutterwave) -->
-    <div class="col-md-3">
-      <div class="pay-card">
-        <div class="pay-icon"><i class="fas fa-mobile-alt"></i></div>
-        <div class="pay-title">Mobile Money</div>
-        <div class="pay-desc">MTN, Airtel Money or M-Pesa. For Uganda and Kenya clients. Secured by Flutterwave.</div>
-        {% if flutterwave_ready %}
-        <form method="post" action="{% url 'payment_start_mobile' order.pk %}">
-          {% csrf_token %}
-          <input type="tel" name="phone" class="pay-input" placeholder="e.g. 256712345678" required>
-          <button type="submit" class="btn btn-gold w-100">Pay by Mobile Money</button>
-        </form>
-        {% else %}
-        <div class="pay-coming"><i class="fas fa-clock me-1"></i>Mobile Money: coming soon</div>
-        {% endif %}
-      </div>
+    <!-- Accepted cards -->
+    <div class="card-logos">
+      <span class="card-logo">VISA</span>
+      <span class="card-logo">MC</span>
+      <span class="card-logo">AMEX</span>
+      <span class="card-logo">DISCOVER</span>
     </div>
 
-    <!-- 4. Manual / Bank Transfer: ALWAYS AVAILABLE -->
-    <div class="col-md-3">
-      <div class="pay-card" style="border-color:rgba(201,168,76,.35)">
-        <div class="pay-icon"><i class="fas fa-university"></i></div>
-        <div class="pay-title">Bank Transfer / WhatsApp</div>
-        <div class="pay-desc">Confirm your order now and pay via bank transfer, Western Union, or arrange payment directly with Tom on WhatsApp. Payment collected within 24 hours.</div>
-        <form method="post" action="{% url 'payment_manual' order.pk %}">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-gold w-100 mt-auto">
-            <i class="fas fa-check me-2"></i>Confirm Order: Pay Later
-          </button>
-        </form>
-        <a href="https://wa.me/14168323512?text=Hi Tom, I just placed Order {{order.pk}} for {{order.product.name}}. I would like to arrange payment." target="_blank"
-          style="display:block;text-align:center;margin-top:10px;color:#25d366;font-size:.78rem;text-decoration:none">
-          <i class="fab fa-whatsapp me-1"></i>WhatsApp Tom directly
-        </a>
-      </div>
+    <!-- Pay button -->
+    {% if moneris_ready %}
+    <a href="{% url 'payment_start_moneris' order.pk %}" class="btn-pay">
+      <i class="fas fa-lock"></i>
+      Pay Now
+    </a>
+    {% else %}
+    <div style="text-align:center;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;color:rgba(255,255,255,.4);font-size:.85rem">
+      <i class="fas fa-tools me-2"></i>Card payments are being configured — please check back shortly or contact us.
     </div>
+    {% endif %}
+
+    <p class="moneris-note">
+      Your card details are entered on a <strong>Moneris-hosted</strong> secure form.<br>
+      T&amp;TG never sees or stores your card number.
+    </p>
 
   </div>
 
-  <!-- Bank details -->
-  <div style="background:rgba(255,255,255,.03);border:1px solid rgba(201,168,76,.1);border-radius:14px;padding:20px;margin-top:24px">
-    <h6 style="color:#c9a84c;font-weight:800;margin-bottom:14px"><i class="fas fa-info-circle me-2"></i>Payment Information</h6>
-    <div class="row g-3" style="font-size:.82rem">
-      <div class="col-md-4">
-        <div style="color:#7a6e5f;font-size:.7rem;text-transform:uppercase;margin-bottom:4px">Company</div>
-        <div style="color:#fff;font-weight:700">T&TG Trade Corporation</div>
-      </div>
-      <div class="col-md-4">
-        <div style="color:#7a6e5f;font-size:.7rem;text-transform:uppercase;margin-bottom:4px">WhatsApp</div>
-        <div style="color:#fff;font-weight:700">+1 (416) 832 3512</div>
-      </div>
-      <div class="col-md-4">
-        <div style="color:#7a6e5f;font-size:.7rem;text-transform:uppercase;margin-bottom:4px">Email</div>
-        <div style="color:#fff;font-weight:700">tom.grouptrade@gmail.com</div>
-      </div>
-    </div>
+  <!-- Contact row -->
+  <div style="max-width:520px;margin:24px auto 0;text-align:center">
+    <p style="color:rgba(255,255,255,.25);font-size:.77rem;margin-bottom:8px">Need help with your payment?</p>
+    <a href="https://wa.me/14168323512?text=Hi Tom, I need help with Order {{ order.pk }} for {{ order.product.name }}."
+       target="_blank"
+       style="color:#25d366;font-size:.8rem;text-decoration:none">
+      <i class="fab fa-whatsapp me-1"></i>WhatsApp Tom — +1 (416) 832 3512
+    </a>
+    <span style="color:rgba(255,255,255,.15);margin:0 10px">|</span>
+    <a href="mailto:tom.grouptrade@gmail.com"
+       style="color:rgba(255,255,255,.35);font-size:.8rem;text-decoration:none">
+      <i class="fas fa-envelope me-1"></i>tom.grouptrade@gmail.com
+    </a>
   </div>
 
   {% endif %}
