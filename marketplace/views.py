@@ -197,8 +197,12 @@ def market_select(request):
 import os as _os
 from django.http import JsonResponse
 
+@login_required
 def debug_moneris(request):
-    """Debug endpoint — shows credentials status and fires a live test preload to Moneris."""
+    """Debug endpoint — shows credentials status and fires a live test preload to Moneris. Staff only."""
+    if not request.user.is_staff:
+        from django.http import HttpResponseForbidden
+        return HttpResponseForbidden('Staff access only.')
     import time, requests as _req
     store_id    = _os.environ.get('MONERIS_STORE_ID', '').strip()
     api_token   = _os.environ.get('MONERIS_API_TOKEN', '').strip()
@@ -509,7 +513,10 @@ def cart_view(request):
 
 def cart_add(request, pk):
     product = get_object_or_404(Product, pk=pk, is_active=True)
-    qty  = max(1, int(request.POST.get('quantity', request.GET.get('quantity', 1))))
+    try:
+        qty = max(1, int(request.POST.get('quantity', request.GET.get('quantity', 1))))
+    except (ValueError, TypeError):
+        qty = 1
     cart = request.session.get('cart', {})
     cart[str(pk)] = cart.get(str(pk), 0) + qty
     request.session['cart'] = cart
@@ -532,7 +539,10 @@ def cart_remove(request, pk):
 
 
 def cart_update(request, pk):
-    qty  = int(request.POST.get('quantity', 1))
+    try:
+        qty = int(request.POST.get('quantity', 1))
+    except (ValueError, TypeError):
+        qty = 1
     cart = request.session.get('cart', {})
     if qty <= 0:
         cart.pop(str(pk), None)
@@ -550,7 +560,10 @@ def cart_update(request, pk):
 def submit_review(request, pk):
     product = get_object_or_404(Product, pk=pk, is_active=True)
     if request.method == 'POST':
-        rating  = int(request.POST.get('rating', 5))
+        try:
+            rating = int(request.POST.get('rating', 5))
+        except (ValueError, TypeError):
+            rating = 5
         comment = request.POST.get('comment', '').strip()
         if comment:
             exists = ProductReview.objects.filter(product=product, user=request.user).exists()
