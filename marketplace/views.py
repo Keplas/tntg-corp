@@ -198,14 +198,61 @@ import os as _os
 from django.http import JsonResponse
 
 def debug_moneris(request):
-    """Temporary debug endpoint — shows which Moneris env vars are set (values masked)."""
-    return JsonResponse({
-        'MONERIS_STORE_ID':    bool(_os.environ.get('MONERIS_STORE_ID', '').strip()),
-        'MONERIS_API_TOKEN':   bool(_os.environ.get('MONERIS_API_TOKEN', '').strip()),
-        'MONERIS_CHECKOUT_ID': bool(_os.environ.get('MONERIS_CHECKOUT_ID', '').strip()),
-        'MONERIS_ENVIRONMENT': _os.environ.get('MONERIS_ENVIRONMENT', '(not set)'),
-        'moneris_configured':  payments.moneris_configured(),
-    })
+    """Debug endpoint — shows credentials status and fires a live test preload to Moneris."""
+    import time, requests as _req
+    store_id    = _os.environ.get('MONERIS_STORE_ID', '').strip()
+    api_token   = _os.environ.get('MONERIS_API_TOKEN', '').strip()
+    checkout_id = _os.environ.get('MONERIS_CHECKOUT_ID', '').strip()
+    env_setting = _os.environ.get('MONERIS_ENVIRONMENT', 'sandbox').strip()
+    env         = env_setting if env_setting in ('sandbox', 'production') else 'sandbox'
+    moneris_env = 'prod' if env == 'production' else 'qa'
+
+    preload_url = {
+        'sandbox':    'https://gatewayt.moneris.com/chktv2/request/request.php',
+        'production': 'https://gateway.moneris.com/chktv2/request/request.php',
+    }[env]
+
+    payload = {
+        'store_id':           store_id,
+        'api_token':          api_token,
+        'checkout_id':        checkout_id,
+        'txn_total':          '1.00',
+        'environment':        moneris_env,
+        'action':             'preload',
+        'order_no':           f'TNTG-DEBUG-{int(time.time())}',
+        'cust_id':            'debug@tomtradecorp.com',
+        'dynamic_descriptor': 'TNTG Debug Test',
+        'language':           'en',
+        'return_url':         'https://tomtradecorp.com/marketplace/orders/1/pay/success/',
+        'cancel_url':         'https://tomtradecorp.com/marketplace/orders/1/pay/',
+        'bill_first_name':    'Debug',
+        'bill_last_name':     'Test',
+        'bill_email':         'debug@tomtradecorp.com',
+    }
+
+    try:
+        resp = _req.post(preload_url, json=payload,
+                         headers={'Content-Type': 'application/json'}, timeout=15)
+        try:
+            body = resp.json()
+        except Exception:
+            body = resp.text
+        result = {
+            'credentials_set': {
+                'MONERIS_STORE_ID':    bool(store_id),
+                'MONERIS_API_TOKEN':   bool(api_token),
+                'MONERIS_CHECKOUT_ID': bool(checkout_id),
+            },
+            'environment':        env,
+            'moneris_env_param':  moneris_env,
+            'preload_url':        preload_url,
+            'http_status':        resp.status_code,
+            'moneris_response':   body,
+        }
+    except Exception as exc:
+        result = {'error': str(exc)}
+
+    return JsonResponse(result, json_dumps_params={'indent': 2})
 
 @login_required
 def payment_select(request, pk):
