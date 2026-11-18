@@ -995,29 +995,30 @@ def wallet_pin_setup(request):
 
 def confirm_google_login(request):
     """
-    Intermediate page shown after Google OAuth.
-    Displays the Google email and asks the user to confirm before
-    proceeding to their destination.
+    Intermediate page shown after Google OAuth — GET-only to avoid CSRF issues
+    caused by the cross-domain redirect from Google.
 
-    GET  — show the confirmation page (email + next URL in session)
-    POST — clear session keys, redirect to destination
+    GET ?confirmed=1 — pop destination from session and redirect there
+    GET (no param)   — show the email-confirmation page
     """
     if not request.user.is_authenticated:
         return redirect('account_login')
 
-    if request.method == 'POST':
-        next_url = request.POST.get('next') or request.session.pop('google_login_next', None) or '/'
-        # Clean up session key if still present
-        request.session.pop('google_login_next', None)
+    if request.GET.get('confirmed') == '1':
+        next_url = request.session.pop('google_login_next', None) or '/accounts/dashboard/'
+        # Safety: only allow local redirects
+        if not next_url.startswith('/'):
+            next_url = '/accounts/dashboard/'
+        # Clean up remaining session keys
+        request.session.pop('google_login_email', None)
+        request.session.pop('google_login_name', None)
         return redirect(next_url)
 
-    # GET — build context from session
-    next_url = request.session.get('google_login_next', '/')
+    # Show the confirmation page
     google_email = request.session.get('google_login_email', request.user.email)
     google_name  = request.session.get('google_login_name',  request.user.get_full_name())
 
     return render(request, 'account/confirm_google_login.html', {
         'google_email': google_email,
         'google_name':  google_name,
-        'next':         next_url,
     })

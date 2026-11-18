@@ -40,13 +40,12 @@
           Click <strong style="color:var(--gold,#c9a84c)">Continue</strong> to proceed.
         </p>
 
-        <form method="post" action="{% url 'confirm_google_login' %}">
-          {% csrf_token %}
-          <input type="hidden" name="next" value="{{ next }}">
-          <button type="submit" class="btn btn-gold w-100" style="padding:.75rem;font-size:1rem;font-weight:600;border-radius:10px">
-            <i class="fab fa-google me-2"></i> Continue as {{ google_email }}
-          </button>
-        </form>
+        <!-- GET link with ?confirmed=1 — no form, no CSRF needed -->
+        <a href="{% url 'confirm_google_login' %}?confirmed=1"
+           class="btn btn-gold w-100"
+           style="display:block;padding:.75rem;font-size:1rem;font-weight:600;border-radius:10px;text-align:center;text-decoration:none">
+          <i class="fab fa-google me-2"></i> Continue as {{ google_email }}
+        </a>
 
         <div class="text-center mt-3">
           <a href="{% url 'account_logout' %}" style="color:rgba(255,255,255,.45);font-size:.8rem;text-decoration:none">
