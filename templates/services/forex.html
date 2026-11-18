@@ -125,6 +125,24 @@
         {% endfor %}
       </div>
 
+      <!-- Amex Banner -->
+      <div style="background:rgba(0,100,210,.07);border:1px solid rgba(0,100,210,.2);border-radius:16px;padding:18px 22px;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="width:42px;height:42px;border-radius:10px;background:rgba(0,100,210,.12);border:1px solid rgba(0,100,210,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <i class="fas fa-credit-card" style="color:#4a90e2;font-size:1.1rem"></i>
+          </div>
+          <div>
+            <div style="color:#fff;font-weight:800;font-size:.88rem;margin-bottom:2px">Paying with American Express?</div>
+            <div style="color:rgba(255,255,255,.45);font-size:.76rem">Check the exact rate Amex will apply to your transaction on their official calculator.</div>
+          </div>
+        </div>
+        <a href="https://www.americanexpress.com/en-us/forex/calculate-foreign-exchange/" target="_blank" rel="noopener noreferrer"
+           style="display:inline-flex;align-items:center;gap:8px;background:rgba(0,100,210,.15);border:1px solid rgba(0,100,210,.35);color:#4a90e2;border-radius:10px;padding:9px 18px;font-size:.8rem;font-weight:800;text-decoration:none;white-space:nowrap;transition:all .2s"
+           onmouseover="this.style.background='rgba(0,100,210,.28)'" onmouseout="this.style.background='rgba(0,100,210,.15)'">
+          <i class="fas fa-external-link-alt"></i> Check Amex Rate
+        </a>
+      </div>
+
       <!-- Currency Converter -->
       <div class="fx-conv-wrap">
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px">
@@ -225,6 +243,13 @@
           <div style="display:flex;gap:10px;align-items:flex-start">
             <i class="fas fa-info-circle" style="color:#c9a84c;margin-top:2px;flex-shrink:0"></i>
             <span style="color:#7a6e5f">Rates shown are indicative. Final transaction rates depend on your payment provider.</span>
+          </div>
+          <div style="border-top:1px solid rgba(255,255,255,.06);padding-top:12px;margin-top:4px">
+            <div style="color:#b0a898;font-size:.78rem;margin-bottom:8px;font-weight:700"><i class="fas fa-credit-card me-1" style="color:#4a90e2"></i>American Express</div>
+            <a href="https://www.americanexpress.com/en-us/forex/calculate-foreign-exchange/" target="_blank" rel="noopener noreferrer"
+               style="display:flex;align-items:center;gap:8px;background:rgba(0,100,210,.08);border:1px solid rgba(0,100,210,.2);color:#4a90e2;border-radius:9px;padding:8px 12px;font-size:.76rem;font-weight:700;text-decoration:none">
+              <i class="fas fa-external-link-alt" style="font-size:.7rem"></i> Official Amex Rate Calculator
+            </a>
           </div>
         </div>
       </div>
