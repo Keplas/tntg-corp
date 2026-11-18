@@ -989,3 +989,35 @@ def wallet_pin_setup(request):
     return render(request, 'accounts/wallet_pin_setup.html', {'has_pin': has_pin})
 
 
+
+
+# ── Google login confirmation step ───────────────────────────────────────────
+
+def confirm_google_login(request):
+    """
+    Intermediate page shown after Google OAuth.
+    Displays the Google email and asks the user to confirm before
+    proceeding to their destination.
+
+    GET  — show the confirmation page (email + next URL in session)
+    POST — clear session keys, redirect to destination
+    """
+    if not request.user.is_authenticated:
+        return redirect('account_login')
+
+    if request.method == 'POST':
+        next_url = request.POST.get('next') or request.session.pop('google_login_next', None) or '/'
+        # Clean up session key if still present
+        request.session.pop('google_login_next', None)
+        return redirect(next_url)
+
+    # GET — build context from session
+    next_url = request.session.get('google_login_next', '/')
+    google_email = request.session.get('google_login_email', request.user.email)
+    google_name  = request.session.get('google_login_name',  request.user.get_full_name())
+
+    return render(request, 'account/confirm_google_login.html', {
+        'google_email': google_email,
+        'google_name':  google_name,
+        'next':         next_url,
+    })

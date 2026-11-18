@@ -77,16 +77,46 @@ class CustomSocialAccountAdapter(DefaultSocialAccountAdapter):
 
     def get_login_redirect_url(self, request):
         """
-        Google / Microsoft OAuth redirect — never send to /admin/.
-        Staff who sign in via social should land on the dashboard like any user.
+        Google / Microsoft OAuth redirect.
+        1. Superusers / staff  → /admin/
+        2. Franchisees         → /franchise/my-store/
+        3. Everyone else       → /accounts/dashboard/
+
+        Before returning the destination we store it (plus the Google email
+        and display name) in the session so confirm_google_login can show the
+        email-confirmation page.  The user is then sent to /accounts/google/confirm/
+        rather than straight to their destination.
         """
+        from allauth.socialaccount.models import SocialAccount
         user = request.user
+
+        # Determine the real destination
+        if user.is_staff or user.is_superuser:
+            destination = '/admin/'
+        else:
+            try:
+                destination = '/franchise/my-store/' if user.franchisee_profile else '/accounts/dashboard/'
+            except Exception:
+                destination = '/accounts/dashboard/'
+
+        # Pull the Google email / name from the most recent SocialAccount
+        google_email = user.email
+        google_name  = user.get_full_name() or user.username
         try:
-            if user.franchisee_profile:
-                return '/franchise/my-store/'
+            sa = SocialAccount.objects.filter(user=user, provider='google').order_by('-date_joined').first()
+            if sa:
+                extra = sa.extra_data or {}
+                google_email = extra.get('email', google_email)
+                google_name  = extra.get('name', google_name)
         except Exception:
             pass
-        return '/accounts/dashboard/'
+
+        # Store in session for the confirmation view
+        request.session['google_login_next']  = destination
+        request.session['google_login_email'] = google_email
+        request.session['google_login_name']  = google_name
+
+        return '/accounts/google/confirm/'
 
     def pre_social_login(self, request, sociallogin):
         """Connect social account to existing account if email matches.

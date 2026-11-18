@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Confirm Sign-In | T&TG Trade Corp{% endblock %}
+{% block content %}
+<div style="min-height:100vh;display:flex;align-items:center;background:linear-gradient(135deg,var(--bg-dark),var(--bg-card));padding:4rem 0">
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-5">
+
+      <div class="text-center mb-4">
+        <img src="{% static 'images/logo.jpg' %}" alt="T&TG Logo"
+             style="width:80px;height:80px;object-fit:contain;background:#fff;border-radius:14px;padding:4px;box-shadow:0 4px 20px rgba(201,168,76,.3);margin-bottom:.5rem">
+        <h2 class="text-gold">Confirm Sign-In</h2>
+        <p class="text-muted" style="font-size:.875rem">Verify this is the right account before continuing</p>
+      </div>
+
+      <div class="glass-card p-4 p-lg-5">
+
+        <!-- Google avatar + email block -->
+        <div style="display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:12px;margin-bottom:1.5rem">
+          <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#4285F4,#34A853);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            {% if google_name %}
+              <span style="color:#fff;font-weight:700;font-size:1.1rem">{{ google_name|slice:":1"|upper }}</span>
+            {% else %}
+              <i class="fab fa-google" style="color:#fff;font-size:1.1rem"></i>
+            {% endif %}
+          </div>
+          <div style="min-width:0">
+            {% if google_name %}
+              <div style="color:#f0f0f0;font-weight:600;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ google_name }}</div>
+            {% endif %}
+            <div style="color:rgba(201,168,76,.9);font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ google_email }}</div>
+          </div>
+          <i class="fab fa-google" style="color:#4285F4;font-size:1.2rem;margin-left:auto;flex-shrink:0"></i>
+        </div>
+
+        <p style="color:rgba(255,255,255,.7);font-size:.875rem;text-align:center;margin-bottom:1.5rem">
+          You are about to sign in to <strong style="color:#f0f0f0">T&TG Trade Corp</strong>
+          with the Google account above.<br>
+          Click <strong style="color:var(--gold,#c9a84c)">Continue</strong> to proceed.
+        </p>
+
+        <form method="post" action="{% url 'confirm_google_login' %}">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ next }}">
+          <button type="submit" class="btn btn-gold w-100" style="padding:.75rem;font-size:1rem;font-weight:600;border-radius:10px">
+            <i class="fab fa-google me-2"></i> Continue as {{ google_email }}
+          </button>
+        </form>
+
+        <div class="text-center mt-3">
+          <a href="{% url 'account_logout' %}" style="color:rgba(255,255,255,.45);font-size:.8rem;text-decoration:none">
+            <i class="fas fa-times me-1"></i> Not you? Sign out and use a different account
+          </a>
+        </div>
+
+      </div><!-- /glass-card -->
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}

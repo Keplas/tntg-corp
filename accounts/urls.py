@@ -24,4 +24,5 @@ urlpatterns = [
     path('wallet/convert/',  views.wallet_convert,  name='wallet_convert'),
     path('wallet/withdraw/', views.wallet_withdraw, name='wallet_withdraw'),
     path('set-withdrawal-pin/',                   views.set_withdrawal_pin, name='set_withdrawal_pin'),
+    path('google/confirm/',                       views.confirm_google_login, name='confirm_google_login'),
 ]
