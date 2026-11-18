@@ -36,9 +36,22 @@
 </div>
 
 <!-- Moneris Checkout v2 JS (must load from Moneris's own server) -->
-<script src="{{ js_url }}"></script>
+<script>
+  function onMonerisLoadError() {
+    document.getElementById('moneris-loading').innerHTML =
+      '<i class="fas fa-exclamation-triangle fa-2x" style="color:#e74c3c"></i>' +
+      '<p class="mt-3" style="color:#e74c3c;font-size:.9rem">Failed to load the payment form. Please check your internet connection and try again.</p>' +
+      '<a href="{% url 'payment_select' order.pk %}" class="btn btn-gold mt-2">Go Back</a>';
+  }
+</script>
+<script src="{{ js_url }}" onerror="onMonerisLoadError()"></script>
 <script>
 (function () {
+  if (typeof monerisCheckout === 'undefined') {
+    onMonerisLoadError();
+    return;
+  }
+
   var ticket    = "{{ ticket }}";
   var env       = "{{ moneris_env }}";  // 'prod' or 'qa'
   var verifyUrl = "{% url 'moneris_verify' order.pk %}";
@@ -48,7 +61,19 @@
   myCheckout.setMode(env);
   myCheckout.setCheckoutDiv('monerisCheckout');
 
+  // Timeout: if page_loaded hasn't fired in 12s, show error
+  var loadTimeout = setTimeout(function () {
+    var el = document.getElementById('moneris-loading');
+    if (el && el.style.display !== 'none') {
+      el.innerHTML =
+        '<i class="fas fa-exclamation-triangle fa-2x" style="color:#e74c3c"></i>' +
+        '<p class="mt-3" style="color:#e74c3c;font-size:.9rem">The payment form timed out. Please go back and try again.</p>' +
+        '<a href="{% url 'payment_select' order.pk %}" class="btn btn-gold mt-2">Go Back</a>';
+    }
+  }, 12000);
+
   myCheckout.setCallback('page_loaded', function () {
+    clearTimeout(loadTimeout);
     document.getElementById('moneris-loading').style.display = 'none';
   });
 
