@@ -270,19 +270,29 @@ def debug_moneris(request):
             except Exception as e:
                 receipt_result = {'error': str(e)}
 
+        # Build the checkout redirect URL the same way create_moneris_checkout_session does
+        checkout_host = {
+            'sandbox':    'https://gatewayt.moneris.com/chktv2/request/request.php',
+            'production': 'https://gateway.moneris.com/chktv2/request/request.php',
+        }[env]
+        constructed_checkout_url = f'{checkout_host}?id={ticket}' if ticket else None
+
         result = {
             'credentials_set': {
                 'MONERIS_STORE_ID':    bool(store_id),
                 'MONERIS_API_TOKEN':   bool(api_token),
                 'MONERIS_CHECKOUT_ID': bool(checkout_id),
             },
-            'environment':        env,
-            'moneris_env_param':  moneris_env,
-            'preload_url':        preload_url,
-            'real_return_url':    real_return_url,
-            'preload_http_status': resp.status_code,
-            'preload_response':   body,
-            'receipt_response':   receipt_result,
+            'environment':          env,
+            'moneris_env_param':    moneris_env,
+            'preload_url':          preload_url,
+            'real_return_url':      real_return_url,
+            'preload_http_status':  resp.status_code,
+            'preload_response_raw': resp.text[:2000],
+            'preload_response':     body,
+            'ticket':               ticket,
+            'constructed_checkout_url': constructed_checkout_url,
+            'receipt_response':     receipt_result,
         }
     except Exception as exc:
         result = {'error': str(exc), 'real_return_url': real_return_url}
