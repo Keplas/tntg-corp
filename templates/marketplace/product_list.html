@@ -94,8 +94,8 @@
  <div class="text-muted mt-1" style="font-size:.72rem"><i class="fas fa-cubes me-1"></i>{{ product.quantity_available }} {{ product.unit }}s available</div>
  </div>
  <div class="product-foot">
- <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-gold btn-sm flex-fill">View</a>
- <a href="{% url 'cart_add' product.pk %}" class="btn btn-gold btn-sm flex-fill">View & Order</a>
+ <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-gold btn-sm flex-fill"><i class="fas fa-eye me-1"></i>View</a>
+ <a href="{% url 'cart_add' product.pk %}" class="btn btn-gold btn-sm flex-fill"><i class="fas fa-cart-plus me-1"></i>Add to Cart</a>
  </div>
  </div>
  </div>

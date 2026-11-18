@@ -374,10 +374,16 @@ def moneris_verify(request, pk):
         order.paid_at          = timezone.now()
         order.save(update_fields=['payment_status', 'payment_reference', 'paid_at'])
         send_order_confirmation_email(order)
+        # Payment confirmed — discard the saved cart snapshot
+        request.session.pop('pending_cart', None)
         return JsonResponse({'paid': True, 'redirect': reverse('order_detail', args=[order.pk])})
     else:
         order.payment_status = 'failed'
         order.save(update_fields=['payment_status'])
+        # Restore the cart so the customer can try again or continue shopping
+        pending = request.session.get('pending_cart')
+        if pending and not request.session.get('cart'):
+            request.session['cart'] = pending
         return JsonResponse({'paid': False, 'redirect': reverse('payment_select', args=[order.pk])})
 
 
@@ -938,6 +944,8 @@ def cart_checkout(request):
                 orders_created.append(order)
 
             if orders_created:
+                # Save cart snapshot so it can be restored if payment fails
+                request.session['pending_cart'] = dict(cart)
                 request.session['cart'] = {}
                 messages.success(request,
                     f'{len(orders_created)} order(s) placed in {display_currency}!')
