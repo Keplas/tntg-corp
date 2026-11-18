@@ -57,8 +57,8 @@ _MONERIS_PRELOAD_URL = {
 # Moneris.js library — loaded client-side to render the inline checkout
 # Moneris Checkout v2 is JS-only (no redirect URL); the JS renders inside a <div>
 _MONERIS_JS_URL = {
-    'sandbox':    'https://gatewayt.moneris.com/chktv2/js/monerisCheckout.js',
-    'production': 'https://gateway.moneris.com/chktv2/js/monerisCheckout.js',
+    'sandbox':    'https://gatewayt.moneris.com/chktv2/js/chkt_v3.00.js',
+    'production': 'https://gateway.moneris.com/chktv2/js/chkt_v3.00.js',
 }
 
 
