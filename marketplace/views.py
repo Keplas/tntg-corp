@@ -111,17 +111,7 @@ def place_order(request, pk):
             reward_payment_date = reward_date,
         )
 
-        request.user.avon_points += pts
-        request.user.save()
-
-        AvonPointTransaction.objects.create(
-            user             = request.user,
-            transaction_type = tx_type,
-            points           = pts,
-            description      = f"Earned from Order #{order.pk}: {product.name}",
-            status           = 'completed',
-            min_execution_date = reward_date,
-        )
+        # Loyalty points are credited on payment confirmation (moneris_verify), not here.
 
         Notification.notify(
             'order_placed',
@@ -374,6 +364,27 @@ def moneris_verify(request, pk):
         order.paid_at          = timezone.now()
         order.save(update_fields=['payment_status', 'payment_reference', 'paid_at'])
         send_order_confirmation_email(order)
+
+        # Credit loyalty points now that payment is confirmed
+        try:
+            pts = order.avon_points_earned or decimal.Decimal('0')
+            if pts > 0:
+                loyalty_settings = LoyaltySettings.get_settings()
+                referred_by = order.referred_by or ''
+                tx_type = 'earn_referral' if referred_by else 'earn_purchase'
+                request.user.avon_points = (request.user.avon_points or decimal.Decimal('0')) + pts
+                request.user.save(update_fields=['avon_points'])
+                AvonPointTransaction.objects.create(
+                    user               = request.user,
+                    transaction_type   = tx_type,
+                    points             = pts,
+                    description        = f'Earned from Order #{order.pk}: {order.product.name}',
+                    status             = 'completed',
+                    min_execution_date = order.reward_payment_date,
+                )
+        except Exception:
+            pass
+
         # Payment confirmed — discard the saved cart snapshot
         request.session.pop('pending_cart', None)
         return JsonResponse({'paid': True, 'redirect': reverse('order_detail', args=[order.pk])})
@@ -909,20 +920,7 @@ def cart_checkout(request):
                 except Exception:
                     pass
 
-                # Credit loyalty points
-                try:
-                    request.user.avon_points = (request.user.avon_points or decimal.Decimal('0')) + pts
-                    request.user.save(update_fields=['avon_points'])
-                    AvonPointTransaction.objects.create(
-                        user             = request.user,
-                        transaction_type = tx_type,
-                        points           = pts,
-                        description      = f'Earned from Order #{order.pk}: {product.name}',
-                        status           = 'completed',
-                        min_execution_date = reward_date,
-                    )
-                except Exception:
-                    pass
+                # Loyalty points are credited on payment confirmation (moneris_verify), not here.
 
                 # Notify admin
                 try:
