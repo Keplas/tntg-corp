@@ -23,6 +23,12 @@
   position: relative;
   overflow: hidden;
 }
+@media(max-width:991px){
+  .mp-hero { padding:36px 0 28px; }
+  .mp-hero h1 { font-size:1.6rem; margin-bottom:10px; }
+  .mp-hero-sub { font-size:.82rem; margin-bottom:16px; }
+  .mp-hero .col-lg-5 { display:none; }
+}
 .mp-hero::before {
   content:'';
   position:absolute;inset:0;
@@ -75,7 +81,7 @@
 
 /* ── Filters sidebar ── */
 .mp-layout { display:grid;grid-template-columns:240px 1fr;gap:28px;align-items:start; }
-@media(max-width:991px){ .mp-layout { grid-template-columns:1fr; } }
+@media(max-width:991px){ .mp-layout { grid-template-columns:1fr; gap:16px; } }
 .mp-sidebar {
   background:var(--card-bg);
   border:1px solid var(--gold-bd);
@@ -113,6 +119,32 @@
   font-size:.74rem;color:var(--dim);text-decoration:none;
 }
 .mp-clear-link:hover { color:var(--gold); }
+
+/* Mobile filter toggle */
+.mp-filter-toggle {
+  display:none;width:100%;padding:11px 16px;
+  background:var(--card-bg);border:1px solid var(--gold-bd);
+  border-radius:14px;color:var(--gold);font-size:.82rem;font-weight:800;
+  cursor:pointer;text-align:left;
+  align-items:center;justify-content:space-between;gap:8px;
+  transition:background .2s;
+}
+.mp-filter-toggle:hover { background:var(--gold-lt); }
+.mp-filter-toggle i.toggle-arrow { transition:transform .25s; font-size:.75rem; }
+.mp-filter-toggle.open i.toggle-arrow { transform:rotate(180deg); }
+.mp-filter-body { display:block; }
+@media(max-width:991px){
+  .mp-sidebar { position:static;padding:0;border:none;background:transparent; }
+  .mp-filter-toggle { display:flex; }
+  .mp-filter-body {
+    display:none;
+    background:var(--card-bg);border:1px solid var(--gold-bd);
+    border-radius:14px;padding:18px;margin-top:8px;
+  }
+  .mp-filter-body.open { display:block; }
+  /* trade corridors not needed on mobile */
+  .mp-corridors { display:none; }
+}
 
 /* ── Section header ── */
 .mp-sec-header {
@@ -196,6 +228,12 @@
   grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
   gap:18px;
 }
+@media(max-width:991px){
+  .mp-grid { grid-template-columns:1fr 1fr; gap:12px; }
+}
+@media(max-width:400px){
+  .mp-grid { grid-template-columns:1fr 1fr; gap:9px; }
+}
 .pc {
   background:var(--card-bg);
   border:1px solid rgba(255,255,255,.07);
@@ -243,6 +281,15 @@
 .pc-foot a {
   flex:1;text-align:center;padding:8px 6px;border-radius:9px;
   font-size:.74rem;font-weight:800;text-decoration:none;transition:all .2s;
+}
+@media(max-width:991px){
+  .pc-img-wrap { height:120px; }
+  .pc-body { padding:10px 11px 8px; gap:3px; }
+  .pc-name { font-size:.8rem; }
+  .pc-seller, .pc-stock, .pc-pts { font-size:.6rem; }
+  .pc-price { font-size:.95rem; }
+  .pc-foot { padding:8px 11px 11px; gap:5px; }
+  .pc-foot a { padding:7px 4px; font-size:.68rem; }
 }
 .pc-view {
   background:rgba(255,255,255,.04);
@@ -411,8 +458,14 @@
 
     <!-- Sidebar filters -->
     <aside class="mp-sidebar">
+      <!-- Mobile toggle button -->
+      <button type="button" class="mp-filter-toggle" id="filterToggle">
+        <span><i class="fas fa-sliders-h me-2"></i>Filters{% if is_filtered %} <span style="color:var(--gold);font-size:.7rem">(active)</span>{% endif %}</span>
+        <i class="fas fa-chevron-down toggle-arrow"></i>
+      </button>
       <form method="get" id="filterForm">
-        <h6><i class="fas fa-sliders-h me-1"></i>Filter Products</h6>
+      <div class="mp-filter-body" id="filterBody">
+        <h6 class="d-none d-lg-block"><i class="fas fa-sliders-h me-1"></i>Filter Products</h6>
         <input type="text" name="q" class="form-control" placeholder="Search products…" value="{{ query }}">
 
         <h6 style="margin-top:16px"><i class="fas fa-tag me-1"></i>Category</h6>
@@ -436,7 +489,7 @@
         {% endif %}
 
         <!-- Corridor info -->
-        <div style="margin-top:24px;padding-top:18px;border-top:1px solid rgba(255,255,255,.06)">
+        <div class="mp-corridors" style="margin-top:24px;padding-top:18px;border-top:1px solid rgba(255,255,255,.06)">
           <h6><i class="fas fa-route me-1"></i>Trade Corridors</h6>
           <div style="display:flex;flex-direction:column;gap:7px">
             <div style="font-size:.74rem;color:var(--dim)"><i class="fas fa-circle me-1" style="color:var(--gold);font-size:.45rem"></i>Uganda &rarr; Canada</div>
@@ -445,6 +498,7 @@
             <div style="font-size:.74rem;color:var(--dim)"><i class="fas fa-circle me-1" style="color:var(--gold);font-size:.45rem"></i>Uganda &rarr; Europe</div>
           </div>
         </div>
+      </div><!-- /.mp-filter-body -->
       </form>
     </aside>
 
@@ -565,6 +619,24 @@
   <span id="mp-toast-msg">Added to cart</span>
   <a href="{% url 'cart' %}">View cart</a>
 </div>
+
+<script>
+/* Filter toggle on mobile */
+(function(){
+  const btn  = document.getElementById('filterToggle');
+  const body = document.getElementById('filterBody');
+  if (!btn || !body) return;
+  btn.addEventListener('click', function(){
+    const open = body.classList.toggle('open');
+    btn.classList.toggle('open', open);
+  });
+  /* Auto-open if filters are active on mobile */
+  if (window.innerWidth < 992 && body.closest('form') && document.querySelector('.mp-clear-link')) {
+    body.classList.add('open');
+    btn.classList.add('open');
+  }
+})();
+</script>
 
 <script>
 (function(){
