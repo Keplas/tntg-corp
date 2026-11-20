@@ -1,114 +1,531 @@
 {% extends 'base.html' %}
 {% block meta_description %}<meta name="description" content="Shop premium T&TG Arabica and Robusta green coffee. Sourced from Uganda. Delivered to Canada, USA, Kenya. Earn loyalty points on every purchase.">{% endblock %}
-{% block title %}
- {% if category %}{{ category|title }}{% else %}All Products{% endif %} — T&TG Shopping Platform
-{% endblock %}
+{% block title %}{% if category %}{{ category|title }}{% else %}Marketplace{% endif %} — T&TG Trade Corp{% endblock %}
 
 {% block content %}
-<div class="page-header">
- <div class="container">
- <nav aria-label="breadcrumb">
- <ol class="breadcrumb">
- <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
- <li class="breadcrumb-item"><a href="{% url 'marketplace' %}">Marketplace</a></li>
- <li class="breadcrumb-item active">Products</li>
- </ol>
- </nav>
- <h1>
- {% if market == 'local' %} Local{% elif market == 'international' %}️ International{% else %} All{% endif %}
- {% if category %}{{ category|title }}{% else %}Products{% endif %}
- </h1>
- </div>
+<style>
+/* ── Variables ── */
+:root {
+  --gold:    #c9a84c;
+  --gold-lt: rgba(201,168,76,.12);
+  --gold-bd: rgba(201,168,76,.22);
+  --dark:    #060f1e;
+  --card-bg: rgba(255,255,255,.028);
+  --text:    rgba(255,255,255,.88);
+  --muted:   rgba(255,255,255,.38);
+  --dim:     #7a6e5f;
+}
+
+/* ── Hero ── */
+.mp-hero {
+  background: linear-gradient(135deg,#030810 0%,#061120 50%,#040c18 100%);
+  padding: 72px 0 56px;
+  position: relative;
+  overflow: hidden;
+}
+.mp-hero::before {
+  content:'';
+  position:absolute;inset:0;
+  background: radial-gradient(ellipse 60% 80% at 80% 50%, rgba(201,168,76,.07) 0%, transparent 70%),
+              radial-gradient(ellipse 40% 60% at 10% 80%, rgba(0,100,180,.06) 0%, transparent 60%);
+}
+.mp-hero-eyebrow {
+  font-size:.6rem;font-weight:900;letter-spacing:4px;color:var(--gold);
+  text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;
+}
+.mp-hero-eyebrow::before {
+  content:'';width:28px;height:1px;background:var(--gold);display:inline-block;
+}
+.mp-hero h1 {
+  color:#fff;font-weight:900;
+  font-size:clamp(2rem,5vw,3.2rem);
+  line-height:1.15;margin-bottom:16px;
+}
+.mp-hero h1 span { color:var(--gold); }
+.mp-hero-sub {
+  color:var(--muted);font-size:.95rem;line-height:1.9;
+  max-width:520px;margin-bottom:28px;
+}
+.mp-trust-row {
+  display:flex;flex-wrap:wrap;gap:10px;
+}
+.mp-trust-pill {
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:100px;padding:6px 14px;
+  font-size:.72rem;font-weight:700;color:var(--dim);
+}
+.mp-trust-pill i { color:var(--gold);font-size:.75rem; }
+
+/* ── Category tiles ── */
+.cat-tiles { display:flex;gap:10px;flex-wrap:wrap; }
+.cat-tile {
+  display:flex;align-items:center;gap:9px;
+  background:var(--card-bg);
+  border:1px solid var(--gold-bd);
+  border-radius:14px;padding:11px 18px;
+  font-size:.8rem;font-weight:800;color:var(--dim);
+  text-decoration:none;transition:all .2s;cursor:pointer;
+}
+.cat-tile:hover, .cat-tile.active {
+  background:var(--gold-lt);border-color:var(--gold);color:var(--gold);
+}
+.cat-tile i { font-size:.85rem; }
+
+/* ── Filters sidebar ── */
+.mp-layout { display:grid;grid-template-columns:240px 1fr;gap:28px;align-items:start; }
+@media(max-width:991px){ .mp-layout { grid-template-columns:1fr; } }
+.mp-sidebar {
+  background:var(--card-bg);
+  border:1px solid var(--gold-bd);
+  border-radius:18px;padding:22px;
+  position:sticky;top:88px;
+}
+.mp-sidebar h6 {
+  font-size:.68rem;font-weight:900;letter-spacing:2px;
+  color:var(--dim);text-transform:uppercase;margin-bottom:14px;
+}
+.mp-sidebar .form-control,
+.mp-sidebar .form-select {
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);
+  color:var(--text);border-radius:10px;
+  font-size:.82rem;padding:9px 12px;
+  margin-bottom:10px;width:100%;
+}
+.mp-sidebar .form-control::placeholder { color:var(--dim); }
+.mp-sidebar .form-control:focus,
+.mp-sidebar .form-select:focus {
+  border-color:var(--gold-bd);outline:none;
+  background:rgba(255,255,255,.07);
+}
+.mp-sidebar .form-select option { background:#0d1f38;color:#fff; }
+.mp-sidebar-btn {
+  width:100%;padding:10px;border-radius:10px;
+  background:var(--gold);border:none;color:#0a0f1a;
+  font-weight:900;font-size:.82rem;cursor:pointer;transition:all .2s;
+  margin-top:4px;
+}
+.mp-sidebar-btn:hover { background:#d4b55a; }
+.mp-clear-link {
+  display:block;text-align:center;margin-top:8px;
+  font-size:.74rem;color:var(--dim);text-decoration:none;
+}
+.mp-clear-link:hover { color:var(--gold); }
+
+/* ── Section header ── */
+.mp-sec-header {
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;margin-bottom:22px;
+}
+.mp-sec-header h2 {
+  color:#fff;font-weight:900;font-size:1.1rem;margin:0;
+}
+.mp-count {
+  font-size:.76rem;color:var(--dim);
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:100px;padding:4px 12px;
+}
+
+/* ── Featured spotlight ── */
+.feat-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:20px;margin-bottom:48px;
+}
+.feat-card {
+  background:linear-gradient(145deg,rgba(201,168,76,.06) 0%,rgba(255,255,255,.02) 100%);
+  border:1px solid var(--gold-bd);
+  border-radius:20px;overflow:hidden;
+  position:relative;transition:all .28s;
+}
+.feat-card:hover {
+  transform:translateY(-5px);
+  box-shadow:0 20px 50px rgba(0,0,0,.35);
+  border-color:rgba(201,168,76,.5);
+}
+.feat-img {
+  height:200px;width:100%;object-fit:cover;display:block;
+}
+.feat-img-placeholder {
+  height:200px;background:linear-gradient(135deg,#0d1f38,#0a1626);
+  display:flex;align-items:center;justify-content:center;
+  font-size:3rem;color:rgba(201,168,76,.2);
+}
+.feat-badge {
+  position:absolute;top:14px;left:14px;
+  background:var(--gold);color:#0a0f1a;
+  font-size:.6rem;font-weight:900;letter-spacing:1.5px;
+  text-transform:uppercase;padding:4px 10px;border-radius:100px;
+}
+.feat-body { padding:18px 20px 20px; }
+.feat-cat { font-size:.64rem;font-weight:800;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:6px; }
+.feat-name { color:#fff;font-weight:900;font-size:1.05rem;line-height:1.3;margin-bottom:6px; }
+.feat-origin { font-size:.72rem;color:var(--dim);margin-bottom:10px; }
+.feat-stars { display:flex;gap:2px;align-items:center;margin-bottom:12px; }
+.feat-stars i { font-size:.72rem; }
+.star-on  { color:#f59e0b; }
+.star-off { color:rgba(255,255,255,.12); }
+.feat-rev-count { font-size:.68rem;color:var(--dim);margin-left:5px; }
+.feat-foot {
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:8px;
+}
+.feat-price { color:var(--gold);font-weight:900;font-size:1.2rem; }
+.feat-unit  { color:var(--dim);font-size:.7rem; }
+.feat-actions { display:flex;gap:7px; }
+.btn-feat-view {
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.65);border-radius:9px;padding:7px 13px;
+  font-size:.76rem;font-weight:700;text-decoration:none;transition:all .2s;
+}
+.btn-feat-view:hover { border-color:var(--gold-bd);color:var(--gold); }
+.btn-feat-cart {
+  background:var(--gold);border:none;color:#0a0f1a;
+  border-radius:9px;padding:7px 13px;
+  font-size:.76rem;font-weight:900;text-decoration:none;transition:all .2s;
+  display:inline-flex;align-items:center;gap:5px;
+}
+.btn-feat-cart:hover { background:#d4b55a;color:#0a0f1a; }
+
+/* ── Product grid cards ── */
+.mp-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:18px;
+}
+.pc {
+  background:var(--card-bg);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:16px;overflow:hidden;
+  transition:all .25s;display:flex;flex-direction:column;
+}
+.pc:hover {
+  border-color:var(--gold-bd);
+  transform:translateY(-4px);
+  box-shadow:0 14px 36px rgba(0,0,0,.28);
+}
+.pc-img-wrap { position:relative;height:160px;overflow:hidden;flex-shrink:0; }
+.pc-img-wrap img { width:100%;height:100%;object-fit:cover;transition:transform .4s; }
+.pc:hover .pc-img-wrap img { transform:scale(1.05); }
+.pc-placeholder {
+  width:100%;height:100%;
+  background:linear-gradient(135deg,#0d1f38,#071526);
+  display:flex;align-items:center;justify-content:center;
+  font-size:2.4rem;color:rgba(201,168,76,.18);
+}
+.pc-mkt-badge {
+  position:absolute;top:10px;right:10px;
+  font-size:.58rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;
+  padding:3px 9px;border-radius:100px;
+}
+.pc-mkt-badge.local         { background:rgba(34,197,94,.18);color:#4ade80;border:1px solid rgba(34,197,94,.3); }
+.pc-mkt-badge.international { background:rgba(99,102,241,.18);color:#a5b4fc;border:1px solid rgba(99,102,241,.3); }
+.pc-mkt-badge.both          { background:rgba(201,168,76,.14);color:var(--gold);border:1px solid var(--gold-bd); }
+.pc-body { padding:14px 15px 10px;flex:1;display:flex;flex-direction:column;gap:4px; }
+.pc-cat { font-size:.6rem;font-weight:800;letter-spacing:2px;color:var(--gold);text-transform:uppercase; }
+.pc-name { color:var(--text);font-weight:800;font-size:.9rem;line-height:1.35;margin:2px 0; }
+.pc-seller { font-size:.68rem;color:var(--dim); }
+.pc-stars { display:flex;align-items:center;gap:2px;margin:4px 0; }
+.pc-stars i { font-size:.62rem; }
+.pc-stars .rc { font-size:.62rem;color:var(--dim);margin-left:3px; }
+.pc-price-row { display:flex;align-items:baseline;gap:5px;margin-top:auto;padding-top:8px; }
+.pc-price { color:var(--gold);font-weight:900;font-size:1.05rem; }
+.pc-unit  { color:var(--dim);font-size:.68rem; }
+.pc-stock { font-size:.64rem;color:var(--dim);margin-top:2px; }
+.pc-pts   { font-size:.64rem;color:rgba(201,168,76,.55);margin-top:1px; }
+.pc-foot  {
+  display:flex;gap:7px;padding:10px 15px 14px;
+  border-top:1px solid rgba(255,255,255,.05);
+}
+.pc-foot a {
+  flex:1;text-align:center;padding:8px 6px;border-radius:9px;
+  font-size:.74rem;font-weight:800;text-decoration:none;transition:all .2s;
+}
+.pc-view {
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.09);color:var(--dim);
+}
+.pc-view:hover { border-color:var(--gold-bd);color:var(--gold); }
+.pc-add {
+  background:var(--gold);color:#0a0f1a;border:none;
+}
+.pc-add:hover { background:#d4b55a;color:#0a0f1a; }
+
+/* ── Empty state ── */
+.mp-empty {
+  text-align:center;padding:80px 20px;
+  background:var(--card-bg);border:1px solid rgba(255,255,255,.06);
+  border-radius:20px;
+}
+
+/* ── Bottom banner ── */
+.mp-bottom-banner {
+  background:linear-gradient(135deg,rgba(201,168,76,.08) 0%,rgba(201,168,76,.03) 100%);
+  border:1px solid var(--gold-bd);
+  border-radius:22px;padding:40px 36px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:24px;margin-top:56px;
+}
+</style>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section class="mp-hero">
+  <div class="container" style="position:relative;z-index:1">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-7">
+        <div class="mp-hero-eyebrow">T&TG Trade Corporation</div>
+        <h1>
+          Premium Green Coffee<br>
+          <span>Sourced. Traded. Delivered.</span>
+        </h1>
+        <p class="mp-hero-sub">
+          Direct-trade Arabica and Robusta from Uganda's finest estates —
+          shipped to Canada, USA, Kenya and beyond. Every purchase earns T&TG loyalty points.
+        </p>
+        <div class="mp-trust-row">
+          <span class="mp-trust-pill"><i class="fas fa-shield-alt"></i>PCI Secure Checkout</span>
+          <span class="mp-trust-pill"><i class="fas fa-globe-americas"></i>Ships to 3+ Countries</span>
+          <span class="mp-trust-pill"><i class="fas fa-coins"></i>Loyalty Rewards</span>
+          <span class="mp-trust-pill"><i class="fas fa-seedling"></i>Direct-Trade Sourced</span>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <!-- Stats strip -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div style="background:rgba(255,255,255,.04);border:1px solid var(--gold-bd);border-radius:16px;padding:20px;text-align:center">
+            <div style="font-size:1.9rem;font-weight:900;color:var(--gold)">{{ products|length }}</div>
+            <div style="font-size:.7rem;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-top:4px">Products Listed</div>
+          </div>
+          <div style="background:rgba(255,255,255,.04);border:1px solid var(--gold-bd);border-radius:16px;padding:20px;text-align:center">
+            <div style="font-size:1.9rem;font-weight:900;color:var(--gold)">3+</div>
+            <div style="font-size:.7rem;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-top:4px">Countries Served</div>
+          </div>
+          <div style="background:rgba(255,255,255,.04);border:1px solid var(--gold-bd);border-radius:16px;padding:20px;text-align:center">
+            <div style="font-size:1.9rem;font-weight:900;color:var(--gold)">100%</div>
+            <div style="font-size:.7rem;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-top:4px">Direct Trade</div>
+          </div>
+          <div style="background:rgba(255,255,255,.04);border:1px solid var(--gold-bd);border-radius:16px;padding:20px;text-align:center">
+            <div style="font-size:1.9rem;font-weight:900;color:var(--gold)">1%</div>
+            <div style="font-size:.7rem;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-top:4px">Loyalty Back</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ CATEGORY TILES ═══════════════════ -->
+<div style="background:#040c1a;border-top:1px solid rgba(255,255,255,.04);border-bottom:1px solid rgba(255,255,255,.04);padding:18px 0">
+  <div class="container">
+    <div class="cat-tiles">
+      <a href="{% url 'product_list' %}" class="cat-tile {% if not category and market == 'both' and not query %}active{% endif %}">
+        <i class="fas fa-th-large"></i>All Products
+      </a>
+      <a href="{% url 'product_list' %}?category=coffee" class="cat-tile {% if category == 'coffee' %}active{% endif %}">
+        <i class="fas fa-coffee"></i>Green Coffee
+      </a>
+      <a href="{% url 'product_list' %}?q=arabica" class="cat-tile {% if 'arabica' in query|lower %}active{% endif %}">
+        <i class="fas fa-leaf"></i>Arabica
+      </a>
+      <a href="{% url 'product_list' %}?q=robusta" class="cat-tile {% if 'robusta' in query|lower %}active{% endif %}">
+        <i class="fas fa-seedling"></i>Robusta
+      </a>
+      <a href="{% url 'product_list' %}?market=local" class="cat-tile {% if market == 'local' %}active{% endif %}">
+        <i class="fas fa-map-marker-alt"></i>For Canadians
+      </a>
+      <a href="{% url 'product_list' %}?market=international" class="cat-tile {% if market == 'international' %}active{% endif %}">
+        <i class="fas fa-globe"></i>International
+      </a>
+    </div>
+  </div>
 </div>
 
-<section class="section" style="padding-top:2rem">
- <div class="container">
+<!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
+<section style="background:var(--dark);padding:48px 0 80px">
+<div class="container">
 
- <!-- Filters -->
- <form method="get" class="glass-card p-3 mb-4">
- <div class="row g-3 align-items-end">
- <div class="col-md-3">
- <label class="form-label">Search</label>
- <input type="text" name="q" class="form-control" placeholder="Search products…" value="{{ query }}">
- </div>
- <div class="col-md-2">
- <label class="form-label">Category</label>
- <select name="category" class="form-select">
- <option value="">All Categories</option>
- {% for val, label in categories %}
- <option value="{{ val }}" {% if category == val %}selected{% endif %}>{{ label }}</option>
- {% endfor %}
- </select>
- </div>
- <div class="col-md-2">
- <label class="form-label">Market</label>
- <select name="market" class="form-select">
- <option value="">All Markets</option>
- <option value="local" {% if market == 'local' %}selected{% endif %}>Canadians </option>
- <option value="international" {% if market == 'international' %}selected{% endif %}>International</option>
- </select>
- </div>
- <div class="col-md-3 d-flex gap-2">
- <button type="submit" class="btn btn-gold flex-fill"><i class="fas fa-search me-1"></i>Filter</button>
- <a href="{% url 'product_list' %}" class="btn btn-outline-secondary">Clear</a>
- </div>
- </div>
- </form>
+  <!-- ── Featured Spotlight (hide when filters active) ── -->
+  {% if not is_filtered and featured %}
+  <div style="margin-bottom:48px">
+    <div class="mp-sec-header">
+      <div>
+        <div style="font-size:.6rem;font-weight:900;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:5px">
+          <i class="fas fa-star me-1"></i>Spotlight
+        </div>
+        <h2 style="color:#fff;font-weight:900;font-size:1.3rem;margin:0">Featured Products</h2>
+      </div>
+      <a href="{% url 'product_list' %}" style="font-size:.78rem;color:var(--dim);text-decoration:none;display:flex;align-items:center;gap:5px">
+        View All <i class="fas fa-arrow-right" style="font-size:.65rem"></i>
+      </a>
+    </div>
+    <div class="feat-grid">
+      {% for product in featured %}
+      <div class="feat-card">
+        {% if product.is_featured %}<div class="feat-badge"><i class="fas fa-star me-1"></i>Featured</div>{% endif %}
+        {% if product.safe_image_url %}
+        <img src="{{ product.safe_image_url }}" alt="{{ product.name }}" class="feat-img"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="feat-img-placeholder" style="display:none"><i class="fas fa-coffee"></i></div>
+        {% else %}
+        <div class="feat-img-placeholder"><i class="fas fa-coffee"></i></div>
+        {% endif %}
+        <div class="feat-body">
+          <div class="feat-cat">{{ product.get_category_display }}</div>
+          <div class="feat-name">{{ product.name }}</div>
+          <div class="feat-origin">
+            <i class="fas fa-map-marker-alt me-1" style="color:var(--gold);font-size:.65rem"></i>
+            {% if product.seller %}{{ product.seller.get_full_name|default:product.seller.username }}{% else %}T&TG Direct{% endif %}
+            {% if product.origin_country %} &middot; {{ product.origin_country }}{% endif %}
+          </div>
+          <div class="feat-stars">
+            {% with rating=product.avg_rating|default:0 %}
+            {% for i in "12345" %}
+              {% if forloop.counter <= rating %}<i class="fas fa-star star-on"></i>
+              {% else %}<i class="fas fa-star star-off"></i>{% endif %}
+            {% endfor %}
+            {% endwith %}
+            <span class="feat-rev-count">({{ product.review_count }})</span>
+          </div>
+          <div class="feat-foot">
+            <div>
+              <div class="feat-price">{{ product.currency }} {{ product.price }}</div>
+              <div class="feat-unit">per {{ product.unit }}</div>
+            </div>
+            <div class="feat-actions">
+              <a href="{% url 'product_detail' product.pk %}" class="btn-feat-view"><i class="fas fa-eye"></i></a>
+              <a href="{% url 'cart_add' product.pk %}" class="btn-feat-cart"><i class="fas fa-cart-plus"></i> Add</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
 
- <!-- Category quick links -->
- <div class="d-flex gap-2 flex-wrap mb-3">
- <a href="{% url 'product_list' %}" class="btn btn-sm {% if not category %}btn-gold{% else %}btn-outline-gold{% endif %}">All Coffee</a>
- <a href="?category=coffee&name=arabica" class="btn btn-sm {% if 'arabica' in query|lower %}btn-gold{% else %}btn-outline-gold{% endif %}">Arabica</a>
- <a href="?category=coffee&name=robusta" class="btn btn-sm {% if 'robusta' in query|lower %}btn-gold{% else %}btn-outline-gold{% endif %}">Robusta</a>
- <a href="?category=coffee&name=artisanal" class="btn btn-sm {% if 'artisanal' in query|lower %}btn-gold{% else %}btn-outline-gold{% endif %}">Artisanal Goods</a>
- </div>
+  <!-- ── Layout: Sidebar + Grid ── -->
+  <div class="mp-layout">
 
- <div class="d-flex justify-content-between align-items-center mb-3">
- <div class="text-muted" style="font-size:.875rem">{{ products|length }} product{% if products|length != 1 %}s{% endif %} found</div>
- </div>
+    <!-- Sidebar filters -->
+    <aside class="mp-sidebar">
+      <form method="get" id="filterForm">
+        <h6><i class="fas fa-sliders-h me-1"></i>Filter Products</h6>
+        <input type="text" name="q" class="form-control" placeholder="Search products…" value="{{ query }}">
 
- <div class="row g-4">
- {% for product in products %}
- <div class="col-sm-6 col-lg-3 animate-on-scroll">
- <div class="product-card">
- <div class="product-img-wrap">
- {% if product.safe_image_url %}
- <img src="{{ product.safe_image_url }}" alt="{{ product.name }}"
- style="width:100%;height:100%;object-fit:cover"
- onerror="this.style.display='none';this.parentElement.querySelector('.product-placeholder').style.display='flex'">
- {% endif %}
- <div class="product-placeholder" {% if product.safe_image_url %}style="display:none"{% endif %}>
- 
- </div>
- {% if product.is_featured %}<div class="p-badge">Featured</div>{% endif %}
- <div class="m-badge {{ product.market_type }}">{{ product.get_market_type_display }}</div>
- </div>
- <div class="product-body">
- <div class="product-cat">{{ product.get_category_display }}</div>
- <div class="product-name">{{ product.name }}</div>
- <div class="d-flex align-items-center gap-2 mb-2">
- <div class="product-price">{{ product.currency }} {{ product.price }}</div>
- <div class="text-muted" style="font-size:.75rem">/ {{ product.unit }}</div>
- </div>
- <div class="product-pts"><i class="fas fa-coins me-1"></i>Earn T&TG Loyalty Points</div>
- <div class="text-muted mt-1" style="font-size:.72rem"><i class="fas fa-cubes me-1"></i>{{ product.quantity_available }} {{ product.unit }}s available</div>
- </div>
- <div class="product-foot">
- <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-gold btn-sm flex-fill"><i class="fas fa-eye me-1"></i>View</a>
- <a href="{% url 'cart_add' product.pk %}" class="btn btn-gold btn-sm flex-fill"><i class="fas fa-cart-plus me-1"></i>Add to Cart</a>
- </div>
- </div>
- </div>
- {% empty %}
- <div class="col-12">
- <div class="text-center py-5">
- <div style="font-size:4rem;opacity:.3;margin-bottom:1rem"></div>
- <h4 class="text-muted">No products found</h4>
- <p class="text-muted">Try adjusting your filters or <a href="{% url 'product_list' %}" class="text-gold">clear all filters</a></p>
- </div>
- </div>
- {% endfor %}
- </div>
- </div>
+        <h6 style="margin-top:16px"><i class="fas fa-tag me-1"></i>Category</h6>
+        <select name="category" class="form-select">
+          <option value="">All Categories</option>
+          {% for val, label in categories %}
+          <option value="{{ val }}" {% if category == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+
+        <h6 style="margin-top:16px"><i class="fas fa-globe me-1"></i>Market</h6>
+        <select name="market" class="form-select">
+          <option value="both" {% if market == 'both' %}selected{% endif %}>All Markets</option>
+          <option value="local" {% if market == 'local' %}selected{% endif %}>For Canadians</option>
+          <option value="international" {% if market == 'international' %}selected{% endif %}>International</option>
+        </select>
+
+        <button type="submit" class="mp-sidebar-btn"><i class="fas fa-search me-1"></i>Apply Filters</button>
+        {% if is_filtered %}
+        <a href="{% url 'product_list' %}" class="mp-clear-link"><i class="fas fa-times-circle me-1"></i>Clear all filters</a>
+        {% endif %}
+
+        <!-- Corridor info -->
+        <div style="margin-top:24px;padding-top:18px;border-top:1px solid rgba(255,255,255,.06)">
+          <h6><i class="fas fa-route me-1"></i>Trade Corridors</h6>
+          <div style="display:flex;flex-direction:column;gap:7px">
+            <div style="font-size:.74rem;color:var(--dim)"><i class="fas fa-circle me-1" style="color:var(--gold);font-size:.45rem"></i>Uganda &rarr; Canada</div>
+            <div style="font-size:.74rem;color:var(--dim)"><i class="fas fa-circle me-1" style="color:var(--gold);font-size:.45rem"></i>Uganda &rarr; USA</div>
+            <div style="font-size:.74rem;color:var(--dim)"><i class="fas fa-circle me-1" style="color:var(--gold);font-size:.45rem"></i>Uganda &rarr; Kenya</div>
+            <div style="font-size:.74rem;color:var(--dim)"><i class="fas fa-circle me-1" style="color:var(--gold);font-size:.45rem"></i>Uganda &rarr; Europe</div>
+          </div>
+        </div>
+      </form>
+    </aside>
+
+    <!-- Product grid -->
+    <div>
+      <div class="mp-sec-header">
+        <h2 style="color:#fff;font-weight:900;font-size:1.1rem;margin:0">
+          {% if is_filtered %}Filtered Results{% else %}All Products{% endif %}
+        </h2>
+        <span class="mp-count">{{ products|length }} product{% if products|length != 1 %}s{% endif %}</span>
+      </div>
+
+      <div class="mp-grid">
+        {% for product in products %}
+        <div class="pc">
+          <div class="pc-img-wrap">
+            {% if product.safe_image_url %}
+            <img src="{{ product.safe_image_url }}" alt="{{ product.name }}"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div class="pc-placeholder" style="display:none"><i class="fas fa-coffee"></i></div>
+            {% else %}
+            <div class="pc-placeholder"><i class="fas fa-coffee"></i></div>
+            {% endif %}
+            <div class="pc-mkt-badge {{ product.market_type }}">{{ product.get_market_type_display }}</div>
+          </div>
+          <div class="pc-body">
+            <div class="pc-cat">{{ product.get_category_display }}</div>
+            <div class="pc-name">{{ product.name }}</div>
+            <div class="pc-seller">
+              <i class="fas fa-user-circle me-1" style="color:var(--gold);font-size:.6rem"></i>
+              {% if product.seller %}{{ product.seller.get_full_name|default:product.seller.username }}{% else %}T&TG Direct{% endif %}
+              {% if product.origin_country %} &middot; {{ product.origin_country }}{% endif %}
+            </div>
+            <div class="pc-stars">
+              {% with rating=product.avg_rating|default:0 %}
+              {% for i in "12345" %}
+                {% if forloop.counter <= rating %}<i class="fas fa-star star-on"></i>
+                {% else %}<i class="fas fa-star star-off"></i>{% endif %}
+              {% endfor %}
+              {% endwith %}
+              <span class="rc">({{ product.review_count }})</span>
+            </div>
+            <div class="pc-price-row">
+              <div class="pc-price">{{ product.currency }} {{ product.price }}</div>
+              <div class="pc-unit">/ {{ product.unit }}</div>
+            </div>
+            <div class="pc-stock"><i class="fas fa-cubes me-1"></i>{{ product.quantity_available }} {{ product.unit }}s in stock</div>
+            <div class="pc-pts"><i class="fas fa-coins me-1"></i>Earns loyalty points</div>
+          </div>
+          <div class="pc-foot">
+            <a href="{% url 'product_detail' product.pk %}" class="pc-view"><i class="fas fa-eye me-1"></i>View</a>
+            <a href="{% url 'cart_add' product.pk %}" class="pc-add"><i class="fas fa-cart-plus me-1"></i>Add to Cart</a>
+          </div>
+        </div>
+        {% empty %}
+        <div class="mp-empty" style="grid-column:1/-1">
+          <i class="fas fa-search" style="font-size:3rem;color:rgba(201,168,76,.2);margin-bottom:16px;display:block"></i>
+          <h4 style="color:#fff;font-weight:800;margin-bottom:8px">No products found</h4>
+          <p style="color:var(--dim);font-size:.88rem;margin-bottom:20px">Try adjusting your filters or search term.</p>
+          <a href="{% url 'product_list' %}" class="btn btn-gold px-5">Clear Filters</a>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Bottom banner -->
+      {% if not is_filtered %}
+      <div class="mp-bottom-banner">
+        <div>
+          <div style="font-size:.62rem;font-weight:900;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:8px">Bulk Trade</div>
+          <h3 style="color:#fff;font-weight:900;font-size:1.3rem;margin-bottom:6px">Need large volumes?</h3>
+          <p style="color:var(--dim);font-size:.85rem;margin:0;max-width:420px">T&TG handles bulk green coffee orders for roasters, importers and distributors. Get competitive trade pricing.</p>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <a href="{% url 'franchise_apply' %}" class="btn btn-gold px-5" style="font-weight:800">Apply for Trade Account</a>
+          <a href="{% url 'contact' %}" class="btn" style="border:1px solid var(--gold-bd);color:var(--gold);border-radius:12px;padding:10px 24px;font-weight:700">Contact Us</a>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
 </section>
 {% endblock %}

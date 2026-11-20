@@ -14,29 +14,39 @@ import decimal
 
 def product_list(request):
     # Capture referral code from a shared link (?ref=UNIQUE_ID) into the session
-    # so it survives browsing and auto-fills at checkout, without requiring
-    # the new buyer to manually type the referrer's ID.
     ref_code = request.GET.get('ref', '')
     if ref_code:
         request.session['referred_by'] = ref_code
-        request.session.set_expiry(60 * 60 * 24 * 14)  # remember for 14 days
+        request.session.set_expiry(60 * 60 * 24 * 14)
 
+    from django.db.models import Avg, Count
     market   = request.GET.get('market', 'both')
     category = request.GET.get('category', '')
     query    = request.GET.get('q', '')
-    products = Product.objects.filter(is_active=True).select_related("seller")
+
+    base_qs = Product.objects.filter(is_active=True).select_related('seller').annotate(
+        avg_rating=Avg('reviews__rating'),
+        review_count=Count('reviews'),
+    )
+
+    products = base_qs
     if market in ['local', 'international']:
         products = products.filter(market_type__in=[market, 'both'])
     if category:
         products = products.filter(category=category)
     if query:
         products = products.filter(name__icontains=query)
+
+    featured = base_qs.filter(is_featured=True)[:3]
+
     ctx = {
-        'products': products,
-        'market':   market,
-        'category': category,
-        'query':    query,
+        'products':   products,
+        'featured':   featured,
+        'market':     market,
+        'category':   category,
+        'query':      query,
         'categories': [('coffee', 'Coffee')],
+        'is_filtered': bool(market != 'both' or category or query),
     }
     return render(request, 'marketplace/product_list.html', ctx)
 
