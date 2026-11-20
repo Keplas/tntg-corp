@@ -555,6 +555,9 @@ def cart_add(request, pk):
         except Exception:
             pass
     messages.success(request, f'{product.name} added to cart.')
+    total_items = sum(cart.values())
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'ok': True, 'name': product.name, 'cart_count': total_items})
     return redirect('cart')
 
 

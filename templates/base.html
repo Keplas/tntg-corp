@@ -803,12 +803,10 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
           </a>
           {% endif %}
         {% with cart_count=request.session.cart|length %}
- {% if cart_count %}
  <a href="{% url 'cart' %}" class="tg-bell" id="cart_icon" title="My Cart" style="position:relative">
    <i class="fas fa-shopping-cart"></i>
-   <span class="tg-bell-dot">{{ cart_count }}</span>
+   <span class="tg-bell-dot" id="cart_badge" style="{% if not cart_count %}display:none{% endif %}">{{ cart_count }}</span>
  </a>
- {% endif %}
  {% endwith %}
  <a href="{% url 'login' %}" class="tg-btn-ghost">{% t "nav_signin" %}</a>
  <a href="{% url 'register' %}" class="tg-btn-primary">{% t "nav_getstarted" %}</a>

@@ -528,4 +528,86 @@
 
 </div>
 </section>
+
+<!-- ═══════════════════ ADD-TO-CART AJAX + TOAST ═══════════════════ -->
+<style>
+#mp-toast {
+  position:fixed;bottom:28px;right:24px;z-index:9999;
+  background:linear-gradient(135deg,#0d1f38,#0a1626);
+  border:1px solid var(--gold-bd);border-radius:14px;
+  padding:14px 20px;display:flex;align-items:center;gap:12px;
+  box-shadow:0 12px 36px rgba(0,0,0,.45);
+  transform:translateY(20px);opacity:0;pointer-events:none;
+  transition:opacity .28s,transform .28s;max-width:320px;
+}
+#mp-toast.show { opacity:1;transform:translateY(0);pointer-events:auto; }
+#mp-toast i { color:var(--gold);font-size:1.1rem;flex-shrink:0; }
+#mp-toast-msg { color:rgba(255,255,255,.85);font-size:.82rem;font-weight:700;line-height:1.4; }
+#mp-toast a {
+  margin-left:auto;flex-shrink:0;
+  font-size:.72rem;font-weight:800;color:var(--gold);
+  text-decoration:none;white-space:nowrap;
+  border:1px solid var(--gold-bd);border-radius:8px;padding:5px 10px;
+  transition:background .18s;
+}
+#mp-toast a:hover { background:var(--gold-lt); }
+@keyframes badge-pop {
+  0%  { transform:scale(1) }
+  40% { transform:scale(1.55) }
+  70% { transform:scale(.88) }
+  100%{ transform:scale(1) }
+}
+.badge-animate { animation:badge-pop .38s ease; }
+</style>
+
+<div id="mp-toast">
+  <i class="fas fa-check-circle"></i>
+  <span id="mp-toast-msg">Added to cart</span>
+  <a href="{% url 'cart' %}">View cart</a>
+</div>
+
+<script>
+(function(){
+  const CSRF = (document.cookie.match(/csrftoken=([^;]+)/)|| [])[1] || '';
+  let toastTimer;
+
+  function showToast(name) {
+    const t = document.getElementById('mp-toast');
+    document.getElementById('mp-toast-msg').textContent = name + ' added to cart';
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 3200);
+  }
+
+  function bumpBadge(count) {
+    const b = document.getElementById('cart_badge');
+    if (!b) return;
+    b.textContent = count;
+    b.style.display = 'flex';
+    b.classList.remove('badge-animate');
+    void b.offsetWidth;
+    b.classList.add('badge-animate');
+  }
+
+  document.addEventListener('click', function(e) {
+    const btn = e.target.closest('a.pc-add, a.btn-feat-cart');
+    if (!btn) return;
+    e.preventDefault();
+    const url = btn.href;
+    btn.style.opacity = '.5';
+    btn.style.pointerEvents = 'none';
+    fetch(url, {
+      method: 'GET',
+      headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': CSRF },
+      credentials: 'same-origin',
+    })
+    .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function(data){
+      if (data.ok) { showToast(data.name); bumpBadge(data.cart_count); }
+    })
+    .catch(function(){ window.location.href = url; })
+    .finally(function(){ btn.style.opacity=''; btn.style.pointerEvents=''; });
+  });
+})();
+</script>
 {% endblock %}
