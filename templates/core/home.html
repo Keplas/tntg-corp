@@ -43,6 +43,60 @@
 
 
 {% block content %}
+<style>
+/* ── Marketplace-style product cards (home page) ── */
+:root{--gold:#c9a84c;--gold-lt:rgba(201,168,76,.12);--gold-bd:rgba(201,168,76,.22);--dim:#7a6e5f;}
+.hp-pc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px;}
+@media(max-width:767px){.hp-pc-grid{grid-template-columns:1fr 1fr;gap:12px;}}
+@media(max-width:400px){.hp-pc-grid{grid-template-columns:1fr 1fr;gap:9px;}}
+.pc{background:rgba(255,255,255,.028);border:1px solid rgba(255,255,255,.07);border-radius:16px;overflow:hidden;transition:all .25s;display:flex;flex-direction:column;}
+.pc:hover{border-color:var(--gold-bd);transform:translateY(-4px);box-shadow:0 14px 36px rgba(0,0,0,.28);}
+.pc-img-wrap{position:relative;height:160px;overflow:hidden;flex-shrink:0;}
+.pc-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
+.pc:hover .pc-img-wrap img{transform:scale(1.05);}
+.pc-placeholder{width:100%;height:100%;background:linear-gradient(135deg,#0d1f38,#071526);display:flex;align-items:center;justify-content:center;font-size:2.4rem;color:rgba(201,168,76,.18);}
+.pc-mkt-badge{position:absolute;top:10px;right:10px;font-size:.58rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:100px;}
+.pc-mkt-badge.local{background:rgba(34,197,94,.18);color:#4ade80;border:1px solid rgba(34,197,94,.3);}
+.pc-mkt-badge.international{background:rgba(99,102,241,.18);color:#a5b4fc;border:1px solid rgba(99,102,241,.3);}
+.pc-mkt-badge.both{background:rgba(201,168,76,.14);color:var(--gold);border:1px solid var(--gold-bd);}
+.pc-feat-badge{position:absolute;top:10px;left:10px;background:var(--gold);color:#0a0f1a;font-size:.58rem;font-weight:900;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:100px;}
+.pc-body{padding:14px 15px 10px;flex:1;display:flex;flex-direction:column;gap:4px;}
+.pc-cat{font-size:.6rem;font-weight:800;letter-spacing:2px;color:var(--gold);text-transform:uppercase;}
+.pc-name{color:rgba(255,255,255,.88);font-weight:800;font-size:.9rem;line-height:1.35;margin:2px 0;}
+.pc-seller{font-size:.68rem;color:var(--dim);}
+.pc-stars{display:flex;align-items:center;gap:2px;margin:4px 0;}
+.pc-stars i,.pc-stars .fas{font-size:.62rem;}
+.star-on{color:#f59e0b;}.star-off{color:rgba(255,255,255,.12);}
+.pc-stars .rc{font-size:.62rem;color:var(--dim);margin-left:3px;}
+.pc-price-row{display:flex;align-items:baseline;gap:5px;margin-top:auto;padding-top:8px;}
+.pc-price{color:var(--gold);font-weight:900;font-size:1.05rem;}
+.pc-unit{color:var(--dim);font-size:.68rem;}
+.pc-pts{font-size:.64rem;color:rgba(201,168,76,.55);margin-top:1px;}
+.pc-foot{display:flex;gap:7px;padding:10px 15px 14px;border-top:1px solid rgba(255,255,255,.05);}
+.pc-foot a{flex:1;text-align:center;padding:8px 6px;border-radius:9px;font-size:.74rem;font-weight:800;text-decoration:none;transition:all .2s;}
+.pc-view{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);color:var(--dim);}
+.pc-view:hover{border-color:var(--gold-bd);color:var(--gold);}
+.pc-add{background:var(--gold);color:#0a0f1a;}
+.pc-add:hover{background:#d4b55a;color:#0a0f1a;}
+@media(max-width:767px){
+  .pc-img-wrap{height:120px;}
+  .pc-body{padding:10px 11px 8px;gap:3px;}
+  .pc-name{font-size:.8rem;}
+  .pc-seller,.pc-pts{font-size:.6rem;}
+  .pc-price{font-size:.95rem;}
+  .pc-foot{padding:8px 11px 11px;gap:5px;}
+  .pc-foot a{padding:7px 4px;font-size:.68rem;}
+}
+/* Toast */
+#hp-toast{position:fixed;bottom:28px;right:24px;z-index:9999;background:linear-gradient(135deg,#0d1f38,#0a1626);border:1px solid var(--gold-bd);border-radius:14px;padding:14px 20px;display:flex;align-items:center;gap:12px;box-shadow:0 12px 36px rgba(0,0,0,.45);transform:translateY(20px);opacity:0;pointer-events:none;transition:opacity .28s,transform .28s;max-width:320px;}
+#hp-toast.show{opacity:1;transform:translateY(0);pointer-events:auto;}
+#hp-toast i{color:var(--gold);font-size:1.1rem;flex-shrink:0;}
+#hp-toast-msg{color:rgba(255,255,255,.85);font-size:.82rem;font-weight:700;line-height:1.4;}
+#hp-toast a{margin-left:auto;flex-shrink:0;font-size:.72rem;font-weight:800;color:var(--gold);text-decoration:none;white-space:nowrap;border:1px solid var(--gold-bd);border-radius:8px;padding:5px 10px;}
+@keyframes badge-pop{0%{transform:scale(1)}40%{transform:scale(1.55)}70%{transform:scale(.88)}100%{transform:scale(1)}}
+.badge-animate{animation:badge-pop .38s ease;}
+</style>
+<div id="hp-toast"><i class="fas fa-check-circle"></i><span id="hp-toast-msg">Added to cart</span><a href="{% url 'cart' %}">View cart</a></div>
 
 <!-- ═══ HERO: Video Background Edition ═══ -->
 <section class="tg-hero bg-shimmer orb-bg" id="heroTop" style="isolation:isolate">
@@ -615,45 +669,50 @@
  <h2>Featured <span class="text-gold">Products</span></h2>
  <div class="divider-gold"></div>
  </div>
-
  <!-- Category quick links -->
  <div class="d-flex gap-2 flex-wrap justify-content-center mb-4">
- <a href="{% url 'product_list' %}?category=coffee" class="btn btn-sm btn-outline-gold"> All Coffee</a>
- <a href="{% url 'product_list' %}?category=coffee&name=arabica" class="btn btn-sm btn-outline-gold"> Arabica</a>
- <a href="{% url 'product_list' %}?category=coffee&name=robusta" class="btn btn-sm btn-outline-gold"> Robusta</a>
+ <a href="{% url 'product_list' %}?category=coffee" class="btn btn-sm btn-outline-gold"><i class="fas fa-coffee me-1"></i>All Coffee</a>
+ <a href="{% url 'product_list' %}?q=arabica" class="btn btn-sm btn-outline-gold"><i class="fas fa-leaf me-1"></i>Arabica</a>
+ <a href="{% url 'product_list' %}?q=robusta" class="btn btn-sm btn-outline-gold"><i class="fas fa-seedling me-1"></i>Robusta</a>
  </div>
-
- <div class="row g-4">
+ <div class="hp-pc-grid">
  {% for product in featured_products %}
- <div class="col-sm-6 col-lg-4 animate-on-scroll">
- <div class="product-card">
- <div class="product-img-wrap">
- {% if product.safe_image_url %}
- <img src="{{ product.safe_image_url }}" alt="{{ product.name }}"
- style="width:100%;height:100%;object-fit:cover"
- onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
- {% else %}
- <div class="product-placeholder">
- 
- </div>
- {% endif %}
- <div class="p-badge">Featured</div>
- <div class="m-badge {{ product.market_type }}">{{ product.get_market_type_display }}</div>
- </div>
- <div class="product-body">
- <div class="product-cat">
- {{ product.get_category_display }}
- {% if product.gender_target != 'all' %}<span class="text-muted"> · {{ product.get_gender_target_display }}</span>{% endif %}
- </div>
- <div class="product-name">{{ product.name }}</div>
- <div class="product-price">{{ product.currency }} {{ product.price }}</div>
- <div class="product-pts"><i class="fas fa-coins me-1"></i>Earn {{ product.loyalty_points_consumer }} pts</div>
- </div>
- <div class="product-foot">
- <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-gold btn-sm flex-fill">Details</a>
- <a href="{% url 'place_order' product.pk %}" class="btn btn-gold btn-sm flex-fill">Buy Now</a>
- </div>
- </div>
+ <div class="pc">
+   <div class="pc-img-wrap">
+     {% if product.safe_image_url %}
+     <img src="{{ product.safe_image_url }}" alt="{{ product.name }}"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+     <div class="pc-placeholder" style="display:none"><i class="fas fa-coffee"></i></div>
+     {% else %}
+     <div class="pc-placeholder"><i class="fas fa-coffee"></i></div>
+     {% endif %}
+     <span class="pc-mkt-badge {{ product.market_type }}">{{ product.get_market_type_display }}</span>
+     <span class="pc-feat-badge"><i class="fas fa-star me-1"></i>Featured</span>
+   </div>
+   <div class="pc-body">
+     <div class="pc-cat">{{ product.get_category_display }}</div>
+     <div class="pc-name">{{ product.name }}</div>
+     <div class="pc-seller">
+       <i class="fas fa-user-circle me-1"></i>
+       {% if product.seller %}{{ product.seller.get_full_name|default:product.seller.username }}{% else %}T&TG Direct{% endif %}
+       {% if product.origin_country %} &middot; {{ product.origin_country }}{% endif %}
+     </div>
+     <div class="pc-stars">
+       {% with r=product.avg_rating|default:0 %}
+       {% for i in "12345" %}{% if forloop.counter <= r %}<i class="fas fa-star star-on"></i>{% else %}<i class="fas fa-star star-off"></i>{% endif %}{% endfor %}
+       {% endwith %}
+       <span class="rc">({{ product.review_count }})</span>
+     </div>
+     <div class="pc-price-row">
+       <div class="pc-price">{{ product.currency }} {{ product.price }}</div>
+       <div class="pc-unit">/ {{ product.unit }}</div>
+     </div>
+     <div class="pc-pts"><i class="fas fa-coins me-1"></i>Earns loyalty points</div>
+   </div>
+   <div class="pc-foot">
+     <a href="{% url 'product_detail' product.pk %}" class="pc-view"><i class="fas fa-eye me-1"></i>View</a>
+     <a href="{% url 'cart_add' product.pk %}" class="pc-add"><i class="fas fa-cart-plus me-1"></i>Add to Cart</a>
+   </div>
  </div>
  {% endfor %}
  </div>
@@ -748,32 +807,43 @@
  <h2>Latest <span class="text-gold">Products</span></h2>
  <div class="divider-gold"></div>
  </div>
- <div class="row g-4">
+ <div class="hp-pc-grid">
  {% for product in latest_products %}
- <div class="col-sm-6 col-lg-3 animate-on-scroll">
- <div class="product-card">
- <div class="product-img-wrap">
- {% if product.safe_image_url %}
- <img src="{{ product.safe_image_url }}" alt="{{ product.name }}"
- style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
- {% else %}
- <div class="product-placeholder">
- 
- </div>
- {% endif %}
- <div class="m-badge {{ product.market_type }}">{{ product.get_market_type_display }}</div>
- </div>
- <div class="product-body">
- <div class="product-cat">{{ product.get_category_display }}</div>
- <div class="product-name">{{ product.name }}</div>
- <div class="product-price">{{ product.currency }} {{ product.price }}</div>
- <div class="product-pts"><i class="fas fa-coins me-1"></i>Earn {{ product.loyalty_points_consumer }} pts</div>
- </div>
- <div class="product-foot">
- <a href="{% url 'product_detail' product.pk %}" class="btn btn-outline-gold btn-sm flex-fill">Details</a>
- <a href="{% url 'place_order' product.pk %}" class="btn btn-gold btn-sm flex-fill">Order</a>
- </div>
- </div>
+ <div class="pc">
+   <div class="pc-img-wrap">
+     {% if product.safe_image_url %}
+     <img src="{{ product.safe_image_url }}" alt="{{ product.name }}"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+     <div class="pc-placeholder" style="display:none"><i class="fas fa-coffee"></i></div>
+     {% else %}
+     <div class="pc-placeholder"><i class="fas fa-coffee"></i></div>
+     {% endif %}
+     <span class="pc-mkt-badge {{ product.market_type }}">{{ product.get_market_type_display }}</span>
+   </div>
+   <div class="pc-body">
+     <div class="pc-cat">{{ product.get_category_display }}</div>
+     <div class="pc-name">{{ product.name }}</div>
+     <div class="pc-seller">
+       <i class="fas fa-user-circle me-1"></i>
+       {% if product.seller %}{{ product.seller.get_full_name|default:product.seller.username }}{% else %}T&TG Direct{% endif %}
+       {% if product.origin_country %} &middot; {{ product.origin_country }}{% endif %}
+     </div>
+     <div class="pc-stars">
+       {% with r=product.avg_rating|default:0 %}
+       {% for i in "12345" %}{% if forloop.counter <= r %}<i class="fas fa-star star-on"></i>{% else %}<i class="fas fa-star star-off"></i>{% endif %}{% endfor %}
+       {% endwith %}
+       <span class="rc">({{ product.review_count }})</span>
+     </div>
+     <div class="pc-price-row">
+       <div class="pc-price">{{ product.currency }} {{ product.price }}</div>
+       <div class="pc-unit">/ {{ product.unit }}</div>
+     </div>
+     <div class="pc-pts"><i class="fas fa-coins me-1"></i>Earns loyalty points</div>
+   </div>
+   <div class="pc-foot">
+     <a href="{% url 'product_detail' product.pk %}" class="pc-view"><i class="fas fa-eye me-1"></i>View</a>
+     <a href="{% url 'cart_add' product.pk %}" class="pc-add"><i class="fas fa-cart-plus me-1"></i>Add to Cart</a>
+   </div>
  </div>
  {% endfor %}
  </div>
@@ -1094,6 +1164,34 @@
     });
   }, { threshold: 0.10, rootMargin: '0px 0px -24px 0px' });
   els.forEach(function(el){ io.observe(el); });
+})();
+</script>
+<script>
+/* Home page add-to-cart AJAX */
+(function(){
+  var CSRF=(document.cookie.match(/csrftoken=([^;]+)/)||[])[1]||'';
+  var timer;
+  function showToast(name){
+    var t=document.getElementById('hp-toast');
+    document.getElementById('hp-toast-msg').textContent=name+' added to cart';
+    t.classList.add('show');clearTimeout(timer);
+    timer=setTimeout(function(){t.classList.remove('show');},3200);
+  }
+  function bumpBadge(count){
+    var b=document.getElementById('cart_badge');if(!b)return;
+    b.textContent=count;b.style.display='flex';
+    b.classList.remove('badge-animate');void b.offsetWidth;b.classList.add('badge-animate');
+  }
+  document.addEventListener('click',function(e){
+    var btn=e.target.closest('a.pc-add');if(!btn)return;
+    e.preventDefault();var url=btn.href;
+    btn.style.opacity='.5';btn.style.pointerEvents='none';
+    fetch(url,{method:'GET',headers:{'X-Requested-With':'XMLHttpRequest','X-CSRFToken':CSRF},credentials:'same-origin'})
+    .then(function(r){return r.ok?r.json():Promise.reject();})
+    .then(function(d){if(d.ok){showToast(d.name);bumpBadge(d.cart_count);}})
+    .catch(function(){window.location.href=url;})
+    .finally(function(){btn.style.opacity='';btn.style.pointerEvents='';});
+  });
 })();
 </script>
 {% endblock %}

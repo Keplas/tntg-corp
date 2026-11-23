@@ -20,8 +20,13 @@ OPERATION_COUNTRIES = [
 
 def home(request):
     try:
-        featured_products = list(Product.objects.filter(is_active=True, is_featured=True)[:6])
-        latest_products   = list(Product.objects.filter(is_active=True)[:8])
+        from django.db.models import Avg, Count
+        _base = Product.objects.filter(is_active=True).select_related('seller').annotate(
+            avg_rating=Avg('reviews__rating'),
+            review_count=Count('reviews'),
+        )
+        featured_products = list(_base.filter(is_featured=True)[:6])
+        latest_products   = list(_base.order_by('-created_at')[:8])
         training_programs = list(TrainingProgram.objects.filter(is_active=True)[:3])
         tv_programs       = list(TVProgram.objects.filter(is_active=True)[:3])
         forex_rates       = list(ForexRate.objects.all()[:3])
