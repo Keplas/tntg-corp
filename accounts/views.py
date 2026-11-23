@@ -1022,3 +1022,28 @@ def confirm_google_login(request):
         'google_email': google_email,
         'google_name':  google_name,
     })
+
+
+# ════════════════════════════════════════════════════════════════════════
+# AJAX PROFILE PHOTO UPLOAD
+# ════════════════════════════════════════════════════════════════════════
+
+@login_required
+def upload_profile_photo(request):
+    """AJAX endpoint — saves profile_photo, returns new URL as JSON."""
+    from django.http import JsonResponse
+    if request.method != 'POST':
+        return JsonResponse({'ok': False, 'error': 'POST required'}, status=405)
+    photo = request.FILES.get('profile_photo')
+    if not photo:
+        return JsonResponse({'ok': False, 'error': 'No file provided'}, status=400)
+    allowed = ('image/jpeg', 'image/png', 'image/webp', 'image/gif')
+    if photo.content_type not in allowed:
+        return JsonResponse({'ok': False, 'error': 'Only JPEG, PNG, WebP or GIF allowed'}, status=400)
+    if photo.size > 5 * 1024 * 1024:
+        return JsonResponse({'ok': False, 'error': 'File too large (max 5 MB)'}, status=400)
+    user = request.user
+    user.profile_photo = photo
+    user.save(update_fields=['profile_photo'])
+    url = user.safe_profile_photo_url
+    return JsonResponse({'ok': True, 'url': url})

@@ -56,9 +56,13 @@ def brokerage(request):
 def franchise_hub(request):
     """Franchise platform landing page — markets all 5 franchise types."""
     from .models import FranchiseApplication
-    return render(request, 'services/franchise_hub.html', {
+    ctx = {
         'franchise_types': FranchiseApplication.FRANCHISE_TYPE_CHOICES,
-    })
+    }
+    if request.user.is_authenticated:
+        from .models import FranchiseApplication as FA
+        ctx['user_applications'] = FA.objects.filter(user=request.user).order_by('-submitted_at')[:5]
+    return render(request, 'services/franchise_hub.html', ctx)
 
 
 def franchise_apply(request):

@@ -18,6 +18,165 @@
   --text:   #c8d8e8;
 }
 
+/* ═══════════ PROFILE BANNER ═══════════ */
+.fh-profile-bar {
+  background: linear-gradient(135deg, #060f1e 0%, #0a1628 60%, #071320 100%);
+  border-bottom: 1px solid rgba(201,168,76,.18);
+  padding: 28px 0 24px;
+  position: relative;
+  overflow: hidden;
+}
+.fh-profile-bar::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(201,168,76,.012) 0px, rgba(201,168,76,.012) 1px,
+    transparent 1px, transparent 10px
+  );
+  pointer-events: none;
+}
+.fh-profile-inner {
+  position: relative; z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+.fh-avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+.fh-avatar {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  border: 2px solid rgba(201,168,76,.4);
+  object-fit: cover;
+  display: block;
+  background: #0d1a26;
+  box-shadow: 0 0 0 4px rgba(201,168,76,.08);
+}
+.fh-avatar-placeholder {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  border: 2px solid rgba(201,168,76,.3);
+  background: rgba(201,168,76,.08);
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(201,168,76,.6);
+  font-size: 2rem;
+  box-shadow: 0 0 0 4px rgba(201,168,76,.05);
+}
+.fh-avatar-upload-btn {
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 26px; height: 26px;
+  background: var(--gold);
+  color: #060f1e;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .65rem;
+  cursor: pointer;
+  border: 2px solid #060f1e;
+  transition: background .2s, transform .15s;
+  box-shadow: 0 2px 8px rgba(0,0,0,.4);
+}
+.fh-avatar-upload-btn:hover {
+  background: var(--gold-lt);
+  transform: scale(1.1);
+}
+.fh-avatar-upload-btn input[type="file"] {
+  position: absolute; inset: 0;
+  opacity: 0; cursor: pointer;
+  width: 100%; height: 100%;
+  border-radius: 50%;
+}
+.fh-profile-info {
+  flex: 1;
+  min-width: 0;
+}
+.fh-profile-name {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: #e8f0fe;
+  letter-spacing: -.01em;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fh-profile-meta {
+  color: var(--muted);
+  font-size: .8rem;
+  margin-bottom: 10px;
+  display: flex; flex-wrap: wrap; gap: 8px 16px;
+}
+.fh-profile-meta span {
+  display: flex; align-items: center; gap: 5px;
+}
+.fh-profile-meta i { color: var(--gold); font-size: .72rem; }
+.fh-profile-badges {
+  display: flex; flex-wrap: wrap; gap: 7px;
+}
+.fh-pbadge {
+  background: rgba(201,168,76,.08);
+  border: 1px solid rgba(201,168,76,.2);
+  color: var(--gold);
+  padding: 3px 12px;
+  border-radius: 99px;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  display: flex; align-items: center; gap: 5px;
+}
+.fh-profile-actions {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  align-items: center;
+}
+.fh-btn-sm {
+  background: rgba(201,168,76,.1);
+  color: var(--gold);
+  border: 1px solid rgba(201,168,76,.28);
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: .78rem;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex; align-items: center; gap: 7px;
+  transition: background .2s, border-color .2s, color .2s;
+  cursor: pointer;
+}
+.fh-btn-sm:hover {
+  background: rgba(201,168,76,.18);
+  border-color: rgba(201,168,76,.5);
+  color: var(--gold-lt);
+  text-decoration: none;
+}
+/* photo upload toast */
+.fh-upload-toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: #0d1f35;
+  border: 1px solid rgba(201,168,76,.35);
+  color: #c8d8e8;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: .84rem;
+  font-weight: 500;
+  display: flex; align-items: center; gap: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+  z-index: 9999;
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s ease;
+}
+.fh-upload-toast.show { opacity: 1; pointer-events: auto; }
+.fh-upload-toast i { color: var(--gold); }
+@media (max-width: 600px) {
+  .fh-profile-actions { width: 100%; }
+  .fh-btn-sm { font-size: .74rem; padding: 7px 14px; }
+  .fh-profile-name { font-size: 1.05rem; }
+}
+
 /* ═══════════ HERO ═══════════ */
 .fh-hero {
   position: relative;
@@ -574,6 +733,130 @@
 .fh-cta-note span { display: flex; align-items: center; gap: 7px; }
 .fh-cta-note i { color: rgba(201,168,76,.5); }
 </style>
+
+<!-- ═══════════ PROFILE BANNER (authenticated only) ═══════════ -->
+{% if user.is_authenticated %}
+<div class="fh-profile-bar">
+  <div class="container">
+    <div class="fh-profile-inner">
+
+      <!-- Avatar + upload button -->
+      <div class="fh-avatar-wrap">
+        {% if user.safe_profile_photo_url %}
+          <img src="{{ user.safe_profile_photo_url }}" alt="{{ user.get_full_name|default:user.username }}"
+               class="fh-avatar" id="fh-avatar-img">
+        {% else %}
+          <div class="fh-avatar-placeholder" id="fh-avatar-placeholder">
+            <i class="fas fa-user"></i>
+          </div>
+          <img src="" alt="" class="fh-avatar" id="fh-avatar-img" style="display:none">
+        {% endif %}
+        <!-- Camera overlay button triggers file input -->
+        <label class="fh-avatar-upload-btn" title="Change profile photo">
+          <i class="fas fa-camera"></i>
+          <input type="file" accept="image/*" id="fh-photo-input" aria-label="Upload profile photo">
+        </label>
+      </div>
+
+      <!-- Name + meta -->
+      <div class="fh-profile-info">
+        <div class="fh-profile-name">
+          {{ user.get_full_name|default:user.username }}
+        </div>
+        <div class="fh-profile-meta">
+          <span><i class="fas fa-envelope"></i> {{ user.email }}</span>
+          {% if user.city %}<span><i class="fas fa-map-marker-alt"></i> {{ user.city }}</span>{% endif %}
+          {% if user.phone %}<span><i class="fas fa-phone"></i> {{ user.phone }}</span>{% endif %}
+        </div>
+        <div class="fh-profile-badges">
+          {% if user.is_verified %}
+            <span class="fh-pbadge"><i class="fas fa-check-circle"></i> Verified</span>
+          {% endif %}
+          {% if user.is_partner %}
+            <span class="fh-pbadge"><i class="fas fa-handshake"></i> Partner</span>
+          {% endif %}
+          {% if user_applications %}
+            <span class="fh-pbadge"><i class="fas fa-file-alt"></i> {{ user_applications|length }} Application{{ user_applications|length|pluralize }}</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="fh-profile-actions">
+        <a href="{% url 'my_franchise_applications' %}" class="fh-btn-sm">
+          <i class="fas fa-folder-open"></i> My Applications
+        </a>
+        <a href="{% url 'profile' %}" class="fh-btn-sm">
+          <i class="fas fa-cog"></i> Edit Profile
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Upload toast -->
+<div class="fh-upload-toast" id="fh-upload-toast">
+  <i class="fas fa-check-circle"></i>
+  <span id="fh-upload-msg">Profile photo updated.</span>
+</div>
+
+<script>
+(function(){
+  const input   = document.getElementById('fh-photo-input');
+  const imgEl   = document.getElementById('fh-avatar-img');
+  const phEl    = document.getElementById('fh-avatar-placeholder');
+  const toast   = document.getElementById('fh-upload-toast');
+  const toastMsg= document.getElementById('fh-upload-msg');
+  let toastTimer;
+
+  function showToast(msg, isError) {
+    toastMsg.textContent = msg;
+    toast.querySelector('i').className = isError
+      ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
+    toast.style.borderColor = isError
+      ? 'rgba(220,53,69,.5)' : 'rgba(201,168,76,.35)';
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
+  }
+
+  input.addEventListener('change', function(){
+    const file = this.files[0];
+    if (!file) return;
+    // Preview immediately
+    const reader = new FileReader();
+    reader.onload = function(e){
+      imgEl.src = e.target.result;
+      imgEl.style.display = '';
+      if (phEl) phEl.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+
+    // Upload via AJAX
+    const fd = new FormData();
+    fd.append('profile_photo', file);
+    fd.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+    fetch('{% url "upload_profile_photo" %}', {
+      method: 'POST',
+      body: fd,
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.ok) {
+        if (data.url) imgEl.src = data.url;
+        showToast('Profile photo updated.', false);
+      } else {
+        showToast(data.error || 'Upload failed.', true);
+      }
+    })
+    .catch(() => showToast('Upload failed. Please try again.', true));
+  });
+})();
+</script>
+{% endif %}
 
 <!-- ═══════════ HERO ═══════════ -->
 <section class="fh-hero">

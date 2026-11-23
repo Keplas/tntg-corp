@@ -25,4 +25,5 @@ urlpatterns = [
     path('wallet/withdraw/', views.wallet_withdraw, name='wallet_withdraw'),
     path('set-withdrawal-pin/',                   views.set_withdrawal_pin, name='set_withdrawal_pin'),
     path('google/confirm/',                       views.confirm_google_login, name='confirm_google_login'),
+    path('profile-photo/upload/',                 views.upload_profile_photo, name='upload_profile_photo'),
 ]
