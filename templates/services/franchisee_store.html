@@ -3,13 +3,6 @@
 
 {% block title %}Franchisee Hub — T&TG Trade Corporation{% endblock %}
 
-{% block extra_head %}
-<style>
-/* Hide the main site navbar on the franchisee hub — it has its own nav */
-#tgNavbar { display: none !important; }
-</style>
-{% endblock %}
-
 {% block content %}
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap');
@@ -45,165 +38,34 @@
   color: var(--tx);
 }
 
-/* ══════════════════
-   TOP BAR
-   ══════════════════ */
-.hs-topbar {
-  background: rgba(6,10,20,.95);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--g-bd);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.hs-topbar-inner {
-  max-width: 1320px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-  display: flex;
-  align-items: stretch;
-  min-height: 60px;
-  gap: 0;
-}
-
-/* Brand */
-.hs-brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 20px 0 0;
-  margin-right: 4px;
-  border-right: 1px solid var(--bd);
-  flex-shrink: 0;
-  text-decoration: none;
-}
-.hs-brand-mark {
-  width: 34px; height: 34px;
-  background: linear-gradient(135deg, var(--g-dk), var(--g));
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: .95rem;
-  color: #060f1e;
-  flex-shrink: 0;
-}
-.hs-brand-text {
-  line-height: 1.1;
-}
-.hs-brand-text strong {
-  display: block;
-  font-size: .88rem;
-  font-weight: 800;
-  color: #fff;
-  letter-spacing: -.01em;
-}
-.hs-brand-text span {
-  font-size: .68rem;
-  font-weight: 600;
-  color: var(--g);
-  letter-spacing: .06em;
-  text-transform: uppercase;
-}
-
-/* Nav links */
-.hs-nav {
-  display: flex;
-  align-items: stretch;
-  gap: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-  flex: 1;
-}
-.hs-nav::-webkit-scrollbar { display: none; }
-.hs-nav-link {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 0 15px;
-  color: var(--tx2);
-  font-size: .82rem;
-  font-weight: 600;
-  text-decoration: none;
-  border-bottom: 2px solid transparent;
-  white-space: nowrap;
-  transition: color .15s, border-color .15s, background .15s;
-}
-.hs-nav-link i { font-size: .78rem; }
-.hs-nav-link:hover { color: #fff; background: var(--g-bg); text-decoration: none; }
-.hs-nav-link.active {
-  color: var(--g);
-  border-bottom-color: var(--g);
-  background: rgba(201,168,76,.05);
-}
-
-/* Right side: profile chip */
-.hs-topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-left: auto;
-  padding-left: 16px;
-  border-left: 1px solid var(--bd);
-}
-.hs-notif {
-  position: relative;
-  color: var(--tx2);
-  font-size: 1rem;
-  cursor: pointer;
-  padding: 6px;
-  border-radius: 8px;
-  transition: color .15s, background .15s;
-}
-.hs-notif:hover { color: var(--g); background: var(--g-bg); }
-.hs-notif-dot {
-  position: absolute;
-  top: 4px; right: 4px;
-  width: 7px; height: 7px;
-  background: var(--red);
-  border-radius: 50%;
-  border: 1.5px solid var(--navy);
-}
-
-/* Avatar in topbar */
-.hs-top-avatar {
+/* ── Hero avatar + camera ─────────── */
+.hs-hero-avatar-wrap {
   position: relative;
   flex-shrink: 0;
 }
-.hs-top-avatar img,
-.hs-top-avatar .hs-av-ph {
-  width: 36px; height: 36px;
+.hs-hero-avatar,
+.hs-hero-av-ph {
+  width: 68px; height: 68px;
   border-radius: 50%;
-  border: 2px solid var(--g-bd);
+  border: 2px solid rgba(201,168,76,.4);
   object-fit: cover;
-  display: block;
-  background: var(--card2);
   display: flex; align-items: center; justify-content: center;
+  background: rgba(201,168,76,.08);
   color: var(--g);
-  font-size: .85rem;
+  font-size: 1.6rem;
+  flex-shrink: 0;
 }
-.hs-top-name {
-  font-size: .82rem;
-  font-weight: 700;
-  color: var(--tx);
-  white-space: nowrap;
-}
-.hs-top-role {
-  font-size: .68rem;
-  color: var(--g);
-  font-weight: 600;
-  letter-spacing: .04em;
-  display: block;
-}
+.hs-hero-avatar { display: block; }
 .hs-camera-label {
   position: absolute;
-  bottom: -2px; right: -2px;
-  width: 16px; height: 16px;
+  bottom: 1px; right: 1px;
+  width: 22px; height: 22px;
   background: var(--g);
   color: #060f1e;
   border-radius: 50%;
-  border: 1.5px solid var(--navy);
+  border: 2px solid #030812;
   display: flex; align-items: center; justify-content: center;
-  font-size: .42rem;
+  font-size: .5rem;
   cursor: pointer;
 }
 .hs-camera-label input[type="file"] {
@@ -211,11 +73,6 @@
   opacity: 0; cursor: pointer;
   width: 100%; height: 100%;
   border-radius: 50%;
-}
-
-@media (max-width: 768px) {
-  .hs-nav { display: none; }
-  .hs-top-name, .hs-top-role { display: none; }
 }
 
 /* ══════════════════
@@ -914,97 +771,9 @@
 .hs-toast.show { opacity: 1; pointer-events: auto; }
 .hs-toast i { color: var(--g); }
 
-/* ── Mobile nav sheet ───────────── */
-.hs-mobile-nav-btn {
-  display: none;
-  align-items: center;
-  gap: 6px;
-  background: var(--g-bg);
-  border: 1px solid var(--g-bd);
-  color: var(--g);
-  font-size: .78rem;
-  font-weight: 700;
-  padding: 7px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-@media (max-width: 768px) { .hs-mobile-nav-btn { display: flex; } }
 </style>
 
 <div class="hs-wrap">
-
-  <!-- ══════════════════════════════════════
-       TOP BAR
-       ══════════════════════════════════════ -->
-  <div class="hs-topbar">
-    <div class="hs-topbar-inner">
-
-      <!-- Brand -->
-      <a href="{% url 'home' %}" class="hs-brand">
-        <div class="hs-brand-mark"><i class="fas fa-globe"></i></div>
-        <div class="hs-brand-text">
-          <strong>T&TG</strong>
-          <span>Franchisee Hub</span>
-        </div>
-      </a>
-
-      <!-- Nav links -->
-      <nav class="hs-nav">
-        <a href="{% url 'franchisee_store' %}" class="hs-nav-link active">
-          <i class="fas fa-th-large"></i> Dashboard
-        </a>
-        <a href="{% url 'franchise_my_products' %}" class="hs-nav-link">
-          <i class="fas fa-box-open"></i> Products
-        </a>
-        <a href="{% url 'franchise_orders' %}" class="hs-nav-link">
-          <i class="fas fa-shopping-bag"></i> Orders
-        </a>
-        <a href="{% url 'franchise_sales_reports' %}" class="hs-nav-link">
-          <i class="fas fa-chart-bar"></i> Reports
-        </a>
-        <a href="{% url 'franchise_customers' %}" class="hs-nav-link">
-          <i class="fas fa-users"></i> Customers
-        </a>
-        <a href="{% url 'franchise_inventory' %}" class="hs-nav-link">
-          <i class="fas fa-truck"></i> Inventory
-        </a>
-        <a href="{% url 'join_program' %}" class="hs-nav-link">
-          <i class="fas fa-graduation-cap"></i> Training
-        </a>
-      </nav>
-
-      <!-- Mobile nav toggle -->
-      <button class="hs-mobile-nav-btn" onclick="document.querySelector('.hs-nav').style.display=document.querySelector('.hs-nav').style.display==='flex'?'none':'flex'">
-        <i class="fas fa-bars"></i> Menu
-      </button>
-
-      <!-- Right: profile -->
-      <div class="hs-topbar-right">
-        <div class="hs-notif">
-          <i class="fas fa-bell"></i>
-          <span class="hs-notif-dot"></span>
-        </div>
-        <div class="hs-top-avatar">
-          {% if user.safe_profile_photo_url %}
-            <img id="hs-av-img" src="{{ user.safe_profile_photo_url }}" alt="{{ user.get_full_name|default:user.username }}">
-          {% else %}
-            <div id="hs-av-ph" class="hs-av-ph"><i class="fas fa-user"></i></div>
-            <img id="hs-av-img" src="" alt="" style="display:none;width:36px;height:36px;border-radius:50%;border:2px solid var(--g-bd);object-fit:cover">
-          {% endif %}
-          <label class="hs-camera-label" title="Change photo">
-            <i class="fas fa-camera"></i>
-            <input type="file" accept="image/*" id="hs-photo-input">
-          </label>
-        </div>
-        <div>
-          <div class="hs-top-name">{{ user.get_full_name|default:user.username }}</div>
-          <span class="hs-top-role">Franchisee</span>
-        </div>
-      </div>
-
-    </div>
-  </div>
 
   <!-- photo upload toast -->
   <div id="hs-toast" class="hs-toast">
@@ -1022,10 +791,28 @@
         <div class="hs-hero-eyebrow">
           <i class="fas fa-store"></i> Franchisee Dashboard
         </div>
-        <h1 class="hs-hero-h1">
-          Welcome back,<br>
-          <em>{{ user.get_full_name|default:user.username }}</em>
-        </h1>
+
+        <!-- Avatar + greeting row -->
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px">
+          <div class="hs-hero-avatar-wrap">
+            {% if user.safe_profile_photo_url %}
+              <img id="hs-av-img" class="hs-hero-avatar" src="{{ user.safe_profile_photo_url }}" alt="{{ user.get_full_name|default:user.username }}">
+            {% else %}
+              <div id="hs-av-ph" class="hs-hero-av-ph"><i class="fas fa-user"></i></div>
+              <img id="hs-av-img" class="hs-hero-avatar" src="" alt="" style="display:none">
+            {% endif %}
+            <label class="hs-camera-label" title="Change profile photo">
+              <i class="fas fa-camera"></i>
+              <input type="file" accept="image/*" id="hs-photo-input">
+            </label>
+          </div>
+          <div>
+            <h1 class="hs-hero-h1" style="margin:0 0 4px">
+              Welcome back,<br><em>{{ user.get_full_name|default:user.username }}</em>
+            </h1>
+          </div>
+        </div>
+
         <p class="hs-hero-sub">
           Manage your franchise, track performance, and access everything you need to grow your T&TG business from one place.
         </p>
