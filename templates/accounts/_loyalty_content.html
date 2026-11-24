@@ -278,7 +278,7 @@
  </div>
  {% else %}
  <div class="ld-card p-4 text-center">
- <p class="ld-muted mb-0">No referral earnings yet. Share your ID <strong class="ld-gold">{{ user.unique_id }}</strong> to start earning {{ settings.referral_rate|floatformat:1 }}%.</p>
+ <p class="ld-muted mb-0">No B2B partner referral earnings yet. B2B Authorized Partners earn {{ settings.referral_rate|floatformat:1 }}% on orders placed through their referral link. <a href="{% url 'b2b_landing' %}" style="color:var(--gold)">Learn about the B2B Program</a>.</p>
  </div>
  {% endif %}
  {% endwith %}

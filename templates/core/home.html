@@ -329,7 +329,7 @@
  </div>
  <div class="tg-card-body">
  <h5 class="tg-card-title">T&TG Loyalty Platform</h5>
- <p class="tg-card-text">Earn 0.5% on every purchase. Refer friends and earn 1%. Withdraw your funds on Day 45. Points · Promotions · Referral · Reward.</p>
+ <p class="tg-card-text">Consumers earn 0.5% on every purchase. B2B Partners earn 1% via referral link. Withdraw on Day 45. Points · Promotions · B2B Referral · Reward.</p>
  <a href="{% url 'loyalty_info' %}" class="tg-card-btn">
  Learn More <i class="fas fa-arrow-right"></i>
  </a>
@@ -733,18 +733,18 @@
  <div class="section-label">T&TG Trade Loyalty Platform</div>
  <h2 class="text-white">Earn Points. <span class="text-gold">Refer. Withdraw.</span></h2>
  <div class="divider-gold"></div>
- <p class="text-muted">Every purchase earns you T&TG Loyalty Points automatically. Refer friends and earn even more. Withdraw your funds on Day 45.</p>
+ <p class="text-muted">Consumers earn 0.5% on every purchase. B2B Authorized Partners earn 1% on orders through their referral link. Withdraw your funds on Day 45.</p>
  <div class="row g-3 mt-3">
  <div class="col-6">
  <div class="glass-card p-3 text-center">
- <div class="text-gold fw-900" style="font-size:1.8rem">1%</div>
+ <div class="text-gold fw-900" style="font-size:1.8rem">0.5%</div>
  <div class="text-muted small">Consumer Earn Rate</div>
  </div>
  </div>
  <div class="col-6">
  <div class="glass-card p-3 text-center">
  <div class="text-gold fw-900" style="font-size:1.8rem">1%</div>
- <div class="text-muted small">Referral Earn Rate</div>
+ <div class="text-muted small">B2B Partner Earn Rate</div>
  </div>
  </div>
  <div class="col-6">
@@ -764,6 +764,12 @@
  <a href="{% url 'loyalty_dashboard' %}" class="btn btn-gold mt-4">
  <i class="fas fa-coins me-2"></i>Manage My Loyalty Points
  </a>
+ {% with b2b=user.b2b_profile %}{% if b2b.status == 'active' %}
+ <a href="{% url 'b2b_portal' %}" class="btn mt-3 d-block"
+    style="background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);color:var(--gold);font-weight:700;border-radius:10px">
+   <i class="fas fa-handshake me-2"></i>Open B2B Referral &amp; Resale Portal
+ </a>
+ {% endif %}{% endwith %}
  {% else %}
  <a href="{% url 'register' %}" class="btn btn-gold mt-4">
  <i class="fas fa-user-plus me-2"></i>Join & Start Earning
@@ -778,12 +784,12 @@
  <span class="text-white fw-600">$200 USD</span>
  </div>
  <div class="d-flex justify-content-between py-2 border-bottom border-secondary">
- <span class="text-muted">Your Points (1% consumer)</span>
- <span class="text-gold fw-700">$2.00</span>
+ <span class="text-muted">Your Points (0.5% consumer)</span>
+ <span class="text-gold fw-700">$1.00</span>
  </div>
  <div class="d-flex justify-content-between py-2 border-bottom border-secondary">
- <span class="text-muted">Referrer Earns (1%)</span>
- <span class="text-gold fw-700">$5.00</span>
+ <span class="text-muted">B2B Partner Earns (1%)</span>
+ <span class="text-gold fw-700">$2.00</span>
  </div>
  <div class="d-flex justify-content-between py-2">
  <span class="text-muted">Payment Processed</span>
