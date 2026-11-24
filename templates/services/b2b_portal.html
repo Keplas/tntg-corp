@@ -1,0 +1,449 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}B2B Reseller Portal — T&TG Trade Corp{% endblock %}
+
+{% block content %}
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800;900&display=swap');
+
+:root {
+  --gold:   #c9a84c;
+  --gold-lt:#e8c96a;
+  --gold-dk:#a8841e;
+  --navy:   #060f1e;
+  --card:   #0d1a26;
+  --border: rgba(201,168,76,.18);
+  --muted:  #7a8fa8;
+  --text:   #c8d8e8;
+}
+
+/* ═══ HEADER ═══ */
+.rp-header {
+  background: linear-gradient(180deg, #04090f 0%, var(--navy) 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 48px 0 36px;
+}
+.rp-header-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.rp-title-block {}
+.rp-eyebrow {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(201,168,76,.07); border: 1px solid rgba(201,168,76,.22);
+  color: var(--gold); padding: 5px 14px; border-radius: 99px;
+  font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.rp-header h1 {
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(1.4rem, 3.5vw, 2rem); font-weight: 900;
+  color: #fff; margin: 0 0 4px; letter-spacing: -.02em;
+}
+.rp-header p { color: var(--muted); font-size: .88rem; margin: 0; }
+.rp-status-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 8px 18px; border-radius: 99px; font-size: .78rem; font-weight: 700;
+}
+.rp-status-badge.active {
+  background: rgba(76,175,80,.12); border: 1px solid rgba(76,175,80,.3); color: #81c784;
+}
+.rp-status-badge.suspended {
+  background: rgba(255,152,0,.1); border: 1px solid rgba(255,152,0,.3); color: #ffb74d;
+}
+
+/* ═══ BODY ═══ */
+.rp-body { background: #040c16; padding: 40px 0 80px; }
+
+/* ═══ STAT TILES ═══ */
+.rp-stats {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+  margin-bottom: 36px;
+}
+@media (max-width: 700px) { .rp-stats { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 420px) { .rp-stats { grid-template-columns: 1fr; } }
+.rp-stat {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px; padding: 22px 20px;
+  position: relative; overflow: hidden;
+}
+.rp-stat::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(201,168,76,.4), transparent);
+}
+.rp-stat-ico {
+  width: 36px; height: 36px;
+  background: rgba(201,168,76,.08); border: 1px solid rgba(201,168,76,.18);
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .88rem; color: var(--gold); margin-bottom: 14px;
+}
+.rp-stat-num {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.75rem; font-weight: 900; color: var(--gold-lt);
+  line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums;
+}
+.rp-stat-label { color: var(--muted); font-size: .72rem; font-weight: 600; margin-top: 5px; letter-spacing: .04em; text-transform: uppercase; }
+
+/* ═══ MAIN GRID ═══ */
+.rp-grid {
+  display: grid; grid-template-columns: 1fr 320px; gap: 24px;
+  align-items: start;
+}
+@media (max-width: 860px) { .rp-grid { grid-template-columns: 1fr; } }
+
+/* ═══ CARDS ═══ */
+.rp-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px; overflow: hidden; margin-bottom: 24px;
+}
+.rp-card:last-child { margin-bottom: 0; }
+.rp-card-head {
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+.rp-card-title {
+  font-family: 'Manrope', sans-serif;
+  font-size: .78rem; font-weight: 800;
+  letter-spacing: .09em; text-transform: uppercase;
+  color: var(--gold);
+  display: flex; align-items: center; gap: 9px;
+}
+.rp-card-title i {
+  width: 26px; height: 26px;
+  background: rgba(201,168,76,.1); border: 1px solid rgba(201,168,76,.18);
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .75rem;
+}
+.rp-card-body { padding: 24px; }
+
+/* ═══ REFERRAL LINK BLOCK ═══ */
+.rp-ref-url-wrap {
+  background: rgba(201,168,76,.05);
+  border: 1px solid rgba(201,168,76,.22);
+  border-radius: 12px; padding: 16px 20px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.rp-ref-url {
+  flex: 1; min-width: 0;
+  font-family: 'Courier New', monospace;
+  font-size: .78rem; color: var(--gold-lt);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.rp-copy-btn {
+  background: rgba(201,168,76,.1); border: 1px solid rgba(201,168,76,.3);
+  color: var(--gold); font-size: .78rem; font-weight: 700;
+  padding: 8px 16px; border-radius: 8px; cursor: pointer; white-space: nowrap;
+  display: flex; align-items: center; gap: 7px; transition: background .2s;
+  font-family: inherit;
+}
+.rp-copy-btn:hover { background: rgba(201,168,76,.18); }
+.rp-ref-note { color: var(--muted); font-size: .78rem; margin-top: 12px; line-height: 1.6; }
+.rp-ref-note i { color: var(--gold); margin-right: 5px; }
+
+/* ═══ REFERRAL TABLE ═══ */
+.rp-table-wrap { overflow-x: auto; }
+.rp-table {
+  width: 100%; border-collapse: collapse; min-width: 580px;
+}
+.rp-table th {
+  font-size: .68rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--muted); padding: 10px 14px; text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.rp-table td {
+  padding: 13px 14px; font-size: .82rem; color: #94a8bc;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  font-variant-numeric: tabular-nums;
+}
+.rp-table tr:last-child td { border-bottom: none; }
+.rp-table td.strong { color: #c8d8e8; font-weight: 600; }
+.rp-badge {
+  display: inline-block; padding: 3px 10px; border-radius: 99px;
+  font-size: .68rem; font-weight: 700; letter-spacing: .04em;
+}
+.rp-badge.pending  { background: rgba(255,152,0,.1); border: 1px solid rgba(255,152,0,.25); color: #ffb74d; }
+.rp-badge.confirmed{ background: rgba(76,175,80,.1);  border: 1px solid rgba(76,175,80,.25); color: #81c784; }
+.rp-badge.paid     { background: rgba(201,168,76,.1); border: 1px solid rgba(201,168,76,.3); color: var(--gold-lt); }
+.rp-badge.cancelled{ background: rgba(239,83,80,.08); border: 1px solid rgba(239,83,80,.2);  color: #ef9a9a; }
+
+.rp-empty {
+  padding: 42px 24px; text-align: center;
+}
+.rp-empty-ico {
+  width: 56px; height: 56px;
+  background: rgba(201,168,76,.06); border: 1px solid rgba(201,168,76,.14);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; color: rgba(201,168,76,.5); margin: 0 auto 16px;
+}
+.rp-empty p { color: var(--muted); font-size: .86rem; margin: 0 0 18px; line-height: 1.6; }
+.rp-empty a {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(201,168,76,.08); border: 1px solid rgba(201,168,76,.22);
+  color: var(--gold); font-size: .8rem; font-weight: 700;
+  padding: 9px 18px; border-radius: 8px; text-decoration: none;
+  transition: background .2s;
+}
+.rp-empty a:hover { background: rgba(201,168,76,.14); text-decoration: none; color: var(--gold); }
+
+/* ═══ SIDEBAR ═══ */
+.rp-sidebar {}
+.rp-profile-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px; padding: 24px;
+  margin-bottom: 20px; text-align: center;
+}
+.rp-profile-avatar {
+  width: 60px; height: 60px;
+  background: rgba(201,168,76,.1); border: 1px solid rgba(201,168,76,.22);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; color: var(--gold); margin: 0 auto 14px;
+}
+.rp-profile-name { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 1.05rem; color: #fff; margin-bottom: 2px; }
+.rp-profile-store { color: var(--muted); font-size: .82rem; margin-bottom: 14px; }
+.rp-profile-code {
+  background: rgba(201,168,76,.06);
+  border: 1px solid rgba(201,168,76,.18);
+  border-radius: 8px; padding: 8px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px;
+}
+.rp-profile-code-label { font-size: .68rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); }
+.rp-profile-code-val { font-family: 'Courier New', monospace; font-size: .84rem; color: var(--gold-lt); font-weight: 700; }
+.rp-commission-rate {
+  background: rgba(76,175,80,.08); border: 1px solid rgba(76,175,80,.2);
+  border-radius: 8px; padding: 8px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.rp-commission-rate-label { font-size: .72rem; color: #81c784; font-weight: 600; }
+.rp-commission-rate-val { font-size: .9rem; font-weight: 800; color: #81c784; }
+
+.rp-quick-links {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px; overflow: hidden;
+}
+.rp-quick-link {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  text-decoration: none; color: #94a8bc; font-size: .84rem; font-weight: 600;
+  transition: background .15s, color .15s;
+}
+.rp-quick-link:last-child { border-bottom: none; }
+.rp-quick-link:hover { background: rgba(201,168,76,.05); color: #c8d8e8; text-decoration: none; }
+.rp-quick-link i { width: 32px; color: var(--gold); font-size: .9rem; text-align: center; }
+.rp-quick-link-arrow { margin-left: auto; color: rgba(122,143,168,.4); font-size: .72rem; }
+</style>
+
+<!-- HEADER -->
+<div class="rp-header">
+  <div class="container">
+    <div class="rp-header-inner">
+      <div class="rp-title-block">
+        <div class="rp-eyebrow"><i class="fas fa-handshake"></i> B2B Wholesale &amp; Referral Portal</div>
+        <h1>Authorized Reseller Dashboard</h1>
+        <p>Welcome, {{ profile.user.get_full_name|default:profile.user.username }}</p>
+      </div>
+      <div>
+        <span class="rp-status-badge {% if profile.status == 'active' %}active{% else %}suspended{% endif %}">
+          {% if profile.status == 'active' %}
+            <i class="fas fa-circle" style="font-size:.5rem"></i> Active Reseller
+          {% elif profile.status == 'suspended' %}
+            <i class="fas fa-pause-circle"></i> Suspended
+          {% else %}
+            <i class="fas fa-times-circle"></i> Terminated
+          {% endif %}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="rp-body">
+  <div class="container">
+
+    <!-- STATS -->
+    <div class="rp-stats">
+      <div class="rp-stat">
+        <div class="rp-stat-ico"><i class="fas fa-coins"></i></div>
+        <div class="rp-stat-num">${{ total_commission|floatformat:2 }}</div>
+        <div class="rp-stat-label">Commission Earned</div>
+      </div>
+      <div class="rp-stat">
+        <div class="rp-stat-ico"><i class="fas fa-clock"></i></div>
+        <div class="rp-stat-num">${{ pending_commission|floatformat:2 }}</div>
+        <div class="rp-stat-label">Pending Commission</div>
+      </div>
+      <div class="rp-stat">
+        <div class="rp-stat-ico"><i class="fas fa-link"></i></div>
+        <div class="rp-stat-num">{{ referral_count }}</div>
+        <div class="rp-stat-label">Total Referrals</div>
+      </div>
+      <div class="rp-stat">
+        <div class="rp-stat-ico"><i class="fas fa-check-circle"></i></div>
+        <div class="rp-stat-num">{{ confirmed_count }}</div>
+        <div class="rp-stat-label">Confirmed Orders</div>
+      </div>
+    </div>
+
+    <!-- MAIN GRID -->
+    <div class="rp-grid">
+      <div>
+
+        <!-- REFERRAL LINK CARD -->
+        <div class="rp-card">
+          <div class="rp-card-head">
+            <div class="rp-card-title"><i class="fas fa-link"></i> Your Referral Link</div>
+          </div>
+          <div class="rp-card-body">
+            <div class="rp-ref-url-wrap">
+              <div class="rp-ref-url" id="ref-url-text">{{ referral_url }}</div>
+              <button class="rp-copy-btn" onclick="copyRef()">
+                <i class="fas fa-copy"></i> Copy Link
+              </button>
+            </div>
+            <div class="rp-ref-note">
+              <i class="fas fa-info-circle"></i>
+              Share this link with customers. When they click it and place an order on the T&TG marketplace, the sale is credited to your account and commission is calculated automatically.
+            </div>
+          </div>
+        </div>
+
+        <!-- REFERRALS TABLE -->
+        <div class="rp-card">
+          <div class="rp-card-head">
+            <div class="rp-card-title"><i class="fas fa-history"></i> Referral Activity</div>
+            <span style="color:var(--muted);font-size:.78rem">Last 30 entries</span>
+          </div>
+          {% if referrals %}
+          <div class="rp-table-wrap">
+            <table class="rp-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Date</th>
+                  <th>Order</th>
+                  <th>Commission</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for r in referrals %}
+                <tr>
+                  <td class="strong">{{ r.pk }}</td>
+                  <td>{{ r.created_at|date:"M j, Y" }}</td>
+                  <td>{% if r.order %}#{{ r.order.pk }}{% else %}<span style="color:rgba(122,143,168,.4)">—</span>{% endif %}</td>
+                  <td class="strong">${{ r.commission|floatformat:2 }}</td>
+                  <td><span class="rp-badge {{ r.status }}">{{ r.get_status_display }}</span></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="rp-empty">
+            <div class="rp-empty-ico"><i class="fas fa-link"></i></div>
+            <p>No referrals yet. Share your referral link to start earning commission when customers shop at T&TG.</p>
+            <a href="{% url 'marketplace' %}">
+              <i class="fas fa-external-link-alt"></i> Visit the Marketplace
+            </a>
+          </div>
+          {% endif %}
+        </div>
+
+      </div><!-- /main col -->
+
+      <!-- SIDEBAR -->
+      <aside class="rp-sidebar">
+
+        <!-- Profile card -->
+        <div class="rp-profile-card">
+          <div class="rp-profile-avatar"><i class="fas fa-store"></i></div>
+          <div class="rp-profile-name">
+            {{ profile.store_name|default:profile.user.get_full_name|default:profile.user.username }}
+          </div>
+          <div class="rp-profile-store">
+            {{ profile.city|default:"" }}{% if profile.city and profile.country %}, {% endif %}{{ profile.country|default:"" }}
+          </div>
+          <div class="rp-profile-code">
+            <span class="rp-profile-code-label">Referral Code</span>
+            <span class="rp-profile-code-val">{{ profile.referral_code }}</span>
+          </div>
+          <div class="rp-commission-rate">
+            <span class="rp-commission-rate-label"><i class="fas fa-percent" style="margin-right:5px"></i>Commission Rate</span>
+            <span class="rp-commission-rate-val">{{ profile.commission_rate }}%</span>
+          </div>
+        </div>
+
+        <!-- Quick links -->
+        <div class="rp-quick-links">
+          <a href="{% url 'marketplace' %}" class="rp-quick-link">
+            <i class="fas fa-store"></i> Browse Marketplace
+            <i class="fas fa-chevron-right rp-quick-link-arrow"></i>
+          </a>
+          <a href="{% url 'b2b_my_applications' %}" class="rp-quick-link">
+            <i class="fas fa-folder-open"></i> My Applications
+            <i class="fas fa-chevron-right rp-quick-link-arrow"></i>
+          </a>
+          <a href="{% url 'b2b_landing' %}" class="rp-quick-link">
+            <i class="fas fa-info-circle"></i> Program Info
+            <i class="fas fa-chevron-right rp-quick-link-arrow"></i>
+          </a>
+          <a href="{% url 'profile' %}" class="rp-quick-link">
+            <i class="fas fa-user-cog"></i> Account Settings
+            <i class="fas fa-chevron-right rp-quick-link-arrow"></i>
+          </a>
+          <a href="mailto:tom.grouptrade@gmail.com" class="rp-quick-link">
+            <i class="fas fa-headset"></i> Contact Support
+            <i class="fas fa-chevron-right rp-quick-link-arrow"></i>
+          </a>
+        </div>
+
+        {% if profile.approved_at %}
+        <div style="margin-top:16px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;">
+          <div style="font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:12px"><i class="fas fa-id-card" style="margin-right:7px"></i>Partner Since</div>
+          <div style="color:#c8d8e8;font-size:.88rem;font-weight:600">{{ profile.approved_at|date:"F j, Y" }}</div>
+        </div>
+        {% endif %}
+
+      </aside>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function copyRef() {
+  const url = document.getElementById('ref-url-text').textContent.trim();
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.querySelector('.rp-copy-btn');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+    btn.style.background = 'rgba(76,175,80,.15)';
+    btn.style.borderColor = 'rgba(76,175,80,.4)';
+    btn.style.color = '#81c784';
+    setTimeout(() => {
+      btn.innerHTML = orig;
+      btn.style.background = '';
+      btn.style.borderColor = '';
+      btn.style.color = '';
+    }, 2000);
+  }).catch(() => {
+    const el = document.createElement('textarea');
+    el.value = url;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+  });
+}
+</script>
+
+{% endblock %}

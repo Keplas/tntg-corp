@@ -533,3 +533,176 @@ class PartnershipApplication(models.Model):
 
     def ref(self):
         return f'PA-{self.pk:04d}'
+
+
+# ════════════════════════════════════════════════════════════════════════
+# B2B REFERRAL PLATFORM  — Authorized Resellers
+# ════════════════════════════════════════════════════════════════════════
+
+class B2BApplication(models.Model):
+
+    BUSINESS_TYPE_CHOICES = [
+        ('registered_company', 'Registered Company'),
+        ('small_business',     'Small Business / Shop'),
+        ('online_store',       'Online Store'),
+        ('individual',         'Individual Reseller'),
+    ]
+    STORE_TYPE_CHOICES = [
+        ('physical', 'Physical Shop / Store'),
+        ('online',   'Online Store'),
+        ('both',     'Physical + Online'),
+    ]
+    MONTHLY_ORDER_CHOICES = [
+        ('under_500',    'Under $500'),
+        ('500_2000',     '$500 – $2,000'),
+        ('2000_5000',    '$2,000 – $5,000'),
+        ('5000_10000',   '$5,000 – $10,000'),
+        ('over_10000',   'Over $10,000'),
+    ]
+    EXPERIENCE_CHOICES = [
+        ('none',       'No prior reselling experience'),
+        ('1_2_years',  '1–2 years'),
+        ('3_5_years',  '3–5 years'),
+        ('over_5',     '5+ years'),
+    ]
+    STATUS_CHOICES = [
+        ('pending',   'Pending Review'),
+        ('reviewing', 'Under Review'),
+        ('approved',  'Approved'),
+        ('rejected',  'Rejected'),
+        ('on_hold',   'On Hold'),
+    ]
+
+    # Applicant info
+    full_name     = models.CharField(max_length=200)
+    email         = models.EmailField()
+    phone         = models.CharField(max_length=30, blank=True)
+    country       = models.CharField(max_length=100)
+    city          = models.CharField(max_length=100, blank=True)
+    company_name  = models.CharField(max_length=200, blank=True)
+    business_type = models.CharField(max_length=30, choices=BUSINESS_TYPE_CHOICES)
+
+    # Store details
+    store_type    = models.CharField(max_length=20, choices=STORE_TYPE_CHOICES)
+    store_address = models.TextField(blank=True, help_text='Physical address of store/office')
+    website       = models.URLField(blank=True)
+
+    # Business details
+    monthly_order_estimate = models.CharField(max_length=20, choices=MONTHLY_ORDER_CHOICES,
+                                 help_text='Estimated monthly wholesale order value')
+    years_in_business      = models.CharField(max_length=20, choices=EXPERIENCE_CHOICES)
+    products_interest      = models.TextField(help_text='Which T&TG products do you plan to resell?')
+    why_partner            = models.TextField(help_text='Why do you want to become a T&TG Authorized Reseller?')
+    additional_notes       = models.TextField(blank=True)
+    casl_consent           = models.BooleanField(default=False)
+
+    # Admin
+    status      = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    admin_notes = models.TextField(blank=True)
+    created_at  = models.DateTimeField(auto_now_add=True)
+    updated_at  = models.DateTimeField(auto_now=True)
+    user        = models.ForeignKey(
+        'accounts.CustomUser', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='b2b_applications'
+    )
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name        = 'B2B Application'
+        verbose_name_plural = 'B2B Applications'
+
+    def __str__(self):
+        return f"{self.full_name} — {self.company_name or self.city} — {self.status}"
+
+    def ref(self):
+        return f'B2B-{self.pk:04d}'
+
+
+class B2BProfile(models.Model):
+
+    STATUS_CHOICES = [
+        ('active',      'Active'),
+        ('suspended',   'Suspended'),
+        ('terminated',  'Terminated'),
+    ]
+
+    user        = models.OneToOneField(
+        'accounts.CustomUser', on_delete=models.CASCADE,
+        related_name='b2b_profile'
+    )
+    application = models.OneToOneField(
+        B2BApplication, on_delete=models.PROTECT,
+        related_name='b2b_profile'
+    )
+
+    # Store identity
+    store_name    = models.CharField(max_length=200)
+    store_address = models.TextField(blank=True)
+    website       = models.URLField(blank=True)
+    country       = models.CharField(max_length=100)
+    city          = models.CharField(max_length=100, blank=True)
+
+    # Referral / commission
+    referral_code    = models.CharField(max_length=12, unique=True,
+                           help_text='Unique code for referral links')
+    commission_rate  = models.DecimalField(max_digits=5, decimal_places=2, default=5.00,
+                           help_text='Commission % on referred online orders')
+
+    # Status
+    status     = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
+    hq_notes   = models.TextField(blank=True)
+    approved_at = models.DateTimeField(auto_now_add=True)
+    updated_at  = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-approved_at']
+        verbose_name        = 'B2B Reseller Profile'
+        verbose_name_plural = 'B2B Reseller Profiles'
+
+    def __str__(self):
+        return f"{self.store_name} ({self.referral_code}) [{self.status}]"
+
+    def ref(self):
+        return f'B2BP-{self.pk:04d}'
+
+    def referral_url(self, request=None):
+        from django.urls import reverse
+        path = reverse('b2b_referral_track', args=[self.referral_code])
+        if request:
+            return request.build_absolute_uri(path)
+        return path
+
+    @staticmethod
+    def generate_code():
+        import uuid
+        return uuid.uuid4().hex[:8].upper()
+
+
+class B2BReferral(models.Model):
+    """Tracks clicks and order conversions from a reseller's referral link."""
+
+    STATUS_CHOICES = [
+        ('pending',   'Pending'),
+        ('confirmed', 'Confirmed'),
+        ('paid',      'Commission Paid'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    reseller  = models.ForeignKey(B2BProfile, on_delete=models.CASCADE, related_name='referrals')
+    order     = models.ForeignKey(
+        'marketplace.Order', on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='b2b_referral'
+    )
+    referral_code = models.CharField(max_length=12)
+    commission    = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    status        = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    created_at    = models.DateTimeField(auto_now_add=True)
+    updated_at    = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name        = 'B2B Referral'
+        verbose_name_plural = 'B2B Referrals'
+
+    def __str__(self):
+        return f"{self.reseller.store_name} — {self.referral_code} — {self.status}"

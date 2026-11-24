@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My B2B Applications — T&TG Trade Corp{% endblock %}
+
+{% block content %}
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800;900&display=swap');
+
+:root {
+  --gold:   #c9a84c;
+  --gold-lt:#e8c96a;
+  --navy:   #060f1e;
+  --card:   #0d1a26;
+  --border: rgba(201,168,76,.18);
+  --muted:  #7a8fa8;
+  --text:   #c8d8e8;
+}
+
+.ma-header {
+  background: linear-gradient(180deg, #04090f 0%, var(--navy) 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 52px 0 36px;
+}
+.ma-eyebrow {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(201,168,76,.07); border: 1px solid rgba(201,168,76,.22);
+  color: var(--gold); padding: 5px 14px; border-radius: 99px;
+  font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.ma-header h1 {
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(1.5rem, 3.5vw, 2rem); font-weight: 900;
+  color: #fff; margin: 0 0 6px; letter-spacing: -.02em;
+}
+.ma-header p { color: var(--muted); font-size: .88rem; margin: 0; }
+
+.ma-body { background: #040c16; padding: 42px 0 80px; }
+
+/* app card */
+.ma-app-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px; overflow: hidden;
+  margin-bottom: 20px; transition: border-color .2s;
+}
+.ma-app-card:hover { border-color: rgba(201,168,76,.35); }
+.ma-app-card:last-child { margin-bottom: 0; }
+
+.ma-app-head {
+  padding: 20px 24px;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+}
+.ma-app-ref {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800; font-size: .84rem;
+  color: var(--gold); letter-spacing: .05em;
+  margin-bottom: 3px;
+}
+.ma-app-name { color: #fff; font-size: .95rem; font-weight: 700; }
+.ma-app-date { color: var(--muted); font-size: .78rem; margin-top: 2px; }
+
+.ma-status-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 99px; font-size: .74rem; font-weight: 700;
+  white-space: nowrap;
+}
+.ma-status-badge.pending   { background: rgba(255,152,0,.1);  border: 1px solid rgba(255,152,0,.3);  color: #ffb74d; }
+.ma-status-badge.reviewing { background: rgba(33,150,243,.1); border: 1px solid rgba(33,150,243,.3); color: #64b5f6; }
+.ma-status-badge.approved  { background: rgba(76,175,80,.1);  border: 1px solid rgba(76,175,80,.3);  color: #81c784; }
+.ma-status-badge.rejected  { background: rgba(239,83,80,.08); border: 1px solid rgba(239,83,80,.2);  color: #ef9a9a; }
+.ma-status-badge.on_hold   { background: rgba(255,152,0,.08); border: 1px solid rgba(255,152,0,.2);  color: #ffb74d; }
+
+.ma-app-body {
+  padding: 20px 24px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+@media (max-width: 600px) { .ma-app-body { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 420px) { .ma-app-body { grid-template-columns: 1fr; } }
+.ma-app-field-label {
+  font-size: .68rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 4px;
+}
+.ma-app-field-val { font-size: .84rem; color: #c8d8e8; font-weight: 600; }
+
+.ma-app-foot {
+  padding: 14px 24px;
+  border-top: 1px solid rgba(255,255,255,.05);
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  flex-wrap: wrap;
+}
+.ma-app-approved-cta {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(201,168,76,.1); border: 1px solid rgba(201,168,76,.22);
+  color: var(--gold); font-size: .78rem; font-weight: 700;
+  padding: 7px 14px; border-radius: 8px; text-decoration: none;
+  transition: background .2s;
+}
+.ma-app-approved-cta:hover { background: rgba(201,168,76,.18); text-decoration: none; color: var(--gold); }
+.ma-app-note { color: var(--muted); font-size: .78rem; }
+
+/* empty state */
+.ma-empty {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px; padding: 70px 24px; text-align: center;
+}
+.ma-empty-ico {
+  width: 70px; height: 70px;
+  background: rgba(201,168,76,.06); border: 1px solid rgba(201,168,76,.14);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; color: rgba(201,168,76,.5); margin: 0 auto 20px;
+}
+.ma-empty h3 {
+  font-family: 'Manrope', sans-serif; font-weight: 800; color: #fff;
+  font-size: 1.1rem; margin: 0 0 8px;
+}
+.ma-empty p { color: var(--muted); font-size: .88rem; max-width: 360px; margin: 0 auto 24px; line-height: 1.65; }
+.btn-gold {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-lt) 100%);
+  color: #060c14; font-weight: 800; font-size: .92rem;
+  padding: 12px 28px; border-radius: 10px; text-decoration: none;
+  transition: transform .15s, box-shadow .2s;
+}
+.btn-gold:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(201,168,76,.35); color: #060c14; text-decoration: none; }
+
+.ma-top-bar {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  margin-bottom: 24px; flex-wrap: wrap;
+}
+.ma-top-bar h2 {
+  font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 1rem;
+  color: #c8d8e8; margin: 0;
+}
+</style>
+
+<div class="ma-header">
+  <div class="container">
+    <div class="ma-eyebrow"><i class="fas fa-folder-open"></i> B2B Applications</div>
+    <h1>My B2B Applications</h1>
+    <p>Track the status of your Authorized Reseller applications.</p>
+  </div>
+</div>
+
+<div class="ma-body">
+  <div class="container">
+
+    <div class="ma-top-bar">
+      <h2>{{ applications|length }} Application{{ applications|length|pluralize }}</h2>
+      <a href="{% url 'b2b_apply' %}" class="btn-gold" style="font-size:.82rem;padding:9px 20px">
+        <i class="fas fa-plus"></i> New Application
+      </a>
+    </div>
+
+    {% if applications %}
+      {% for app in applications %}
+      <div class="ma-app-card">
+        <div class="ma-app-head">
+          <div>
+            <div class="ma-app-ref">{{ app.ref }}</div>
+            <div class="ma-app-name">{{ app.full_name }}{% if app.company_name %} &mdash; {{ app.company_name }}{% endif %}</div>
+            <div class="ma-app-date"><i class="fas fa-calendar-alt" style="margin-right:5px;color:var(--gold)"></i>Submitted {{ app.created_at|date:"M j, Y" }}</div>
+          </div>
+          <span class="ma-status-badge {{ app.status }}">
+            {% if app.status == 'pending' %}<i class="fas fa-clock"></i> Pending Review
+            {% elif app.status == 'reviewing' %}<i class="fas fa-search"></i> Under Review
+            {% elif app.status == 'approved' %}<i class="fas fa-check-circle"></i> Approved
+            {% elif app.status == 'rejected' %}<i class="fas fa-times-circle"></i> Declined
+            {% elif app.status == 'on_hold' %}<i class="fas fa-pause-circle"></i> On Hold
+            {% endif %}
+          </span>
+        </div>
+        <div class="ma-app-body">
+          <div>
+            <div class="ma-app-field-label">Country</div>
+            <div class="ma-app-field-val">{{ app.country }}{% if app.city %}, {{ app.city }}{% endif %}</div>
+          </div>
+          <div>
+            <div class="ma-app-field-label">Business Type</div>
+            <div class="ma-app-field-val">{{ app.get_business_type_display }}</div>
+          </div>
+          <div>
+            <div class="ma-app-field-label">Store Type</div>
+            <div class="ma-app-field-val">{{ app.get_store_type_display }}</div>
+          </div>
+          <div>
+            <div class="ma-app-field-label">Est. Monthly Order</div>
+            <div class="ma-app-field-val">{{ app.get_monthly_order_estimate_display }}</div>
+          </div>
+          <div>
+            <div class="ma-app-field-label">Years in Business</div>
+            <div class="ma-app-field-val">{{ app.get_years_in_business_display }}</div>
+          </div>
+          {% if app.website %}
+          <div>
+            <div class="ma-app-field-label">Website</div>
+            <div class="ma-app-field-val" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ app.website }}</div>
+          </div>
+          {% endif %}
+        </div>
+        <div class="ma-app-foot">
+          <div class="ma-app-note">
+            {% if app.status == 'pending' %}
+              <i class="fas fa-clock" style="color:rgba(255,152,0,.7);margin-right:5px"></i>
+              Your application is in the queue — expect a response within 3 business days.
+            {% elif app.status == 'reviewing' %}
+              <i class="fas fa-search" style="color:rgba(33,150,243,.7);margin-right:5px"></i>
+              Our team is reviewing your application. We may reach out shortly.
+            {% elif app.status == 'approved' %}
+              <i class="fas fa-check-circle" style="color:rgba(76,175,80,.8);margin-right:5px"></i>
+              Congratulations! Your application was approved.
+            {% elif app.status == 'rejected' %}
+              <i class="fas fa-info-circle" style="color:rgba(239,83,80,.7);margin-right:5px"></i>
+              This application was declined. Contact us for more details.
+            {% elif app.status == 'on_hold' %}
+              <i class="fas fa-pause-circle" style="color:rgba(255,152,0,.7);margin-right:5px"></i>
+              Your application is on hold. We'll be in touch soon.
+            {% endif %}
+          </div>
+          {% if app.status == 'approved' %}
+          <a href="{% url 'b2b_portal' %}" class="ma-app-approved-cta">
+            <i class="fas fa-tachometer-alt"></i> Open Reseller Portal
+          </a>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+
+    {% else %}
+    <div class="ma-empty">
+      <div class="ma-empty-ico"><i class="fas fa-folder-open"></i></div>
+      <h3>No Applications Yet</h3>
+      <p>You haven't submitted a B2B Authorized Reseller application yet. Apply today — it's free and takes about 5 minutes.</p>
+      <a href="{% url 'b2b_apply' %}" class="btn-gold">
+        <i class="fas fa-paper-plane"></i> Apply to Become a Reseller
+      </a>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+{% endblock %}

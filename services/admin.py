@@ -111,3 +111,34 @@ class PartnershipApplicationAdmin(admin.ModelAdmin):
         ('Partnership Details', {'fields': ('partnership_type', 'company_description', 'what_you_offer', 'annual_capacity', 'start_timeline', 'why_tntg', 'additional_notes', 'casl_consent')}),
         ('Admin', {'fields': ('status', 'admin_notes', 'created_at', 'updated_at')}),
     )
+
+from .models import B2BApplication, B2BProfile, B2BReferral
+
+@admin.register(B2BApplication)
+class B2BApplicationAdmin(admin.ModelAdmin):
+    list_display  = ['ref', 'full_name', 'company_name', 'country', 'business_type', 'store_type', 'monthly_order_estimate', 'status', 'created_at']
+    list_filter   = ['status', 'business_type', 'store_type', 'country']
+    list_editable = ['status']
+    search_fields = ['full_name', 'email', 'company_name', 'country', 'city']
+    readonly_fields = ['created_at', 'updated_at']
+    fieldsets = (
+        ('Applicant', {'fields': ('full_name', 'email', 'phone', 'country', 'city', 'company_name', 'business_type', 'user')}),
+        ('Store Details', {'fields': ('store_type', 'store_address', 'website')}),
+        ('Business Profile', {'fields': ('monthly_order_estimate', 'years_in_business', 'products_interest', 'why_partner', 'additional_notes', 'casl_consent')}),
+        ('Admin', {'fields': ('status', 'admin_notes', 'created_at', 'updated_at')}),
+    )
+
+@admin.register(B2BProfile)
+class B2BProfileAdmin(admin.ModelAdmin):
+    list_display  = ['store_name', 'referral_code', 'country', 'commission_rate', 'status', 'approved_at']
+    list_filter   = ['status', 'country']
+    list_editable = ['status', 'commission_rate']
+    search_fields = ['store_name', 'referral_code', 'user__username', 'user__email']
+    readonly_fields = ['approved_at', 'updated_at']
+
+@admin.register(B2BReferral)
+class B2BReferralAdmin(admin.ModelAdmin):
+    list_display  = ['reseller', 'referral_code', 'order', 'commission', 'status', 'created_at']
+    list_filter   = ['status']
+    list_editable = ['status']
+    readonly_fields = ['created_at', 'updated_at']
