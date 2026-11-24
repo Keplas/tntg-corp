@@ -318,6 +318,61 @@
 }
 </style>
 
+<!-- ═══════════════════ B2B PARTNER BANNER ═══════════════════ -->
+{% if b2b_partner %}
+<div id="b2b-partner-banner" style="
+  background:linear-gradient(90deg,#030c18 0%,#061420 60%,#030c18 100%);
+  border-bottom:1px solid rgba(201,168,76,.22);
+  padding:12px 0;position:relative;
+">
+  <div class="container">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="
+          width:40px;height:40px;border-radius:50%;flex-shrink:0;
+          background:linear-gradient(135deg,rgba(201,168,76,.18),rgba(201,168,76,.06));
+          border:1px solid rgba(201,168,76,.3);
+          display:flex;align-items:center;justify-content:center;
+          color:#c9a84c;font-size:1rem;
+        "><i class="fas fa-store"></i></div>
+        <div>
+          <div style="font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(201,168,76,.7);line-height:1">
+            T&TG Authorized Reseller
+          </div>
+          <div style="font-size:.88rem;font-weight:700;color:#fff;margin-top:3px">
+            {{ b2b_partner.store_name }}
+            {% if b2b_partner.city %}<span style="color:rgba(255,255,255,.45);font-weight:400;font-size:.78rem"> &mdash; {{ b2b_partner.city }}{% if b2b_partner.country %}, {{ b2b_partner.country }}{% endif %}</span>{% endif %}
+          </div>
+        </div>
+        <div style="
+          display:inline-flex;align-items:center;gap:5px;
+          background:rgba(76,175,80,.1);border:1px solid rgba(76,175,80,.25);
+          color:#81c784;font-size:.7rem;font-weight:700;
+          padding:3px 10px;border-radius:99px;white-space:nowrap;
+        "><i class="fas fa-check-circle"></i> Verified Partner</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        {% if not user.is_authenticated %}
+        <a href="{% url 'login' %}?next={{ request.path }}" style="
+          display:inline-flex;align-items:center;gap:7px;
+          background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);
+          color:#c9a84c;font-size:.78rem;font-weight:700;
+          padding:7px 16px;border-radius:8px;text-decoration:none;
+          transition:background .2s;
+        " onmouseover="this.style.background='rgba(201,168,76,.18)'" onmouseout="this.style.background='rgba(201,168,76,.1)'">
+          <i class="fas fa-sign-in-alt"></i> Sign in to track your loyalty points
+        </a>
+        {% endif %}
+        <button onclick="document.getElementById('b2b-partner-banner').style.display='none'" style="
+          background:none;border:none;color:rgba(255,255,255,.3);
+          font-size:.85rem;cursor:pointer;padding:4px 8px;line-height:1;
+        " aria-label="Dismiss">&times;</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
 <!-- ═══════════════════ HERO ═══════════════════ -->
 <section class="mp-hero">
   <div class="container" style="position:relative;z-index:1">

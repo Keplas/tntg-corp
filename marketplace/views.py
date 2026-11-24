@@ -12,6 +12,18 @@ from . import payments
 import decimal
 
 
+def _get_b2b_partner(request):
+    """Return the active B2B partner profile stored in session, or None."""
+    b2b_ref_id = request.session.get('b2b_ref_id')
+    if not b2b_ref_id:
+        return None
+    try:
+        from services.models import B2BProfile
+        return B2BProfile.objects.select_related('user').get(pk=b2b_ref_id, status='active')
+    except Exception:
+        return None
+
+
 def product_list(request):
     # Capture referral code from a shared link (?ref=UNIQUE_ID) into the session
     ref_code = request.GET.get('ref', '')
@@ -40,13 +52,14 @@ def product_list(request):
     featured = base_qs.filter(is_featured=True)[:3]
 
     ctx = {
-        'products':   products,
-        'featured':   featured,
-        'market':     market,
-        'category':   category,
-        'query':      query,
-        'categories': [('coffee', 'Coffee')],
+        'products':    products,
+        'featured':    featured,
+        'market':      market,
+        'category':    category,
+        'query':       query,
+        'categories':  [('coffee', 'Coffee')],
         'is_filtered': bool(market != 'both' or category or query),
+        'b2b_partner': _get_b2b_partner(request),
     }
     return render(request, 'marketplace/product_list.html', ctx)
 
@@ -60,7 +73,12 @@ def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk, is_active=True)
     reviews = product.reviews.all()[:10]
     related = Product.objects.filter(category=product.category, is_active=True).exclude(pk=pk)[:4]
-    ctx = {'product': product, 'reviews': reviews, 'related': related}
+    ctx = {
+        'product':     product,
+        'reviews':     reviews,
+        'related':     related,
+        'b2b_partner': _get_b2b_partner(request),
+    }
     return render(request, 'marketplace/product_detail.html', ctx)
 
 
