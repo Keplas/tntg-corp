@@ -1,654 +1,845 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}My Franchise Hub — T&TG Trade Corporation{% endblock %}
+{% block title %}Franchisee Hub — T&TG Trade Corporation{% endblock %}
 
 {% block content %}
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap');
 
-/* ══════════════════════════════════════
-   FRANCHISEE HUB DASHBOARD
-   ══════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════
+   T&TG FRANCHISEE HUB — PROFESSIONAL DASHBOARD
+   Brand: Navy #060f1e · Gold #c9a84c · Gold-lt #e8c96a
+   ══════════════════════════════════════════════════════ */
 :root {
-  --hub-bg:    #05101e;
-  --hub-navy:  #0a1930;
-  --hub-card:  #0d1f38;
-  --hub-blue:  #1a4fa0;
-  --hub-accent:#2563eb;
-  --hub-gold:  #f59e0b;
-  --hub-border:rgba(37,99,235,.2);
-  --hub-text:  #c8d8f0;
-  --hub-muted: #6b82a0;
+  --g:    #c9a84c;
+  --g-lt: #e8c96a;
+  --g-dk: #a8841e;
+  --g-bg: rgba(201,168,76,.08);
+  --g-bd: rgba(201,168,76,.18);
+  --navy: #060f1e;
+  --surf: #090f1c;
+  --card: #0c1526;
+  --card2:#101d30;
+  --bd:   rgba(201,168,76,.12);
+  --bd2:  rgba(255,255,255,.06);
+  --tx:   #e4eeff;
+  --tx2:  #9aaec8;
+  --tx3:  #566882;
+  --red:  #ef4444;
+  --grn:  #22c55e;
+  --blu:  #3b82f6;
 }
 
-.hub-wrap {
-  background: var(--hub-bg);
+.hs-wrap {
+  background: var(--navy);
   min-height: 100vh;
   font-family: 'Manrope', sans-serif;
-  color: var(--hub-text);
+  color: var(--tx);
 }
 
-/* ── Inner Hub Nav ─────────────────── */
-.hub-nav {
-  background: var(--hub-navy);
-  border-bottom: 1px solid var(--hub-border);
+/* ══════════════════
+   TOP BAR
+   ══════════════════ */
+.hs-topbar {
+  background: rgba(6,10,20,.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--g-bd);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.hs-topbar-inner {
+  max-width: 1320px;
+  margin: 0 auto;
   padding: 0 1.5rem;
   display: flex;
+  align-items: stretch;
+  min-height: 60px;
+  gap: 0;
+}
+
+/* Brand */
+.hs-brand {
+  display: flex;
   align-items: center;
+  gap: 10px;
+  padding: 0 20px 0 0;
+  margin-right: 4px;
+  border-right: 1px solid var(--bd);
+  flex-shrink: 0;
+  text-decoration: none;
+}
+.hs-brand-mark {
+  width: 34px; height: 34px;
+  background: linear-gradient(135deg, var(--g-dk), var(--g));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .95rem;
+  color: #060f1e;
+  flex-shrink: 0;
+}
+.hs-brand-text {
+  line-height: 1.1;
+}
+.hs-brand-text strong {
+  display: block;
+  font-size: .88rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -.01em;
+}
+.hs-brand-text span {
+  font-size: .68rem;
+  font-weight: 600;
+  color: var(--g);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+/* Nav links */
+.hs-nav {
+  display: flex;
+  align-items: stretch;
   gap: 0;
   overflow-x: auto;
   scrollbar-width: none;
-}
-.hub-nav::-webkit-scrollbar { display: none; }
-.hub-nav-brand {
-  display: flex; align-items: center; gap: 10px;
-  color: #fff;
-  font-weight: 800;
-  font-size: 1rem;
-  white-space: nowrap;
-  padding: 14px 0;
-  margin-right: 24px;
-  border-right: 1px solid var(--hub-border);
-  padding-right: 24px;
-}
-.hub-nav-brand span { color: var(--hub-gold); }
-.hub-nav-links {
-  display: flex; align-items: center; gap: 2px;
   flex: 1;
 }
-.hub-nav-link {
-  display: flex; align-items: center; gap: 7px;
-  padding: 14px 16px;
-  color: #8aa0bc;
-  font-size: .84rem;
+.hs-nav::-webkit-scrollbar { display: none; }
+.hs-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 15px;
+  color: var(--tx2);
+  font-size: .82rem;
   font-weight: 600;
   text-decoration: none;
   border-bottom: 2px solid transparent;
   white-space: nowrap;
-  transition: color .15s, border-color .15s;
+  transition: color .15s, border-color .15s, background .15s;
 }
-.hub-nav-link:hover { color: #fff; text-decoration: none; }
-.hub-nav-link.active {
-  color: #fff;
-  border-bottom-color: var(--hub-accent);
-  background: rgba(37,99,235,.07);
+.hs-nav-link i { font-size: .78rem; }
+.hs-nav-link:hover { color: #fff; background: var(--g-bg); text-decoration: none; }
+.hs-nav-link.active {
+  color: var(--g);
+  border-bottom-color: var(--g);
+  background: rgba(201,168,76,.05);
 }
-.hub-nav-link i { font-size: .8rem; }
-.hub-nav-right {
-  display: flex; align-items: center; gap: 12px;
-  margin-left: auto;
-  padding-left: 16px;
-}
-.hub-notif {
-  position: relative;
-  color: #8aa0bc;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: color .15s;
-}
-.hub-notif:hover { color: #fff; }
-.hub-notif-badge {
-  position: absolute;
-  top: -5px; right: -5px;
-  background: #ef4444;
-  color: #fff;
-  font-size: .58rem;
-  font-weight: 800;
-  min-width: 16px; height: 16px;
-  border-radius: 99px;
-  display: flex; align-items: center; justify-content: center;
-  padding: 0 3px;
-}
-.hub-user-chip {
-  display: flex; align-items: center; gap: 8px;
-  background: rgba(37,99,235,.12);
-  border: 1px solid var(--hub-border);
-  border-radius: 99px;
-  padding: 5px 12px 5px 5px;
-  cursor: pointer;
-  transition: background .15s;
-}
-.hub-user-chip:hover { background: rgba(37,99,235,.2); }
-.hub-user-avatar {
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  background: var(--hub-blue);
-  display: flex; align-items: center; justify-content: center;
-  font-size: .75rem;
-  color: #fff;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-.hub-user-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.hub-user-name { font-size: .8rem; font-weight: 600; color: #c8d8f0; }
 
-/* ── Status pill ───────────────────── */
-.hub-status {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 3px 10px;
-  border-radius: 99px;
-  font-size: .7rem;
-  font-weight: 700;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-}
-.hub-status.setup      { background: rgba(59,130,246,.15); color: #60a5fa; border: 1px solid rgba(59,130,246,.3); }
-.hub-status.active     { background: rgba(34,197,94,.12);  color: #4ade80; border: 1px solid rgba(34,197,94,.3); }
-.hub-status.paused     { background: rgba(249,115,22,.12); color: #fb923c; border: 1px solid rgba(249,115,22,.3); }
-.hub-status.terminated { background: rgba(239,68,68,.12);  color: #f87171; border: 1px solid rgba(239,68,68,.3); }
-
-/* ── Hero Banner ───────────────────── */
-.hub-hero {
-  background: linear-gradient(130deg, #040e1c 0%, #071428 45%, #0a1f40 100%);
-  border-bottom: 1px solid var(--hub-border);
-  padding: 0;
-  overflow: hidden;
-  position: relative;
-}
-/* world-map grid pattern */
-.hub-hero::before {
-  content: '';
-  position: absolute; inset: 0;
-  background-image:
-    radial-gradient(circle, rgba(37,99,235,.12) 1px, transparent 1px);
-  background-size: 32px 32px;
-  pointer-events: none;
-}
-/* blue radial glow left */
-.hub-hero::after {
-  content: '';
-  position: absolute;
-  top: 50%; left: -80px;
-  transform: translateY(-50%);
-  width: 500px; height: 400px;
-  background: radial-gradient(ellipse, rgba(37,99,235,.18) 0%, transparent 65%);
-  pointer-events: none;
-}
-.hub-hero-inner {
+/* Right side: profile chip */
+.hs-topbar-right {
   display: flex;
   align-items: center;
-  min-height: 200px;
-  position: relative; z-index: 1;
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-  gap: 24px;
+  gap: 12px;
+  margin-left: auto;
+  padding-left: 16px;
+  border-left: 1px solid var(--bd);
 }
-.hub-hero-text { flex: 1; padding: 36px 0; }
-.hub-hero-text h2 {
-  font-size: clamp(1.4rem, 3.5vw, 2rem);
-  font-weight: 900;
-  color: #fff;
-  line-height: 1.15;
-  margin: 0 0 10px;
-  text-wrap: balance;
-}
-.hub-hero-text h2 span { color: var(--hub-gold); }
-.hub-hero-text p {
-  color: #7a94b8;
-  font-size: .9rem;
-  line-height: 1.65;
-  max-width: 440px;
-  margin: 0 0 20px;
-}
-.hub-hero-btn {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: var(--hub-gold);
-  color: #05101e;
-  font-weight: 800;
-  font-size: .85rem;
-  padding: 11px 24px;
+.hs-notif {
+  position: relative;
+  color: var(--tx2);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 6px;
   border-radius: 8px;
-  text-decoration: none;
-  transition: background .15s, transform .15s;
+  transition: color .15s, background .15s;
 }
-.hub-hero-btn:hover { background: #fbbf24; transform: translateY(-1px); text-decoration: none; color: #05101e; }
-.hub-hero-img {
-  width: 320px;
-  min-width: 220px;
-  align-self: flex-end;
-  padding-top: 20px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  gap: 10px;
-}
-@media (max-width: 700px) { .hub-hero-img { display: none; } }
-.hub-hero-store {
-  width: 170px;
-  border-radius: 10px 10px 0 0;
-  overflow: hidden;
-  border: 1px solid rgba(37,99,235,.3);
-  border-bottom: none;
-}
-.hub-hero-store img {
-  width: 100%; height: 110px;
-  object-fit: cover;
-  filter: brightness(.75) saturate(.9);
-}
-.hub-hero-person {
-  width: 110px;
-  align-self: flex-end;
-}
-.hub-hero-person img {
-  width: 100%;
-  filter: brightness(.85) saturate(.8) contrast(1.1);
+.hs-notif:hover { color: var(--g); background: var(--g-bg); }
+.hs-notif-dot {
+  position: absolute;
+  top: 4px; right: 4px;
+  width: 7px; height: 7px;
+  background: var(--red);
+  border-radius: 50%;
+  border: 1.5px solid var(--navy);
 }
 
-/* ── Stats Row ─────────────────────── */
-.hub-stats-row {
-  background: #071122;
-  border-bottom: 1px solid var(--hub-border);
-}
-.hub-stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  max-width: 1240px;
-  margin: 0 auto;
-}
-@media (max-width: 700px) { .hub-stats-grid { grid-template-columns: repeat(2, 1fr); } }
-.hub-stat {
-  padding: 20px 24px;
-  border-right: 1px solid var(--hub-border);
-  display: flex; align-items: center; gap: 14px;
-  transition: background .15s;
-}
-.hub-stat:last-child { border-right: none; }
-@media (max-width: 700px) {
-  .hub-stat:nth-child(2) { border-right: none; }
-  .hub-stat:nth-child(1), .hub-stat:nth-child(2) { border-bottom: 1px solid var(--hub-border); }
-}
-.hub-stat:hover { background: rgba(37,99,235,.05); }
-.hub-stat-ico {
-  width: 48px; height: 48px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.1rem;
+/* Avatar in topbar */
+.hs-top-avatar {
+  position: relative;
   flex-shrink: 0;
 }
-.hub-stat-ico.blue   { background: rgba(37,99,235,.18);  color: #60a5fa; }
-.hub-stat-ico.green  { background: rgba(34,197,94,.15);  color: #4ade80; }
-.hub-stat-ico.purple { background: rgba(139,92,246,.18); color: #a78bfa; }
-.hub-stat-ico.gold   { background: rgba(245,158,11,.15); color: #fbbf24; }
-.hub-stat-label {
-  font-size: .73rem;
-  color: var(--hub-muted);
-  margin-bottom: 3px;
+.hs-top-avatar img,
+.hs-top-avatar .hs-av-ph {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--g-bd);
+  object-fit: cover;
+  display: block;
+  background: var(--card2);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--g);
+  font-size: .85rem;
 }
-.hub-stat-val {
-  font-size: 1.2rem;
+.hs-top-name {
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--tx);
+  white-space: nowrap;
+}
+.hs-top-role {
+  font-size: .68rem;
+  color: var(--g);
+  font-weight: 600;
+  letter-spacing: .04em;
+  display: block;
+}
+.hs-camera-label {
+  position: absolute;
+  bottom: -2px; right: -2px;
+  width: 16px; height: 16px;
+  background: var(--g);
+  color: #060f1e;
+  border-radius: 50%;
+  border: 1.5px solid var(--navy);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .42rem;
+  cursor: pointer;
+}
+.hs-camera-label input[type="file"] {
+  position: absolute; inset: 0;
+  opacity: 0; cursor: pointer;
+  width: 100%; height: 100%;
+  border-radius: 50%;
+}
+
+@media (max-width: 768px) {
+  .hs-nav { display: none; }
+  .hs-top-name, .hs-top-role { display: none; }
+}
+
+/* ══════════════════
+   HERO
+   ══════════════════ */
+.hs-hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(130deg, #030812 0%, #060f1e 50%, #08142a 100%);
+  border-bottom: 1px solid var(--g-bd);
+  padding: 44px 0 36px;
+}
+/* Dot grid */
+.hs-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(201,168,76,.1) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+}
+/* Gold glow top-right */
+.hs-hero::after {
+  content: '';
+  position: absolute;
+  top: -120px; right: -80px;
+  width: 480px; height: 480px;
+  background: radial-gradient(ellipse, rgba(201,168,76,.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hs-hero-inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  position: relative; z-index: 1;
+}
+/* Left: greeting */
+.hs-hero-left { flex: 1; min-width: 260px; }
+.hs-hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--g-bg);
+  border: 1px solid var(--g-bd);
+  border-radius: 99px;
+  padding: 4px 14px;
+  font-size: .72rem;
+  font-weight: 800;
+  color: var(--g);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.hs-hero-eyebrow i { font-size: .68rem; }
+.hs-hero-h1 {
+  font-size: clamp(1.5rem, 3.5vw, 2.1rem);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.12;
+  letter-spacing: -.02em;
+  margin: 0 0 10px;
+}
+.hs-hero-h1 em {
+  font-style: normal;
+  color: var(--g);
+}
+.hs-hero-sub {
+  color: var(--tx2);
+  font-size: .88rem;
+  line-height: 1.6;
+  margin: 0 0 22px;
+  max-width: 400px;
+}
+.hs-hero-actions {
+  display: flex; gap: 10px; flex-wrap: wrap;
+}
+.hs-hero-btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, var(--g-dk), var(--g));
+  color: #060f1e;
+  font-weight: 800;
+  font-size: .84rem;
+  padding: 11px 22px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: transform .15s, box-shadow .15s;
+  box-shadow: 0 4px 20px rgba(201,168,76,.2);
+}
+.hs-hero-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 28px rgba(201,168,76,.3);
+  color: #060f1e;
+  text-decoration: none;
+}
+.hs-hero-btn-ghost {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent;
+  color: var(--g);
+  border: 1px solid var(--g-bd);
+  font-weight: 700;
+  font-size: .84rem;
+  padding: 11px 22px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background .15s, border-color .15s;
+}
+.hs-hero-btn-ghost:hover {
+  background: var(--g-bg);
+  border-color: rgba(201,168,76,.4);
+  color: var(--g);
+  text-decoration: none;
+}
+
+/* Right: info tiles */
+.hs-hero-right {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  flex-shrink: 0;
+}
+@media (max-width: 600px) { .hs-hero-right { display: none; } }
+.hs-hero-tile {
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--bd);
+  border-radius: 10px;
+  padding: 14px 16px;
+  min-width: 130px;
+}
+.hs-hero-tile-label {
+  font-size: .68rem;
+  font-weight: 700;
+  color: var(--tx3);
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  margin-bottom: 6px;
+}
+.hs-hero-tile-val {
+  font-size: .95rem;
   font-weight: 800;
   color: #fff;
-  line-height: 1.1;
-  display: flex; align-items: center; gap: 7px;
+  line-height: 1.2;
 }
-.hub-stat-delta {
-  font-size: .75rem;
+.hs-hero-tile-val.gold { color: var(--g); }
+
+/* ══════════════════
+   KPI STATS STRIP
+   ══════════════════ */
+.hs-kpi-strip {
+  background: #040c1a;
+  border-bottom: 1px solid var(--bd);
+}
+.hs-kpi-grid {
+  max-width: 1320px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+@media (max-width: 720px) {
+  .hs-kpi-grid { grid-template-columns: repeat(2,1fr); }
+}
+.hs-kpi {
+  padding: 20px 24px;
+  border-right: 1px solid var(--bd);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: background .15s;
+  cursor: default;
+}
+.hs-kpi:last-child { border-right: none; }
+.hs-kpi:hover { background: rgba(201,168,76,.03); }
+@media (max-width: 720px) {
+  .hs-kpi:nth-child(2) { border-right: none; }
+  .hs-kpi:nth-child(1),
+  .hs-kpi:nth-child(2) { border-bottom: 1px solid var(--bd); }
+}
+.hs-kpi-ico {
+  width: 46px; height: 46px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+.hs-kpi-ico.gold   { background: rgba(201,168,76,.12); color: var(--g); border: 1px solid rgba(201,168,76,.2); }
+.hs-kpi-ico.green  { background: rgba(34,197,94,.1);   color: #4ade80;  border: 1px solid rgba(34,197,94,.2); }
+.hs-kpi-ico.purple { background: rgba(139,92,246,.12); color: #a78bfa;  border: 1px solid rgba(139,92,246,.2); }
+.hs-kpi-ico.cyan   { background: rgba(6,182,212,.1);   color: #22d3ee;  border: 1px solid rgba(6,182,212,.2); }
+.hs-kpi-label {
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--tx3);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-bottom: 4px;
+}
+.hs-kpi-num {
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 4px;
+  display: flex; align-items: baseline; gap: 6px;
+}
+.hs-kpi-num .sub {
+  font-size: .78rem;
   font-weight: 700;
   color: #4ade80;
 }
-.hub-stat-link {
-  display: block;
-  font-size: .73rem;
-  color: #3b82f6;
-  margin-top: 5px;
+.hs-kpi-link {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: .72rem;
+  font-weight: 700;
+  color: var(--g);
   text-decoration: none;
-  transition: color .15s;
+  opacity: .75;
+  transition: opacity .15s;
 }
-.hub-stat-link:hover { color: #60a5fa; text-decoration: none; }
+.hs-kpi-link:hover { opacity: 1; color: var(--g); text-decoration: none; }
 
-/* ── Main body ─────────────────────── */
-.hub-body {
-  max-width: 1240px;
+/* ══════════════════
+   STATUS BADGE
+   ══════════════════ */
+.hs-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.hs-badge.setup      { background: rgba(59,130,246,.12);  color: #60a5fa; border: 1px solid rgba(59,130,246,.25); }
+.hs-badge.active     { background: rgba(34,197,94,.1);    color: #4ade80; border: 1px solid rgba(34,197,94,.25); }
+.hs-badge.paused     { background: rgba(249,115,22,.1);   color: #fb923c; border: 1px solid rgba(249,115,22,.25); }
+.hs-badge.terminated { background: rgba(239,68,68,.1);    color: #f87171; border: 1px solid rgba(239,68,68,.25); }
+.hs-badge.gold       { background: var(--g-bg); color: var(--g); border: 1px solid var(--g-bd); }
+
+/* ══════════════════
+   MAIN BODY GRID
+   ══════════════════ */
+.hs-body {
+  max-width: 1320px;
   margin: 0 auto;
-  padding: 28px 1.5rem 48px;
+  padding: 28px 1.5rem;
   display: grid;
-  grid-template-columns: 320px 1fr 300px;
+  grid-template-columns: 280px 1fr;
   gap: 20px;
   align-items: start;
 }
-@media (max-width: 1100px) {
-  .hub-body { grid-template-columns: 1fr 1fr; }
-  .hub-col-chart { grid-column: 1 / -1; }
-}
-@media (max-width: 680px) {
-  .hub-body { grid-template-columns: 1fr; }
+@media (max-width: 1024px) {
+  .hs-body { grid-template-columns: 1fr; }
 }
 
-/* ── Panel base ────────────────────── */
-.hub-panel {
-  background: var(--hub-card);
-  border: 1px solid var(--hub-border);
-  border-radius: 12px;
+/* ── Sidebar ────────────────────── */
+.hs-sidebar { display: flex; flex-direction: column; gap: 16px; }
+
+/* Quick actions card */
+.hs-card {
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 14px;
   overflow: hidden;
 }
-.hub-panel-head {
+.hs-card-head {
   display: flex; align-items: center; justify-content: space-between;
   padding: 14px 18px;
-  border-bottom: 1px solid var(--hub-border);
-  background: rgba(10,25,48,.6);
+  border-bottom: 1px solid var(--bd);
 }
-.hub-panel-title {
-  display: flex; align-items: center; gap: 9px;
+.hs-card-title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: .84rem;
   font-weight: 800;
-  font-size: .88rem;
-  color: #e0eaff;
+  color: var(--tx);
+  letter-spacing: -.01em;
 }
-.hub-panel-title i { color: var(--hub-gold); font-size: .9rem; }
-.hub-panel-link {
-  font-size: .78rem;
-  font-weight: 600;
-  color: #3b82f6;
+.hs-card-title i { color: var(--g); font-size: .82rem; }
+.hs-card-link {
+  font-size: .75rem;
+  font-weight: 700;
+  color: var(--g);
   text-decoration: none;
+  opacity: .8;
+  transition: opacity .15s;
   display: flex; align-items: center; gap: 5px;
-  transition: color .15s;
 }
-.hub-panel-link:hover { color: #60a5fa; text-decoration: none; }
+.hs-card-link:hover { opacity: 1; color: var(--g); text-decoration: none; }
 
-/* ── Quick Actions ─────────────────── */
-.hub-qa-grid {
+/* Quick action grid */
+.hs-qa-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1px;
-  background: var(--hub-border);
+  background: var(--bd);
 }
-.hub-qa-item {
+.hs-qa {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 20px 12px;
-  background: var(--hub-card);
+  gap: 9px;
+  padding: 18px 10px;
+  background: var(--card);
   text-decoration: none;
   transition: background .15s;
   text-align: center;
 }
-.hub-qa-item:hover { background: rgba(37,99,235,.1); text-decoration: none; }
-.hub-qa-ico {
-  width: 40px; height: 40px;
-  border-radius: 10px;
-  background: rgba(37,99,235,.12);
-  border: 1px solid rgba(37,99,235,.22);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1rem;
-  color: #60a5fa;
-  transition: background .15s;
+.hs-qa:hover {
+  background: rgba(201,168,76,.06);
+  text-decoration: none;
 }
-.hub-qa-item:hover .hub-qa-ico { background: rgba(37,99,235,.2); }
-.hub-qa-label {
-  font-size: .78rem;
+.hs-qa-ico {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: var(--g-bg);
+  border: 1px solid var(--g-bd);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .88rem;
+  color: var(--g);
+  transition: background .15s, border-color .15s;
+}
+.hs-qa:hover .hs-qa-ico {
+  background: rgba(201,168,76,.14);
+  border-color: rgba(201,168,76,.35);
+}
+.hs-qa-lbl {
+  font-size: .75rem;
   font-weight: 700;
-  color: #c8d8f0;
+  color: var(--tx);
   line-height: 1.2;
 }
 
-/* ── Announcements ─────────────────── */
-.hub-ann-list { padding: 4px 0; }
-.hub-ann-item {
-  display: flex;
-  gap: 12px;
+/* Profile mini-card in sidebar */
+.hs-profile-mini {
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 14px;
+  padding: 20px;
+}
+.hs-profile-mini-top {
+  display: flex; align-items: center; gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--bd);
+  margin-bottom: 14px;
+}
+.hs-profile-mini-av {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 2px solid var(--g-bd);
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--card2);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--g);
+  font-size: 1.1rem;
+  overflow: hidden;
+}
+.hs-profile-mini-av img { width: 100%; height: 100%; object-fit: cover; }
+.hs-profile-mini-name {
+  font-size: .88rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -.01em;
+  line-height: 1.2;
+}
+.hs-profile-mini-role {
+  font-size: .68rem;
+  color: var(--g);
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+.hs-profile-mini-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  margin-bottom: 10px;
+}
+.hs-profile-mini-row:last-child { margin-bottom: 0; }
+.hs-profile-mini-row i {
+  color: var(--g);
+  font-size: .75rem;
+  margin-top: 3px;
+  flex-shrink: 0;
+  width: 14px;
+}
+.hs-profile-mini-row span {
+  font-size: .78rem;
+  color: var(--tx2);
+  line-height: 1.3;
+  word-break: break-all;
+}
+.hs-profile-mini-row span strong {
+  display: block;
+  font-size: .68rem;
+  color: var(--tx3);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-weight: 700;
+  margin-bottom: 1px;
+}
+.hs-profile-mini-actions {
+  display: flex; gap: 8px;
+  margin-top: 16px;
+}
+.hs-btn-sm {
+  flex: 1;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: .75rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background .15s, border-color .15s;
+  white-space: nowrap;
+}
+.hs-btn-sm.gold {
+  background: linear-gradient(135deg, var(--g-dk), var(--g));
+  color: #060f1e;
+  border: none;
+}
+.hs-btn-sm.gold:hover { background: linear-gradient(135deg, var(--g), var(--g-lt)); color: #060f1e; text-decoration: none; }
+.hs-btn-sm.ghost {
+  background: transparent;
+  color: var(--g);
+  border: 1px solid var(--g-bd);
+}
+.hs-btn-sm.ghost:hover { background: var(--g-bg); color: var(--g); text-decoration: none; }
+
+/* ══════════════════
+   MAIN COLUMN
+   ══════════════════ */
+.hs-main { display: flex; flex-direction: column; gap: 20px; }
+
+/* Setup notice */
+.hs-notice {
+  background: rgba(59,130,246,.06);
+  border: 1px solid rgba(59,130,246,.2);
+  border-left: 3px solid #3b82f6;
+  border-radius: 10px;
   padding: 14px 18px;
-  border-bottom: 1px solid rgba(37,99,235,.1);
+  display: flex; gap: 12px; align-items: flex-start;
+  font-size: .84rem;
+  color: #93c5fd;
+}
+.hs-notice i { flex-shrink: 0; margin-top: 2px; }
+.hs-notice p { margin: 0; line-height: 1.6; }
+
+/* Announcements */
+.hs-ann-item {
+  display: flex;
+  gap: 14px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--bd);
   transition: background .15s;
 }
-.hub-ann-item:last-child { border-bottom: none; }
-.hub-ann-item:hover { background: rgba(37,99,235,.05); }
-.hub-ann-badge {
+.hs-ann-item:last-child { border-bottom: none; }
+.hs-ann-item:hover { background: rgba(201,168,76,.03); }
+.hs-ann-dot {
   flex-shrink: 0;
-  margin-top: 2px;
+  margin-top: 5px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+}
+.hs-ann-dot.new    { background: #ef4444; box-shadow: 0 0 6px rgba(239,68,68,.5); }
+.hs-ann-dot.info   { background: #3b82f6; }
+.hs-ann-dot.update { background: var(--g); }
+.hs-ann-badge-wrap { flex-shrink: 0; margin-top: 1px; }
+.hs-ann-badge {
   font-size: .62rem;
   font-weight: 800;
   letter-spacing: .07em;
-  padding: 3px 8px;
+  padding: 2px 8px;
   border-radius: 4px;
   text-transform: uppercase;
   white-space: nowrap;
-  height: fit-content;
 }
-.hub-ann-badge.new    { background: rgba(239,68,68,.15);  color: #f87171; border: 1px solid rgba(239,68,68,.3); }
-.hub-ann-badge.info   { background: rgba(59,130,246,.15); color: #60a5fa; border: 1px solid rgba(59,130,246,.3); }
-.hub-ann-badge.update { background: rgba(245,158,11,.15); color: #fbbf24; border: 1px solid rgba(245,158,11,.3); }
-.hub-ann-title {
-  font-weight: 700;
+.hs-ann-badge.new    { background: rgba(239,68,68,.12);  color: #f87171; border: 1px solid rgba(239,68,68,.22); }
+.hs-ann-badge.info   { background: rgba(59,130,246,.12); color: #60a5fa; border: 1px solid rgba(59,130,246,.22); }
+.hs-ann-badge.update { background: var(--g-bg); color: var(--g); border: 1px solid var(--g-bd); }
+.hs-ann-title {
   font-size: .84rem;
-  color: #e0eaff;
+  font-weight: 700;
+  color: var(--tx);
   margin-bottom: 3px;
+  line-height: 1.3;
 }
-.hub-ann-desc { font-size: .78rem; color: var(--hub-muted); line-height: 1.5; }
-.hub-ann-date { font-size: .72rem; color: #3d5570; margin-top: 4px; }
+.hs-ann-desc { font-size: .77rem; color: var(--tx2); line-height: 1.55; }
+.hs-ann-date { font-size: .7rem; color: var(--tx3); margin-top: 5px; }
 
-/* ── Performance chart ─────────────── */
-.hub-chart-wrap { padding: 18px; }
-.hub-chart-legend {
-  display: flex; gap: 16px;
-  margin-bottom: 14px;
+/* Chart */
+.hs-chart-wrap { padding: 18px 18px 10px; }
+.hs-chart-legend {
+  display: flex; gap: 18px; margin-bottom: 16px;
 }
-.hub-legend-dot {
-  display: flex; align-items: center; gap: 5px;
+.hs-chart-legend span {
+  display: flex; align-items: center; gap: 7px;
   font-size: .75rem;
-  color: var(--hub-muted);
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--tx2);
 }
-.hub-legend-dot span {
-  width: 10px; height: 10px; border-radius: 2px;
+.hs-chart-legend span b {
+  display: inline-block;
+  width: 10px; height: 10px;
+  border-radius: 3px;
 }
-.hub-bars {
+.hs-bars-area {
   display: flex;
   gap: 10px;
   align-items: flex-end;
-  height: 160px;
-  padding-top: 20px;
-  border-bottom: 1px solid rgba(37,99,235,.2);
+  height: 150px;
+  border-bottom: 1px solid var(--bd);
+  margin-bottom: 10px;
 }
-.hub-bar-group {
+.hs-bar-grp {
   flex: 1;
   display: flex;
   gap: 3px;
   align-items: flex-end;
-  position: relative;
 }
-.hub-bar {
+.hs-bar {
   flex: 1;
   border-radius: 4px 4px 0 0;
   min-height: 4px;
   position: relative;
   transition: opacity .2s;
 }
-.hub-bar:hover { opacity: .8; }
-.hub-bar.sales  { background: #2563eb; }
-.hub-bar.target { background: var(--hub-gold); }
-.hub-bar-val {
-  position: absolute;
-  top: -18px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: .62rem;
-  font-weight: 700;
-  color: #8aa0bc;
-  white-space: nowrap;
+.hs-bar:hover { opacity: .75; }
+.hs-bar.sales  { background: linear-gradient(180deg, var(--g-lt), var(--g-dk)); }
+.hs-bar.target { background: rgba(201,168,76,.2); border: 1px solid rgba(201,168,76,.22); }
+.hs-bar-labels {
+  display: flex; gap: 10px;
 }
-.hub-bar-labels {
-  display: flex;
-  gap: 10px;
-  margin-top: 8px;
-}
-.hub-bar-lbl {
+.hs-bar-lbl {
   flex: 1;
   text-align: center;
-  font-size: .73rem;
-  color: var(--hub-muted);
+  font-size: .72rem;
   font-weight: 600;
+  color: var(--tx3);
 }
 
-/* ── Bottom row ────────────────────── */
-.hub-bottom {
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 0 1.5rem 48px;
+/* ── Two-col sub-row ──────────────────── */
+.hs-row2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
-@media (max-width: 680px) { .hub-bottom { grid-template-columns: 1fr; } }
+@media (max-width: 680px) { .hs-row2 { grid-template-columns: 1fr; } }
 
 /* Support card */
-.hub-support {
-  background: var(--hub-card);
-  border: 1px solid var(--hub-border);
-  border-radius: 12px;
-  padding: 22px 24px;
+.hs-support {
+  background: linear-gradient(130deg, #0a1526 0%, #0d1a30 100%);
+  border: 1px solid var(--g-bd);
+  border-radius: 14px;
+  padding: 22px;
   display: flex;
-  align-items: center;
-  gap: 18px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 14px;
 }
-.hub-support-ico {
-  width: 50px; height: 50px;
+.hs-support-ico {
+  width: 46px; height: 46px;
   border-radius: 50%;
-  background: rgba(37,99,235,.12);
-  border: 1px solid rgba(37,99,235,.25);
+  background: var(--g-bg);
+  border: 1px solid var(--g-bd);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.2rem;
-  color: #60a5fa;
-  flex-shrink: 0;
+  font-size: 1.1rem;
+  color: var(--g);
 }
-.hub-support-text { flex: 1; min-width: 150px; }
-.hub-support-text strong {
+.hs-support strong {
   display: block;
-  color: #e0eaff;
-  font-weight: 800;
+  color: #fff;
   font-size: .95rem;
+  font-weight: 800;
   margin-bottom: 4px;
 }
-.hub-support-text p {
-  color: var(--hub-muted);
+.hs-support p {
+  color: var(--tx2);
   font-size: .8rem;
   margin: 0 0 2px;
+  line-height: 1.5;
 }
-.hub-support-btn {
+.hs-support a.contact {
   display: inline-flex; align-items: center; gap: 8px;
-  background: var(--hub-gold);
-  color: #05101e;
-  font-weight: 800;
+  background: linear-gradient(135deg, var(--g-dk), var(--g));
+  color: #060f1e;
   font-size: .82rem;
+  font-weight: 800;
   padding: 10px 20px;
   border-radius: 8px;
   text-decoration: none;
-  flex-shrink: 0;
-  transition: background .15s;
+  transition: transform .15s;
+  align-self: flex-start;
 }
-.hub-support-btn:hover { background: #fbbf24; color: #05101e; text-decoration: none; }
+.hs-support a.contact:hover { transform: translateY(-1px); color: #060f1e; text-decoration: none; }
 
-/* Resources card */
-.hub-resources {
-  background: var(--hub-card);
-  border: 1px solid var(--hub-border);
-  border-radius: 12px;
-  padding: 22px 24px;
+/* Resources */
+.hs-resources {
+  background: var(--card);
+  border: 1px solid var(--bd);
+  border-radius: 14px;
+  padding: 22px;
 }
-.hub-res-head {
-  display: flex; align-items: center; gap: 9px;
-  font-weight: 800;
-  font-size: .9rem;
-  color: #e0eaff;
-  margin-bottom: 16px;
-}
-.hub-res-head i { color: var(--hub-gold); }
-.hub-res-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 20px;
-}
-.hub-res-link {
-  display: flex; align-items: center; gap: 7px;
-  font-size: .82rem;
+.hs-res-links { display: flex; flex-direction: column; gap: 2px; }
+.hs-res-link {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  font-size: .81rem;
   font-weight: 600;
-  color: #3b82f6;
+  color: var(--tx2);
   text-decoration: none;
-  transition: color .15s;
+  transition: background .15s, color .15s;
 }
-.hub-res-link:hover { color: #60a5fa; text-decoration: none; }
-.hub-res-link i { font-size: .8rem; }
+.hs-res-link:hover {
+  background: var(--g-bg);
+  color: var(--g);
+  text-decoration: none;
+}
+.hs-res-link i { color: var(--g); font-size: .78rem; width: 14px; flex-shrink: 0; }
 
-/* ── Profile card ─────────────────── */
-.hub-profile {
-  background: var(--hub-card);
-  border: 1px solid var(--hub-border);
-  border-radius: 12px;
-  padding: 22px 24px;
-}
-.hub-profile-head {
-  display: flex; align-items: center; gap: 9px;
-  font-weight: 800;
-  font-size: .9rem;
-  color: #e0eaff;
-  margin-bottom: 20px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--hub-border);
-}
-.hub-profile-head i { color: var(--hub-gold); }
-.hub-profile-avatar {
-  width: 56px; height: 56px;
-  border-radius: 50%;
-  background: linear-gradient(135deg,rgba(201,168,76,.22),rgba(37,99,235,.22));
-  border: 2px solid rgba(201,168,76,.35);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.5rem;
-  color: var(--hub-gold);
-  flex-shrink: 0;
-  margin-bottom: 16px;
-}
-.hub-profile-name {
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: #e8f0fe;
-  margin-bottom: 2px;
-}
-.hub-profile-role {
-  font-size: .75rem;
-  font-weight: 700;
-  color: var(--hub-gold);
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  margin-bottom: 16px;
-}
-.hub-profile-rows {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px 20px;
-}
-.hub-profile-row {
-  display: flex; flex-direction: column; gap: 2px;
-}
-.hub-profile-label {
-  font-size: .68rem;
-  font-weight: 700;
-  color: var(--hub-muted);
-  text-transform: uppercase;
-  letter-spacing: .05em;
-}
-.hub-profile-val {
-  font-size: .84rem;
-  color: #c8d8f0;
-  font-weight: 500;
-  word-break: break-all;
-}
-.hub-profile-val.mono { font-family: monospace; letter-spacing: .03em; }
-@media (max-width:500px) {
-  .hub-profile-rows { grid-template-columns: 1fr; }
-}
-
-/* ── Hub Footer ────────────────────── */
-.hub-footer {
-  background: var(--hub-navy);
-  border-top: 1px solid var(--hub-border);
+/* ══════════════════
+   FOOTER
+   ══════════════════ */
+.hs-footer {
+  background: #040c18;
+  border-top: 1px solid var(--g-bd);
   padding: 20px 1.5rem;
+  margin-top: 12px;
 }
-.hub-footer-inner {
-  max-width: 1240px;
+.hs-footer-inner {
+  max-width: 1320px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -656,539 +847,589 @@
   gap: 16px;
   justify-content: space-between;
 }
-.hub-footer-brand {
+.hs-footer-brand {
   display: flex; align-items: center; gap: 10px;
 }
-.hub-footer-brand .tagline {
-  font-style: italic;
-  color: var(--hub-muted);
-  font-size: .82rem;
-}
-.hub-footer-info {
-  display: flex; flex-wrap: wrap; gap: 16px;
-}
-.hub-footer-item {
-  display: flex; align-items: center; gap: 6px;
-  font-size: .78rem;
-  color: var(--hub-muted);
-  text-decoration: none;
-}
-.hub-footer-item i { color: #3b82f6; font-size: .8rem; }
-.hub-footer-social {
-  display: flex; gap: 10px;
-}
-.hub-soc {
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  background: rgba(37,99,235,.12);
-  border: 1px solid rgba(37,99,235,.22);
+.hs-footer-brand .mark {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, var(--g-dk), var(--g));
+  border-radius: 7px;
   display: flex; align-items: center; justify-content: center;
-  color: #60a5fa;
-  font-size: .82rem;
+  font-size: .75rem;
+  color: #060f1e;
+}
+.hs-footer-brand strong { font-size: .85rem; color: var(--tx); font-weight: 800; }
+.hs-footer-brand .tagline { font-size: .75rem; color: var(--tx3); font-style: italic; }
+.hs-footer-info {
+  display: flex; flex-wrap: wrap; gap: 14px;
+}
+.hs-footer-info a,
+.hs-footer-info span {
+  display: flex; align-items: center; gap: 6px;
+  font-size: .76rem;
+  color: var(--tx3);
   text-decoration: none;
-  transition: background .15s;
+  transition: color .15s;
 }
-.hub-soc:hover { background: rgba(37,99,235,.25); color: #93c5fd; text-decoration: none; }
+.hs-footer-info a:hover { color: var(--g); text-decoration: none; }
+.hs-footer-info i { color: var(--g); font-size: .76rem; }
+.hs-footer-social { display: flex; gap: 8px; }
+.hs-soc {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--g-bg);
+  border: 1px solid var(--g-bd);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--g);
+  font-size: .75rem;
+  text-decoration: none;
+  transition: background .15s, border-color .15s;
+}
+.hs-soc:hover { background: rgba(201,168,76,.18); border-color: rgba(201,168,76,.35); color: var(--g); text-decoration: none; }
 
-/* ── Setup notice ──────────────────── */
-.hub-notice {
-  background: rgba(37,99,235,.07);
-  border: 1px solid rgba(37,99,235,.22);
-  border-left: 3px solid #3b82f6;
-  border-radius: 8px;
-  padding: 12px 16px;
-  display: flex; gap: 10px; align-items: flex-start;
+/* ── Upload toast ───────────────── */
+.hs-toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: #0d1f35;
+  border: 1px solid var(--g-bd);
+  color: var(--tx);
+  padding: 12px 22px;
+  border-radius: 10px;
   font-size: .84rem;
-  color: #93c5fd;
-  max-width: 1240px;
-  margin: 20px auto 0;
-  padding-left: calc(1.5rem + 13px);
+  font-weight: 500;
+  display: flex; align-items: center; gap: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.55);
+  z-index: 9999;
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s ease;
+  white-space: nowrap;
 }
-.hub-notice i { margin-top: 2px; flex-shrink: 0; }
-.hub-notice p { margin: 0; }
+.hs-toast.show { opacity: 1; pointer-events: auto; }
+.hs-toast i { color: var(--g); }
+
+/* ── Mobile nav sheet ───────────── */
+.hs-mobile-nav-btn {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  background: var(--g-bg);
+  border: 1px solid var(--g-bd);
+  color: var(--g);
+  font-size: .78rem;
+  font-weight: 700;
+  padding: 7px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+@media (max-width: 768px) { .hs-mobile-nav-btn { display: flex; } }
 </style>
 
-<div class="hub-wrap">
+<div class="hs-wrap">
 
-  <!-- ── Compact profile bar ───────────────────── -->
-  <div style="
-    background:#060f1e;
-    border-bottom:1px solid rgba(201,168,76,.18);
-    padding:13px 0;
-  ">
-    <div class="container">
-      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+  <!-- ══════════════════════════════════════
+       TOP BAR
+       ══════════════════════════════════════ -->
+  <div class="hs-topbar">
+    <div class="hs-topbar-inner">
 
-        <!-- Avatar + camera upload -->
-        <div style="position:relative;flex-shrink:0">
+      <!-- Brand -->
+      <a href="{% url 'home' %}" class="hs-brand">
+        <div class="hs-brand-mark"><i class="fas fa-globe"></i></div>
+        <div class="hs-brand-text">
+          <strong>T&TG</strong>
+          <span>Franchisee Hub</span>
+        </div>
+      </a>
+
+      <!-- Nav links -->
+      <nav class="hs-nav">
+        <a href="{% url 'franchisee_store' %}" class="hs-nav-link active">
+          <i class="fas fa-th-large"></i> Dashboard
+        </a>
+        <a href="{% url 'franchise_my_products' %}" class="hs-nav-link">
+          <i class="fas fa-box-open"></i> Products
+        </a>
+        <a href="{% url 'franchise_orders' %}" class="hs-nav-link">
+          <i class="fas fa-shopping-bag"></i> Orders
+        </a>
+        <a href="{% url 'franchise_sales_reports' %}" class="hs-nav-link">
+          <i class="fas fa-chart-bar"></i> Reports
+        </a>
+        <a href="{% url 'franchise_customers' %}" class="hs-nav-link">
+          <i class="fas fa-users"></i> Customers
+        </a>
+        <a href="{% url 'franchise_inventory' %}" class="hs-nav-link">
+          <i class="fas fa-truck"></i> Inventory
+        </a>
+        <a href="{% url 'join_program' %}" class="hs-nav-link">
+          <i class="fas fa-graduation-cap"></i> Training
+        </a>
+      </nav>
+
+      <!-- Mobile nav toggle -->
+      <button class="hs-mobile-nav-btn" onclick="document.querySelector('.hs-nav').style.display=document.querySelector('.hs-nav').style.display==='flex'?'none':'flex'">
+        <i class="fas fa-bars"></i> Menu
+      </button>
+
+      <!-- Right: profile -->
+      <div class="hs-topbar-right">
+        <div class="hs-notif">
+          <i class="fas fa-bell"></i>
+          <span class="hs-notif-dot"></span>
+        </div>
+        <div class="hs-top-avatar">
           {% if user.safe_profile_photo_url %}
-            <img src="{{ user.safe_profile_photo_url }}" alt="{{ user.get_full_name|default:user.username }}"
-                 id="hs-avatar-img"
-                 style="width:52px;height:52px;border-radius:50%;border:2px solid rgba(201,168,76,.45);object-fit:cover;display:block">
+            <img id="hs-av-img" src="{{ user.safe_profile_photo_url }}" alt="{{ user.get_full_name|default:user.username }}">
           {% else %}
-            <div id="hs-avatar-placeholder" style="
-              width:52px;height:52px;border-radius:50%;
-              border:2px solid rgba(201,168,76,.35);
-              background:rgba(201,168,76,.07);
-              display:flex;align-items:center;justify-content:center;
-              color:rgba(201,168,76,.65);font-size:1.3rem
-            "><i class="fas fa-user"></i></div>
-            <img src="" alt="" id="hs-avatar-img" style="width:52px;height:52px;border-radius:50%;border:2px solid rgba(201,168,76,.45);object-fit:cover;display:none">
+            <div id="hs-av-ph" class="hs-av-ph"><i class="fas fa-user"></i></div>
+            <img id="hs-av-img" src="" alt="" style="display:none;width:36px;height:36px;border-radius:50%;border:2px solid var(--g-bd);object-fit:cover">
           {% endif %}
-          <label title="Change profile photo" style="
-            position:absolute;bottom:0;right:0;
-            width:20px;height:20px;
-            background:#c9a84c;color:#060f1e;
-            border-radius:50%;border:2px solid #060f1e;
-            display:flex;align-items:center;justify-content:center;
-            font-size:.52rem;cursor:pointer;
-          ">
+          <label class="hs-camera-label" title="Change photo">
             <i class="fas fa-camera"></i>
-            <input type="file" accept="image/*" id="hs-photo-input" aria-label="Upload profile photo"
-                   style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;border-radius:50%">
+            <input type="file" accept="image/*" id="hs-photo-input">
           </label>
         </div>
-
-        <!-- Name + meta + badge -->
-        <div style="flex:1;min-width:0">
-          <div style="font-family:'Manrope',sans-serif;font-weight:800;font-size:1rem;color:#fff;letter-spacing:-.01em;line-height:1.2;margin-bottom:2px">
-            {{ user.get_full_name|default:user.username }}
-          </div>
-          <div style="color:#7a8fa8;font-size:.78rem;display:flex;flex-wrap:wrap;gap:4px 14px;margin-bottom:6px">
-            <span style="display:flex;align-items:center;gap:5px">
-              <i class="fas fa-envelope" style="color:#c9a84c;font-size:.68rem"></i> {{ user.email }}
-            </span>
-            {% if user.phone %}
-            <span style="display:flex;align-items:center;gap:5px">
-              <i class="fas fa-phone" style="color:#c9a84c;font-size:.68rem"></i> {{ user.phone }}
-            </span>
-            {% endif %}
-          </div>
-          <div style="display:flex;flex-wrap:wrap;gap:6px">
-            <span style="
-              background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.22);
-              color:#c9a84c;padding:2px 10px;border-radius:99px;
-              font-size:.67rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
-              display:inline-flex;align-items:center;gap:5px
-            "><i class="fas fa-store"></i> {{ profile.get_operational_status_display }}</span>
-            <span style="
-              background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.22);
-              color:#c9a84c;padding:2px 10px;border-radius:99px;
-              font-size:.67rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
-              display:inline-flex;align-items:center;gap:5px
-            "><i class="fas fa-map-marker-alt"></i> {{ profile.territory }}</span>
-          </div>
+        <div>
+          <div class="hs-top-name">{{ user.get_full_name|default:user.username }}</div>
+          <span class="hs-top-role">Franchisee</span>
         </div>
-
-        <!-- Action buttons -->
-        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-left:auto">
-          <a href="{% url 'my_franchise_applications' %}" style="
-            background:transparent;color:#c9a84c;
-            border:1px solid rgba(201,168,76,.35);
-            padding:7px 16px;border-radius:7px;
-            font-size:.78rem;font-weight:700;
-            text-decoration:none;
-            display:inline-flex;align-items:center;gap:7px;
-            transition:background .2s;
-          " onmouseover="this.style.background='rgba(201,168,76,.1)'" onmouseout="this.style.background='transparent'">
-            <i class="fas fa-folder-open"></i> My Applications
-          </a>
-          <a href="{% url 'profile' %}" style="
-            background:transparent;color:#c9a84c;
-            border:1px solid rgba(201,168,76,.35);
-            padding:7px 16px;border-radius:7px;
-            font-size:.78rem;font-weight:700;
-            text-decoration:none;
-            display:inline-flex;align-items:center;gap:7px;
-            transition:background .2s;
-          " onmouseover="this.style.background='rgba(201,168,76,.1)'" onmouseout="this.style.background='transparent'">
-            <i class="fas fa-cog"></i> Edit Profile
-          </a>
-        </div>
-
       </div>
+
     </div>
   </div>
 
   <!-- photo upload toast -->
-  <div id="hs-upload-toast" style="
-    position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-    background:#0d1f35;border:1px solid rgba(201,168,76,.35);color:#c8d8e8;
-    padding:12px 24px;border-radius:10px;font-size:.84rem;font-weight:500;
-    display:flex;align-items:center;gap:10px;
-    box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:9999;
-    opacity:0;pointer-events:none;transition:opacity .3s ease;
-  ">
-    <i id="hs-toast-ico" class="fas fa-check-circle" style="color:#c9a84c"></i>
-    <span id="hs-upload-msg">Profile photo updated.</span>
+  <div id="hs-toast" class="hs-toast">
+    <i id="hs-toast-ico" class="fas fa-check-circle"></i>
+    <span id="hs-toast-msg">Profile photo updated.</span>
   </div>
 
-  <script>
-  (function(){
-    const input    = document.getElementById('hs-photo-input');
-    const imgEl    = document.getElementById('hs-avatar-img');
-    const phEl     = document.getElementById('hs-avatar-placeholder');
-    const toast    = document.getElementById('hs-upload-toast');
-    const toastMsg = document.getElementById('hs-upload-msg');
-    const toastIco = document.getElementById('hs-toast-ico');
-    let timer;
-    function showToast(msg, err) {
-      toastMsg.textContent = msg;
-      toastIco.className = err ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
-      toast.style.borderColor = err ? 'rgba(220,53,69,.5)' : 'rgba(201,168,76,.35)';
-      toast.style.opacity = '1'; toast.style.pointerEvents = 'auto';
-      clearTimeout(timer);
-      timer = setTimeout(() => { toast.style.opacity = '0'; toast.style.pointerEvents = 'none'; }, 3200);
-    }
-    if (!input) return;
-    input.addEventListener('change', function(){
-      const file = this.files[0]; if (!file) return;
-      const reader = new FileReader();
-      reader.onload = e => {
-        imgEl.src = e.target.result; imgEl.style.display = '';
-        if (phEl) phEl.style.display = 'none';
-      };
-      reader.readAsDataURL(file);
-      const fd = new FormData();
-      fd.append('profile_photo', file);
-      fd.append('csrfmiddlewaretoken', '{{ csrf_token }}');
-      fetch('{% url "upload_profile_photo" %}', { method:'POST', body:fd, headers:{'X-Requested-With':'XMLHttpRequest'} })
-        .then(r => r.json())
-        .then(d => { if (d.ok) { if (d.url) imgEl.src = d.url; showToast('Profile photo updated.', false); } else showToast(d.error || 'Upload failed.', true); })
-        .catch(() => showToast('Upload failed. Please try again.', true));
-    });
-  })();
-  </script>
+  <!-- ══════════════════════════════════════
+       HERO
+       ══════════════════════════════════════ -->
+  <div class="hs-hero">
+    <div class="hs-hero-inner">
 
-  <!-- ── Setup notice ───────────────────────────── -->
-  {% if profile.operational_status == 'setup' %}
-  <div class="hub-notice" style="padding-left:1.5rem">
-    <i class="fas fa-info-circle"></i>
-    <p>Your franchise is in the <strong>setup phase</strong>. Our team will contact you to complete onboarding. Features unlock once your store is activated.</p>
-  </div>
-  {% endif %}
-
-  <!-- ── Hero Banner ────────────────────────────── -->
-  <div class="hub-hero">
-    <div class="hub-hero-inner">
-      <div class="hub-hero-text">
-        <h2>Welcome to the<br>T&TG <span>Franchisee Hub!</span></h2>
-        <p>Your central platform to manage your franchise, access resources, grow your business and stay connected with T&TG.</p>
-        <a href="#quick-actions" class="hub-hero-btn">
-          <i class="fas fa-th-large"></i> Explore Your Hub
-        </a>
-      </div>
-      <div class="hub-hero-img">
-        <div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;opacity:.18;">
-          <i class="fas fa-store" style="font-size:7rem;color:#fff;"></i>
+      <div class="hs-hero-left">
+        <div class="hs-hero-eyebrow">
+          <i class="fas fa-store"></i> Franchisee Dashboard
         </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── Stats Row ──────────────────────────────── -->
-  <div class="hub-stats-row">
-    <div class="hub-stats-grid">
-
-      <div class="hub-stat">
-        <div class="hub-stat-ico blue"><i class="fas fa-store"></i></div>
-        <div>
-          <div class="hub-stat-label">Your Franchise ID</div>
-          <div class="hub-stat-val">{{ profile.ref }}</div>
-          <a href="{% url 'my_franchise_applications' %}" class="hub-stat-link">View Details <i class="fas fa-arrow-right"></i></a>
+        <h1 class="hs-hero-h1">
+          Welcome back,<br>
+          <em>{{ user.get_full_name|default:user.username }}</em>
+        </h1>
+        <p class="hs-hero-sub">
+          Manage your franchise, track performance, and access everything you need to grow your T&TG business from one place.
+        </p>
+        <div class="hs-hero-actions">
+          <a href="{% url 'franchise_my_products' %}" class="hs-hero-btn-primary">
+            <i class="fas fa-box-open"></i> Browse Products
+          </a>
+          <a href="{% url 'franchise_sales_reports' %}" class="hs-hero-btn-ghost">
+            <i class="fas fa-chart-line"></i> View Reports
+          </a>
         </div>
       </div>
 
-      <div class="hub-stat">
-        <div class="hub-stat-ico green"><i class="fas fa-chart-line"></i></div>
-        <div>
-          <div class="hub-stat-label">Your Performance</div>
-          <div class="hub-stat-val">
-            <span class="hub-status {{ profile.operational_status }}">
+      <div class="hs-hero-right">
+        <div class="hs-hero-tile">
+          <div class="hs-hero-tile-label">Status</div>
+          <div class="hs-hero-tile-val">
+            <span class="hs-badge {{ profile.operational_status }}">
               {% if profile.operational_status == 'active' %}Active
               {% elif profile.operational_status == 'setup' %}Setting Up
               {% elif profile.operational_status == 'paused' %}Paused
               {% else %}Terminated{% endif %}
             </span>
           </div>
-          <a href="{% url 'franchise_sales_reports' %}" class="hub-stat-link">View Analytics <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="hs-hero-tile">
+          <div class="hs-hero-tile-label">Territory</div>
+          <div class="hs-hero-tile-val gold">{{ profile.territory|default:"—" }}</div>
+        </div>
+        <div class="hs-hero-tile">
+          <div class="hs-hero-tile-label">Franchise ID</div>
+          <div class="hs-hero-tile-val" style="font-size:.8rem;font-family:monospace;letter-spacing:.03em">{{ profile.ref|default:"—" }}</div>
+        </div>
+        <div class="hs-hero-tile">
+          <div class="hs-hero-tile-label">Member Since</div>
+          <div class="hs-hero-tile-val" style="font-size:.82rem">{{ user.date_joined|date:"M Y" }}</div>
         </div>
       </div>
 
-      <div class="hub-stat">
-        <div class="hub-stat-ico purple"><i class="fas fa-shopping-cart"></i></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       KPI STRIP
+       ══════════════════════════════════════ -->
+  <div class="hs-kpi-strip">
+    <div class="hs-kpi-grid">
+
+      <div class="hs-kpi">
+        <div class="hs-kpi-ico gold"><i class="fas fa-coins"></i></div>
         <div>
-          <div class="hub-stat-label">Total Sales (This Month)</div>
-          <div class="hub-stat-val">${{ revenue_mtd|floatformat:0 }}</div>
-          <a href="{% url 'franchise_sales_reports' %}" class="hub-stat-link">View Reports <i class="fas fa-arrow-right"></i></a>
+          <div class="hs-kpi-label">Revenue · This Month</div>
+          <div class="hs-kpi-num">${{ revenue_mtd|floatformat:0|default:"0" }}</div>
+          <a href="{% url 'franchise_sales_reports' %}" class="hs-kpi-link">View Reports <i class="fas fa-arrow-right" style="font-size:.62rem"></i></a>
         </div>
       </div>
 
-      <div class="hub-stat">
-        <div class="hub-stat-ico gold"><i class="fas fa-star"></i></div>
+      <div class="hs-kpi">
+        <div class="hs-kpi-ico green"><i class="fas fa-shopping-bag"></i></div>
         <div>
-          <div class="hub-stat-label">Orders This Month</div>
-          <div class="hub-stat-val">{{ orders_mtd }}<span class="hub-stat-delta" style="font-size:.8rem;margin-left:4px">{{ new_orders }} new</span></div>
-          <a href="{% url 'franchise_orders' %}" class="hub-stat-link">View Orders <i class="fas fa-arrow-right"></i></a>
+          <div class="hs-kpi-label">Orders · This Month</div>
+          <div class="hs-kpi-num">
+            {{ orders_mtd|default:"0" }}
+            {% if new_orders %}<span class="sub">+{{ new_orders }} new</span>{% endif %}
+          </div>
+          <a href="{% url 'franchise_orders' %}" class="hs-kpi-link">View Orders <i class="fas fa-arrow-right" style="font-size:.62rem"></i></a>
+        </div>
+      </div>
+
+      <div class="hs-kpi">
+        <div class="hs-kpi-ico purple"><i class="fas fa-users"></i></div>
+        <div>
+          <div class="hs-kpi-label">Total Customers</div>
+          <div class="hs-kpi-num">{{ customer_count|default:"0" }}</div>
+          <a href="{% url 'franchise_customers' %}" class="hs-kpi-link">View Customers <i class="fas fa-arrow-right" style="font-size:.62rem"></i></a>
+        </div>
+      </div>
+
+      <div class="hs-kpi">
+        <div class="hs-kpi-ico cyan"><i class="fas fa-boxes"></i></div>
+        <div>
+          <div class="hs-kpi-label">Products in Catalogue</div>
+          <div class="hs-kpi-num">{{ product_count|default:"0" }}</div>
+          <a href="{% url 'franchise_my_products' %}" class="hs-kpi-link">Browse Products <i class="fas fa-arrow-right" style="font-size:.62rem"></i></a>
         </div>
       </div>
 
     </div>
   </div>
 
-  <!-- ── Main Three Columns ─────────────────────── -->
-  <div class="hub-body" id="quick-actions">
+  <!-- ══════════════════════════════════════
+       BODY: SIDEBAR + MAIN
+       ══════════════════════════════════════ -->
+  <div class="hs-body">
 
-    <!-- Col 1: Quick Actions -->
-    <div class="hub-panel">
-      <div class="hub-panel-head">
-        <div class="hub-panel-title"><i class="fas fa-bolt"></i> Quick Actions</div>
-      </div>
-      <div class="hub-qa-grid">
-        <a href="{% url 'franchise_my_products' %}" class="hub-qa-item">
-          <div class="hub-qa-ico"><i class="fas fa-box-open"></i></div>
-          <div class="hub-qa-label">Browse Products</div>
-        </a>
-        <a href="{% url 'join_program' %}" class="hub-qa-item">
-          <div class="hub-qa-ico"><i class="fas fa-graduation-cap"></i></div>
-          <div class="hub-qa-label">Access Training</div>
-        </a>
-        <a href="{% url 'franchise_sales_reports' %}" class="hub-qa-item">
-          <div class="hub-qa-ico"><i class="fas fa-chart-bar"></i></div>
-          <div class="hub-qa-label">View Reports</div>
-        </a>
-        <a href="{% url 'franchise_orders' %}" class="hub-qa-item">
-          <div class="hub-qa-ico"><i class="fas fa-shopping-bag"></i></div>
-          <div class="hub-qa-label">My Orders</div>
-        </a>
-        <a href="{% url 'contact' %}" class="hub-qa-item">
-          <div class="hub-qa-ico"><i class="fas fa-headset"></i></div>
-          <div class="hub-qa-label">Contact Support</div>
-        </a>
-        <a href="{% url 'franchise_inventory' %}" class="hub-qa-item">
-          <div class="hub-qa-ico"><i class="fas fa-truck"></i></div>
-          <div class="hub-qa-label">Supply Request</div>
-        </a>
-        <a href="{% url 'franchise_customers' %}" class="hub-qa-item">
-          <div class="hub-qa-ico"><i class="fas fa-users"></i></div>
-          <div class="hub-qa-label">My Customers</div>
-        </a>
-        <a href="{% url 'my_franchise_applications' %}" class="hub-qa-item">
-          <div class="hub-qa-ico"><i class="fas fa-file-alt"></i></div>
-          <div class="hub-qa-label">My Application</div>
-        </a>
-      </div>
-    </div>
+    <!-- ── SIDEBAR ──────────────────────────── -->
+    <aside class="hs-sidebar">
 
-    <!-- Col 2: Announcements -->
-    <div class="hub-panel">
-      <div class="hub-panel-head">
-        <div class="hub-panel-title"><i class="fas fa-bullhorn"></i> Latest Announcements</div>
-        <a href="#" class="hub-panel-link">View All <i class="fas fa-arrow-right"></i></a>
+      <!-- Quick actions -->
+      <div class="hs-card">
+        <div class="hs-card-head">
+          <div class="hs-card-title"><i class="fas fa-bolt"></i> Quick Actions</div>
+        </div>
+        <div class="hs-qa-grid">
+          <a href="{% url 'franchise_my_products' %}" class="hs-qa">
+            <div class="hs-qa-ico"><i class="fas fa-box-open"></i></div>
+            <div class="hs-qa-lbl">Products</div>
+          </a>
+          <a href="{% url 'franchise_orders' %}" class="hs-qa">
+            <div class="hs-qa-ico"><i class="fas fa-shopping-bag"></i></div>
+            <div class="hs-qa-lbl">My Orders</div>
+          </a>
+          <a href="{% url 'franchise_sales_reports' %}" class="hs-qa">
+            <div class="hs-qa-ico"><i class="fas fa-chart-bar"></i></div>
+            <div class="hs-qa-lbl">Reports</div>
+          </a>
+          <a href="{% url 'franchise_inventory' %}" class="hs-qa">
+            <div class="hs-qa-ico"><i class="fas fa-truck"></i></div>
+            <div class="hs-qa-lbl">Inventory</div>
+          </a>
+          <a href="{% url 'franchise_customers' %}" class="hs-qa">
+            <div class="hs-qa-ico"><i class="fas fa-users"></i></div>
+            <div class="hs-qa-lbl">Customers</div>
+          </a>
+          <a href="{% url 'join_program' %}" class="hs-qa">
+            <div class="hs-qa-ico"><i class="fas fa-graduation-cap"></i></div>
+            <div class="hs-qa-lbl">Training</div>
+          </a>
+          <a href="{% url 'my_franchise_applications' %}" class="hs-qa">
+            <div class="hs-qa-ico"><i class="fas fa-file-alt"></i></div>
+            <div class="hs-qa-lbl">Application</div>
+          </a>
+          <a href="{% url 'contact' %}" class="hs-qa">
+            <div class="hs-qa-ico"><i class="fas fa-headset"></i></div>
+            <div class="hs-qa-lbl">Support</div>
+          </a>
+        </div>
       </div>
-      <div class="hub-ann-list">
 
-        {% if announcements %}
-          {% for ann in announcements %}
-          <div class="hub-ann-item">
-            <span class="hub-ann-badge {{ ann.badge_type|default:'info' }}">{{ ann.badge_type|upper|default:'INFO' }}</span>
-            <div>
-              <div class="hub-ann-title">{{ ann.title }}</div>
-              <div class="hub-ann-desc">{{ ann.excerpt }}</div>
-              <div class="hub-ann-date">{{ ann.published_at|date:"M j, Y" }}</div>
+      <!-- Profile mini-card -->
+      <div class="hs-profile-mini">
+        <div class="hs-card-head" style="margin:-0px -0px 14px;padding:0 0 14px;border-bottom:1px solid var(--bd);border-radius:0">
+          <div class="hs-card-title"><i class="fas fa-id-card"></i> My Profile</div>
+        </div>
+        <div class="hs-profile-mini-top">
+          <div class="hs-profile-mini-av">
+            {% if user.safe_profile_photo_url %}
+              <img src="{{ user.safe_profile_photo_url }}" alt="">
+            {% else %}
+              <i class="fas fa-user"></i>
+            {% endif %}
+          </div>
+          <div>
+            <div class="hs-profile-mini-name">{{ user.get_full_name|default:user.username }}</div>
+            <div class="hs-profile-mini-role">
+              {% if profile.franchise_type == 'coffee_estate' %}Coffee Estates &amp; Farms
+              {% elif profile.franchise_type == 'ecommerce_distributor' %}E-commerce Distributor
+              {% elif profile.franchise_type == 'product_seller' %}Coffee Product Seller
+              {% else %}{{ profile.get_franchise_type_display|default:"Franchisee" }}{% endif %}
             </div>
           </div>
-          {% endfor %}
-        {% else %}
-          <!-- Default announcements when none are in DB -->
-          <div class="hub-ann-item">
-            <span class="hub-ann-badge new">NEW</span>
-            <div>
-              <div class="hub-ann-title">Welcome to Your Franchise Hub</div>
-              <div class="hub-ann-desc">Your franchise dashboard is now active. Explore the Quick Actions to get started.</div>
-              <div class="hub-ann-date">{{ profile.approved_at|date:"M j, Y"|default:"Recently" }}</div>
-            </div>
-          </div>
-          <div class="hub-ann-item">
-            <span class="hub-ann-badge info">INFO</span>
-            <div>
-              <div class="hub-ann-title">Complete Your Onboarding</div>
-              <div class="hub-ann-desc">Join the Field-to-Market Accelerator program to fully activate your franchise account.</div>
-              <div class="hub-ann-date">T&TG Trade Corp</div>
-            </div>
-          </div>
-          <div class="hub-ann-item">
-            <span class="hub-ann-badge update">UPDATE</span>
-            <div>
-              <div class="hub-ann-title">New Products Available</div>
-              <div class="hub-ann-desc">Browse the latest T&TG product catalogue and request stock for your territory.</div>
-              <div class="hub-ann-date">T&TG Trade Corp</div>
-            </div>
-          </div>
+        </div>
+
+        <div class="hs-profile-mini-row">
+          <i class="fas fa-envelope"></i>
+          <span><strong>Email</strong>{{ user.email }}</span>
+        </div>
+        {% if user.phone %}
+        <div class="hs-profile-mini-row">
+          <i class="fas fa-phone"></i>
+          <span><strong>Phone</strong>{{ user.phone }}</span>
+        </div>
         {% endif %}
-
-      </div>
-    </div>
-
-    <!-- Col 3: Performance Chart -->
-    <div class="hub-panel hub-col-chart">
-      <div class="hub-panel-head">
-        <div class="hub-panel-title"><i class="fas fa-chart-bar"></i> Franchise Performance</div>
-      </div>
-      <div class="hub-chart-wrap">
-        <div class="hub-chart-legend">
-          <div class="hub-legend-dot"><span style="background:#2563eb"></span> Sales</div>
-          <div class="hub-legend-dot"><span style="background:#f59e0b"></span> Target</div>
+        <div class="hs-profile-mini-row">
+          <i class="fas fa-map-marker-alt"></i>
+          <span><strong>Territory</strong>{{ profile.territory|default:"Not set" }}</span>
         </div>
-        <!-- Simple CSS bar chart — heights set via inline style -->
-        <div class="hub-bars">
-          <div class="hub-bar-group">
-            <div class="hub-bar sales"  style="height:55%"><span class="hub-bar-val">{{ chart_m1_sales|default:"—" }}</span></div>
-            <div class="hub-bar target" style="height:60%"></div>
+        <div class="hs-profile-mini-row">
+          <i class="fas fa-globe"></i>
+          <span><strong>Country</strong>{{ profile.country|default:"—" }}</span>
+        </div>
+        <div class="hs-profile-mini-row">
+          <i class="fas fa-id-badge"></i>
+          <span><strong>Franchise ID</strong><span style="font-family:monospace;font-size:.75rem">{{ profile.ref|default:"—" }}</span></span>
+        </div>
+        <div class="hs-profile-mini-row">
+          <i class="fas fa-calendar-alt"></i>
+          <span><strong>Member Since</strong>{{ user.date_joined|date:"M j, Y" }}</span>
+        </div>
+
+        <div class="hs-profile-mini-actions">
+          <a href="{% url 'profile' %}" class="hs-btn-sm ghost"><i class="fas fa-cog"></i> Edit</a>
+          <a href="{% url 'my_franchise_applications' %}" class="hs-btn-sm gold"><i class="fas fa-folder-open"></i> Applications</a>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- ── MAIN COLUMN ───────────────────────── -->
+    <div class="hs-main">
+
+      <!-- Setup notice (conditional) -->
+      {% if profile.operational_status == 'setup' %}
+      <div class="hs-notice">
+        <i class="fas fa-info-circle"></i>
+        <p>Your franchise is in the <strong>setup phase</strong>. Our team will contact you to complete onboarding. Full features unlock once your store is activated.</p>
+      </div>
+      {% endif %}
+
+      <!-- Announcements + Chart row -->
+      <div class="hs-row2">
+
+        <!-- Announcements -->
+        <div class="hs-card">
+          <div class="hs-card-head">
+            <div class="hs-card-title"><i class="fas fa-bullhorn"></i> Announcements</div>
+            <a href="#" class="hs-card-link">View All <i class="fas fa-arrow-right" style="font-size:.68rem"></i></a>
           </div>
-          <div class="hub-bar-group">
-            <div class="hub-bar sales"  style="height:63%"><span class="hub-bar-val">{{ chart_m2_sales|default:"—" }}</span></div>
-            <div class="hub-bar target" style="height:65%"></div>
+          {% if announcements %}
+            {% for ann in announcements %}
+            <div class="hs-ann-item">
+              <span class="hs-ann-badge-wrap">
+                <span class="hs-ann-badge {{ ann.badge_type|default:'info' }}">{{ ann.badge_type|upper|default:'INFO' }}</span>
+              </span>
+              <div>
+                <div class="hs-ann-title">{{ ann.title }}</div>
+                <div class="hs-ann-desc">{{ ann.excerpt }}</div>
+                <div class="hs-ann-date"><i class="fas fa-calendar" style="margin-right:4px;font-size:.65rem"></i>{{ ann.published_at|date:"M j, Y" }}</div>
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+            <div class="hs-ann-item">
+              <span class="hs-ann-badge-wrap"><span class="hs-ann-badge new">NEW</span></span>
+              <div>
+                <div class="hs-ann-title">Welcome to Your Franchisee Hub</div>
+                <div class="hs-ann-desc">Your franchise dashboard is now active. Explore Quick Actions to get started with your business.</div>
+                <div class="hs-ann-date"><i class="fas fa-calendar" style="margin-right:4px;font-size:.65rem"></i>{{ profile.approved_at|date:"M j, Y"|default:"Recently" }}</div>
+              </div>
+            </div>
+            <div class="hs-ann-item">
+              <span class="hs-ann-badge-wrap"><span class="hs-ann-badge info">INFO</span></span>
+              <div>
+                <div class="hs-ann-title">Complete Your Onboarding</div>
+                <div class="hs-ann-desc">Join the Field-to-Market Accelerator program to fully activate your franchise account and unlock all features.</div>
+                <div class="hs-ann-date"><i class="fas fa-globe" style="margin-right:4px;font-size:.65rem"></i>T&TG Trade Corp</div>
+              </div>
+            </div>
+            <div class="hs-ann-item">
+              <span class="hs-ann-badge-wrap"><span class="hs-ann-badge update">UPDATE</span></span>
+              <div>
+                <div class="hs-ann-title">New Products Available</div>
+                <div class="hs-ann-desc">Browse the latest T&TG product catalogue and request stock for your territory.</div>
+                <div class="hs-ann-date"><i class="fas fa-globe" style="margin-right:4px;font-size:.65rem"></i>T&TG Trade Corp</div>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Performance chart -->
+        <div class="hs-card">
+          <div class="hs-card-head">
+            <div class="hs-card-title"><i class="fas fa-chart-bar"></i> Performance</div>
+            <a href="{% url 'franchise_sales_reports' %}" class="hs-card-link">Full Report <i class="fas fa-arrow-right" style="font-size:.68rem"></i></a>
           </div>
-          <div class="hub-bar-group">
-            <div class="hub-bar sales"  style="height:72%"><span class="hub-bar-val">{{ chart_m3_sales|default:"—" }}</span></div>
-            <div class="hub-bar target" style="height:70%"></div>
+          <div class="hs-chart-wrap">
+            <div class="hs-chart-legend">
+              <span><b style="background:var(--g)"></b> Sales</span>
+              <span><b style="background:rgba(201,168,76,.22);border:1px solid rgba(201,168,76,.3)"></b> Target</span>
+            </div>
+            <div class="hs-bars-area">
+              <div class="hs-bar-grp">
+                <div class="hs-bar sales"  style="height:55%"></div>
+                <div class="hs-bar target" style="height:60%"></div>
+              </div>
+              <div class="hs-bar-grp">
+                <div class="hs-bar sales"  style="height:63%"></div>
+                <div class="hs-bar target" style="height:65%"></div>
+              </div>
+              <div class="hs-bar-grp">
+                <div class="hs-bar sales"  style="height:72%"></div>
+                <div class="hs-bar target" style="height:70%"></div>
+              </div>
+              <div class="hs-bar-grp">
+                <div class="hs-bar sales"  style="height:85%"></div>
+                <div class="hs-bar target" style="height:80%"></div>
+              </div>
+            </div>
+            <div class="hs-bar-labels">
+              <div class="hs-bar-lbl">{{ chart_m1_label|default:"Mon 1" }}</div>
+              <div class="hs-bar-lbl">{{ chart_m2_label|default:"Mon 2" }}</div>
+              <div class="hs-bar-lbl">{{ chart_m3_label|default:"Mon 3" }}</div>
+              <div class="hs-bar-lbl">{{ chart_m4_label|default:"Mon 4" }}</div>
+            </div>
           </div>
-          <div class="hub-bar-group">
-            <div class="hub-bar sales"  style="height:85%"><span class="hub-bar-val">{{ chart_m4_sales|default:"—" }}</span></div>
-            <div class="hub-bar target" style="height:80%"></div>
+        </div>
+
+      </div><!-- /hs-row2 -->
+
+      <!-- Support + Resources row -->
+      <div class="hs-row2">
+
+        <!-- Support -->
+        <div class="hs-support">
+          <div class="hs-support-ico"><i class="fas fa-headset"></i></div>
+          <div>
+            <strong>Franchise Support</strong>
+            <p>Need help? Our dedicated team is ready to assist you.</p>
+            <p>Call: <strong style="color:var(--tx)">+1 (416) 832 3512</strong></p>
+            <p>Email: <strong style="color:var(--tx)">tom.grouptrade@gmail.com</strong></p>
+          </div>
+          <a href="{% url 'contact' %}" class="contact">
+            <i class="fas fa-paper-plane"></i> Contact Support
+          </a>
+        </div>
+
+        <!-- Resources -->
+        <div class="hs-resources">
+          <div class="hs-card-head" style="margin:-0px -0px 10px;padding:0 0 12px;border-bottom:1px solid var(--bd)">
+            <div class="hs-card-title"><i class="fas fa-book-open"></i> Resources</div>
+          </div>
+          <div class="hs-res-links">
+            <a href="#" class="hs-res-link"><i class="fas fa-file-pdf"></i> Franchise Guide (PDF)</a>
+            <a href="#" class="hs-res-link"><i class="fas fa-paint-brush"></i> Marketing Toolkit</a>
+            <a href="{% url 'franchise_my_products' %}" class="hs-res-link"><i class="fas fa-th-list"></i> Product Catalogue</a>
+            <a href="{% url 'join_program' %}" class="hs-res-link"><i class="fas fa-play-circle"></i> Training Videos</a>
+            <a href="{% url 'my_franchise_applications' %}" class="hs-res-link"><i class="fas fa-file-contract"></i> My Agreement</a>
+            <a href="{% url 'contact' %}" class="hs-res-link"><i class="fas fa-question-circle"></i> FAQs &amp; Help</a>
           </div>
         </div>
-        <div class="hub-bar-labels">
-          <div class="hub-bar-lbl">{{ chart_m1_label|default:"Mon 1" }}</div>
-          <div class="hub-bar-lbl">{{ chart_m2_label|default:"Mon 2" }}</div>
-          <div class="hub-bar-lbl">{{ chart_m3_label|default:"Mon 3" }}</div>
-          <div class="hub-bar-lbl">{{ chart_m4_label|default:"Mon 4" }}</div>
-        </div>
-      </div>
-    </div>
 
-  </div><!-- /hub-body -->
+      </div><!-- /hs-row2 -->
 
-  <!-- ── Bottom Row ─────────────────────────────── -->
-  <div class="hub-bottom">
+    </div><!-- /hs-main -->
+  </div><!-- /hs-body -->
 
-    <!-- Support -->
-    <div class="hub-support">
-      <div class="hub-support-ico"><i class="fas fa-headset"></i></div>
-      <div class="hub-support-text">
-        <strong>Our Support</strong>
-        <p>Need help? Our support team is here for you.</p>
-        <p>Call: <strong style="color:#c8d8f0">+1 (416) 832 3512</strong></p>
-        <p>Email: <strong style="color:#c8d8f0">tom.grouptrade@gmail.com</strong></p>
-      </div>
-      <a href="{% url 'contact' %}" class="hub-support-btn">
-        <i class="fas fa-paper-plane"></i> Contact Support
-      </a>
-    </div>
-
-    <!-- Resources -->
-    <div class="hub-resources">
-      <div class="hub-res-head"><i class="fas fa-book-open"></i> Useful Resources</div>
-      <div class="hub-res-links">
-        <a href="#" class="hub-res-link"><i class="fas fa-download"></i> Franchise Guide (PDF)</a>
-        <a href="#" class="hub-res-link"><i class="fas fa-download"></i> Marketing Toolkit</a>
-        <a href="{% url 'franchise_my_products' %}" class="hub-res-link"><i class="fas fa-download"></i> Product Catalogue</a>
-        <a href="{% url 'contact' %}" class="hub-res-link"><i class="fas fa-question-circle"></i> FAQs</a>
-        <a href="{% url 'join_program' %}" class="hub-res-link"><i class="fas fa-play-circle"></i> Training Videos</a>
-        <a href="{% url 'my_franchise_applications' %}" class="hub-res-link"><i class="fas fa-file-contract"></i> My Agreement</a>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ── My Profile ────────────────────────────── -->
-  <div style="max-width:1240px;margin:28px auto 0;padding:0 1.5rem;">
-    <div class="hub-profile">
-      <div class="hub-profile-head">
-        <i class="fas fa-id-card"></i> My Profile
-      </div>
-      <div class="hub-profile-avatar">
-        {% if user.first_name %}
-          {{ user.first_name|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}
-        {% else %}
-          <i class="fas fa-user" style="font-size:1.3rem;"></i>
-        {% endif %}
-      </div>
-      <div class="hub-profile-name">{{ user.get_full_name|default:user.username }}</div>
-      <div class="hub-profile-role">
-        {% if profile.franchise_type == 'coffee_estate' %}Coffee Estates &amp; Farms
-        {% elif profile.franchise_type == 'ecommerce_distributor' %}E-commerce Distributor
-        {% elif profile.franchise_type == 'product_seller' %}Coffee-Based Product Seller
-        {% else %}{{ profile.get_franchise_type_display }}{% endif %}
-      </div>
-      <div class="hub-profile-rows">
-        <div class="hub-profile-row">
-          <span class="hub-profile-label"><i class="fas fa-envelope" style="margin-right:4px"></i>Email</span>
-          <span class="hub-profile-val">{{ user.email }}</span>
-        </div>
-        <div class="hub-profile-row">
-          <span class="hub-profile-label"><i class="fas fa-phone" style="margin-right:4px"></i>Phone</span>
-          <span class="hub-profile-val">{{ user.phone|default:"—" }}</span>
-        </div>
-        <div class="hub-profile-row">
-          <span class="hub-profile-label"><i class="fas fa-map-marker-alt" style="margin-right:4px"></i>Territory</span>
-          <span class="hub-profile-val">{{ profile.territory }}</span>
-        </div>
-        <div class="hub-profile-row">
-          <span class="hub-profile-label"><i class="fas fa-globe" style="margin-right:4px"></i>Country</span>
-          <span class="hub-profile-val">{{ profile.country }}</span>
-        </div>
-        <div class="hub-profile-row">
-          <span class="hub-profile-label"><i class="fas fa-id-badge" style="margin-right:4px"></i>Franchise ID</span>
-          <span class="hub-profile-val mono">{{ profile.ref }}</span>
-        </div>
-        <div class="hub-profile-row">
-          <span class="hub-profile-label"><i class="fas fa-hashtag" style="margin-right:4px"></i>Member ID</span>
-          <span class="hub-profile-val mono">{{ user.unique_id|default:"—" }}</span>
-        </div>
-        <div class="hub-profile-row">
-          <span class="hub-profile-label"><i class="fas fa-calendar-alt" style="margin-right:4px"></i>Member Since</span>
-          <span class="hub-profile-val">{{ user.date_joined|date:"M j, Y" }}</span>
-        </div>
-        <div class="hub-profile-row">
-          <span class="hub-profile-label"><i class="fas fa-circle" style="margin-right:4px"></i>Status</span>
-          <span class="hub-profile-val">
-            <span class="hub-status {{ profile.operational_status }}">
-              {% if profile.operational_status == 'active' %}Active
-              {% elif profile.operational_status == 'setup' %}Setting Up
-              {% elif profile.operational_status == 'paused' %}Paused
-              {% else %}Terminated{% endif %}
-            </span>
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── Hub Footer ──────────────────────────────── -->
-  <div class="hub-footer">
-    <div class="hub-footer-inner">
-      <div class="hub-footer-brand">
-        <i class="fas fa-globe" style="color:#3b82f6;font-size:1.1rem"></i>
-        <strong style="color:#e0eaff;font-size:.9rem">T&TG Trade Corporation</strong>
+  <!-- ══════════════════════════════════════
+       FOOTER
+       ══════════════════════════════════════ -->
+  <div class="hs-footer">
+    <div class="hs-footer-inner">
+      <div class="hs-footer-brand">
+        <div class="mark"><i class="fas fa-globe" style="font-size:.7rem;color:#060f1e"></i></div>
+        <strong>T&TG Trade Corporation</strong>
         <span class="tagline">— Together, We Grow Globally</span>
       </div>
-      <div class="hub-footer-info">
-        <span class="hub-footer-item"><i class="fas fa-globe"></i> www.tntg-corp.com</span>
-        <span class="hub-footer-item"><i class="fas fa-envelope"></i> info@tntg-corp.com</span>
-        <span class="hub-footer-item"><i class="fas fa-map-marker-alt"></i> Toronto, Ontario, Canada</span>
+      <div class="hs-footer-info">
+        <span><i class="fas fa-globe"></i> www.tntg-corp.com</span>
+        <span><i class="fas fa-envelope"></i> info@tntg-corp.com</span>
+        <span><i class="fas fa-map-marker-alt"></i> Toronto, Ontario, Canada</span>
       </div>
-      <div class="hub-footer-social">
-        <a href="#" class="hub-soc"><i class="fab fa-linkedin-in"></i></a>
-        <a href="#" class="hub-soc"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" class="hub-soc"><i class="fab fa-youtube"></i></a>
-        <a href="#" class="hub-soc"><i class="fab fa-x-twitter"></i></a>
+      <div class="hs-footer-social">
+        <a href="#" class="hs-soc"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" class="hs-soc"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="hs-soc"><i class="fab fa-youtube"></i></a>
+        <a href="#" class="hs-soc"><i class="fab fa-x-twitter"></i></a>
       </div>
     </div>
   </div>
 
-</div><!-- /hub-wrap -->
-{% endblock %}
+</div><!-- /hs-wrap -->
 
+<!-- ══════════════════════════════════════
+     PHOTO UPLOAD JS
+     ══════════════════════════════════════ -->
+<script>
+(function(){
+  const input    = document.getElementById('hs-photo-input');
+  const imgEl    = document.getElementById('hs-av-img');
+  const phEl     = document.getElementById('hs-av-ph');
+  const toast    = document.getElementById('hs-toast');
+  const toastMsg = document.getElementById('hs-toast-msg');
+  const toastIco = document.getElementById('hs-toast-ico');
+  let timer;
+
+  function showToast(msg, err) {
+    toastMsg.textContent = msg;
+    toastIco.className = err ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
+    toast.style.borderColor = err ? 'rgba(220,53,69,.5)' : 'rgba(201,168,76,.35)';
+    toast.classList.add('show');
+    clearTimeout(timer);
+    timer = setTimeout(() => toast.classList.remove('show'), 3200);
+  }
+
+  if (!input) return;
+  input.addEventListener('change', function(){
+    const file = this.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      imgEl.src = e.target.result;
+      imgEl.style.display = 'block';
+      if (phEl) phEl.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+    const fd = new FormData();
+    fd.append('profile_photo', file);
+    fd.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+    fetch('{% url "upload_profile_photo" %}', {
+      method: 'POST', body: fd,
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+    .then(r => r.json())
+    .then(d => {
+      if (d.ok) { if (d.url) imgEl.src = d.url; showToast('Profile photo updated.', false); }
+      else showToast(d.error || 'Upload failed.', true);
+    })
+    .catch(() => showToast('Upload failed. Please try again.', true));
+  });
+})();
+</script>
+
+{% endblock %}
 {% block footer %}{% endblock %}
