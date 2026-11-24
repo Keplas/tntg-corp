@@ -1024,7 +1024,7 @@ def confirm_google_login(request):
 
 @login_required
 def upload_profile_photo(request):
-    """AJAX endpoint — saves profile_photo, returns new URL as JSON."""
+    """AJAX endpoint — saves profile_photo to Cloudinary (or local fallback), returns new URL as JSON."""
     from django.http import JsonResponse
     if request.method != 'POST':
         return JsonResponse({'ok': False, 'error': 'POST required'}, status=405)
@@ -1036,7 +1036,37 @@ def upload_profile_photo(request):
         return JsonResponse({'ok': False, 'error': 'Only JPEG, PNG, WebP or GIF allowed'}, status=400)
     if photo.size > 5 * 1024 * 1024:
         return JsonResponse({'ok': False, 'error': 'File too large (max 5 MB)'}, status=400)
+
     user = request.user
+
+    # Try Cloudinary first — this ensures the photo persists across container restarts.
+    # Django's DEFAULT_FILE_STORAGE routes through Cloudinary when env vars are set, but
+    # calling cloudinary.uploader.upload() directly guarantees we get the secure URL back.
+    from django.conf import settings as djsettings
+    if getattr(djsettings, 'USE_CLOUDINARY', False):
+        try:
+            import cloudinary.uploader
+            photo.seek(0)
+            result = cloudinary.uploader.upload(
+                photo,
+                folder='profiles',
+                public_id=f'user_{user.pk}',
+                overwrite=True,
+                invalidate=True,
+                transformation=[{'width': 400, 'height': 400, 'crop': 'fill', 'gravity': 'face'}],
+            )
+            # Store the public_id in the DB field so safe_profile_photo_url can resolve it
+            user.profile_photo = result['public_id']
+            user.save(update_fields=['profile_photo'])
+            secure_url = result.get('secure_url', '')
+            return JsonResponse({'ok': True, 'url': secure_url})
+        except Exception as exc:
+            # Fall through to local storage on any Cloudinary error
+            import logging
+            logging.getLogger(__name__).warning('Cloudinary upload failed, falling back to local: %s', exc)
+
+    # Local storage fallback (dev / when Cloudinary is not configured)
+    photo.seek(0)
     user.profile_photo = photo
     user.save(update_fields=['profile_photo'])
     url = user.safe_profile_photo_url

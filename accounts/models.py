@@ -97,12 +97,24 @@ class CustomUser(AbstractUser):
         if not self.profile_photo:
             return None
         try:
-            url = self.profile_photo.url
-            if url.startswith('http'):
-                return url
-            import os
+            field_val = str(self.profile_photo)
+            # Already a full URL (e.g. stored directly as https://...)
+            if field_val.startswith('http'):
+                return field_val
+            # Cloudinary public_id — build the secure delivery URL
             from django.conf import settings as djsettings
-            local_path = os.path.join(djsettings.MEDIA_ROOT, str(self.profile_photo))
+            if getattr(djsettings, 'USE_CLOUDINARY', False):
+                try:
+                    import cloudinary
+                    return cloudinary.CloudinaryImage(field_val).build_url(
+                        width=400, height=400, crop='fill', gravity='face', secure=True
+                    )
+                except Exception:
+                    pass
+            # Local file — only return URL if the file actually exists on disk
+            url = self.profile_photo.url
+            import os
+            local_path = os.path.join(djsettings.MEDIA_ROOT, field_val)
             if os.path.exists(local_path):
                 return url
             return None
