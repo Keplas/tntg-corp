@@ -710,6 +710,155 @@
 
 <div class="hub-wrap">
 
+  <!-- ── Compact profile bar ───────────────────── -->
+  <div style="
+    background:#060f1e;
+    border-bottom:1px solid rgba(201,168,76,.18);
+    padding:13px 0;
+  ">
+    <div class="container">
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+
+        <!-- Avatar + camera upload -->
+        <div style="position:relative;flex-shrink:0">
+          {% if user.safe_profile_photo_url %}
+            <img src="{{ user.safe_profile_photo_url }}" alt="{{ user.get_full_name|default:user.username }}"
+                 id="hs-avatar-img"
+                 style="width:52px;height:52px;border-radius:50%;border:2px solid rgba(201,168,76,.45);object-fit:cover;display:block">
+          {% else %}
+            <div id="hs-avatar-placeholder" style="
+              width:52px;height:52px;border-radius:50%;
+              border:2px solid rgba(201,168,76,.35);
+              background:rgba(201,168,76,.07);
+              display:flex;align-items:center;justify-content:center;
+              color:rgba(201,168,76,.65);font-size:1.3rem
+            "><i class="fas fa-user"></i></div>
+            <img src="" alt="" id="hs-avatar-img" style="width:52px;height:52px;border-radius:50%;border:2px solid rgba(201,168,76,.45);object-fit:cover;display:none">
+          {% endif %}
+          <label title="Change profile photo" style="
+            position:absolute;bottom:0;right:0;
+            width:20px;height:20px;
+            background:#c9a84c;color:#060f1e;
+            border-radius:50%;border:2px solid #060f1e;
+            display:flex;align-items:center;justify-content:center;
+            font-size:.52rem;cursor:pointer;
+          ">
+            <i class="fas fa-camera"></i>
+            <input type="file" accept="image/*" id="hs-photo-input" aria-label="Upload profile photo"
+                   style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;border-radius:50%">
+          </label>
+        </div>
+
+        <!-- Name + meta + badge -->
+        <div style="flex:1;min-width:0">
+          <div style="font-family:'Manrope',sans-serif;font-weight:800;font-size:1rem;color:#fff;letter-spacing:-.01em;line-height:1.2;margin-bottom:2px">
+            {{ user.get_full_name|default:user.username }}
+          </div>
+          <div style="color:#7a8fa8;font-size:.78rem;display:flex;flex-wrap:wrap;gap:4px 14px;margin-bottom:6px">
+            <span style="display:flex;align-items:center;gap:5px">
+              <i class="fas fa-envelope" style="color:#c9a84c;font-size:.68rem"></i> {{ user.email }}
+            </span>
+            {% if user.phone %}
+            <span style="display:flex;align-items:center;gap:5px">
+              <i class="fas fa-phone" style="color:#c9a84c;font-size:.68rem"></i> {{ user.phone }}
+            </span>
+            {% endif %}
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <span style="
+              background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.22);
+              color:#c9a84c;padding:2px 10px;border-radius:99px;
+              font-size:.67rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
+              display:inline-flex;align-items:center;gap:5px
+            "><i class="fas fa-store"></i> {{ profile.get_operational_status_display }}</span>
+            <span style="
+              background:rgba(201,168,76,.09);border:1px solid rgba(201,168,76,.22);
+              color:#c9a84c;padding:2px 10px;border-radius:99px;
+              font-size:.67rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
+              display:inline-flex;align-items:center;gap:5px
+            "><i class="fas fa-map-marker-alt"></i> {{ profile.territory }}</span>
+          </div>
+        </div>
+
+        <!-- Action buttons -->
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-left:auto">
+          <a href="{% url 'my_franchise_applications' %}" style="
+            background:transparent;color:#c9a84c;
+            border:1px solid rgba(201,168,76,.35);
+            padding:7px 16px;border-radius:7px;
+            font-size:.78rem;font-weight:700;
+            text-decoration:none;
+            display:inline-flex;align-items:center;gap:7px;
+            transition:background .2s;
+          " onmouseover="this.style.background='rgba(201,168,76,.1)'" onmouseout="this.style.background='transparent'">
+            <i class="fas fa-folder-open"></i> My Applications
+          </a>
+          <a href="{% url 'profile' %}" style="
+            background:transparent;color:#c9a84c;
+            border:1px solid rgba(201,168,76,.35);
+            padding:7px 16px;border-radius:7px;
+            font-size:.78rem;font-weight:700;
+            text-decoration:none;
+            display:inline-flex;align-items:center;gap:7px;
+            transition:background .2s;
+          " onmouseover="this.style.background='rgba(201,168,76,.1)'" onmouseout="this.style.background='transparent'">
+            <i class="fas fa-cog"></i> Edit Profile
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- photo upload toast -->
+  <div id="hs-upload-toast" style="
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+    background:#0d1f35;border:1px solid rgba(201,168,76,.35);color:#c8d8e8;
+    padding:12px 24px;border-radius:10px;font-size:.84rem;font-weight:500;
+    display:flex;align-items:center;gap:10px;
+    box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:9999;
+    opacity:0;pointer-events:none;transition:opacity .3s ease;
+  ">
+    <i id="hs-toast-ico" class="fas fa-check-circle" style="color:#c9a84c"></i>
+    <span id="hs-upload-msg">Profile photo updated.</span>
+  </div>
+
+  <script>
+  (function(){
+    const input    = document.getElementById('hs-photo-input');
+    const imgEl    = document.getElementById('hs-avatar-img');
+    const phEl     = document.getElementById('hs-avatar-placeholder');
+    const toast    = document.getElementById('hs-upload-toast');
+    const toastMsg = document.getElementById('hs-upload-msg');
+    const toastIco = document.getElementById('hs-toast-ico');
+    let timer;
+    function showToast(msg, err) {
+      toastMsg.textContent = msg;
+      toastIco.className = err ? 'fas fa-exclamation-circle' : 'fas fa-check-circle';
+      toast.style.borderColor = err ? 'rgba(220,53,69,.5)' : 'rgba(201,168,76,.35)';
+      toast.style.opacity = '1'; toast.style.pointerEvents = 'auto';
+      clearTimeout(timer);
+      timer = setTimeout(() => { toast.style.opacity = '0'; toast.style.pointerEvents = 'none'; }, 3200);
+    }
+    if (!input) return;
+    input.addEventListener('change', function(){
+      const file = this.files[0]; if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        imgEl.src = e.target.result; imgEl.style.display = '';
+        if (phEl) phEl.style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+      const fd = new FormData();
+      fd.append('profile_photo', file);
+      fd.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+      fetch('{% url "upload_profile_photo" %}', { method:'POST', body:fd, headers:{'X-Requested-With':'XMLHttpRequest'} })
+        .then(r => r.json())
+        .then(d => { if (d.ok) { if (d.url) imgEl.src = d.url; showToast('Profile photo updated.', false); } else showToast(d.error || 'Upload failed.', true); })
+        .catch(() => showToast('Upload failed. Please try again.', true));
+    });
+  })();
+  </script>
 
   <!-- ── Setup notice ───────────────────────────── -->
   {% if profile.operational_status == 'setup' %}
