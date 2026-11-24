@@ -61,7 +61,7 @@ def franchise_hub(request):
     }
     if request.user.is_authenticated:
         from .models import FranchiseApplication as FA
-        ctx['user_applications'] = FA.objects.filter(user=request.user).order_by('-submitted_at')[:5]
+        ctx['user_applications'] = FA.objects.filter(user=request.user).order_by('-created_at')[:5]
     return render(request, 'services/franchise_hub.html', ctx)
 
 
