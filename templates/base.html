@@ -651,6 +651,57 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  <a href="{% url 'forex' %}" class="tg-dd-item"><span class="tg-dd-ico"><i class="fas fa-chart-line"></i></span>Live Exchange Rates</a>
  </div>
  </li>
+ <!-- B2B dropdown — Resellers, Suppliers, Shipping companies -->
+ <li>
+ <button class="tg-nl {% if 'b2b' in request.path or 'reseller' in request.resolver_match.url_name|default:'' or 'supplier' in request.resolver_match.url_name|default:'' or 'shipping' in request.resolver_match.url_name|default:'' %}tg-active{% endif %}">
+   <i class="fas fa-network-wired" style="color:#c9a84c;font-size:.8rem;margin-right:5px"></i>B2B <i class="fas fa-chevron-down tg-caret"></i>
+ </button>
+ <div class="tg-dd tg-mega" style="min-width:480px">
+   <div class="tg-dd-col">
+     <div class="tg-dd-label">B2B Partners</div>
+     <a href="{% url 'b2b_landing' %}" class="tg-dd-item {% if request.resolver_match.url_name == 'b2b_landing' %}tg-active{% endif %}">
+       <span class="tg-dd-ico"><i class="fas fa-network-wired" style="color:#c9a84c"></i></span>
+       <div>
+         <div style="font-weight:600">B2B Overview</div>
+         <div style="font-size:.74rem;color:#888;margin-top:.1rem">All partner programmes</div>
+       </div>
+     </a>
+     <a href="{% url 'reseller_dashboard' %}" class="tg-dd-item {% if 'reseller' in request.resolver_match.url_name|default:'' %}tg-active{% endif %}">
+       <span class="tg-dd-ico"><i class="fas fa-store-alt" style="color:#c9a84c"></i></span>
+       <div>
+         <div style="font-weight:600">Reseller Portal</div>
+         <div style="font-size:.74rem;color:#888;margin-top:.1rem">Wholesale catalog &amp; bulk orders</div>
+       </div>
+     </a>
+   </div>
+   <div class="tg-dd-sep"></div>
+   <div class="tg-dd-col">
+     <div class="tg-dd-label">Supply &amp; Logistics</div>
+     <a href="{% url 'supplier_portal' %}" class="tg-dd-item {% if 'supplier' in request.resolver_match.url_name|default:'' %}tg-active{% endif %}">
+       <span class="tg-dd-ico"><i class="fas fa-seedling" style="color:#c9a84c"></i></span>
+       <div>
+         <div style="font-weight:600">Supplier Portal</div>
+         <div style="font-size:.74rem;color:#888;margin-top:.1rem">Submit deals &amp; documents</div>
+       </div>
+     </a>
+     <a href="{% url 'shipping_portal' %}" class="tg-dd-item {% if 'shipping' in request.resolver_match.url_name|default:'' %}tg-active{% endif %}">
+       <span class="tg-dd-ico"><i class="fas fa-ship" style="color:#c9a84c"></i></span>
+       <div>
+         <div style="font-weight:600">Shipping Portal</div>
+         <div style="font-size:.74rem;color:#888;margin-top:.1rem">Upload shipment documents</div>
+       </div>
+     </a>
+     <div style="height:1px;background:rgba(201,168,76,.1);margin:6px 8px"></div>
+     <a href="{% url 'b2b_apply' %}" class="tg-dd-item" style="color:#c9a84c">
+       <span class="tg-dd-ico"><i class="fas fa-paper-plane"></i></span>
+       <div>
+         <div style="font-weight:600">Apply to Partner</div>
+         <div style="font-size:.74rem;color:#888;margin-top:.1rem">Free reseller application</div>
+       </div>
+     </a>
+   </div>
+ </div>
+ </li>
  <!-- Programs dropdown — groups Loyalty, Onboarding, Professional Services, Franchise -->
  <li>
  <button class="tg-nl {% if request.resolver_match.url_name == 'loyalty_info' or request.resolver_match.url_name == 'join_program' or 'pro_' in request.resolver_match.url_name|default:'' or request.resolver_match.url_name == 'franchise_hub' %}tg-active{% endif %}">
@@ -902,6 +953,39 @@ li:focus-within > .tg-dd.tg-end { transform: translateY(0); }
  <a href="{% url 'trade_ecommerce' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"><i class="fas fa-handshake"></i></span>Trade & e-Commerce</a>
  <a href="{% url 'import_export' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"><i class="fas fa-ship"></i></span>Import & Export</a>
  <a href="{% url 'forex' %}" class="tg-mob-sub-item"><span class="tg-dd-ico"><i class="fas fa-chart-line"></i></span>Live Exchange Rates</a>
+ </div>
+ </li>
+
+ <!-- B2B -->
+ <li class="tg-mob-li">
+ <button class="tg-mob-link tg-mob-toggle {% if 'b2b' in request.path or 'reseller' in request.resolver_match.url_name|default:'' or 'supplier' in request.resolver_match.url_name|default:'' or 'shipping' in request.resolver_match.url_name|default:'' %}tg-active{% endif %}">
+   <i class="fas fa-network-wired" style="color:#c9a84c;margin-right:8px;font-size:.85rem"></i>B2B Partners <i class="fas fa-chevron-down tg-mob-caret"></i>
+ </button>
+ <div class="tg-mob-sub">
+   <div class="tg-mob-sub-label">Partner Portals</div>
+   <a href="{% url 'b2b_landing' %}" class="tg-mob-sub-item {% if request.resolver_match.url_name == 'b2b_landing' %}tg-active{% endif %}">
+     <span class="tg-dd-ico"><i class="fas fa-network-wired" style="color:#c9a84c"></i></span>B2B Overview
+   </a>
+   <a href="{% url 'reseller_dashboard' %}" class="tg-mob-sub-item {% if 'reseller' in request.resolver_match.url_name|default:'' %}tg-active{% endif %}">
+     <span class="tg-dd-ico"><i class="fas fa-store-alt" style="color:#c9a84c"></i></span>Reseller Portal
+   </a>
+   <div class="tg-mob-sub-label" style="margin-top:8px">Supply &amp; Logistics</div>
+   <a href="{% url 'supplier_portal' %}" class="tg-mob-sub-item {% if 'supplier' in request.resolver_match.url_name|default:'' %}tg-active{% endif %}">
+     <span class="tg-dd-ico"><i class="fas fa-seedling" style="color:#c9a84c"></i></span>Supplier Portal
+   </a>
+   <a href="{% url 'shipping_portal' %}" class="tg-mob-sub-item {% if 'shipping' in request.resolver_match.url_name|default:'' %}tg-active{% endif %}">
+     <span class="tg-dd-ico"><i class="fas fa-ship" style="color:#c9a84c"></i></span>Shipping Portal
+   </a>
+   <div style="height:1px;background:rgba(201,168,76,.1);margin:6px 0 2px"></div>
+   <a href="{% url 'b2b_apply' %}" class="tg-mob-sub-item" style="color:#c9a84c;font-weight:600">
+     <span class="tg-dd-ico"><i class="fas fa-paper-plane"></i></span>Apply to Partner
+   </a>
+   <a href="{% url 'supplier_register' %}" class="tg-mob-sub-item">
+     <span class="tg-dd-ico"><i class="fas fa-seedling"></i></span>Register as Supplier
+   </a>
+   <a href="{% url 'shipping_register' %}" class="tg-mob-sub-item">
+     <span class="tg-dd-ico"><i class="fas fa-ship"></i></span>Register Shipping Company
+   </a>
  </div>
  </li>
 
