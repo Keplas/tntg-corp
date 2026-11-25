@@ -1,289 +1,907 @@
 {% extends 'base.html' %}
-{% block title %}{{ product.name }} — T&TG Shopping Platform
- <!-- Review submission -->
- <div class="mt-5">
- <h5 class="text-gold mb-3">Leave a Review</h5>
- {% if user.is_authenticated %}
- <form method="POST" action="{% url 'submit_review' product.pk %}" class="glass-card p-4" style="border-radius:16px">
- {% csrf_token %}
- <div class="mb-3">
- <label class="text-muted mb-2 d-block" style="font-size:.8rem">Rating</label>
- <div class="d-flex gap-2">
- {% for i in "12345"|make_list %}
- <label style="cursor:pointer;font-size:1.6rem">
- <input type="radio" name="rating" value="{{ forloop.counter }}" style="display:none" {% if forloop.counter == 5 %}checked{% endif %}>
- <span class="star-label" data-val="{{ forloop.counter }}">⭐</span>
- </label>
- {% endfor %}
- </div>
- </div>
- <div class="mb-3">
- <label class="text-muted mb-1 d-block" style="font-size:.8rem">Your Review</label>
- <textarea name="comment" rows="3" class="form-control" style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);color:#e0d5c0;border-radius:10px" placeholder="Share your experience with this coffee..."></textarea>
- </div>
- <button type="submit" 
-        <a class="btn btn-gold px-4">Submit Review</button>
- </form>
- {% else %}
- <div class="glass-card p-4 text-center" style="border-radius:16px">
- <p class="text-muted">Please <a href="{% url 'login' %}" class="text-gold">sign in</a> to leave a review.</p>
- </div>
- {% endif %}
- </div>
+{% block title %}{{ product.name }} — T&TG Trade Corp{% endblock %}
 
-<form id="add-cart-form" method="POST" action="{% url 'cart_add' product.pk %}" style="display:none">
-  {% csrf_token %}<input name="quantity" value="1">
-</form>
-<script>
-function addToCart(e, pk){
-  e.preventDefault();
-  document.getElementById('add-cart-form').submit();
+{% block extra_head %}
+<style>
+/* ═══════════════════════════════════════
+   PRODUCT DETAIL — Professional Redesign
+   ═══════════════════════════════════════ */
+
+/* ── Layout ─────────────────────────── */
+.pd-wrap {
+  padding: 2rem 0 4rem;
 }
-</script>
+.pd-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+@media (max-width: 991px) {
+  .pd-grid { grid-template-columns: 1fr; gap: 2rem; }
+}
+
+/* ── Breadcrumb ─────────────────────── */
+.pd-breadcrumb {
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(201,168,76,.1);
+  margin-bottom: 2rem;
+}
+.pd-breadcrumb a {
+  color: rgba(201,168,76,.7);
+  font-size: .78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.pd-breadcrumb a:hover { color: #c9a84c; }
+.pd-breadcrumb span {
+  color: rgba(255,255,255,.25);
+  margin: 0 8px;
+  font-size: .78rem;
+}
+.pd-breadcrumb .current {
+  color: rgba(255,255,255,.55);
+  font-size: .78rem;
+}
+
+/* ── Image panel ────────────────────── */
+.pd-img-panel {
+  position: sticky;
+  top: 90px;
+}
+.pd-img-main {
+  border-radius: 20px;
+  overflow: hidden;
+  background: linear-gradient(145deg, #0d1f35, #0a1829);
+  border: 1px solid rgba(201,168,76,.15);
+  aspect-ratio: 4/3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.pd-img-main img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .4s ease;
+}
+.pd-img-main:hover img { transform: scale(1.03); }
+.pd-img-placeholder {
+  font-size: 7rem;
+  opacity: .18;
+  user-select: none;
+}
+.pd-img-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pd-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 11px;
+  border-radius: 100px;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.pd-badge-gold {
+  background: linear-gradient(135deg,#c9a84c,#e8c96a);
+  color: #030c18;
+}
+.pd-badge-navy {
+  background: rgba(10,37,64,.85);
+  border: 1px solid rgba(201,168,76,.35);
+  color: #c9a84c;
+  backdrop-filter: blur(8px);
+}
+.pd-badge-green {
+  background: rgba(0,200,150,.12);
+  border: 1px solid rgba(0,200,150,.3);
+  color: #00c896;
+}
+
+/* ── Trust strip ────────────────────── */
+.pd-trust {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+.pd-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .72rem;
+  color: rgba(255,255,255,.45);
+  font-weight: 600;
+}
+.pd-trust-item i { color: #c9a84c; font-size: .75rem; }
+
+/* ── Info panel ─────────────────────── */
+.pd-info {}
+
+.pd-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.pd-name {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.15;
+  margin-bottom: 6px;
+  letter-spacing: -.02em;
+}
+
+.pd-origin {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .78rem;
+  color: rgba(255,255,255,.45);
+  margin-bottom: 20px;
+}
+.pd-origin i { color: #c9a84c; }
+.pd-origin strong { color: rgba(255,255,255,.75); }
+
+/* ── Price block ────────────────────── */
+.pd-price-block {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 18px 20px;
+  background: rgba(201,168,76,.05);
+  border: 1px solid rgba(201,168,76,.18);
+  border-radius: 14px;
+  margin-bottom: 20px;
+}
+.pd-price {
+  font-size: 2.4rem;
+  font-weight: 900;
+  background: linear-gradient(135deg,#c9a84c,#e8c96a);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+.pd-unit {
+  font-size: .8rem;
+  color: rgba(255,255,255,.4);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+.pd-stock {
+  margin-left: auto;
+  text-align: right;
+}
+.pd-stock-num {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #00c896;
+}
+.pd-stock-label {
+  font-size: .68rem;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: rgba(255,255,255,.35);
+  font-weight: 600;
+}
+
+/* ── Loyalty card ───────────────────── */
+.pd-loyalty {
+  background: linear-gradient(135deg, rgba(13,31,53,.9), rgba(10,24,48,.9));
+  border: 1px solid rgba(201,168,76,.2);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+.pd-loyalty-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: #c9a84c;
+  margin-bottom: 12px;
+}
+.pd-loyalty-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+.pd-loyalty-cell {
+  text-align: center;
+  padding: 8px 4px;
+  background: rgba(0,0,0,.2);
+  border-radius: 10px;
+  border: 1px solid rgba(201,168,76,.08);
+}
+.pd-loyalty-val {
+  font-size: .78rem;
+  font-weight: 800;
+  color: #00c896;
+  line-height: 1.2;
+}
+.pd-loyalty-key {
+  font-size: .62rem;
+  color: rgba(255,255,255,.35);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-top: 2px;
+}
+.pd-loyalty-note {
+  margin-top: 10px;
+  font-size: .68rem;
+  color: rgba(255,255,255,.35);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: center;
+}
+.pd-loyalty-note i { color: #c9a84c; }
+
+/* ── Description ────────────────────── */
+.pd-desc {
+  font-size: .88rem;
+  color: rgba(255,255,255,.55);
+  line-height: 1.75;
+  margin-bottom: 20px;
+}
+
+/* ── Action buttons ─────────────────── */
+.pd-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+.pd-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: .82rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+  border-radius: 10px;
+  padding: 10px 18px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all .22s ease;
+  white-space: nowrap;
+  line-height: 1;
+}
+.pd-btn-primary {
+  background: linear-gradient(135deg,#c9a84c,#e8c96a);
+  color: #030c18;
+  flex: 1 1 160px;
+  min-width: 0;
+  box-shadow: 0 4px 16px rgba(201,168,76,.2);
+}
+.pd-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(201,168,76,.35);
+  color: #030c18;
+  filter: brightness(1.06);
+}
+.pd-btn-secondary {
+  background: rgba(10,37,64,.7);
+  color: #c9a84c;
+  border: 1px solid rgba(201,168,76,.35);
+  flex: 1 1 160px;
+  min-width: 0;
+}
+.pd-btn-secondary:hover {
+  background: rgba(201,168,76,.1);
+  color: #e8c96a;
+  border-color: rgba(201,168,76,.6);
+  transform: translateY(-1px);
+}
+.pd-btn-icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  flex-shrink: 0;
+  border-radius: 10px;
+}
+.pd-btn-wish {
+  background: rgba(239,68,68,.07);
+  color: #f87171;
+  border: 1px solid rgba(239,68,68,.3);
+}
+.pd-btn-wish:hover {
+  background: rgba(239,68,68,.15);
+  border-color: rgba(239,68,68,.6);
+  color: #fca5a5;
+  transform: translateY(-1px);
+}
+.pd-btn-back {
+  background: rgba(201,168,76,.06);
+  color: #c9a84c;
+  border: 1px solid rgba(201,168,76,.25);
+}
+.pd-btn-back:hover {
+  background: rgba(201,168,76,.14);
+  border-color: rgba(201,168,76,.5);
+  color: #e8c96a;
+  transform: translateY(-1px);
+}
+
+/* ── Video link ─────────────────────── */
+.pd-video-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .78rem;
+  font-weight: 700;
+  color: #c9a84c;
+  border: 1px solid rgba(201,168,76,.25);
+  background: rgba(201,168,76,.06);
+  padding: 7px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all .2s;
+  margin-bottom: 16px;
+}
+.pd-video-link:hover {
+  background: rgba(201,168,76,.14);
+  color: #e8c96a;
+}
+
+/* ── Tabs ────────────────────────────── */
+.pd-lower { margin-top: 3rem; }
+.pd-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid rgba(201,168,76,.15);
+  margin-bottom: 2rem;
+}
+.pd-tab {
+  padding: 10px 20px;
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.4);
+  cursor: pointer;
+  border: none;
+  background: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all .2s;
+}
+.pd-tab:hover { color: rgba(201,168,76,.7); }
+.pd-tab.active {
+  color: #c9a84c;
+  border-bottom-color: #c9a84c;
+}
+.pd-tab-content { display: none; }
+.pd-tab-content.active { display: block; }
+
+/* ── Reviews ────────────────────────── */
+.rv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+.rv-card {
+  background: rgba(13,31,53,.8);
+  border: 1px solid rgba(201,168,76,.12);
+  border-radius: 14px;
+  padding: 16px;
+}
+.rv-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.rv-name {
+  font-size: .82rem;
+  font-weight: 700;
+  color: #fff;
+}
+.rv-date {
+  font-size: .68rem;
+  color: rgba(255,255,255,.3);
+  margin-top: 2px;
+}
+.rv-stars { color: #c9a84c; font-size: .8rem; letter-spacing: 1px; }
+.rv-text {
+  font-size: .82rem;
+  color: rgba(255,255,255,.5);
+  line-height: 1.65;
+}
+
+/* ── Review form ────────────────────── */
+.rv-form {
+  background: rgba(13,31,53,.8);
+  border: 1px solid rgba(201,168,76,.18);
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 540px;
+}
+.rv-form label {
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: rgba(255,255,255,.4);
+  font-weight: 700;
+  display: block;
+  margin-bottom: 8px;
+}
+.rv-form .form-control {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(201,168,76,.18);
+  color: #e0d5c0;
+  border-radius: 10px;
+  font-size: .85rem;
+}
+.rv-form .form-control:focus {
+  background: rgba(255,255,255,.07);
+  border-color: rgba(201,168,76,.4);
+  box-shadow: 0 0 0 3px rgba(201,168,76,.08);
+  color: #fff;
+}
+.star-row { display: flex; gap: 6px; }
+.star-row label {
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: inline-block;
+  margin: 0;
+  transition: transform .15s;
+}
+.star-row label:hover { transform: scale(1.15); }
+
+/* ── Related products ───────────────── */
+.rp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 14px;
+}
+.rp-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(201,168,76,.12);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all .25s;
+  display: flex;
+  flex-direction: column;
+}
+.rp-card:hover {
+  border-color: rgba(201,168,76,.3);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
+}
+.rp-img {
+  height: 130px;
+  background: linear-gradient(135deg,#0d1f35,#0a1829);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.rp-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .3s;
+}
+.rp-card:hover .rp-img img { transform: scale(1.06); }
+.rp-ph { font-size: 2.5rem; opacity: .2; }
+.rp-body { padding: 12px 14px; flex: 1; }
+.rp-name {
+  font-size: .78rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.rp-price {
+  font-size: .95rem;
+  font-weight: 800;
+  color: #c9a84c;
+}
+.rp-foot {
+  padding: 0 14px 12px;
+  display: flex;
+  gap: 7px;
+}
+
+/* ── B2B banner ─────────────────────── */
+.pd-b2b-banner {
+  background: linear-gradient(90deg, #030c18, #061420 60%, #030c18);
+  border-bottom: 1px solid rgba(201,168,76,.2);
+  padding: 11px 0;
+}
+.pd-b2b-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.pd-b2b-left { display: flex; align-items: center; gap: 12px; }
+.pd-b2b-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(201,168,76,.1);
+  border: 1px solid rgba(201,168,76,.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c9a84c;
+  font-size: .85rem;
+  flex-shrink: 0;
+}
+.pd-b2b-label {
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(201,168,76,.65);
+  line-height: 1;
+}
+.pd-b2b-name {
+  font-size: .85rem;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 2px;
+}
+.pd-b2b-name span { color: rgba(255,255,255,.4); font-weight: 400; font-size: .75rem; }
+.pd-b2b-verified {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(76,175,80,.1);
+  border: 1px solid rgba(76,175,80,.25);
+  color: #81c784;
+  font-size: .68rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 99px;
+}
+
+/* ── Section heading ─────────────────── */
+.pd-section-title {
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(201,168,76,.7);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pd-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(201,168,76,.12);
+}
+</style>
 {% endblock %}
 
 {% block content %}
+
 {% if b2b_partner %}
-<div id="b2b-partner-banner" style="
-  background:linear-gradient(90deg,#030c18 0%,#061420 60%,#030c18 100%);
-  border-bottom:1px solid rgba(201,168,76,.22);
-  padding:12px 0;
-">
+<div class="pd-b2b-banner">
   <div class="container">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
-      <div style="display:flex;align-items:center;gap:14px">
-        <div style="
-          width:40px;height:40px;border-radius:50%;flex-shrink:0;
-          background:linear-gradient(135deg,rgba(201,168,76,.18),rgba(201,168,76,.06));
-          border:1px solid rgba(201,168,76,.3);
-          display:flex;align-items:center;justify-content:center;
-          color:#c9a84c;font-size:1rem;
-        "><i class="fas fa-store"></i></div>
+    <div class="pd-b2b-inner">
+      <div class="pd-b2b-left">
+        <div class="pd-b2b-icon"><i class="fas fa-store"></i></div>
         <div>
-          <div style="font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(201,168,76,.7);line-height:1">
-            T&TG Authorized Reseller
-          </div>
-          <div style="font-size:.88rem;font-weight:700;color:#fff;margin-top:3px">
+          <div class="pd-b2b-label">T&TG Authorized Reseller</div>
+          <div class="pd-b2b-name">
             {{ b2b_partner.store_name }}
-            {% if b2b_partner.city %}<span style="color:rgba(255,255,255,.45);font-weight:400;font-size:.78rem"> &mdash; {{ b2b_partner.city }}{% if b2b_partner.country %}, {{ b2b_partner.country }}{% endif %}</span>{% endif %}
+            {% if b2b_partner.city %}<span>&mdash; {{ b2b_partner.city }}{% if b2b_partner.country %}, {{ b2b_partner.country }}{% endif %}</span>{% endif %}
           </div>
         </div>
-        <div style="
-          display:inline-flex;align-items:center;gap:5px;
-          background:rgba(76,175,80,.1);border:1px solid rgba(76,175,80,.25);
-          color:#81c784;font-size:.7rem;font-weight:700;
-          padding:3px 10px;border-radius:99px;white-space:nowrap;
-        "><i class="fas fa-check-circle"></i> Verified Partner</div>
+        <div class="pd-b2b-verified"><i class="fas fa-check-circle"></i> Verified Partner</div>
       </div>
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:10px">
         {% if not user.is_authenticated %}
-        <a href="{% url 'login' %}?next={{ request.path }}" style="
-          display:inline-flex;align-items:center;gap:7px;
-          background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);
-          color:#c9a84c;font-size:.78rem;font-weight:700;
-          padding:7px 16px;border-radius:8px;text-decoration:none;
-          transition:background .2s;
-        " onmouseover="this.style.background='rgba(201,168,76,.18)'" onmouseout="this.style.background='rgba(201,168,76,.1)'">
-          <i class="fas fa-sign-in-alt"></i> Sign in to track your loyalty points
+        <a href="{% url 'login' %}?next={{ request.path }}" style="display:inline-flex;align-items:center;gap:7px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);color:#c9a84c;font-size:.75rem;font-weight:700;padding:6px 14px;border-radius:8px;text-decoration:none">
+          <i class="fas fa-sign-in-alt"></i> Sign in for loyalty points
         </a>
         {% endif %}
-        <button onclick="document.getElementById('b2b-partner-banner').style.display='none'" style="
-          background:none;border:none;color:rgba(255,255,255,.3);
-          font-size:.85rem;cursor:pointer;padding:4px 8px;line-height:1;
-        " aria-label="Dismiss">&times;</button>
+        <button onclick="this.closest('.pd-b2b-banner').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,.25);cursor:pointer;font-size:.9rem;padding:4px 8px">&times;</button>
       </div>
     </div>
   </div>
 </div>
 {% endif %}
-<div class="page-header">
- <div class="container">
- <nav aria-label="breadcrumb">
- <ol class="breadcrumb">
- <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
- <li class="breadcrumb-item"><a href="{% url 'product_list' %}">Products</a></li>
- <li class="breadcrumb-item active">{{ product.name|truncatechars:30 }}</li>
- </ol>
- </nav>
- </div>
-</div>
 
-<section class="section" style="padding-top:1rem;padding-bottom:2rem">
- <div class="container">
- <div class="row g-4 align-items-start">
+<div class="pd-wrap">
+  <div class="container">
 
- <!-- Image -->
- <div class="col-lg-6">
- <div style="border-radius:var(--radius);overflow:hidden;background:linear-gradient(135deg,#0d1f35,#1a3a5c);max-height:420px;display:flex;align-items:center;justify-content:center">
- {% if product.safe_image_url %}
- <img src="{{ product.safe_image_url }}" alt="{{ product.name }}"
- style="width:100%;height:100%;object-fit:cover"
- onerror="this.style.display='none';this.parentElement.classList.add('no-img')"
-            loading="lazy">
- {% else %}
- <div style="font-size:8rem;opacity:.3">
- 
- </div>
- {% endif %}
- </div>
+    <!-- Breadcrumb -->
+    <nav class="pd-breadcrumb">
+      <a href="{% url 'home' %}"><i class="fas fa-home me-1"></i>Home</a>
+      <span>/</span>
+      <a href="{% url 'product_list' %}">Products</a>
+      <span>/</span>
+      <span class="current">{{ product.name|truncatechars:35 }}</span>
+    </nav>
 
- </div>
+    <!-- Main product grid -->
+    <div class="pd-grid">
 
- <!-- Details -->
- <div class="col-lg-6">
- <div class="d-flex flex-wrap gap-2 mb-3">
- <span class="badge badge-gold" style="font-size:.7rem">{{ product.get_category_display }}</span>
- {% if product.gender_target != 'all' %}
- <span class="badge" style="background:rgba(201,168,76,.15);color:#c9a84c;font-size:.7rem">{{ product.get_gender_target_display }}</span>
- {% endif %}
- <span class="badge badge-{% if product.market_type == 'local' %}green{% elif product.market_type == 'international' %}accent{% else %}gold{% endif %} ms-1" style="font-size:.7rem">{{ product.get_market_type_display }}</span>
- </div>
+      <!-- LEFT: Image -->
+      <div class="pd-img-panel">
+        <div class="pd-img-main">
+          <div class="pd-img-badge">
+            <span class="pd-badge-pill pd-badge-gold">{{ product.get_category_display }}</span>
+            {% if product.market_type == 'international' %}
+            <span class="pd-badge-pill pd-badge-navy"><i class="fas fa-globe-americas"></i> International</span>
+            {% elif product.market_type == 'local' %}
+            <span class="pd-badge-pill pd-badge-green"><i class="fas fa-map-marker-alt"></i> Local</span>
+            {% endif %}
+          </div>
+          {% if product.safe_image_url %}
+          <img src="{{ product.safe_image_url }}" alt="{{ product.name }}"
+               onerror="this.style.display='none'" loading="lazy">
+          {% else %}
+          <div class="pd-img-placeholder"><i class="fas fa-box-open"></i></div>
+          {% endif %}
+        </div>
 
- <h2 class="text-light">{{ product.name }}</h2>
+        <!-- Trust strip -->
+        <div class="pd-trust">
+          <div class="pd-trust-item"><i class="fas fa-shield-alt"></i> Quality Assured</div>
+          <div class="pd-trust-item"><i class="fas fa-truck"></i> Tracked Shipping</div>
+          <div class="pd-trust-item"><i class="fas fa-certificate"></i> T&TG Certified</div>
+          {% if product.origin_country %}
+          <div class="pd-trust-item"><i class="fas fa-globe"></i> Origin: <strong style="color:rgba(255,255,255,.65);margin-left:3px">{{ product.origin_country }}</strong></div>
+          {% endif %}
+        </div>
+      </div>
 
- <div class="d-flex align-items-baseline gap-3 my-3">
- <div style="font-size:2.5rem;font-weight:900;color:#c9a84c">{{ product.currency }} {{ product.price }}</div>
- <div class="text-muted">/ {{ product.unit }}</div>
- </div>
+      <!-- RIGHT: Info -->
+      <div class="pd-info">
 
- <!-- Loyalty Points info box -->
- <div class="glass-card p-3 mb-3">
- <div class="text-gold fw-700 small mb-2"><i class="fas fa-coins me-1"></i>T&TG Loyalty Points</div>
- <div class="row g-2 text-center">
- <div class="col-4">
- <div class="text-muted" style="font-size:.68rem;text-transform:uppercase">Available Stock</div>
- <div class="text-gold fw-bold">{{ product.quantity_available }}</div>
- </div>
- <div class="col-4">
- <div class="text-muted" style="font-size:.68rem;text-transform:uppercase">You Earn</div>
- <div style="color:#00c896;font-weight:700">T&TG Loyalty Points</div>
- <div class="text-muted" style="font-size:.62rem">0.5% · consumer</div>
- </div>
- <div class="col-4">
- <div class="text-muted" style="font-size:.68rem;text-transform:uppercase">Referrer Earns</div>
- <div style="color:#00c896;font-weight:700">Referral Bonus (1%)</div>
- <div class="text-muted" style="font-size:.62rem">1% · referral</div>
- </div>
- </div>
- <div class="text-muted mt-2 text-center" style="font-size:.7rem">
- <i class="fas fa-calendar-check me-1 text-gold"></i>Reward paid on Day 45 after purchase
- </div>
- </div>
+        <!-- Tags -->
+        <div class="pd-tags">
+          {% if product.gender_target != 'all' %}
+          <span class="pd-badge-pill pd-badge-navy">{{ product.get_gender_target_display }}</span>
+          {% endif %}
+          {% if product.quantity_available > 0 %}
+          <span class="pd-badge-pill pd-badge-green"><i class="fas fa-check"></i> In Stock</span>
+          {% else %}
+          <span class="pd-badge-pill" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#f87171"><i class="fas fa-times"></i> Out of Stock</span>
+          {% endif %}
+        </div>
 
- {% if product.description %}<p class="text-muted" style="font-size:.9rem;line-height:1.7;margin-top:16px">{{ product.description }}</p>{% endif %}
+        <h1 class="pd-name">{{ product.name }}</h1>
 
- {% if product.origin_country %}
- <div class="small text-muted mb-3">
- <i class="fas fa-globe me-1 text-gold"></i>Origin: <strong>{{ product.origin_country }}</strong>
- </div>
- {% endif %}
+        {% if product.origin_country %}
+        <div class="pd-origin">
+          <i class="fas fa-map-marker-alt"></i>
+          Origin: <strong>{{ product.origin_country }}</strong>
+        </div>
+        {% endif %}
 
- {% if product.video_url %}
- <a href="{{ product.video_url }}" target="_blank" class="btn btn-outline-gold btn-sm mb-3">
- <i class="fas fa-play me-2"></i>Watch Product Video
- </a>
- {% endif %}
+        <!-- Price block -->
+        <div class="pd-price-block">
+          <div>
+            <div class="pd-price">{{ product.currency }} {{ product.price }}</div>
+            <div class="pd-unit">per {{ product.unit }}</div>
+          </div>
+          <div class="pd-stock">
+            <div class="pd-stock-num">{{ product.quantity_available }}</div>
+            <div class="pd-stock-label">Available</div>
+          </div>
+        </div>
 
- <div class="d-flex gap-3 mt-4">
- <form method="POST" action="{% url 'cart_add' product.pk %}" class="flex-fill">
- {% csrf_token %}<input type="hidden" name="quantity" value="1">
- <button type="submit" class="btn btn-gold btn-lg w-100"> Add to Cart</button>
- </form>
- <a href="{% url 'cart' %}" onclick="addToCart(event, {{ product.pk }})" class="btn btn-gold btn-lg flex-fill" style="background:linear-gradient(135deg,#0a2540,#1a3a5c);border:1px solid rgba(201,168,76,.4)">
- <i class="fas fa-shopping-cart me-2"></i>Place Order
- </a>
- <a href="{% url 'wishlist_toggle' product.pk %}" class="btn btn-lg" style="border:1px solid rgba(239,68,68,.4);color:#f87171;background:rgba(239,68,68,.08)">
- {% if user.is_authenticated %}️{% else %}{% endif %}
- </a>
- <a href="{% url 'product_list' %}" class="btn btn-outline-gold btn-lg">
- <i class="fas fa-arrow-left"></i>
- </a>
- </div>
- </div>
- </div>
+        <!-- Loyalty points -->
+        <div class="pd-loyalty">
+          <div class="pd-loyalty-header">
+            <i class="fas fa-coins"></i> T&TG Loyalty Rewards
+          </div>
+          <div class="pd-loyalty-row">
+            <div class="pd-loyalty-cell">
+              <div class="pd-loyalty-val">0.5%</div>
+              <div class="pd-loyalty-key">You Earn</div>
+            </div>
+            <div class="pd-loyalty-cell">
+              <div class="pd-loyalty-val">1%</div>
+              <div class="pd-loyalty-key">Referrer Bonus</div>
+            </div>
+            <div class="pd-loyalty-cell">
+              <div class="pd-loyalty-val">Day 45</div>
+              <div class="pd-loyalty-key">Reward Paid</div>
+            </div>
+          </div>
+          <div class="pd-loyalty-note">
+            <i class="fas fa-calendar-check"></i>
+            Points credited 45 days after confirmed purchase
+          </div>
+        </div>
 
- <!-- Reviews -->
- {% if reviews %}
- <div class="mt-5">
- <h4 class="text-gold mb-4"><i class="fas fa-star me-2"></i>Customer Reviews</h4>
- <div class="row g-3">
- {% for review in reviews %}
- <div class="col-md-6">
- <div class="glass-card p-3">
- <div class="d-flex align-items-center gap-2 mb-2">
- <div style="font-size:.875rem;font-weight:700;color:var(--text-light)">{{ review.user.get_full_name|default:review.user.username }}</div>
- <div class="ms-auto text-gold">{% for i in "12345"|make_list %}{% if forloop.counter <= review.rating %}{% else %}{% endif %}{% endfor %}</div>
- </div>
- <p class="text-muted mb-0" style="font-size:.875rem">{{ review.comment }}</p>
- <div class="text-muted mt-1" style="font-size:.72rem">{{ review.created_at|date:"M d, Y" }}</div>
- </div>
- </div>
- {% endfor %}
- </div>
- </div>
- {% endif %}
+        {% if product.description %}
+        <p class="pd-desc">{{ product.description }}</p>
+        {% endif %}
 
- <!-- Related Products -->
- {% if related %}
- <div class="mt-5">
- <h4 class="text-gold mb-4">Related Products</h4>
- <div class="row g-3">
- {% for p in related %}
- <div class="col-sm-6 col-lg-3">
- <div class="product-card">
- <div class="product-img-wrap" style="height:150px">
- {% if p.safe_image_url %}
- <img src="{{ p.safe_image_url }}" alt="{{ p.name }}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.parentElement.classList.add('no-img')"
-            loading="lazy">
- {% else %}
- <div class="product-placeholder" style="font-size:3rem"></div>
- {% endif %}
- </div>
- <div class="product-body" style="padding:1rem">
- <div class="product-name" style="font-size:.875rem">{{ p.name }}</div>
- <div class="product-price" style="font-size:1.1rem">{{ p.currency }} {{ p.price }}</div>
- </div>
- <div class="product-foot">
- <a href="{% url 'product_detail' p.pk %}" class="btn btn-outline-gold btn-sm flex-fill">View</a>
- <a href="{% url 'cart_add' p.pk %}" class="btn btn-gold btn-sm flex-fill">Add to Cart</a>
- </div>
- </div>
- </div>
- {% endfor %}
- </div>
- </div>
- {% endif %}
- </div>
-</section>
+        {% if product.video_url %}
+        <a href="{{ product.video_url }}" target="_blank" class="pd-video-link">
+          <i class="fas fa-play-circle"></i> Watch Product Video
+        </a>
+        {% endif %}
 
- <!-- Review submission -->
- <div class="mt-5">
- <h5 class="text-gold mb-3">Leave a Review</h5>
- {% if user.is_authenticated %}
- <form method="POST" action="{% url 'submit_review' product.pk %}" class="glass-card p-4" style="border-radius:16px">
- {% csrf_token %}
- <div class="mb-3">
- <label class="text-muted mb-2 d-block" style="font-size:.8rem">Rating</label>
- <div class="d-flex gap-2">
- {% for i in "12345"|make_list %}
- <label style="cursor:pointer;font-size:1.6rem">
- <input type="radio" name="rating" value="{{ forloop.counter }}" style="display:none" {% if forloop.counter == 5 %}checked{% endif %}>
- <span class="star-label" data-val="{{ forloop.counter }}">⭐</span>
- </label>
- {% endfor %}
- </div>
- </div>
- <div class="mb-3">
- <label class="text-muted mb-1 d-block" style="font-size:.8rem">Your Review</label>
- <textarea name="comment" rows="3" class="form-control" style="background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);color:#e0d5c0;border-radius:10px" placeholder="Share your experience with this coffee..."></textarea>
- </div>
- <button type="submit" class="btn btn-gold px-4">Submit Review</button>
- </form>
- {% else %}
- <div class="glass-card p-4 text-center" style="border-radius:16px">
- <p class="text-muted">Please <a href="{% url 'login' %}" class="text-gold">sign in</a> to leave a review.</p>
- </div>
- {% endif %}
- </div>
+        <!-- Action buttons -->
+        <div class="pd-actions">
+          <form method="POST" action="{% url 'cart_add' product.pk %}" style="flex:1 1 160px;min-width:0;display:contents">
+            {% csrf_token %}<input type="hidden" name="quantity" value="1">
+            <button type="submit" class="pd-btn pd-btn-primary" style="flex:1 1 160px">
+              <i class="fas fa-shopping-cart"></i> Add to Cart
+            </button>
+          </form>
+          <a href="{% url 'cart' %}" onclick="document.getElementById('pd-cart-form').submit();return false"
+             class="pd-btn pd-btn-secondary">
+            <i class="fas fa-bolt"></i> Place Order
+          </a>
+          <a href="{% url 'wishlist_toggle' product.pk %}"
+             class="pd-btn pd-btn-icon pd-btn-wish" title="{% if user.is_authenticated %}Save to wishlist{% else %}Sign in to wishlist{% endif %}">
+            <i class="fas fa-heart"></i>
+          </a>
+          <a href="{% url 'product_list' %}" class="pd-btn pd-btn-icon pd-btn-back" title="Back to products">
+            <i class="fas fa-arrow-left"></i>
+          </a>
+        </div>
+
+      </div><!-- /pd-info -->
+    </div><!-- /pd-grid -->
+
+    <!-- Hidden form for Place Order -->
+    <form id="pd-cart-form" method="POST" action="{% url 'cart_add' product.pk %}" style="display:none">
+      {% csrf_token %}<input name="quantity" value="1">
+    </form>
+
+    <!-- Lower section with tabs -->
+    <div class="pd-lower">
+      <div class="pd-tabs">
+        {% if reviews %}
+        <button class="pd-tab active" onclick="pdTab(this,'reviews')">
+          <i class="fas fa-star me-1"></i> Reviews ({{ reviews|length }})
+        </button>
+        {% endif %}
+        {% if related %}
+        <button class="pd-tab {% if not reviews %}active{% endif %}" onclick="pdTab(this,'related')">
+          <i class="fas fa-th me-1"></i> Related Products
+        </button>
+        {% endif %}
+        <button class="pd-tab {% if not reviews and not related %}active{% endif %}" onclick="pdTab(this,'review-form')">
+          <i class="fas fa-pen me-1"></i> Write a Review
+        </button>
+      </div>
+
+      <!-- Reviews tab -->
+      {% if reviews %}
+      <div id="tab-reviews" class="pd-tab-content active">
+        <div class="rv-grid">
+          {% for review in reviews %}
+          <div class="rv-card">
+            <div class="rv-top">
+              <div>
+                <div class="rv-name">{{ review.user.get_full_name|default:review.user.username }}</div>
+                <div class="rv-date">{{ review.created_at|date:"M d, Y" }}</div>
+              </div>
+              <div class="rv-stars">
+                {% for i in "12345"|make_list %}
+                  {% if forloop.counter <= review.rating %}<i class="fas fa-star"></i>{% else %}<i class="far fa-star" style="opacity:.3"></i>{% endif %}
+                {% endfor %}
+              </div>
+            </div>
+            <p class="rv-text">{{ review.comment }}</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Related tab -->
+      {% if related %}
+      <div id="tab-related" class="pd-tab-content {% if not reviews %}active{% endif %}">
+        <div class="rp-grid">
+          {% for p in related %}
+          <div class="rp-card">
+            <div class="rp-img">
+              {% if p.safe_image_url %}
+              <img src="{{ p.safe_image_url }}" alt="{{ p.name }}"
+                   onerror="this.style.display='none'" loading="lazy">
+              {% else %}
+              <div class="rp-ph"><i class="fas fa-box-open"></i></div>
+              {% endif %}
+            </div>
+            <div class="rp-body">
+              <div class="rp-name">{{ p.name }}</div>
+              <div class="rp-price">{{ p.currency }} {{ p.price }}</div>
+            </div>
+            <div class="rp-foot">
+              <a href="{% url 'product_detail' p.pk %}" class="pd-btn pd-btn-back" style="flex:1;font-size:.75rem;padding:7px 10px">View</a>
+              <a href="{% url 'cart_add' p.pk %}" class="pd-btn pd-btn-primary" style="flex:1;font-size:.75rem;padding:7px 10px">
+                <i class="fas fa-cart-plus"></i> Add
+              </a>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Review form tab -->
+      <div id="tab-review-form" class="pd-tab-content {% if not reviews and not related %}active{% endif %}">
+        {% if user.is_authenticated %}
+        <form method="POST" action="{% url 'submit_review' product.pk %}" class="rv-form">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label>Your Rating</label>
+            <div class="star-row">
+              {% for i in "12345"|make_list %}
+              <label>
+                <input type="radio" name="rating" value="{{ forloop.counter }}" style="display:none" {% if forloop.counter == 5 %}checked{% endif %}>
+                <span class="star-label" data-val="{{ forloop.counter }}">⭐</span>
+              </label>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="mb-3">
+            <label>Your Review</label>
+            <textarea name="comment" rows="4" class="form-control"
+              placeholder="Share your experience with this product…"></textarea>
+          </div>
+          <button type="submit" class="pd-btn pd-btn-primary" style="width:auto">
+            <i class="fas fa-paper-plane"></i> Submit Review
+          </button>
+        </form>
+        {% else %}
+        <div class="rv-form" style="text-align:center;padding:32px">
+          <i class="fas fa-lock" style="font-size:2rem;color:rgba(201,168,76,.4);margin-bottom:12px;display:block"></i>
+          <p style="color:rgba(255,255,255,.45);font-size:.88rem;margin-bottom:16px">
+            Sign in to leave a review for this product.
+          </p>
+          <a href="{% url 'login' %}?next={{ request.path }}" class="pd-btn pd-btn-primary" style="width:auto">
+            <i class="fas fa-sign-in-alt"></i> Sign In
+          </a>
+        </div>
+        {% endif %}
+      </div>
+
+    </div><!-- /pd-lower -->
+
+  </div><!-- /container -->
+</div><!-- /pd-wrap -->
 
 {% endblock %}
+
+{% block extra_js %}
+<script>
+/* Tab switcher */
+function pdTab(btn, id) {
+  document.querySelectorAll('.pd-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.pd-tab-content').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  const el = document.getElementById('tab-' + id);
+  if (el) el.classList.add('active');
+}
+</script>
+{% endblock %}
+
+{% block footer %}{% endblock %}
