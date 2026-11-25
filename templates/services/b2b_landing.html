@@ -599,6 +599,81 @@
   </div>
 </section>
 
+<!-- ═══ PARTNER PORTALS ═══ -->
+<section style="background:linear-gradient(180deg,#060f1e 0%,#0a1a2e 100%);padding:80px 0;">
+  <div class="container">
+    <div class="sec-eyebrow"><span><i class="fas fa-network-wired"></i> Partner Portals</span></div>
+    <h2 class="sec-headline">Which Partner Are You?</h2>
+    <p class="sec-sub">T&TG works with three types of business partners — each with their own dedicated portal.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;margin-top:40px;">
+
+      <!-- Reseller portal -->
+      <div style="background:#0d1a26;border:1px solid rgba(201,168,76,.2);border-radius:18px;padding:28px 24px;display:flex;flex-direction:column;gap:14px;">
+        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c96a);display:flex;align-items:center;justify-content:center;">
+          <i class="fas fa-store-alt" style="color:#060f1e;font-size:1.3rem;"></i>
+        </div>
+        <div>
+          <div style="font-weight:800;font-size:1.05rem;color:#d8e3f0;margin-bottom:6px;">Authorized Resellers</div>
+          <div style="font-size:.84rem;color:#7a9ab8;line-height:1.6;">
+            Buy T&TG products at a fixed wholesale discount. Set your own selling prices for your customers — your margins stay private. Place bulk orders and track them from your dashboard.
+          </div>
+        </div>
+        <div style="margin-top:auto;display:flex;gap:10px;flex-wrap:wrap;">
+          <a href="{% url 'reseller_dashboard' %}" style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#060f1e;font-size:.8rem;font-weight:800;border-radius:8px;padding:8px 14px;text-decoration:none;">
+            <i class="fas fa-sign-in-alt"></i> Reseller Portal
+          </a>
+          <a href="{% url 'b2b_apply' %}" style="display:inline-flex;align-items:center;gap:6px;background:transparent;color:#c9a84c;border:1px solid rgba(201,168,76,.35);font-size:.8rem;font-weight:700;border-radius:8px;padding:8px 14px;text-decoration:none;">
+            Apply
+          </a>
+        </div>
+      </div>
+
+      <!-- Supplier portal -->
+      <div style="background:#0d1a26;border:1px solid rgba(201,168,76,.2);border-radius:18px;padding:28px 24px;display:flex;flex-direction:column;gap:14px;">
+        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c96a);display:flex;align-items:center;justify-content:center;">
+          <i class="fas fa-seedling" style="color:#060f1e;font-size:1.3rem;"></i>
+        </div>
+        <div>
+          <div style="font-weight:800;font-size:1.05rem;color:#d8e3f0;margin-bottom:6px;">Suppliers</div>
+          <div style="font-size:.84rem;color:#7a9ab8;line-height:1.6;">
+            Farmers, coffee factories, cooperatives and other producers who supply raw goods to T&TG. Submit per-deal documents — application, sales agreement, and cargo agreement — and track deal status online.
+          </div>
+        </div>
+        <div style="margin-top:auto;display:flex;gap:10px;flex-wrap:wrap;">
+          <a href="{% url 'supplier_portal' %}" style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#060f1e;font-size:.8rem;font-weight:800;border-radius:8px;padding:8px 14px;text-decoration:none;">
+            <i class="fas fa-sign-in-alt"></i> Supplier Portal
+          </a>
+          <a href="{% url 'supplier_register' %}" style="display:inline-flex;align-items:center;gap:6px;background:transparent;color:#c9a84c;border:1px solid rgba(201,168,76,.35);font-size:.8rem;font-weight:700;border-radius:8px;padding:8px 14px;text-decoration:none;">
+            Register
+          </a>
+        </div>
+      </div>
+
+      <!-- Shipping company portal -->
+      <div style="background:#0d1a26;border:1px solid rgba(201,168,76,.2);border-radius:18px;padding:28px 24px;display:flex;flex-direction:column;gap:14px;">
+        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#c9a84c,#e8c96a);display:flex;align-items:center;justify-content:center;">
+          <i class="fas fa-ship" style="color:#060f1e;font-size:1.3rem;"></i>
+        </div>
+        <div>
+          <div style="font-weight:800;font-size:1.05rem;color:#d8e3f0;margin-bottom:6px;">Shipping Companies</div>
+          <div style="font-size:.84rem;color:#7a9ab8;line-height:1.6;">
+            Cargo and logistics providers working with T&TG supplier shipments. Register your company, link to specific supplier deals, and upload transport documents (bill of lading, cargo manifest, signed agreements).
+          </div>
+        </div>
+        <div style="margin-top:auto;display:flex;gap:10px;flex-wrap:wrap;">
+          <a href="{% url 'shipping_portal' %}" style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#060f1e;font-size:.8rem;font-weight:800;border-radius:8px;padding:8px 14px;text-decoration:none;">
+            <i class="fas fa-sign-in-alt"></i> Shipping Portal
+          </a>
+          <a href="{% url 'shipping_register' %}" style="display:inline-flex;align-items:center;gap:6px;background:transparent;color:#c9a84c;border:1px solid rgba(201,168,76,.35);font-size:.8rem;font-weight:700;border-radius:8px;padding:8px 14px;text-decoration:none;">
+            Register
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <!-- ═══ FINAL CTA ═══ -->
 <section class="b2b-cta">
   <div class="container">

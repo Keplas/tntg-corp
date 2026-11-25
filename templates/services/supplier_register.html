@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Supplier Registration — T&TG{% endblock %}
+
+{% block extra_head %}
+<style>
+:root { --gold:#c9a84c; --gold-l:#e8c96a; --navy:#060f1e; --navy2:#0a2540; --text:#d8e3f0; --muted:#7a9ab8; }
+.sr-wrap { max-width:640px; margin:0 auto; padding:40px 20px 60px; }
+.sr-logo { text-align:center; margin-bottom:32px; }
+.sr-logo-mark { width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg,var(--gold),var(--gold-l)); display:inline-flex; align-items:center; justify-content:center; margin-bottom:12px; }
+.sr-logo-mark i { font-size:1.4rem; color:var(--navy); }
+.sr-title { font-size:1.6rem; font-weight:800; color:var(--gold); }
+.sr-sub   { font-size:.88rem; color:var(--muted); margin-top:6px; }
+.sr-card  { background:var(--navy2); border:1px solid rgba(201,168,76,.18); border-radius:18px; padding:32px 30px; }
+.form-section { margin-bottom:28px; }
+.form-section-title { font-size:.78rem; font-weight:700; color:var(--gold); text-transform:uppercase; letter-spacing:.08em; margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid rgba(201,168,76,.14); }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+@media(max-width:520px){ .form-row { grid-template-columns:1fr; } }
+.form-group { display:flex; flex-direction:column; gap:5px; }
+label { font-size:.78rem; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
+input, select, textarea {
+  background:rgba(255,255,255,.05); border:1px solid rgba(201,168,76,.2);
+  color:var(--text); border-radius:10px; padding:10px 14px; font-size:.88rem;
+  transition:border-color .2s;
+}
+input:focus, select:focus, textarea:focus { outline:none; border-color:var(--gold); }
+select option { background:#0a2540; }
+textarea { min-height:90px; resize:vertical; }
+.btn-submit {
+  width:100%; background:linear-gradient(135deg,var(--gold),var(--gold-l));
+  color:var(--navy); border:none; border-radius:12px; padding:14px;
+  font-size:.95rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
+  margin-top:8px;
+}
+.btn-submit:hover { opacity:.88; }
+.sr-info { background:rgba(10,37,64,.7); border:1px solid rgba(201,168,76,.2); border-radius:12px; padding:16px 18px; margin-bottom:24px; font-size:.84rem; color:var(--text); line-height:1.6; }
+.sr-info i { color:var(--gold); margin-right:5px; }
+.required { color:var(--gold); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="sr-wrap">
+  <div class="sr-logo">
+    <div class="sr-logo-mark"><i class="fas fa-seedling"></i></div>
+    <div class="sr-title">Supplier Registration</div>
+    <div class="sr-sub">Register to supply products to T&TG — coffee, tea, spices and more.</div>
+  </div>
+
+  {% if messages %}
+  {% for msg in messages %}
+  <div style="background:{% if msg.level_tag == 'error' %}rgba(239,68,68,.12){% else %}rgba(16,185,129,.12){% endif %};border:1px solid {% if msg.level_tag == 'error' %}rgba(239,68,68,.3){% else %}rgba(16,185,129,.3){% endif %};border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:.88rem;color:var(--text);">
+    {{ msg }}
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  <div class="sr-info">
+    <i class="fas fa-info-circle"></i>
+    As a supplier you will be able to submit <strong style="color:var(--gold);">per-deal documents</strong> including your application, sales agreement and cargo agreement. T&TG will review and confirm each deal.
+  </div>
+
+  <div class="sr-card">
+    <form method="POST">
+      {% csrf_token %}
+
+      <!-- Contact info -->
+      <div class="form-section">
+        <div class="form-section-title"><i class="fas fa-user" style="margin-right:6px;"></i>Contact Information</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name <span class="required">*</span></label>
+            <input type="text" name="full_name" value="{{ prefill.full_name }}" required placeholder="Your legal name">
+          </div>
+          <div class="form-group">
+            <label>Email <span class="required">*</span></label>
+            <input type="email" name="email" value="{{ prefill.email }}" required placeholder="supplier@example.com">
+          </div>
+        </div>
+        <div class="form-row" style="margin-top:14px;">
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" name="phone" value="{{ prefill.phone }}" placeholder="+256 7XX XXX XXX">
+          </div>
+          <div class="form-group">
+            <label>Country <span class="required">*</span></label>
+            <input type="text" name="country" value="{{ prefill.country }}" required placeholder="Uganda">
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:14px;">
+          <label>City</label>
+          <input type="text" name="city" value="{{ prefill.city }}" placeholder="Kampala">
+        </div>
+      </div>
+
+      <!-- Business info -->
+      <div class="form-section">
+        <div class="form-section-title"><i class="fas fa-building" style="margin-right:6px;"></i>Business Information</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Company / Farm Name</label>
+            <input type="text" name="company_name" placeholder="Green Coffee Factory (optional)">
+          </div>
+          <div class="form-group">
+            <label>Supplier Type <span class="required">*</span></label>
+            <select name="supplier_type" required>
+              <option value="individual">Individual Farmer / Trader</option>
+              <option value="company">Company / Factory</option>
+              <option value="cooperative">Cooperative / Group</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-top:14px;">
+          <label>Products You Supply <span class="required">*</span></label>
+          <textarea name="products_supply" required placeholder="e.g. Green Arabica coffee, 100-500 bags/season, Central Uganda origin..."></textarea>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit">
+        <i class="fas fa-paper-plane"></i> Register as Supplier
+      </button>
+    </form>
+  </div>
+
+  <div style="text-align:center;margin-top:20px;font-size:.82rem;color:var(--muted);">
+    Already registered? <a href="{% url 'supplier_portal' %}" style="color:var(--gold);">Go to your portal</a>
+    &nbsp;&mdash;&nbsp;
+    <a href="{% url 'b2b_landing' %}" style="color:var(--muted);">B2B home</a>
+  </div>
+</div>
+{% endblock %}

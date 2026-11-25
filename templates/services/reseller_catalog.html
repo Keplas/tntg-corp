@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Wholesale Catalog — T&TG Reseller{% endblock %}
+
+{% block extra_head %}
+<style>
+:root { --gold:#c9a84c; --gold-l:#e8c96a; --navy:#060f1e; --navy2:#0a2540; --navy3:#0d2e4a; --text:#d8e3f0; --muted:#7a9ab8; }
+
+.rc-wrap { max-width: 1100px; margin: 0 auto; padding: 32px 20px 60px; }
+
+/* Header */
+.rc-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-bottom:28px; }
+.rc-title { font-size:1.4rem; font-weight:800; color:var(--gold); }
+.rc-sub   { font-size:.82rem; color:var(--muted); margin-top:2px; }
+.disc-badge { background:linear-gradient(135deg,var(--gold),var(--gold-l)); color:var(--navy); font-size:.78rem; font-weight:800; border-radius:20px; padding:6px 14px; }
+
+/* Grid */
+.rc-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:20px; }
+
+/* Product card */
+.rc-card {
+  background: var(--navy2); border:1px solid rgba(201,168,76,.14);
+  border-radius:16px; overflow:hidden; transition:transform .2s, box-shadow .2s;
+  display:flex; flex-direction:column;
+}
+.rc-card:hover { transform:translateY(-3px); box-shadow:0 8px 28px rgba(0,0,0,.35); }
+
+.rc-img-wrap { position:relative; height:160px; overflow:hidden; }
+.rc-img-wrap img { width:100%; height:100%; object-fit:cover; }
+.rc-img-ph { width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:var(--navy3); color:rgba(201,168,76,.2); font-size:3rem; }
+
+.rc-body { padding:16px; flex:1; display:flex; flex-direction:column; gap:8px; }
+.rc-name { font-weight:700; font-size:.93rem; color:var(--text); line-height:1.3; }
+.rc-category { font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
+
+.price-row { display:flex; align-items:baseline; gap:10px; margin:4px 0; }
+.price-reg { font-size:.78rem; color:var(--muted); text-decoration:line-through; }
+.price-ws  { font-size:1.1rem; font-weight:800; color:var(--gold-l); }
+
+/* Sell price form */
+.sell-section { background:rgba(0,0,0,.2); border-radius:10px; padding:12px; margin-top:4px; }
+.sell-label { font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:6px; }
+.sell-row { display:flex; gap:8px; align-items:center; }
+.sell-input {
+  flex:1; background:rgba(255,255,255,.06); border:1px solid rgba(201,168,76,.25);
+  color:var(--text); border-radius:8px; padding:7px 10px; font-size:.86rem; min-width:0;
+}
+.sell-input:focus { outline:none; border-color:var(--gold); }
+.btn-save { background:var(--gold); color:var(--navy); border:none; border-radius:8px; padding:7px 12px; font-size:.8rem; font-weight:800; cursor:pointer; white-space:nowrap; }
+.btn-save:hover { background:var(--gold-l); }
+.sell-margin { font-size:.74rem; color:#34d399; margin-top:5px; display:none; }
+
+/* Add to cart form */
+.rc-actions { display:flex; gap:8px; margin-top:auto; padding:0 16px 16px; }
+.btn-cart { flex:1; background:linear-gradient(135deg,var(--gold),var(--gold-l)); color:var(--navy); border:none; border-radius:10px; padding:9px; font-size:.8rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; }
+.btn-cart:hover { opacity:.88; }
+
+/* Filter bar */
+.rc-filter { margin-bottom:24px; }
+.rc-filter input {
+  width:100%; max-width:400px; background:var(--navy2); border:1px solid rgba(201,168,76,.2);
+  color:var(--text); border-radius:10px; padding:10px 16px; font-size:.88rem;
+}
+.rc-filter input::placeholder { color:var(--muted); }
+.rc-filter input:focus { outline:none; border-color:var(--gold); }
+
+/* Toast */
+.rc-toast {
+  position:fixed; bottom:28px; right:28px; z-index:9999;
+  background:linear-gradient(135deg,#0a2540,#0d2e4a); border:1px solid var(--gold);
+  color:var(--text); border-radius:12px; padding:14px 20px;
+  font-size:.85rem; box-shadow:0 8px 28px rgba(0,0,0,.5);
+  display:none; max-width:320px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="rc-wrap">
+
+  <div class="rc-header">
+    <div>
+      <div class="rc-title"><i class="fas fa-shopping-bag" style="margin-right:8px;"></i>Wholesale Catalog</div>
+      <div class="rc-sub">{{ products|length }} products &mdash; {{ disc }}% off regular prices</div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+      <span class="disc-badge">{{ disc }}% Wholesale Discount</span>
+      <a href="{% url 'reseller_dashboard' %}" style="color:var(--muted);font-size:.82rem;"><i class="fas fa-arrow-left"></i> Dashboard</a>
+    </div>
+  </div>
+
+  <!-- Search filter -->
+  <div class="rc-filter">
+    <input type="text" id="rc-search" placeholder="Search products..." autocomplete="off">
+  </div>
+
+  <div class="rc-grid" id="rc-grid">
+    {% for product in products %}
+    <div class="rc-card" data-name="{{ product.name|lower }}" data-cat="{{ product.category|lower }}">
+
+      <!-- Image -->
+      <div class="rc-img-wrap">
+        {% if product.image %}
+          <img src="{{ product.image.url }}" alt="{{ product.name }}" loading="lazy">
+        {% else %}
+          <div class="rc-img-ph"><i class="fas fa-box"></i></div>
+        {% endif %}
+      </div>
+
+      <!-- Body -->
+      <div class="rc-body">
+        <div class="rc-category">{{ product.category }}</div>
+        <div class="rc-name">{{ product.name }}</div>
+
+        <div class="price-row">
+          <span class="price-reg">US$ {{ product.price|floatformat:2 }}</span>
+          <span class="price-ws">US$ {{ product.ws_price|floatformat:2 }}</span>
+        </div>
+
+        {% if product.stock %}
+        <div style="font-size:.74rem;color:var(--muted);">
+          <i class="fas fa-cubes" style="margin-right:4px;"></i>{{ product.stock }} in stock
+        </div>
+        {% endif %}
+
+        <!-- Private selling price -->
+        <div class="sell-section">
+          <div class="sell-label"><i class="fas fa-tag" style="margin-right:4px;"></i>My Selling Price</div>
+          <div class="sell-row">
+            <input class="sell-input" type="number" step="0.01" min="{{ product.ws_price|floatformat:2 }}"
+              id="sell-{{ product.pk }}"
+              value="{% if product.my_pricing %}{{ product.my_pricing.sell_price|floatformat:2 }}{% endif %}"
+              placeholder="US$ 0.00">
+            <button class="btn-save" onclick="savePrice({{ product.pk }}, {{ product.ws_price|floatformat:2 }})">
+              <i class="fas fa-check"></i>
+            </button>
+          </div>
+          <div class="sell-margin" id="margin-{{ product.pk }}">
+            {% if product.my_pricing %}
+            Margin: US$ {{ product.my_pricing.margin|floatformat:2 }}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Add to bulk order -->
+      <div class="rc-actions">
+        <form method="POST" action="{% url 'reseller_place_order' %}" style="display:contents;">
+          {% csrf_token %}
+          <input type="hidden" name="product_pk" value="{{ product.pk }}">
+          <input type="number" name="quantity" value="1" min="1"
+            style="width:60px;background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.2);color:var(--text);border-radius:8px;padding:7px 8px;font-size:.86rem;text-align:center;">
+          <button type="submit" class="btn-cart">
+            <i class="fas fa-box"></i> Add to Order
+          </button>
+        </form>
+      </div>
+
+    </div>
+    {% empty %}
+    <div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted);">
+      <i class="fas fa-box-open" style="font-size:2.5rem;color:rgba(201,168,76,.2);display:block;margin-bottom:12px;"></i>
+      No products available yet.
+    </div>
+    {% endfor %}
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div class="rc-toast" id="rc-toast"></div>
+
+<script>
+const CSRF = document.cookie.match(/csrftoken=([^;]+)/)?.[1] || '';
+
+function savePrice(pk, wsPrice) {
+  const inp = document.getElementById('sell-' + pk);
+  const val = parseFloat(inp.value);
+  if (!val || val < wsPrice) {
+    showToast('Selling price must be at least US$ ' + wsPrice.toFixed(2));
+    return;
+  }
+  fetch(`{% url 'reseller_set_price' 0 %}`.replace('/0/', '/' + pk + '/'), {
+    method: 'POST',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRFToken': CSRF},
+    body: 'sell_price=' + val
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.ok) {
+      const mgEl = document.getElementById('margin-' + pk);
+      mgEl.style.display = 'block';
+      mgEl.textContent = 'Margin: US$ ' + parseFloat(data.margin).toFixed(2);
+      showToast('Selling price saved!');
+    } else {
+      showToast(data.error || 'Save failed');
+    }
+  })
+  .catch(() => showToast('Network error — try again'));
+}
+
+function showToast(msg) {
+  const t = document.getElementById('rc-toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 3200);
+}
+
+// Live search
+document.getElementById('rc-search').addEventListener('input', function() {
+  const q = this.value.toLowerCase().trim();
+  document.querySelectorAll('.rc-card').forEach(card => {
+    const hit = !q || card.dataset.name.includes(q) || card.dataset.cat.includes(q);
+    card.style.display = hit ? '' : 'none';
+  });
+});
+</script>
+{% endblock %}

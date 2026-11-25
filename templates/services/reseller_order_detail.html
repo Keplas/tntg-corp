@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Order {{ order.ref }} — T&TG Wholesale{% endblock %}
+
+{% block extra_head %}
+<style>
+:root { --gold:#c9a84c; --gold-l:#e8c96a; --navy:#060f1e; --navy2:#0a2540; --navy3:#0d2e4a; --text:#d8e3f0; --muted:#7a9ab8; }
+.rod-wrap { max-width:780px; margin:0 auto; padding:32px 20px 60px; }
+.rod-back { color:var(--muted); font-size:.82rem; margin-bottom:24px; display:inline-flex; align-items:center; gap:6px; text-decoration:none; }
+.rod-back:hover { color:var(--gold); text-decoration:none; }
+.rod-card { background:var(--navy2); border:1px solid rgba(201,168,76,.18); border-radius:18px; padding:28px 30px; }
+.rod-heading { font-size:1.3rem; font-weight:800; color:var(--gold); margin-bottom:4px; }
+.rod-sub { font-size:.82rem; color:var(--muted); margin-bottom:24px; }
+.rod-table { width:100%; border-collapse:collapse; }
+.rod-table th { font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; padding:8px 0; border-bottom:1px solid rgba(255,255,255,.07); text-align:left; }
+.rod-table td { padding:12px 0; border-bottom:1px solid rgba(255,255,255,.04); font-size:.88rem; color:var(--text); }
+.rod-table tfoot td { padding-top:14px; font-weight:700; border-top:2px solid rgba(201,168,76,.2); border-bottom:none; }
+.total-num { font-size:1.2rem; color:var(--gold-l); }
+.chip { display:inline-block; border-radius:20px; padding:3px 10px; font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
+.chip-draft     { background:rgba(100,116,139,.2); color:#94a3b8; }
+.chip-submitted { background:rgba(234,179,8,.15); color:#fbbf24; }
+.chip-confirmed { background:rgba(16,185,129,.15); color:#34d399; }
+.chip-processing{ background:rgba(99,102,241,.18); color:#a5b4fc; }
+.chip-shipped   { background:rgba(14,165,233,.15); color:#38bdf8; }
+.chip-delivered { background:rgba(201,168,76,.18); color:var(--gold-l); }
+.chip-cancelled { background:rgba(239,68,68,.12); color:#f87171; }
+
+.notes-box { width:100%; background:rgba(255,255,255,.04); border:1px solid rgba(201,168,76,.2); color:var(--text); border-radius:10px; padding:12px 14px; font-size:.88rem; min-height:90px; resize:vertical; margin-top:8px; }
+.notes-box:focus { outline:none; border-color:var(--gold); }
+
+.btn-submit { background:linear-gradient(135deg,var(--gold),var(--gold-l)); color:var(--navy); border:none; border-radius:10px; padding:12px 28px; font-size:.88rem; font-weight:800; cursor:pointer; display:flex; align-items:center; gap:7px; margin-top:20px; }
+.btn-submit:hover { opacity:.88; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="rod-wrap">
+  <a href="{% url 'reseller_dashboard' %}" class="rod-back"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+
+  <div class="rod-card">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:4px;">
+      <div class="rod-heading">Order {{ order.ref }}</div>
+      <span class="chip chip-{{ order.status }}">{{ order.get_status_display }}</span>
+    </div>
+    <div class="rod-sub">
+      Placed {{ order.created_at|date:"M d, Y" }}
+      &mdash; Reseller: {{ profile.store_name }}
+    </div>
+
+    <table class="rod-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th style="text-align:right;">Unit Cost</th>
+          <th style="text-align:center;">Qty</th>
+          <th style="text-align:right;">Line Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>{{ item.product.name }}</td>
+          <td style="text-align:right;color:var(--muted);">US$ {{ item.unit_price|floatformat:2 }}</td>
+          <td style="text-align:center;">{{ item.quantity }}</td>
+          <td style="text-align:right;color:var(--gold-l);">US$ {{ item.line_total|floatformat:2 }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" style="color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-size:.8rem;">Total</td>
+          <td style="text-align:right;" class="total-num">US$ {{ order.total_usd|floatformat:2 }}</td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <!-- Submit if still draft -->
+    {% if order.status == 'draft' %}
+    <div style="margin-top:28px;border-top:1px solid rgba(255,255,255,.07);padding-top:22px;">
+      <div style="font-size:.88rem;color:var(--text);font-weight:700;">Submit Order</div>
+      <div style="font-size:.8rem;color:var(--muted);margin-top:4px;">
+        Once submitted T&TG will confirm pricing and availability.
+      </div>
+      <form method="POST">
+        {% csrf_token %}
+        <label style="font-size:.8rem;color:var(--muted);display:block;margin-top:14px;">Notes / Special Instructions (optional)</label>
+        <textarea class="notes-box" name="notes">{{ order.notes }}</textarea>
+        <button type="submit" class="btn-submit">
+          <i class="fas fa-paper-plane"></i> Submit Order to T&TG
+        </button>
+      </form>
+    </div>
+    {% elif order.admin_notes %}
+    <div style="margin-top:24px;background:rgba(10,37,64,.7);border:1px solid rgba(201,168,76,.18);border-radius:12px;padding:16px 18px;">
+      <div style="font-size:.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;">T&TG Notes</div>
+      <div style="font-size:.88rem;color:var(--text);">{{ order.admin_notes }}</div>
+    </div>
+    {% endif %}
+
+    {% if order.notes and order.status != 'draft' %}
+    <div style="margin-top:16px;background:rgba(0,0,0,.2);border-radius:10px;padding:14px 16px;">
+      <div style="font-size:.78rem;color:var(--muted);margin-bottom:4px;">Your Notes</div>
+      <div style="font-size:.85rem;color:var(--text);">{{ order.notes }}</div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

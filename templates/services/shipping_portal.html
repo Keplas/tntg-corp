@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Shipping Portal — T&TG{% endblock %}
+
+{% block extra_head %}
+<style>
+:root { --gold:#c9a84c; --gold-l:#e8c96a; --navy:#060f1e; --navy2:#0a2540; --navy3:#0d2e4a; --text:#d8e3f0; --muted:#7a9ab8; }
+.shp-wrap { max-width:960px; margin:0 auto; padding:32px 20px 60px; }
+.shp-header { display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-bottom:28px; }
+.shp-title { font-size:1.4rem; font-weight:800; color:var(--gold); }
+.shp-sub   { font-size:.82rem; color:var(--muted); margin-top:2px; }
+.btn-gold { display:inline-flex; align-items:center; gap:7px; background:linear-gradient(135deg,var(--gold),var(--gold-l)); color:var(--navy); font-size:.82rem; font-weight:800; border-radius:10px; padding:9px 18px; border:none; cursor:pointer; text-decoration:none; transition:opacity .2s; }
+.btn-gold:hover { opacity:.88; color:var(--navy); text-decoration:none; }
+
+/* Company card */
+.shp-co { background:var(--navy2); border:1px solid rgba(201,168,76,.14); border-radius:14px; padding:20px 22px; margin-bottom:28px; display:flex; flex-wrap:wrap; gap:16px; align-items:center; }
+.shp-co-name { font-weight:700; font-size:1rem; color:var(--text); }
+.shp-co-sub  { font-size:.78rem; color:var(--muted); margin-top:2px; }
+.shp-badge   { background:rgba(10,37,64,.8); border:1px solid rgba(201,168,76,.2); border-radius:8px; padding:4px 10px; font-size:.74rem; color:var(--gold); }
+
+/* Docs table */
+.shp-table-wrap { overflow-x:auto; border-radius:14px; border:1px solid rgba(201,168,76,.12); }
+.shp-table { width:100%; border-collapse:collapse; min-width:560px; }
+.shp-table thead th { background:rgba(10,37,64,.9); color:var(--muted); font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; padding:10px 16px; text-align:left; }
+.shp-table tbody tr { border-bottom:1px solid rgba(255,255,255,.04); }
+.shp-table tbody tr:hover { background:rgba(201,168,76,.03); }
+.shp-table tbody td { padding:12px 16px; font-size:.86rem; color:var(--text); }
+
+/* Doc type chip */
+.chip { display:inline-block; border-radius:20px; padding:3px 10px; font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
+.chip-bol  { background:rgba(14,165,233,.15); color:#38bdf8; }
+.chip-cm   { background:rgba(99,102,241,.18); color:#a5b4fc; }
+.chip-sa   { background:rgba(16,185,129,.15); color:#34d399; }
+.chip-cc   { background:rgba(234,179,8,.15); color:#fbbf24; }
+.chip-ins  { background:rgba(201,168,76,.18); color:var(--gold-l); }
+.chip-other{ background:rgba(100,116,139,.2); color:#94a3b8; }
+
+.empty-state { text-align:center; padding:48px 20px; color:var(--muted); font-size:.9rem; }
+.empty-state i { font-size:2.5rem; color:rgba(201,168,76,.2); display:block; margin-bottom:12px; }
+
+/* Route areas */
+.shp-areas { font-size:.8rem; color:var(--muted); background:rgba(0,0,0,.2); border-radius:8px; padding:8px 12px; margin-top:8px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="shp-wrap">
+
+  <div class="shp-header">
+    <div>
+      <div class="shp-title"><i class="fas fa-ship" style="margin-right:8px;"></i>Shipping Portal</div>
+      <div class="shp-sub">{{ company.company_name }} &mdash; {{ company.country }}</div>
+    </div>
+    <a href="{% url 'shipping_upload_doc' %}" class="btn-gold">
+      <i class="fas fa-upload"></i> Upload Document
+    </a>
+  </div>
+
+  {% if messages %}
+  {% for msg in messages %}
+  <div style="background:{% if msg.level_tag == 'error' %}rgba(239,68,68,.12){% else %}rgba(16,185,129,.12){% endif %};border:1px solid {% if msg.level_tag == 'error' %}rgba(239,68,68,.3){% else %}rgba(16,185,129,.3){% endif %};border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:.88rem;color:var(--text);">
+    {{ msg }}
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  <!-- Company card -->
+  <div class="shp-co">
+    <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-l));display:flex;align-items:center;justify-content:center;">
+      <i class="fas fa-ship" style="color:var(--navy);font-size:1.1rem;"></i>
+    </div>
+    <div style="flex:1;">
+      <div class="shp-co-name">{{ company.company_name }}</div>
+      <div class="shp-co-sub">
+        Contact: {{ company.contact_name }} &mdash; {{ company.email }}
+        {% if company.phone %}&mdash; {{ company.phone }}{% endif %}
+      </div>
+      {% if company.service_areas %}
+      <div class="shp-areas"><i class="fas fa-route" style="margin-right:5px;"></i>{{ company.service_areas|truncatechars:120 }}</div>
+      {% endif %}
+    </div>
+    <span class="shp-badge"><i class="fas fa-check-circle" style="margin-right:4px;"></i>Registered Carrier</span>
+  </div>
+
+  <!-- Docs section -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+    <h2 style="font-size:1rem;font-weight:700;color:var(--text);"><i class="fas fa-folder-open" style="color:var(--gold);margin-right:7px;"></i>Uploaded Documents ({{ docs|length }})</h2>
+  </div>
+
+  {% if docs %}
+  <div class="shp-table-wrap">
+    <table class="shp-table">
+      <thead>
+        <tr>
+          <th>Document Type</th>
+          <th>Deal Ref</th>
+          <th>Supplier</th>
+          <th>Description</th>
+          <th>Uploaded</th>
+          <th>File</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for doc in docs %}
+        {% with t=doc.doc_type %}
+        <tr>
+          <td>
+            <span class="chip chip-{% if t == 'bill_of_lading' %}bol{% elif t == 'cargo_manifest' %}cm{% elif t == 'signed_agreement' %}sa{% elif t == 'customs_clearance' %}cc{% elif t == 'insurance' %}ins{% else %}other{% endif %}">
+              {{ doc.get_doc_type_display }}
+            </span>
+          </td>
+          <td>
+            {% if doc.supplier_deal %}
+              <code style="color:var(--gold-l);font-size:.8rem;">{{ doc.supplier_deal.ref }}</code>
+            {% else %}
+              <span style="color:var(--muted);">—</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if doc.supplier_deal %}
+              {{ doc.supplier_deal.supplier.full_name|truncatechars:28 }}
+            {% else %}
+              <span style="color:var(--muted);">—</span>
+            {% endif %}
+          </td>
+          <td style="color:var(--muted);">{{ doc.description|default:"—"|truncatechars:40 }}</td>
+          <td>{{ doc.uploaded_at|date:"M d, Y" }}</td>
+          <td>
+            {% if doc.document %}
+            <a href="{{ doc.document.url }}" target="_blank" style="color:var(--gold);font-size:.82rem;">
+              <i class="fas fa-download"></i> View
+            </a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endwith %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state" style="border:1px solid rgba(201,168,76,.1);border-radius:14px;">
+    <i class="fas fa-file-upload"></i>
+    No documents yet. <a href="{% url 'shipping_upload_doc' %}" style="color:var(--gold);">Upload your first document</a>.
+  </div>
+  {% endif %}
+
+  <div style="text-align:center;margin-top:28px;">
+    <a href="{% url 'b2b_landing' %}" style="color:var(--muted);font-size:.82rem;"><i class="fas fa-arrow-left" style="margin-right:4px;"></i>B2B Home</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Supplier Portal — T&TG{% endblock %}
+
+{% block extra_head %}
+<style>
+:root { --gold:#c9a84c; --gold-l:#e8c96a; --navy:#060f1e; --navy2:#0a2540; --navy3:#0d2e4a; --text:#d8e3f0; --muted:#7a9ab8; }
+.sp-wrap { max-width:960px; margin:0 auto; padding:32px 20px 60px; }
+.sp-header { display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-bottom:28px; }
+.sp-title { font-size:1.4rem; font-weight:800; color:var(--gold); }
+.sp-sub   { font-size:.82rem; color:var(--muted); margin-top:2px; }
+.btn-gold { display:inline-flex; align-items:center; gap:7px; background:linear-gradient(135deg,var(--gold),var(--gold-l)); color:var(--navy); font-size:.82rem; font-weight:800; border-radius:10px; padding:9px 18px; border:none; cursor:pointer; text-decoration:none; transition:opacity .2s; }
+.btn-gold:hover { opacity:.88; color:var(--navy); text-decoration:none; }
+
+/* Stats */
+.sp-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-bottom:28px; }
+.sp-stat { background:var(--navy2); border:1px solid rgba(201,168,76,.18); border-radius:14px; padding:18px 20px; }
+.sp-stat-num { font-size:1.8rem; font-weight:800; color:var(--gold); }
+.sp-stat-lbl { font-size:.74rem; color:var(--muted); margin-top:4px; text-transform:uppercase; letter-spacing:.06em; }
+
+/* Deals table */
+.sp-table-wrap { overflow-x:auto; border-radius:14px; border:1px solid rgba(201,168,76,.12); }
+.sp-table { width:100%; border-collapse:collapse; min-width:560px; }
+.sp-table thead th { background:rgba(10,37,64,.9); color:var(--muted); font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; padding:10px 16px; text-align:left; }
+.sp-table tbody tr { border-bottom:1px solid rgba(255,255,255,.04); }
+.sp-table tbody tr:hover { background:rgba(201,168,76,.03); }
+.sp-table tbody td { padding:12px 16px; font-size:.86rem; color:var(--text); }
+
+/* Chips */
+.chip { display:inline-block; border-radius:20px; padding:3px 10px; font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
+.chip-draft     { background:rgba(100,116,139,.2); color:#94a3b8; }
+.chip-submitted { background:rgba(234,179,8,.15); color:#fbbf24; }
+.chip-reviewing { background:rgba(99,102,241,.18); color:#a5b4fc; }
+.chip-approved  { background:rgba(16,185,129,.15); color:#34d399; }
+.chip-rejected  { background:rgba(239,68,68,.12); color:#f87171; }
+.chip-completed { background:rgba(201,168,76,.18); color:var(--gold-l); }
+
+/* Docs check */
+.doc-tick { color:#34d399; } .doc-cross { color:#f87171; }
+
+/* Profile card */
+.sp-profile { background:var(--navy2); border:1px solid rgba(201,168,76,.14); border-radius:14px; padding:20px 22px; margin-bottom:28px; display:flex; flex-wrap:wrap; gap:16px; align-items:center; }
+.sp-profile-name { font-weight:700; font-size:1rem; color:var(--text); }
+.sp-profile-type { font-size:.78rem; color:var(--muted); margin-top:2px; }
+.sp-badge { background:rgba(10,37,64,.8); border:1px solid rgba(201,168,76,.2); border-radius:8px; padding:4px 10px; font-size:.74rem; color:var(--gold); }
+
+.empty-state { text-align:center; padding:48px 20px; color:var(--muted); font-size:.9rem; }
+.empty-state i { font-size:2.5rem; color:rgba(201,168,76,.2); display:block; margin-bottom:12px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="sp-wrap">
+
+  <div class="sp-header">
+    <div>
+      <div class="sp-title"><i class="fas fa-seedling" style="margin-right:8px;"></i>Supplier Portal</div>
+      <div class="sp-sub">{{ profile.full_name }}{% if profile.company_name %} &mdash; {{ profile.company_name }}{% endif %}</div>
+    </div>
+    <a href="{% url 'supplier_submit_deal' %}" class="btn-gold">
+      <i class="fas fa-plus"></i> Submit New Deal
+    </a>
+  </div>
+
+  {% if messages %}
+  {% for msg in messages %}
+  <div style="background:{% if msg.level_tag == 'error' %}rgba(239,68,68,.12){% else %}rgba(16,185,129,.12){% endif %};border:1px solid {% if msg.level_tag == 'error' %}rgba(239,68,68,.3){% else %}rgba(16,185,129,.3){% endif %};border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:.88rem;color:var(--text);">
+    {{ msg }}
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  <!-- Profile card -->
+  <div class="sp-profile">
+    <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-l));display:flex;align-items:center;justify-content:center;">
+      <i class="fas fa-seedling" style="color:var(--navy);font-size:1.2rem;"></i>
+    </div>
+    <div style="flex:1;">
+      <div class="sp-profile-name">{{ profile.full_name }}</div>
+      <div class="sp-profile-type">{{ profile.get_supplier_type_display }}{% if profile.country %} &mdash; {{ profile.country }}{% endif %}</div>
+    </div>
+    <span class="sp-badge"><i class="fas fa-check-circle" style="margin-right:4px;"></i>Registered Supplier</span>
+  </div>
+
+  <!-- Stat cards -->
+  <div class="sp-stats">
+    <div class="sp-stat">
+      <div class="sp-stat-num">{{ deals.count }}</div>
+      <div class="sp-stat-lbl">Total Deals</div>
+    </div>
+    <div class="sp-stat">
+      <div class="sp-stat-num">{{ pending }}</div>
+      <div class="sp-stat-lbl">In Review</div>
+    </div>
+    <div class="sp-stat">
+      <div class="sp-stat-num">{{ approved }}</div>
+      <div class="sp-stat-lbl">Approved</div>
+    </div>
+  </div>
+
+  <!-- Deals list -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+    <h2 style="font-size:1rem;font-weight:700;color:var(--text);"><i class="fas fa-file-contract" style="color:var(--gold);margin-right:7px;"></i>Your Deals</h2>
+  </div>
+
+  {% if deals %}
+  <div class="sp-table-wrap">
+    <table class="sp-table">
+      <thead>
+        <tr>
+          <th>Ref</th>
+          <th>Date</th>
+          <th>Products</th>
+          <th>Qty (kg)</th>
+          <th>Value (USD)</th>
+          <th>Docs</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for deal in deals %}
+        <tr>
+          <td><code style="color:var(--gold-l);font-size:.8rem;">{{ deal.ref }}</code></td>
+          <td>{{ deal.created_at|date:"M d, Y" }}</td>
+          <td>{{ deal.product_desc|truncatechars:40 }}</td>
+          <td>{{ deal.quantity_kg|default:"—" }}</td>
+          <td>{{ deal.agreed_price_usd|default:"—" }}</td>
+          <td>
+            <i class="fas fa-file-alt {% if deal.doc_application %}doc-tick{% else %}doc-cross{% endif %}" title="Application"></i>
+            <i class="fas fa-handshake {% if deal.doc_sales_agreement %}doc-tick{% else %}doc-cross{% endif %}" title="Sales Agreement" style="margin:0 5px;"></i>
+            <i class="fas fa-ship {% if deal.doc_cargo_agreement %}doc-tick{% else %}doc-cross{% endif %}" title="Cargo Agreement"></i>
+          </td>
+          <td><span class="chip chip-{{ deal.status }}">{{ deal.get_status_display }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state" style="border:1px solid rgba(201,168,76,.1);border-radius:14px;">
+    <i class="fas fa-file-contract"></i>
+    No deals yet. <a href="{% url 'supplier_submit_deal' %}" style="color:var(--gold);">Submit your first deal</a> to get started.
+  </div>
+  {% endif %}
+
+  <div style="text-align:center;margin-top:28px;">
+    <a href="{% url 'b2b_landing' %}" style="color:var(--muted);font-size:.82rem;"><i class="fas fa-arrow-left" style="margin-right:4px;"></i>B2B Home</a>
+  </div>
+</div>
+{% endblock %}

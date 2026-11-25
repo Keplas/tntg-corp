@@ -647,6 +647,10 @@ class B2BProfile(models.Model):
                            help_text='Unique code for referral links')
     commission_rate  = models.DecimalField(max_digits=5, decimal_places=2, default=5.00,
                            help_text='Commission % on referred online orders')
+    wholesale_discount_pct = models.DecimalField(
+        max_digits=5, decimal_places=2, default=10.00,
+        help_text='% discount off regular price for this reseller\'s wholesale purchases'
+    )
 
     # Status
     status     = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
@@ -706,3 +710,294 @@ class B2BReferral(models.Model):
 
     def __str__(self):
         return f"{self.reseller.store_name} — {self.referral_code} — {self.status}"
+
+
+# ════════════════════════════════════════════════════════════════════════════════
+# RESELLER — PRIVATE PRICING  (admin never sees these)
+# ════════════════════════════════════════════════════════════════════════════════
+
+class ResellerPricing(models.Model):
+    """
+    Private selling prices set by a reseller for each product.
+    T&TG admins intentionally do NOT have access to this model.
+    """
+    reseller    = models.ForeignKey(B2BProfile, on_delete=models.CASCADE,
+                      related_name='private_prices')
+    product     = models.ForeignKey('marketplace.Product', on_delete=models.CASCADE,
+                      related_name='reseller_prices')
+    sell_price  = models.DecimalField(max_digits=12, decimal_places=2,
+                      help_text='Price this reseller charges their own customers')
+    currency    = models.CharField(max_length=5, default='USD')
+    notes       = models.CharField(max_length=255, blank=True)
+    updated_at  = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('reseller', 'product')
+        ordering        = ['-updated_at']
+        # Explicitly excluded from admin — no ModelAdmin registered for this model
+
+    def __str__(self):
+        return f"{self.reseller.store_name} · {self.product.name} → {self.currency} {self.sell_price}"
+
+    def wholesale_price(self):
+        """What the reseller pays T&TG for this product."""
+        from decimal import Decimal
+        disc = Decimal(str(self.reseller.wholesale_discount_pct)) / 100
+        return round(self.product.price * (1 - disc), 2)
+
+    def margin(self):
+        """Profit margin per unit."""
+        return round(self.sell_price - self.wholesale_price(), 2)
+
+
+# ════════════════════════════════════════════════════════════════════════════════
+# RESELLER — BULK ORDERS  (purchases reseller makes from T&TG warehouse)
+# ════════════════════════════════════════════════════════════════════════════════
+
+class ResellerBulkOrder(models.Model):
+
+    STATUS_CHOICES = [
+        ('draft',       'Draft'),
+        ('submitted',   'Submitted'),
+        ('confirmed',   'Confirmed by T&TG'),
+        ('processing',  'Processing'),
+        ('shipped',     'Shipped'),
+        ('delivered',   'Delivered'),
+        ('cancelled',   'Cancelled'),
+    ]
+
+    reseller    = models.ForeignKey(B2BProfile, on_delete=models.CASCADE,
+                      related_name='bulk_orders')
+    ref         = models.CharField(max_length=20, unique=True, editable=False)
+    status      = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
+    notes       = models.TextField(blank=True, help_text='Delivery or packaging notes')
+    total_usd   = models.DecimalField(max_digits=14, decimal_places=2, default=0)
+    created_at  = models.DateTimeField(auto_now_add=True)
+    updated_at  = models.DateTimeField(auto_now=True)
+    admin_notes = models.TextField(blank=True)
+
+    class Meta:
+        ordering            = ['-created_at']
+        verbose_name        = 'Reseller Bulk Order'
+        verbose_name_plural = 'Reseller Bulk Orders'
+
+    def save(self, *args, **kwargs):
+        if not self.ref:
+            import uuid
+            self.ref = 'RBO-' + uuid.uuid4().hex[:6].upper()
+        super().save(*args, **kwargs)
+
+    def recalculate_total(self):
+        from decimal import Decimal
+        disc = Decimal(str(self.reseller.wholesale_discount_pct)) / 100
+        total = sum(
+            item.product.price * (1 - disc) * item.quantity
+            for item in self.items.select_related('product').all()
+        )
+        self.total_usd = round(total, 2)
+        self.save(update_fields=['total_usd'])
+
+    def __str__(self):
+        return f"{self.ref} — {self.reseller.store_name} — {self.status}"
+
+
+class ResellerBulkOrderItem(models.Model):
+    order    = models.ForeignKey(ResellerBulkOrder, on_delete=models.CASCADE,
+                   related_name='items')
+    product  = models.ForeignKey('marketplace.Product', on_delete=models.PROTECT)
+    quantity = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        verbose_name        = 'Reseller Order Item'
+        verbose_name_plural = 'Reseller Order Items'
+
+    def __str__(self):
+        return f"{self.order.ref} · {self.product.name} × {self.quantity}"
+
+    def unit_price(self):
+        from decimal import Decimal
+        disc = Decimal(str(self.order.reseller.wholesale_discount_pct)) / 100
+        return round(self.product.price * (1 - disc), 2)
+
+    def line_total(self):
+        return round(self.unit_price() * self.quantity, 2)
+
+
+# ════════════════════════════════════════════════════════════════════════════════
+# SUPPLIERS  (individuals / companies that sell raw goods TO T&TG)
+# ════════════════════════════════════════════════════════════════════════════════
+
+class SupplierProfile(models.Model):
+
+    SUPPLIER_TYPE_CHOICES = [
+        ('individual', 'Individual / Farmer'),
+        ('company',    'Registered Company'),
+        ('cooperative','Cooperative / Group'),
+    ]
+    STATUS_CHOICES = [
+        ('active',     'Active'),
+        ('suspended',  'Suspended'),
+        ('terminated', 'Terminated'),
+    ]
+
+    user            = models.OneToOneField(
+        'accounts.CustomUser', on_delete=models.CASCADE,
+        null=True, blank=True, related_name='supplier_profile'
+    )
+    full_name       = models.CharField(max_length=200)
+    email           = models.EmailField()
+    phone           = models.CharField(max_length=30, blank=True)
+    country         = models.CharField(max_length=100)
+    city            = models.CharField(max_length=100, blank=True)
+    company_name    = models.CharField(max_length=200, blank=True)
+    supplier_type   = models.CharField(max_length=20, choices=SUPPLIER_TYPE_CHOICES,
+                          default='individual')
+    products_supply = models.TextField(help_text='What products/goods do you supply?')
+    status          = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
+    registered_at   = models.DateTimeField(auto_now_add=True)
+    admin_notes     = models.TextField(blank=True)
+
+    class Meta:
+        ordering            = ['-registered_at']
+        verbose_name        = 'Supplier Profile'
+        verbose_name_plural = 'Supplier Profiles'
+
+    def __str__(self):
+        name = self.company_name or self.full_name
+        return f"{name} ({self.get_supplier_type_display()}) [{self.status}]"
+
+    def ref(self):
+        return f'SUP-{self.pk:04d}'
+
+
+class SupplierDeal(models.Model):
+    """One deal/shipment a supplier submits to T&TG, with its documents."""
+
+    STATUS_CHOICES = [
+        ('draft',     'Draft — Documents Pending'),
+        ('submitted', 'Submitted — Under Review'),
+        ('reviewing', 'Under Review'),
+        ('approved',  'Approved'),
+        ('in_transit','In Transit'),
+        ('received',  'Received by T&TG'),
+        ('completed', 'Completed'),
+        ('rejected',  'Rejected'),
+    ]
+
+    supplier        = models.ForeignKey(SupplierProfile, on_delete=models.CASCADE,
+                          related_name='deals')
+    ref             = models.CharField(max_length=20, unique=True, editable=False)
+    product_desc    = models.CharField(max_length=300,
+                          help_text='Brief description of goods for this deal')
+    quantity_kg     = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True,
+                          help_text='Quantity in kg (optional)')
+    agreed_price_usd= models.DecimalField(max_digits=14, decimal_places=2, null=True, blank=True,
+                          help_text='Agreed total value in USD (optional)')
+    status          = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
+    notes           = models.TextField(blank=True)
+
+    # Documents
+    doc_application   = models.FileField(upload_to='supplier_docs/applications/', null=True, blank=True,
+                            help_text='Application / intent letter')
+    doc_sales_agreement = models.FileField(upload_to='supplier_docs/sales/', null=True, blank=True,
+                            help_text='Sales agreement signed with T&TG')
+    doc_cargo_agreement = models.FileField(upload_to='supplier_docs/cargo/', null=True, blank=True,
+                            help_text='Cargo / shipping agreement (companies only)')
+
+    created_at   = models.DateTimeField(auto_now_add=True)
+    updated_at   = models.DateTimeField(auto_now=True)
+    admin_notes  = models.TextField(blank=True)
+
+    class Meta:
+        ordering            = ['-created_at']
+        verbose_name        = 'Supplier Deal'
+        verbose_name_plural = 'Supplier Deals'
+
+    def save(self, *args, **kwargs):
+        if not self.ref:
+            import uuid
+            self.ref = 'SD-' + uuid.uuid4().hex[:6].upper()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.ref} — {self.supplier} — {self.status}"
+
+    def docs_complete(self):
+        """True when application + sales agreement are both uploaded."""
+        return bool(self.doc_application and self.doc_sales_agreement)
+
+
+# ════════════════════════════════════════════════════════════════════════════════
+# SHIPPING / CARGO COMPANIES
+# ════════════════════════════════════════════════════════════════════════════════
+
+class ShippingCompany(models.Model):
+
+    STATUS_CHOICES = [
+        ('active',    'Active'),
+        ('suspended', 'Suspended'),
+    ]
+
+    user            = models.OneToOneField(
+        'accounts.CustomUser', on_delete=models.CASCADE,
+        null=True, blank=True, related_name='shipping_company'
+    )
+    company_name    = models.CharField(max_length=200)
+    contact_name    = models.CharField(max_length=200)
+    email           = models.EmailField()
+    phone           = models.CharField(max_length=30, blank=True)
+    country         = models.CharField(max_length=100)
+    city            = models.CharField(max_length=100, blank=True)
+    registration_no = models.CharField(max_length=100, blank=True,
+                          help_text='Company registration / license number')
+    website         = models.URLField(blank=True)
+    service_areas   = models.TextField(blank=True,
+                          help_text='Countries / regions served')
+    status          = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
+    registered_at   = models.DateTimeField(auto_now_add=True)
+    admin_notes     = models.TextField(blank=True)
+
+    class Meta:
+        ordering            = ['-registered_at']
+        verbose_name        = 'Shipping Company'
+        verbose_name_plural = 'Shipping Companies'
+
+    def __str__(self):
+        return f"{self.company_name} [{self.status}]"
+
+    def ref(self):
+        return f'SHC-{self.pk:04d}'
+
+
+class ShipmentDoc(models.Model):
+    """
+    Documents a shipping company uploads for a specific supplier deal shipment.
+    """
+    DOC_TYPE_CHOICES = [
+        ('bill_of_lading',   'Bill of Lading'),
+        ('cargo_manifest',   'Cargo Manifest'),
+        ('signed_agreement', 'Signed Agreement with Seller/Buyer'),
+        ('customs_clearance','Customs Clearance Document'),
+        ('insurance',        'Cargo Insurance'),
+        ('other',            'Other'),
+    ]
+
+    shipping_co  = models.ForeignKey(ShippingCompany, on_delete=models.CASCADE,
+                       related_name='shipment_docs')
+    supplier_deal= models.ForeignKey(SupplierDeal, on_delete=models.SET_NULL,
+                       null=True, blank=True, related_name='shipment_docs',
+                       help_text='Link to the supplier deal this shipment serves')
+    doc_type     = models.CharField(max_length=30, choices=DOC_TYPE_CHOICES,
+                       default='signed_agreement')
+    document     = models.FileField(upload_to='shipping_docs/')
+    description  = models.CharField(max_length=300, blank=True,
+                       help_text='Brief description of this document')
+    uploaded_at  = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering            = ['-uploaded_at']
+        verbose_name        = 'Shipment Document'
+        verbose_name_plural = 'Shipment Documents'
+
+    def __str__(self):
+        return f"{self.shipping_co.company_name} · {self.get_doc_type_display()}"

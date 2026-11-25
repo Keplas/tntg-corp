@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block title %}Reseller Dashboard — T&TG Wholesale{% endblock %}
+
+{% block extra_head %}
+<style>
+/* ── Palette ── */
+:root {
+  --gold:   #c9a84c;
+  --gold-l: #e8c96a;
+  --navy:   #060f1e;
+  --navy2:  #0a2540;
+  --navy3:  #0d2e4a;
+  --text:   #d8e3f0;
+  --muted:  #7a9ab8;
+}
+
+/* ── Layout ── */
+.rd-wrap { max-width: 1100px; margin: 0 auto; padding: 32px 20px 60px; }
+
+/* ── Top bar ── */
+.rd-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px; margin-bottom: 32px;
+}
+.rd-topbar-title { font-size: 1.45rem; font-weight: 800; color: var(--gold); letter-spacing: -.5px; }
+.rd-topbar-sub   { font-size: .82rem; color: var(--muted); margin-top: 2px; }
+.rd-disc-badge {
+  background: linear-gradient(135deg,var(--gold),var(--gold-l));
+  color: var(--navy); font-size: .78rem; font-weight: 800;
+  border-radius: 20px; padding: 6px 14px;
+}
+
+/* ── Stat cards ── */
+.rd-stats { display: grid; grid-template-columns: repeat(auto-fit,minmax(170px,1fr)); gap: 16px; margin-bottom: 32px; }
+.rd-stat {
+  background: var(--navy2); border: 1px solid rgba(201,168,76,.18);
+  border-radius: 14px; padding: 20px 22px;
+}
+.rd-stat-num  { font-size: 2rem; font-weight: 800; color: var(--gold); }
+.rd-stat-lbl  { font-size: .78rem; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: .06em; }
+
+/* ── Section header ── */
+.rd-sec-hd {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; margin-bottom: 16px;
+}
+.rd-sec-hd h2 { font-size: 1rem; font-weight: 700; color: var(--text); }
+
+/* ── Orders table ── */
+.rd-table-wrap { overflow-x: auto; border-radius: 14px; border: 1px solid rgba(201,168,76,.14); }
+.rd-table { width: 100%; border-collapse: collapse; min-width: 580px; }
+.rd-table thead th {
+  background: rgba(10,37,64,.9); color: var(--muted); font-size: .73rem;
+  font-weight: 700; text-transform: uppercase; letter-spacing: .07em;
+  padding: 10px 16px; text-align: left;
+}
+.rd-table tbody tr { border-bottom: 1px solid rgba(255,255,255,.04); transition: background .15s; }
+.rd-table tbody tr:hover { background: rgba(201,168,76,.04); }
+.rd-table tbody td { padding: 12px 16px; font-size: .86rem; color: var(--text); }
+
+/* ── Status chips ── */
+.chip {
+  display: inline-block; border-radius: 20px; padding: 3px 10px;
+  font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
+}
+.chip-draft     { background: rgba(100,116,139,.2); color: #94a3b8; }
+.chip-submitted { background: rgba(234,179,8,.15);  color: #fbbf24; }
+.chip-confirmed { background: rgba(16,185,129,.15); color: #34d399; }
+.chip-processing{ background: rgba(99,102,241,.18); color: #a5b4fc; }
+.chip-shipped   { background: rgba(14,165,233,.15); color: #38bdf8; }
+.chip-delivered { background: rgba(201,168,76,.18); color: var(--gold-l); }
+.chip-cancelled { background: rgba(239,68,68,.12);  color: #f87171; }
+
+/* ── Buttons ── */
+.btn-gold {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: linear-gradient(135deg,var(--gold),var(--gold-l));
+  color: var(--navy); font-size: .82rem; font-weight: 800;
+  border-radius: 10px; padding: 9px 18px; border: none; cursor: pointer;
+  text-decoration: none; transition: opacity .2s;
+}
+.btn-gold:hover { opacity: .88; color: var(--navy); text-decoration: none; }
+.btn-outline {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: transparent; color: var(--gold);
+  border: 1px solid rgba(201,168,76,.4); font-size: .82rem; font-weight: 700;
+  border-radius: 10px; padding: 9px 18px; cursor: pointer; text-decoration: none; transition: all .2s;
+}
+.btn-outline:hover { background: rgba(201,168,76,.08); color: var(--gold); text-decoration: none; }
+
+/* ── Empty state ── */
+.rd-empty {
+  text-align: center; padding: 48px 20px;
+  color: var(--muted); font-size: .9rem;
+}
+.rd-empty i { font-size: 2.5rem; color: rgba(201,168,76,.25); display: block; margin-bottom: 12px; }
+
+/* ── Info banner ── */
+.rd-info {
+  background: rgba(10,37,64,.7); border: 1px solid rgba(201,168,76,.2);
+  border-radius: 14px; padding: 18px 22px; margin-bottom: 28px;
+  font-size: .85rem; color: var(--text); line-height: 1.6;
+}
+.rd-info i { color: var(--gold); margin-right: 6px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="rd-wrap">
+
+  <!-- Top bar -->
+  <div class="rd-topbar">
+    <div>
+      <div class="rd-topbar-title"><i class="fas fa-store-alt" style="margin-right:8px;"></i>Reseller Dashboard</div>
+      <div class="rd-topbar-sub">{{ profile.store_name }} &mdash; {{ profile.user.email }}</div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+      <span class="rd-disc-badge"><i class="fas fa-tag" style="margin-right:5px;"></i>{{ disc }}% Wholesale Discount</span>
+      <a href="{% url 'reseller_catalog' %}" class="btn-gold">
+        <i class="fas fa-shopping-bag"></i> Browse Catalog
+      </a>
+    </div>
+  </div>
+
+  <!-- Info banner -->
+  <div class="rd-info">
+    <i class="fas fa-info-circle"></i>
+    As an Authorized Reseller you receive a <strong style="color:var(--gold);">{{ disc }}% discount</strong> off T&TG regular prices.
+    Set your own selling prices through the catalog — your private prices are visible only to you.
+  </div>
+
+  <!-- Stat cards -->
+  <div class="rd-stats">
+    <div class="rd-stat">
+      <div class="rd-stat-num">{{ order_count }}</div>
+      <div class="rd-stat-lbl">Total Orders</div>
+    </div>
+    <div class="rd-stat">
+      <div class="rd-stat-num">{{ active_count }}</div>
+      <div class="rd-stat-lbl">Active Orders</div>
+    </div>
+    <div class="rd-stat">
+      <div class="rd-stat-num">{{ my_prices|length }}</div>
+      <div class="rd-stat-lbl">Products Priced</div>
+    </div>
+    <div class="rd-stat">
+      <div class="rd-stat-num">{{ disc }}%</div>
+      <div class="rd-stat-lbl">Your Discount</div>
+    </div>
+  </div>
+
+  <!-- Recent orders -->
+  <div class="rd-sec-hd">
+    <h2><i class="fas fa-box" style="color:var(--gold);margin-right:7px;"></i>Recent Wholesale Orders</h2>
+    <a href="{% url 'reseller_catalog' %}" class="btn-outline">
+      <i class="fas fa-plus"></i> New Order
+    </a>
+  </div>
+
+  {% if orders %}
+  <div class="rd-table-wrap" style="margin-bottom:36px;">
+    <table class="rd-table">
+      <thead>
+        <tr>
+          <th>Ref</th>
+          <th>Date</th>
+          <th>Items</th>
+          <th>Total (USD)</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td><code style="color:var(--gold-l);font-size:.8rem;">{{ order.ref }}</code></td>
+          <td>{{ order.created_at|date:"M d, Y" }}</td>
+          <td>{{ order.items.count }}</td>
+          <td>US$ {{ order.total_usd|floatformat:2 }}</td>
+          <td><span class="chip chip-{{ order.status }}">{{ order.get_status_display }}</span></td>
+          <td>
+            <a href="{% url 'reseller_order_detail' order.ref %}" style="color:var(--gold);font-size:.8rem;">
+              <i class="fas fa-eye"></i> View
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="rd-empty" style="border:1px solid rgba(201,168,76,.1);border-radius:14px;margin-bottom:36px;">
+    <i class="fas fa-box-open"></i>
+    No orders yet. <a href="{% url 'reseller_catalog' %}" style="color:var(--gold);">Browse the wholesale catalog</a> to place your first order.
+  </div>
+  {% endif %}
+
+  <!-- My private prices summary -->
+  {% if my_prices %}
+  <div class="rd-sec-hd">
+    <h2><i class="fas fa-tag" style="color:var(--gold);margin-right:7px;"></i>My Selling Prices ({{ my_prices|length }} products)</h2>
+    <a href="{% url 'reseller_catalog' %}" class="btn-outline"><i class="fas fa-edit"></i> Manage</a>
+  </div>
+  <div class="rd-table-wrap">
+    <table class="rd-table">
+      <thead>
+        <tr><th>Product</th><th>Wholesale Cost</th><th>My Selling Price</th><th>Margin</th></tr>
+      </thead>
+      <tbody>
+        {% for pid, rp in my_prices.items %}
+        <tr>
+          <td>{{ rp.product.name }}</td>
+          <td>US$ {{ rp.wholesale_price|floatformat:2 }}</td>
+          <td style="color:var(--gold-l);">US$ {{ rp.sell_price|floatformat:2 }}</td>
+          <td style="color:#34d399;">US$ {{ rp.margin|floatformat:2 }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

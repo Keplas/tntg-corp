@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Shipment Document — T&TG{% endblock %}
+
+{% block extra_head %}
+<style>
+:root { --gold:#c9a84c; --gold-l:#e8c96a; --navy:#060f1e; --navy2:#0a2540; --text:#d8e3f0; --muted:#7a9ab8; }
+.sud-wrap { max-width:560px; margin:0 auto; padding:36px 20px 60px; }
+.sud-back  { color:var(--muted); font-size:.82rem; margin-bottom:24px; display:inline-flex; align-items:center; gap:6px; text-decoration:none; }
+.sud-back:hover { color:var(--gold); text-decoration:none; }
+.sud-title { font-size:1.4rem; font-weight:800; color:var(--gold); margin-bottom:4px; }
+.sud-sub   { font-size:.84rem; color:var(--muted); margin-bottom:28px; }
+.sud-card  { background:var(--navy2); border:1px solid rgba(201,168,76,.18); border-radius:18px; padding:28px; }
+.form-group { display:flex; flex-direction:column; gap:5px; margin-bottom:16px; }
+label { font-size:.77rem; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.05em; }
+input, select, textarea {
+  background:rgba(255,255,255,.05); border:1px solid rgba(201,168,76,.2);
+  color:var(--text); border-radius:10px; padding:10px 14px; font-size:.88rem; transition:border-color .2s;
+}
+input:focus, select:focus, textarea:focus { outline:none; border-color:var(--gold); }
+input[type="file"] { padding:8px 12px; cursor:pointer; }
+select option { background:#0a2540; }
+textarea { min-height:80px; resize:vertical; }
+
+.upload-zone { background:rgba(10,37,64,.5); border:2px dashed rgba(201,168,76,.3); border-radius:14px; padding:28px; text-align:center; cursor:pointer; transition:border-color .2s; }
+.upload-zone:hover { border-color:var(--gold); }
+.upload-zone i { font-size:2rem; color:rgba(201,168,76,.4); display:block; margin-bottom:10px; }
+.upload-zone input[type="file"] { display:none; }
+.upload-hint { font-size:.8rem; color:var(--muted); }
+
+.btn-submit { width:100%; background:linear-gradient(135deg,var(--gold),var(--gold-l)); color:var(--navy); border:none; border-radius:12px; padding:14px; font-size:.95rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; margin-top:8px; }
+.btn-submit:hover { opacity:.88; }
+
+.deal-hint { font-size:.78rem; color:var(--muted); margin-top:4px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="sud-wrap">
+  <a href="{% url 'shipping_portal' %}" class="sud-back"><i class="fas fa-arrow-left"></i> Shipping Portal</a>
+
+  <div class="sud-title"><i class="fas fa-upload" style="margin-right:8px;"></i>Upload Document</div>
+  <div class="sud-sub">Upload a shipment document and optionally link it to a supplier deal.</div>
+
+  {% if messages %}
+  {% for msg in messages %}
+  <div style="background:{% if msg.level_tag == 'error' %}rgba(239,68,68,.12){% else %}rgba(16,185,129,.12){% endif %};border:1px solid {% if msg.level_tag == 'error' %}rgba(239,68,68,.3){% else %}rgba(16,185,129,.3){% endif %};border-radius:10px;padding:12px 16px;margin-bottom:16px;font-size:.88rem;color:var(--text);">
+    {{ msg }}
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  <div class="sud-card">
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label>Document Type</label>
+        <select name="doc_type">
+          {% for val, label in doc_types %}
+          <option value="{{ val }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Deal Reference (optional)</label>
+        <input type="text" name="deal_ref" placeholder="SD-XXXXXX" style="text-transform:uppercase;">
+        <div class="deal-hint">If this document belongs to a specific supplier deal, enter the deal reference (e.g. SD-A1B2C3).</div>
+      </div>
+
+      <!-- File picker -->
+      <div class="form-group">
+        <label>Document File <span style="color:var(--gold);">*</span></label>
+        <div class="upload-zone" onclick="document.getElementById('doc-file').click();" id="dropzone">
+          <i class="fas fa-cloud-upload-alt" id="upload-icon"></i>
+          <div style="font-weight:700;color:var(--text);font-size:.9rem;" id="upload-label">Click to select file</div>
+          <div class="upload-hint">PDF, DOC, DOCX, JPG, PNG &mdash; max 20 MB</div>
+          <input type="file" id="doc-file" name="document" required accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Description / Notes</label>
+        <textarea name="description" placeholder="e.g. Bill of lading for 300 bags green coffee, Mombasa port, Nov 2026"></textarea>
+      </div>
+
+      <button type="submit" class="btn-submit">
+        <i class="fas fa-cloud-upload-alt"></i> Upload Document
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+document.getElementById('doc-file').addEventListener('change', function() {
+  const lbl = document.getElementById('upload-label');
+  const ico = document.getElementById('upload-icon');
+  if (this.files && this.files[0]) {
+    lbl.textContent = this.files[0].name;
+    ico.className = 'fas fa-file-check';
+    ico.style.color = '#34d399';
+  } else {
+    lbl.textContent = 'Click to select file';
+    ico.className = 'fas fa-cloud-upload-alt';
+    ico.style.color = '';
+  }
+});
+</script>
+{% endblock %}
